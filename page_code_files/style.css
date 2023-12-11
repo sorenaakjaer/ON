@@ -10,8 +10,8 @@
 
 @font-face {
     font-family: 'The-Icon-of';
-    src: url('/web_content/fonts/The-Icon-of.eot'),
-        url('/web_content/fonts/The-Icon-of.woff2') format('woff2');
+    src: url('https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/fonts/The-Icon-of.eot'),
+        url('https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/fonts/The-Icon-of.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
     font-display: block;
@@ -5700,7 +5700,7 @@ body, .o-page {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background: #ffffff url("/web_content/img/br_down.png") no-repeat right 16px center;
+    background: #ffffff url("https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/br_down.png") no-repeat right 16px center;
     background-size: 12px;
 }
 
@@ -7079,7 +7079,7 @@ li.o-btn.js-case-click-close_case {
     margin: 0 auto;
     width: calc(130px * 1.2);
     height: calc(51px * 1.2);
-    background-image: url('/web_content/img/logo-clean.png');
+    background-image: url('https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/logo-clean.png');
     background-size: cover;
 }
 
