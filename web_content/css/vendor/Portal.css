@@ -1,0 +1,13 @@
+.content, .MainDiv {
+    float:left;width:100%;
+}
+
+.error_message {
+    Width:300px;margin:auto;text-align:center;margin-top:100px;
+}
+
+input[type=text], textarea, select {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}

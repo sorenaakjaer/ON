@@ -1,0 +1,461 @@
+/*Required start*/
+
+.UploadButton {
+    position: relative;
+    overflow: hidden;
+}
+.UploadButton input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    opacity: 0;
+    -ms-filter: 'alpha(opacity=0)';
+    font-size: 200px;
+    direction: ltr;
+    cursor: pointer;
+}
+
+/* Fixes for IE < 8 */
+@media screen\9 {
+    .UploadButton input {
+        filter: alpha(opacity=0);
+        font-size: 100%;
+        height: 100%;
+    }
+}
+
+/*Required ends*/
+
+.messageSuccess, .messageError {
+    padding: 5px;
+    margin-bottom: 10px;
+    width: 900px;
+    font-weight: bold;
+}
+
+.messageSuccess {
+    border: 1px solid green;
+    background-color: #f0feeb;
+    float: left;
+}
+
+.messageError {
+    border: 1px solid red;
+    background-color: #fef8f6;
+    float: left;
+}
+
+.webformButtonPanel {
+    float: left;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.Web_Info {
+    float: left;
+    margin-left: 5px;
+    color: #005783;
+    cursor:default;
+}
+
+div.glyphicon-info-sign {
+    font-size: 16px;
+}
+
+.Web_Error {
+    float:left;
+    color:red;
+    margin-left:5px;
+}
+
+.Web_Required {
+    float:left;
+    margin-right:1px;
+    color:#FF0000;
+}
+
+.Web_MainControl {
+    float: left;
+    width: 100%;
+}
+
+.Web_TextLabel {
+    float:left;
+    margin-right:5px;
+}
+
+.Web_TextDesc {
+    float:left;
+    margin-right:5px;
+}
+
+.Web_InnerControl {
+    float: left;
+}
+
+.CheckboxLabel {
+    float: left;
+    font-size: 12px;
+    margin-top: 3px;
+    margin-left: 3px;
+}
+
+.webformCreate, .webformCreateMore, .webformReset, .button_outer {
+    text-decoration: none;
+}
+
+.button_outer {
+    float: left;
+    margin-right: 5px;
+}
+
+.UploadButton > .text {
+    margin-left: 5px;
+}
+
+.UploadPanel {
+    clear: both;
+}
+
+.UploadPanel > div {
+    clear: both;
+}
+
+.UploadPanel > div > span {
+    float: left;
+}
+
+.UploadPanel > div > a {
+    float: left;
+    margin-left: 5px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.Web_InnerControl_CHECKBOXLIST > div, .Web_InnerControl_RADIOBUTTONS > div {
+    float: left;
+    width: 100%;
+}
+
+.Web_InnerControl_CHECKBOXLIST > div > input, .Web_InnerControl_CHECKBOXLIST > div > div,
+.Web_InnerControl_RADIOBUTTONS > div > input, .Web_InnerControl_RADIOBUTTONS > div > div{
+    float: left;
+}
+
+.Web_InnerControl_CHECKBOXLIST > div > div, .Web_InnerControl_RADIOBUTTONS > div > div {
+    font-size: 12px;
+    margin-top: 3px;
+    margin-left: 3px;
+}
+
+label {
+    font-weight: normal;
+}
+
+.Web_InnerControl_FILE {
+    cursor: pointer;
+}
+
+.Web_MainControl_Accordion {
+    float: left;
+    width: 100%;
+    height: 23px;
+    cursor: pointer;
+    padding-top: 4px;
+    font-weight: bold;
+    padding-left: 7px;
+    background-color: #EEEEEE;
+}
+
+/*Optional class*/
+.focusDropdown {
+    border: 1px solid #A5C7FE;
+}
+
+.hideThis {
+    display: none;
+}
+
+.accordionHide {
+    visibility: hidden;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+}
+
+.accordionContent {
+    padding-left: 10px;
+}
+
+.webform_tableTitle {
+    float:left;
+    width:100%;
+    background-color:#428bca;
+    height:21px;
+}
+
+.webform_tableTitleDiv {
+    float:left;
+    margin-left:15px;
+    margin-right:15px;
+    margin-top:2px;
+    color:#fff;
+    font-weight:bold;
+}
+
+.webform_pagerBar {
+    float: left;
+    width: 100%;
+    margin-top: 5px;
+    text-align: center;
+    position: relative;
+}
+
+.webform_pagerButton {
+    background-color: white !important;
+    color: #428BCA !important;
+}
+
+.webform_pagerButton:hover {
+    color: darkblue !important;
+}
+
+.webform_pagerButton:active {
+    -webkit-box-shadow: none !important;
+}
+
+.webform_pagerNumber {
+    font-size: 14px;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.webform_tableTitleDivRight {
+    float: right;
+}
+
+.webform_tableColumn {
+    cursor: pointer;
+}
+
+.webform_columnicon {
+    color: #428BCA !important;
+    padding: 0;
+    line-height: normal;
+    margin-left: 3px;
+}
+
+.webform_filtericon {
+    color: silver;
+    padding: 0;
+    line-height: normal;
+    margin-left: 3px;
+}
+
+.webtable_button {
+    margin-left: 0 !important;
+    margin-bottom: 5px;
+}
+
+.webform_pager {
+    width: 50px;
+    position: absolute;
+    left: 85px;
+    bottom: 1px;
+}
+
+.webform_pagerText {
+    position: absolute;
+    left: 0;
+    bottom: 1px;
+}
+
+.webform_filterText{
+    position: absolute;
+    right: 0;
+    bottom: 1px;
+}
+
+/*Override*/
+.ui-autocomplete {
+    max-height: 200px;
+    overflow: auto;
+    background-color: white;
+    border: 1px solid #A9A9A9;
+}
+
+.ui-menu .ui-state-focus,
+.ui-menu .ui-state-active {
+    background-color: #DEDEDE;
+}
+
+.table tbody tr td, .table thead tr th {
+    padding: 4px !important;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table tbody tr:hover{
+    background-color: #428BCA;
+    color: white;
+}
+
+/*Viewer*/
+.viewer {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+#viewerPanel {
+    width: 100%;
+}
+
+
+/*Filter*/
+.webform_overlay {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.6);
+    overflow-x: hidden;
+}
+
+.webform_filterpanel {
+    height: 190px;
+    width: 456px;
+    padding: 5px 7px 5px 7px;
+    margin: -100px 0 0 -235px;
+    background-color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
+}
+
+.webform_filter_titlepanel {
+    float: left;
+    width: 100%;
+}
+
+.webform_filter_title {
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.webform_filter_closeicon {
+    float: right;
+}
+
+.webform_filter_leftpanel, .webform_filter_rightpanel {
+    float: left;
+    width: 50%;
+}
+
+.webform_filter_allcheckpanel {
+    float: left;
+    width: 100%;
+}
+
+.webform_filter_allcheck {
+    float: left;
+}
+
+.webform_filter_allchecktext {
+    float: left;
+    margin-top: 3px;
+    margin-left: 5px;
+}
+
+.webform_filter_listpanel {
+    float: left;
+    border: 1px solid silver;
+    width: 100%;
+    margin-top: 3px;
+    height: 140px;
+    overflow: auto;
+}
+
+.webform_filter_listpanel > div {
+    float: left;
+    width: 100%;
+    cursor: pointer;
+}
+
+.webform_filter_listpanel > div:hover {
+    background-color: #F1F1F1;
+}
+
+.webform_filter_listpanel > div > input {
+    float: left;
+    margin-left: 7px;
+    margin-top: 5px;
+}
+
+.webform_filter_listpanel > div > div {
+    float: left;
+    margin-left: 5px;
+    margin-top: 3px;
+    cursor: default;
+}
+
+.webform_filter_sorttext {
+    float: left;
+    width: 100%;
+    margin-top: 3px;
+    margin-left: 7px;
+}
+
+.webform_filter_sortpick {
+    float: left;
+    margin-top: 3px;
+    margin-left: 7px;
+    width: 220px;
+}
+
+.webform_filter_sorttextbox {
+    float: left;
+    margin-left: 7px;
+    margin-top: 7px;
+    width: 215px;
+    padding-left: 3px;
+}
+
+.webform_filter_apply {
+    float: left;
+    margin-left: 7px;
+    margin-top: 7px;
+    color: white;
+    background-color: #428bca;
+    border: 1px solid #428bca;
+    padding: 3px 17px 3px 17px;
+}
+
+.webform_filter_remove {
+    float: right;
+    margin-right: 1px;
+    margin-top: 7px;
+    color: #428bca;
+    border: 1px solid #428bca;
+    padding: 3px 17px 3px 17px;
+    display: none;
+}
+
+.webform_filter_clear {
+    position: absolute;
+    right: 80px;
+    bottom: 1px;
+    color: #428bca;
+    text-decoration: underline;
+    display: none;
+}
