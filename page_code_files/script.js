@@ -1870,8 +1870,9 @@ $(document).one("trigger::vue_loaded", function () {
 				$(".o-page").removeClass("o-page--is-loading");
 
 				if (openCasesHtml.length >= 3) {
+					console.log('cases::$(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html()', $(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html())
 					this.encodeCases(openCasesHtml);
-					$(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html("");
+					// $(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html("");
 				}
 			},
 			readOpenCasesV2(e, t) {
@@ -1977,10 +1978,10 @@ $(document).one("trigger::vue_loaded", function () {
 					cases.forEach((caseItem, index) => {
 						Object.keys(caseItem).forEach(function (key, i) {
 							// START ADDED 26-11-23 For openByOtherEmp
-							
+
 							if (key === 'openByOtherEmp' && $(".FROM_COMPANY > input").val() == "OpenNet") {
-							const openByOtherEmp_arr = caseItem['openByOtherEmp'].length > 0 ? caseItem['openByOtherEmp'] : [] 
-							const vOpenByOtherObj = openByOtherEmp_arr.map(name => {
+								const openByOtherEmp_arr = caseItem['openByOtherEmp'].length > 0 ? caseItem['openByOtherEmp'] : []
+								const vOpenByOtherObj = openByOtherEmp_arr.map(name => {
 									const initials = name.split(' ').map(word => word.charAt(0)).join('');
 									return {
 										initials: initials,
