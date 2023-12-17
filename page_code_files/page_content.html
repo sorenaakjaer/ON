@@ -1555,6 +1555,7 @@
                 @click="onSelectTag(tag)">
                     <span class="item-tag" :style="{'backgroundColor': tag.color ? tag.color : '#0a37aa'}">{{ tag.value }}</span>
                     <i class="tio" v-if="tag.v_selected">checkmark_circle_outlined</i>
+                    <i class="tio" v-if="tag.v_isLoading">autorenew</i>
                     <div class="tags-selector__tag-item__edit-bttn" @click.stop="setTheEditTag(tag)"><i class="tio">edit</i></div>
                 </li>
                 <li class="tag-item__no-match" v-if="filteredTags.length < 1">

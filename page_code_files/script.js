@@ -558,23 +558,33 @@ $(document).one("trigger::vue_loaded", function () {
 				highlightedIndex: -1,
 				tagColors: ['#0a37aa', '#cfdbfc', 'rgba(230, 35, 56, 1)', 'rgba(32, 118, 86, 1)', 'rgba(255, 240, 89, 1)', 'rgba(85, 105, 220, 1)'],
 				tagFormName: '',
-				tagFormColor: '#0a37aa'
+				tagFormColor: '#0a37aa',
+				theLoadingTags: []
 			};
 		},
 		computed: {
 			selectedTags() {
-				return this.active_case.v_tags
+				return this.active_case.v_tags.sort((a, b) => {
+					if (a.value < b.value) {
+						return -1;
+					}
+					if (a.value > b.value) {
+						return 1;
+					}
+					return 0;
+				})
 			},
 			tagsWithProps() {
 				return this.tags.map(tag => {
+					console.log('this.theLoadingTags', this.theLoadingTags)
 					// Check if the current tag exists in this.selectedTags
-					const isSelected = this.selectedTags.includes(tag);
-
+					const isSelected = this.selectedTags.findIndex(selectedTag => selectedTag.value === tag.value) > -1
+					const isLoading = this.theLoadingTags.findIndex(loadingTag => loadingTag.value === tag.value) > -1
 					// Return a new object for the tag with the v_selected property
 					return {
 						...tag,
 						v_selected: isSelected,
-						v_isLoading: false
+						v_isLoading: isLoading
 					};
 				});
 			},
@@ -599,6 +609,9 @@ $(document).one("trigger::vue_loaded", function () {
 					if (num === 1) {
 						document.querySelector('#tag_selector_search_input').focus()
 					} else {
+						if (this.tagsSearch.length > 0) {
+							this.tagFormName = JSON.parse(JSON.stringify(this.tagsSearch))
+						}
 						this.$refs.create_new_tag_input.focus()
 					}
 				})
@@ -611,8 +624,12 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			onSelectTag(tag) {
 				if (tag.v_selected) {
-					this.$emit('remove_tag', tag)
+					this.theLoadingTags.push(tag)
+					setTimeout(_ => {
+						this.$emit('remove_tag', tag)
+					}, 1500)
 				} else {
+					tag.v_isLoading = true
 					this.$emit('add_tag', tag)
 				}
 			},
@@ -1300,14 +1317,28 @@ $(document).one("trigger::vue_loaded", function () {
 			onRemoveTag(tag) {
 				const caseOnId = this.theActiveCaseForTag.onid
 				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
-				const idxOfTag = this.cases[caseIdx]['v_tags'].findIndex(itemTag => itemTag.value === tag.value)
-				this.cases[caseIdx]['v_tags'].splice(idxOfTag, 1)
-				// const tagsArr = [...this.cases[caseIdx].v_tags, newTagObj];
+				const tagsArr = [...this.cases[caseIdx]['v_tags']]
+				const idxOfTag = tagsArr.findIndex(itemTag => itemTag.value === tag.value)
+				tagsArr.splice(idxOfTag, 1)
+				this.updateItemTags(tagsArr)
 			},
 			onAddTag(tag) {
 				const caseOnId = this.theActiveCaseForTag.onid
 				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
-				this.cases[caseIdx]['v_tags'].push(tag)
+				const tagsArr = [...this.cases[caseIdx]['v_tags']]
+				tagsArr.push(tag)
+				this.updateItemTags(tagsArr)
+			},
+			updateItemTags(tagsArr) {
+				const caseOnId = this.theActiveCaseForTag.onid
+				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
+				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArr));
+				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
+				$('.updTagOrGroup_Input_caseid > input').val(caseOnId)
+				this.observeChanges('.updTagOrGroup_Output > div', data => {
+					this.cases[caseIdx].v_tags = tagsArr
+				})
+				$('.updTagOrGroup_BTN > a').click()
 			},
 			observeChanges(selector, callback) {
 				const el = $(selector)
