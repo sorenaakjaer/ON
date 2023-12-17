@@ -2145,7 +2145,6 @@ $(document).one("trigger::vue_loaded", function () {
 					cases.forEach((caseItem, index) => {
 						Object.keys(caseItem).forEach(function (key, i) {
 							// START ADDED 26-11-23 For openByOtherEmp
-
 							if (key === 'openByOtherEmp' && $(".FROM_COMPANY > input").val() == "OpenNet") {
 								const openByOtherEmp_arr = caseItem['openByOtherEmp'].length > 0 ? caseItem['openByOtherEmp'] : []
 								const vOpenByOtherObj = openByOtherEmp_arr.map(name => {
@@ -2156,7 +2155,13 @@ $(document).one("trigger::vue_loaded", function () {
 									}
 								})
 								Vue.set(caseItem, 'v_openByOtherEmp', vOpenByOtherObj)
-							} else {
+								// START ADDED 27-12-23
+							} else if (key === 'tags') {
+								const tags = caseItem['tags'].length > 0 ? caseItem['tags'] : []
+								Vue.set(caseItem, 'v_tags', tags)
+							}
+							// END ADDED 27-12-23
+							else {
 								caseItem[key] = unescape(caseItem[key])
 							}
 							// END ADDED 26-11-23 For openByOtherEmp
