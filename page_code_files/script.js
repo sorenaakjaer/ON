@@ -568,15 +568,7 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		computed: {
 			selectedTags() {
-				return this.active_case.v_tags.sort((a, b) => {
-					if (a.value < b.value) {
-						return -1;
-					}
-					if (a.value > b.value) {
-						return 1;
-					}
-					return 0;
-				})
+				return this.active_case.v_tags
 			},
 			tagsWithProps() {
 				return this.tags.map(tag => {
@@ -591,8 +583,28 @@ $(document).one("trigger::vue_loaded", function () {
 					};
 				});
 			},
+			tagsWithPropsSorted() {
+				return this.tagsWithProps.slice().sort((a, b) => {
+					// First, sort by the v_selected property
+					if (a.v_selected && !b.v_selected) {
+						return -1;
+					}
+					if (!a.v_selected && b.v_selected) {
+						return 1;
+					}
+
+					// Then, sort alphabetically by value
+					if (a.value < b.value) {
+						return -1;
+					}
+					if (a.value > b.value) {
+						return 1;
+					}
+					return 0;
+				});
+			},
 			filteredTags() {
-				return this.tagsWithProps.filter(tag => tag.value.toLowerCase().includes(this.tagsSearch.toLowerCase()));
+				return this.tagsWithPropsSorted.filter(tag => tag.value.toLowerCase().includes(this.tagsSearch.toLowerCase()));
 			}
 		},
 		methods: {
