@@ -1546,7 +1546,7 @@
         <div class="tags-selector__container" id="popperTagsDropdown">
         <div v-if="theTagsSelectorView === 1">
             <div class="tags-selector__search">
-            <input type="search" placeholder="Søg.." id="tag_selector_search_input" v-model="tagsSearch" @keydown="onKeydown" @keyup.enter="onKeyupEnter">
+            <input type="search" placeholder="Søg.." id="tag_selector_search_input" v-model="tagsSearch">
             </div>
             <ul class="tags-selector__dropdown">
                 <li v-for="(tag, index) in filteredTags" 
