@@ -2288,10 +2288,6 @@ $(document).one("trigger::vue_loaded", function () {
 								const tags = caseItem['tags'].length > 0 ? caseItem['tags'] : [];
 								const filteredTags = tags.filter(item => item && typeof item === 'object' && item['value']);
 								Vue.set(caseItem, 'v_tags', filteredTags);
-							} else if (key === 'groups') {
-								const tags = caseItem['groups'].length > 0 ? caseItem['groups'] : [];
-								const filteredTags = tags.filter(item => item && typeof item === 'object' && item['value']);
-								Vue.set(caseItem, 'v_groups', filteredTags);
 							}
 							// END ADDED 27-12-23
 							else {
