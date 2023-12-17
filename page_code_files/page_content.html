@@ -537,19 +537,35 @@
                                     <div v-if="itemCase.onhold_until && itemCase.onhold_until.length > 0">Opfølgning
                                         udløber: {{itemCase.onhold_until}}</div>
                                 </div>
-                                <div class="o-cases__case_element__header__row__tags" ref="referenceElement">
-                                    <label>Tags</label>
-                                    <div @click.stop="setTheActiveTagDropdown('tag', itemCase, $event)" class="item-tag"
-                                        :style="{'backgroundColor': tag.color ? tag.color : 'blue'}"
-                                        v-for="tag in itemCase.v_tags">
-                                        {{ tag.value }}
-                                    </div>
-                                    <div @click.stop="setTheActiveTagDropdown('tag', itemCase, $event)"
-                                        class="itemcase-tags__add">Tilføj tag</div>
-                                </div>
                                 <div class="o-cases__case_element__header__row__tags">
-                                    Grupper
+                                    <label>Tags</label>
+                                    <div class="o-cases__case_element__header__row__tags__container"
+                                        @click.stop="setTheActiveTagDropdown('tag', itemCase, $event)">
+                                        <div class="item-tag"
+                                            :style="{'backgroundColor': tag.color ? tag.color : 'blue'}"
+                                            v-for="tag in itemCase.v_tags">
+                                            {{ tag.value }}
+                                        </div>
+                                        <div class="itemcase-tags__add" v-if="itemCase.v_tags.length < 1">Tilføj tag
+                                        </div>
+                                    </div>
                                 </div>
+                                <!--
+                                <div class="o-cases__case_element__header__row__tags" v-if="itemCase.v_groups">
+                                    <label>Grupper</label>
+                                    <div class="o-cases__case_element__header__row__tags__container"
+                                        @click.stop="setTheActiveTagDropdown('group', itemCase, $event)">
+                                        <div class="item-tag"
+                                            :style="{'backgroundColor': tag.color ? tag.color : 'blue'}"
+                                            v-for="tag in itemCase.v_groups">
+                                            {{ tag.value }}
+                                        </div>
+                                        <div class="itemcase-tags__add" v-if="itemCase.v_groups.length < 1">Tilføj
+                                            gruppe
+                                        </div>
+                                    </div>
+                                </div>
+                            -->
                             </div>
                             <!-- END 17-12-23 -->
                             <div class="o-cases__case_element__body">
@@ -983,9 +999,8 @@
         <!-- START 17-12-23 -->
         <tags-selector v-if="theShowTagDropdown" :active_case="theActiveCaseForTag"
             :is_loading_tag_button="isLoadingTagButton" :tags="allCaseTags" :groups="allCaseGroups"
-            :loading_tags="theLoadingTags" @close="setTheActiveTagDropdown(null)"
-            @create_and_add_new_tag="onCreateAndAddNewTag($event)" @remove_tag="onRemoveTag($event)"
-            @add_tag="onAddTag($event)"></tags-selector>>
+            @close="setTheActiveTagDropdown(null)" @create_and_add_new_tag="onCreateAndAddNewTag($event)"
+            @save_tags="updateItemTags($event)"></tags-selector>>
         </tags-selector>
         <!-- END 17-12-23 -->
         <transition name="modalFadeIn">
@@ -1568,7 +1583,11 @@
                 </li>
             </ul>
             <ul class="tags-selector__dropdow__create">
-                <li class="tags-selector__tag-item" @click="setCreateNewTag">+ Opret nyt</li>
+                <li class="tags-selector__tag-item" v-if="!isEdited" @click="setCreateNewTag">+ Opret nyt</li>
+                <li class="tags-selector__dropdow__create__submit" v-else>
+                    <button class="o-btn o-btn--small" @click="onTagsBGClick">Annuller</button>
+                    <button class="o-btn o-btn--small o-btn--primary" @click="saveTags" :class="{'o-btn--loading': is_loading_tag_button}">Gem</button>
+                </li>
             </ul>
         </div>
         <div class="tags-selector__form" v-else>
@@ -1579,7 +1598,8 @@
                 <div class="o-form">
                     <div class="o-group">
                         <label>Navn</label>
-                        <input type="text" ref="create_new_tag_input" id="create_new_tag_input" v-model="tagFormName"/>
+                        <input type="text" ref="create_new_tag_input" :class="{'o-input--error': isInputError}" id="create_new_tag_input" @keyup="isInputError = false" v-model="tagFormName"/>
+                        <p class="tag-input-error-text" v-if="isInputError">Eksisterer allerede på sagen</p>
                     </div>
                     <div class="o-group">
                         <label>Farve</label>

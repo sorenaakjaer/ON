@@ -558,18 +558,18 @@ $(document).one("trigger::vue_loaded", function () {
 		data() {
 			return {
 				theTagsSelectorView: 1,
-				tagsSearch: '',
 				highlightedIndex: -1,
+				tagsSearch: '',
 				tagColors: ['#0a37aa', '#cfdbfc', 'rgba(230, 35, 56, 1)', 'rgba(32, 118, 86, 1)', 'rgba(255, 240, 89, 1)', 'rgba(85, 105, 220, 1)'],
 				tagFormName: '',
 				tagFormColor: '#0a37aa',
-				theEditingExisting: null
+				theEditingExisting: null,
+				isInputError: false,
+				isEdited: false,
+				selectedTags: []
 			};
 		},
 		computed: {
-			selectedTags() {
-				return this.active_case.v_tags
-			},
 			tagsWithProps() {
 				return this.tags.map(tag => {
 					// Check if the current tag exists in this.selectedTags
@@ -609,6 +609,11 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		methods: {
 			createAndAddNewTag() {
+				const idxOfCurrent = this.selectedTags.findIndex(tag => tag.value === this.tagFormName)
+				if (idxOfCurrent > -1) {
+					this.isInputError = true
+					return
+				}
 				const newTagObj = {
 					value: this.tagFormName,
 					color: this.tagFormColor,
@@ -641,14 +646,20 @@ $(document).one("trigger::vue_loaded", function () {
 				this.setTheTagsSelectorView(2)
 			},
 			removeTag(tag) {
-				this.$emit('remove_tag', tag)
+				this.isEdited = true
+				const idx = this.selectedTags.findIndex(selectedTag => selectedTag.value === tag.value)
+				this.selectedTags.splice(idx, 1)
 			},
 			onSelectTag(tag) {
 				if (tag.v_selected) {
 					return
+				} else {
+					this.isEdited = true
+					this.selectedTags.push(tag)
 				}
-				tag.v_isLoading = true
-				this.$emit('add_tag', tag)
+			},
+			saveTags() {
+				this.$emit('save_tags', this.selectedTags)
 			},
 			setCreateNewTag() {
 				this.resetForm()
@@ -658,32 +669,16 @@ $(document).one("trigger::vue_loaded", function () {
 				this.tagFormName = ''
 				this.tagFormColor = this.tagColors[0]
 				this.theEditingExisting = null
-			},
-			onCreateTag() {
-				console.log('onCreateTag', this.tagsSearch)
-			},
-			onKeydown(event) {
-				if (event.key === 'ArrowDown') {
-					this.highlightedIndex = (this.highlightedIndex + 1) % this.filteredTags.length;
-					event.preventDefault();
-				} else if (event.key === 'ArrowUp') {
-					this.highlightedIndex = (this.highlightedIndex - 1 + this.filteredTags.length) % this.filteredTags.length;
-					event.preventDefault();
-				} else if (event.key === 'Enter' && this.highlightedIndex !== -1) {
-					if (this.filteredTags.length === 0) {
-						this.onCreateTag()
-						return
-					}
-					this.onSelectTag(this.filteredTags[this.highlightedIndex]);
-				}
 			}
+		},
+		mounted() {
+			this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_tags))
 		}
 	})
 	/* END 17-12-23 */
 	new Vue({
 		el: "#o-app",
 		data: {
-			theLoadingTags: [],
 			isLoadingTagButton: false, /* START 17-12-23 */
 			theActiveCaseForTag: null, /* START 17-12-23 */
 			theShowTagDropdown: null, /* START 17-12-23 */
@@ -974,7 +969,19 @@ $(document).one("trigger::vue_loaded", function () {
 		computed: {
 			/* START 17-12-23 */
 			allCaseGroups() {
-				return []
+				const uniqueTags = []
+				this.cases.forEach(caseItem => {
+					if (caseItem['v_groups']) {
+						caseItem['v_groups'].forEach(tag => {
+							const idx = uniqueTags.findIndex(allTag => allTag.value === tag.value)
+							if (idx < 0) {
+								uniqueTags.push(tag)
+							}
+						})
+					}
+				})
+
+				return uniqueTags;
 			},
 			allCaseTags() {
 				const uniqueTags = []
@@ -1334,32 +1341,17 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		methods: {
 			/* START 17-12-23 */
-			onRemoveTag(tag) {
-				const caseOnId = this.theActiveCaseForTag.onid
-				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
-				const tagsArr = [...this.cases[caseIdx]['v_tags']]
-				const idxOfTag = tagsArr.findIndex(itemTag => itemTag.value === tag.value)
-				tagsArr.splice(idxOfTag, 1)
-				this.theLoadingTags.push(tag)
-				this.updateItemTags(tagsArr)
-			},
-			onAddTag(tag) {
-				const caseOnId = this.theActiveCaseForTag.onid
-				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
-				const tagsArr = [...this.cases[caseIdx]['v_tags']]
-				tagsArr.push(tag)
-				this.theLoadingTags.push(tag)
-				this.updateItemTags(tagsArr)
-			},
 			updateItemTags(tagsArr) {
 				const caseOnId = this.theActiveCaseForTag.onid
 				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
 				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArr));
 				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
 				$('.updTagOrGroup_Input_caseid > input').val(caseOnId)
+				this.isLoadingTagButton = true
 				this.observeChanges('.updTagOrGroup_Output > div', data => {
+					this.setTheActiveTagDropdown(null)
+					this.isLoadingTagButton = false
 					this.cases[caseIdx].v_tags = tagsArr
-					this.theLoadingTags = []
 				})
 				$('.updTagOrGroup_BTN > a').click()
 			},
@@ -2296,6 +2288,10 @@ $(document).one("trigger::vue_loaded", function () {
 								const tags = caseItem['tags'].length > 0 ? caseItem['tags'] : [];
 								const filteredTags = tags.filter(item => item && typeof item === 'object' && item['value']);
 								Vue.set(caseItem, 'v_tags', filteredTags);
+							} else if (key === 'groups') {
+								const tags = caseItem['groups'].length > 0 ? caseItem['groups'] : [];
+								const filteredTags = tags.filter(item => item && typeof item === 'object' && item['value']);
+								Vue.set(caseItem, 'v_groups', filteredTags);
 							}
 							// END ADDED 27-12-23
 							else {
