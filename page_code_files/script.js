@@ -1281,14 +1281,15 @@ $(document).one("trigger::vue_loaded", function () {
 					return
 				}
 				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === this.theActiveCaseIdTag)
-				const tagsArr = this.cases[caseIdx].v_tags.push(newTagObj)
-				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArr))
+				const tagsArr = [...this.cases[caseIdx].v_tags, newTagObj];
+				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArr));
 				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
 				$('.updTagOrGroup_Input_caseid > input').val(this.theActiveCaseIdTag)
 				this.isLoadingTagButton = true
 				this.observeChanges('.updTagOrGroup_Output > div', data => {
 					this.isLoadingTagButton = false
 					this.setTheActiveTagDropdown(null)
+					this.cases[caseIdx].v_tags.push(newTagObj)
 				})
 				$('.updTagOrGroup_BTN > a').click()
 			},
