@@ -2,8 +2,9 @@
     $('.triggers').html($('.triggers').html() + '<div class="v_html_loaded"></div>');
 </script>
 <div class="o-page-loading">
-    <div class="o-page-loading"><img src="https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/opennet_logo__white.png" class="o-logo o-logo--fade-in"
-            style="width: 200px; height: 79px;">
+    <div class="o-page-loading"><img
+            src="https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/opennet_logo__white.png"
+            class="o-logo o-logo--fade-in" style="width: 200px; height: 79px;">
         <div class="o-spinner"></div>
     </div>
 </div>
@@ -12,7 +13,8 @@
         <div class="o-container">
             <div class="o-navbar">
                 <div class="o-navbar__home" @click="setActivecCategory('my_cases')"><img
-                        src="https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/opennet_logo.png" class="o-logo"></div>
+                        src="https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/opennet_logo.png"
+                        class="o-logo"></div>
                 <div class="o-menu js-menu-toggle">
                     <svg viewBox="0 0 64 48" class="bg-icon-hover">
                         <path d="M19,15 L45,15 C70,15 58,-2 49.0177126,7 L19,37"></path>
@@ -171,7 +173,8 @@
                         OpenNet. </p>
                     <p>I menupunktet til højre kan vælge de områder de har adgang til.</p>
                 </div>
-                <div class="intro_area_img"><img src="https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/opennet-systemer-processor-illu.png"
+                <div class="intro_area_img"><img
+                        src="https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/opennet-systemer-processor-illu.png"
                         class="intro_img"></div>
             </div>
             <div class="o-body__subheader">
@@ -502,32 +505,52 @@
                                 </template>
                             </ul>
                             <!-- END ADDED 26-11-23 For openByOtherEmp -->
+                            <!-- START 17-12-23 -->
                             <div class="o-cases__case_element__header">
-                                <div>ONID: {{itemCase.onid}}</div>
-                                <div>Oprettet: {{itemCase.created_time_display}}</div>
-                                <div>Til: {{itemCase.to_company}}/ Fra:{{itemCase.from_company}}</div>
-                                <div v-if="itemCase.filter_sla_expired=='true'">SLA: <span
-                                        class="o-pill o-pill--red">{{itemCase.sla_deadline_date}}</span>
+                                <div class="o-cases__case_element__header__row">
+                                    <div>ONID: {{itemCase.onid}}</div>
+                                    <div>Oprettet: {{itemCase.created_time_display}}</div>
+                                    <div>Til: {{itemCase.to_company}}/ Fra:{{itemCase.from_company}}</div>
+                                    <div v-if="itemCase.filter_sla_expired=='true'">SLA: <span
+                                            class="o-pill o-pill--red">{{itemCase.sla_deadline_date}}</span>
+                                    </div>
+                                    <div v-if="itemCase.filter_sla_expired=='false'">SLA:{{itemCase.sla_deadline_date}}
+                                    </div>
+                                    <div class="etray_case_status"> Status: <span class="o-pill o-pill--red"
+                                            v-if="itemCase.status=='New_msg'">Ny besked</span>
+                                        <span class="o-pill o-pill--red" v-if="itemCase.status=='New'">Ny</span> <span
+                                            class="o-pill o-pill--yellow" v-if="itemCase.status=='Åben'">Åben</span>
+                                        <span class="o-pill o-pill--yellow"
+                                            v-if="itemCase.status=='Pending'">Åben</span>
+                                        <span class="o-pill o-pill--red"
+                                            v-if="itemCase.status=='On_Hold'">Opfølgning</span>
+                                        <span class="o-pill o-pill--red" v-if="itemCase.status=='Follow_up'">Opfølgning
+                                            udløbet</span>
+                                        <span class="o-pill o-pill--grey"
+                                            v-if="itemCase.status=='Closed'">Afsluttet</span>
+                                    </div>
+                                    <div class="js-case-assigned-to">Tildelt: {{itemCase.assign_to}}</div>
+                                    <div>SSID: {{itemCase.ssid}}</div>
+                                    <div v-if="itemCase.basket_id.length > 0">Basked ID:{{itemCase.basket_id}}</div>
+                                    <div class="js-intern-ref">Intern ref.: {{itemCase.company_ref}}</div>
+                                    <div v-if="itemCase.adr.length > 0">Adresse: {{itemCase.adr}}</div>
+                                    <div v-if="itemCase.onhold_until && itemCase.onhold_until.length > 0">Opfølgning
+                                        udløber: {{itemCase.onhold_until}}</div>
                                 </div>
-                                <div v-if="itemCase.filter_sla_expired=='false'">SLA:{{itemCase.sla_deadline_date}}
+                                <div class="o-cases__case_element__header__row__tags" ref="referenceElement">
+                                    <label>Tags</label>
+                                    <div @click.stop="setTheActiveTagDropdown('tag', itemCase, $event)"
+                                        v-for="tag in itemCase.tags">
+                                        {{ tag.value }}
+                                    </div>
+                                    <div @click.stop="setTheActiveTagDropdown('tag', itemCase, $event)"
+                                        class="itemcase-tags__add" v-if="itemCase.tags.length < 1">Tilføj tag</div>
                                 </div>
-                                <div class="etray_case_status"> Status: <span class="o-pill o-pill--red"
-                                        v-if="itemCase.status=='New_msg'">Ny besked</span>
-                                    <span class="o-pill o-pill--red" v-if="itemCase.status=='New'">Ny</span> <span
-                                        class="o-pill o-pill--yellow" v-if="itemCase.status=='Åben'">Åben</span>
-                                    <span class="o-pill o-pill--yellow" v-if="itemCase.status=='Pending'">Åben</span>
-                                    <span class="o-pill o-pill--red" v-if="itemCase.status=='On_Hold'">Opfølgning</span>
-                                    <span class="o-pill o-pill--red" v-if="itemCase.status=='Follow_up'">Opfølgning
-                                        udløbet</span>
-                                    <span class="o-pill o-pill--grey" v-if="itemCase.status=='Closed'">Afsluttet</span>
+                                <div class="o-cases__case_element__header__row__tags">
+                                    Grupper
                                 </div>
-                                <div class="js-case-assigned-to">Tildelt: {{itemCase.assign_to}}</div>
-                                <div>SSID: {{itemCase.ssid}}</div>
-                                <div v-if="itemCase.basket_id.length > 0">Basked ID:{{itemCase.basket_id}}</div>
-                                <div class="js-intern-ref">Intern ref.: {{itemCase.company_ref}}</div>
-                                <div v-if="itemCase.adr.length > 0">Adresse: {{itemCase.adr}}</div>
-                                <div v-if="itemCase.onhold_until && itemCase.onhold_until.length > 0">Opfølgning udløber: {{itemCase.onhold_until}}</div>
                             </div>
+                            <!-- END 17-12-23 -->
                             <div class="o-cases__case_element__body">
                                 <div class="o-cases__case_element__body__input">
                                     <div class="o-cases__case-group"><label>Forespørgselstype:</label>
@@ -956,8 +979,11 @@
                 </div>
             </div>
         </transition>
-
-
+        <!-- START 17-12-23 -->
+        <tags-selector v-if="theShowTagDropdown" :is_loading_tag_button="isLoadingTagButton"
+            @close="setTheActiveTagDropdown(null)" @create_and_add_new_tag="onCreateAndAddNewTag($event)">
+        </tags-selector>
+        <!-- END 17-12-23 -->
         <transition name="modalFadeIn">
             <div class="o-modal--alwaysactive vue-modal" v-if="theActiveItem" v-cloak>
                 <div class="o-modal__header">
@@ -1510,6 +1536,69 @@
         </div>
     </div>
 </div>
+<!-- START 17-12-23 -->
+<script type="text/x-template" id="tags-selector-template">
+    <div class="tags-selector">
+        <div class="tags-selector__bg" @click="onTagsBGClick"></div>
+        <div class="tags-selector__container" id="popperTagsDropdown">
+        <div v-if="theTagsSelectorView === 1">
+            <div class="tags-selector__search">
+            <input type="search" placeholder="Søg.." id="tag_selector_search_input" v-model="tagsSearch" @keydown="onKeydown" @keyup.enter="onKeyupEnter">
+            </div>
+            <ul class="tags-selector__dropdown">
+                <li v-for="(tag, index) in filteredTags" 
+                :key="tag.value" 
+                class="tags-selector__tag-item" :class="{ 'tags-selector__tag-item--highlighted': index === highlightedIndex }"
+                @click="onSelectTag(tag)">
+                    <span class="item-tag" :style="{'backgroundColor': tag.color ? tag.color : '#0a37aa'}">{{ tag.value }}</span>
+                    <div class="tags-selector__tag-item__edit-bttn" @click.stop="setTheEditTag(tag)"><i class="tio">edit</i></div>
+                </li>
+                <li class="tag-item__no-match" v-if="filteredTags.length < 1">
+                    Ingen matchende resultater...
+                </li>
+            </ul>
+            <ul class="tags-selector__dropdow__create">
+                <li class="tags-selector__tag-item" @click="setCreateNewTag">+ Opret nyt</li>
+            </ul>
+        </div>
+        <div class="tags-selector__form" v-else>
+            <div class="tags-selector__form__header">
+                <h4>Nyt tag</h4>
+            </div>
+            <div class="tags-selector__form__body">
+                <div class="o-form">
+                    <div class="o-group">
+                        <label>Navn</label>
+                        <input type="text" ref="create_new_tag_input" id="create_new_tag_input" v-model="tagFormName"/>
+                    </div>
+                    <div class="o-group">
+                        <label>Farve</label>
+                        <ul class="tags-selector__form__colors">
+                            <li 
+                            v-for="color in tagColors" 
+                            class="tags-selector__form__colors__color"
+                            :class="{'tags-selector__form__colors__color--selected': tagFormColor === color}" 
+                            :style="{'backgroundColor': color}"
+                            @click="tagFormColor = color">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="tags-selector__form__footer">
+                <button class="o-btn o-btn--small" @click="setTheTagsSelectorView(1)">Tilbage</button>
+                <div class="tags-selector__form__footer__buttons">
+                    <button class="o-btn o-btn--small" @click="setTheTagsSelectorView(1)">Annuller</button>
+                    <button class="o-btn o-btn--small o-btn--primary" :class="{'o-btn--loading': is_loading_tag_button}" @click="createAndAddNewTag()">Gem</button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+  </script>
+<!-- END 17-12-23 -->
+
 <!-- SMALL MODAL: CASE CHANGE CATEGORY <div class="o-modal o-modal--small js-o-modal--small__change-category"> <div class="o-modal__header"> <h4 class="js-small-modal-title">Ændre kategori</h4> <div class="tio clear bg-icon-hover js-close-modal-small"></div></div><div class="o-modal__body js-o-modal-small__inner" style="display: none"> <div class="js-o-modal-small__o-case-change-category"> <div class="o-select"> <div class="o-select__container"> <div class="o-select__input__lookalike js-o-select-input-lookalike"> <div class="tio clear_circle js-o-select-search-clear"></div><span class="o-select__input__lookalike__selected-item js-o-select-selected-item-name"></span> <input type="search" class="o-select__input o-search-input" placeholder="Vælg.."> <div class="tio expand_all"></div><input type="text" class="js-o-select-selected-item-id" hidden> </div></div><div class="o-select__dropdown"> <ul class="o-items js-o-select-items"></ul> </div></div><div class="o-modal__case__commentary"> <textarea class="o-modal__case__commentary__textarea" placeholder="Skriv kommentar..."></textarea> <div class="o-modal__case__commentary__actions"> <div></div><div> <button class="o-btn js-click-modal-small-cancel">Annuller</button> <button class="o-btn o-btn--primary js-case-change-category-save">Gem</button> </div></div></div></div></div></div>-->
 <div class="o-modal o-modal--small js-o-modal--small__edit-ref">
     <div class="o-modal__header">

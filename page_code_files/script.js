@@ -1,7 +1,6 @@
 // Set loaded div
 $('.triggers').html($('.triggers').html() + '<div class="v_js_loaded"></div>');
 
-
 // STEP 1 - TRIGGER TRIGGER_AFTER_LOGIN - START  //
 $(document).one("TRIGGER_AFTER_LOGIN", function () {
 	//console.log('TRIGGER_AFTER_LOGIN')
@@ -516,9 +515,12 @@ $(document).one("trigger::vue_loaded", function () {
 	}
 	document.querySelectorAll(".Web_MainControl_textbox").forEach(function (t) {
 		t.addEventListener("paste", e)
-	}), document.querySelectorAll(".Web_MainControl_note").forEach(function (t) {
+	})
+	document.querySelectorAll(".Web_MainControl_note").forEach(function (t) {
 		t.addEventListener("paste", e)
-	}), Vue.directive("click-outside", {
+	})
+
+	Vue.directive("click-outside", {
 		bind: function (e, t, s) {
 			e.clickOutsideEvent = function (a) {
 				e == a.target || e.contains(a.target) || s.context[t.expression](a)
@@ -527,9 +529,102 @@ $(document).one("trigger::vue_loaded", function () {
 		unbind: function (e) {
 			document.body.removeEventListener("click", e.clickOutsideEvent)
 		}
-	}), new Vue({
+	})
+	/* START 17-12-23 */
+	Vue.component('tags-selector', {
+		template: '#tags-selector-template',
+		props: {
+			is_loading_tag_button: {
+				type: Boolean,
+				default: false
+			}
+		},
+		data() {
+			return {
+				theTagsSelectorView: 1,
+				tagsSearch: '',
+				tags: [
+					{ "value": "ProduktID 261962", "color": "#cfdbfc" },
+					{ "value": "AddressID: IA01792376" },
+					{ "value": "ServiceOrderID: WSO0079631" }
+				],
+				highlightedIndex: -1,
+				tagColors: ['#0a37aa', '#cfdbfc', 'rgba(230, 35, 56, 1)', 'rgba(32, 118, 86, 1)', 'rgba(255, 240, 89, 1)', 'rgba(85, 105, 220, 1)'],
+				tagFormName: '',
+				tagFormColor: '#0a37aa'
+			};
+		},
+		computed: {
+			filteredTags() {
+				return this.tags.filter(tag => tag.value.toLowerCase().includes(this.tagsSearch.toLowerCase()));
+			}
+		},
+		methods: {
+			createAndAddNewTag() {
+				const newTagObj = {
+					value: this.tagFormName,
+					color: this.tagFormColor
+				}
+				this.$emit('create_and_add_new_tag', newTagObj)
+			},
+			onTagsBGClick() {
+				this.$emit('close')
+			},
+			setTheTagsSelectorView(num) {
+				this.theTagsSelectorView = num
+				this.$nextTick(_ => {
+					if (num === 1) {
+						document.querySelector('#tag_selector_search_input').focus()
+					} else {
+						this.$refs.create_new_tag_input.focus()
+					}
+				})
+			},
+			setTheEditTag(tag) {
+				this.tagFormName = tag.value
+				this.tagFormColor = tag.color ? tag.color : this.tagColors[0]
+				this.isEditingExisting = true
+				this.setTheTagsSelectorView(2)
+			},
+			onSelectTag(tag) {
+				console.log('selectedTag', tag);
+				// ... select tag ...
+			},
+			setCreateNewTag() {
+				this.resetForm()
+				this.setTheTagsSelectorView(2)
+			},
+			resetForm() {
+				this.tagFormName = ''
+				this.tagFormColor = this.tagColors[0]
+			},
+			onCreateTag() {
+				console.log('onCreateTag', this.tagsSearch)
+			},
+			onKeydown(event) {
+				if (event.key === 'ArrowDown') {
+					this.highlightedIndex = (this.highlightedIndex + 1) % this.filteredTags.length;
+					event.preventDefault();
+				} else if (event.key === 'ArrowUp') {
+					this.highlightedIndex = (this.highlightedIndex - 1 + this.filteredTags.length) % this.filteredTags.length;
+					event.preventDefault();
+				} else if (event.key === 'Enter' && this.highlightedIndex !== -1) {
+					if (this.filteredTags.length === 0) {
+						this.onCreateTag()
+						return
+					}
+					this.onSelectTag(this.filteredTags[this.highlightedIndex]);
+				}
+			}
+		}
+	})
+	/* END 17-12-23 */
+	new Vue({
 		el: "#o-app",
 		data: {
+			isLoadingTagButton: false, /* START 17-12-23 */
+			theActiveCaseIdTag: null, /* START 17-12-23 */
+			theShowTagDropdown: null, /* START 17-12-23 */
 			isVueModalOverlay: !1,
 			items: [],
 			isOpenDocsLoading: !0,
@@ -1156,6 +1251,79 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			/* START 17-12-23 */
+			observeChanges(selector, callback) {
+				const el = $(selector)
+				if (!el || el.length === 0) {
+					//console.warn(`No element found with selector ${selector}`);
+					return;
+				}
+				el.html('loading')
+				let cInterval = setInterval(_ => {
+					const val = el.html()
+					if (val !== 'loading') {
+						clearInterval(cInterval)
+						callback(val);
+					} else {
+						// console.log('observer::empty', { selector }, el.html())
+					}
+				}, 1000)
+			},
+			onCreateAndAddNewTag(newTagObj) {
+				// Formvalidation
+				if (newTagObj.value.length < 1) {
+					const el = document.querySelector('#create_new_tag_input')
+					el.focus()
+					el.classList.remove('animate-shake')
+					setTimeout(_ => {
+						el.classList.add('animate-shake')
+					}, 100)
+					return
+				}
+				$('.updTagOrGroup_Input > input').val(JSON.stringify(newTagObj))
+				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
+				$('.updTagOrGroup_Input_caseid > input').val(this.theActiveCaseIdTag)
+				this.isLoadingTagButton = true
+				this.observeChanges('.updTagOrGroup_Output > div', data => {
+					this.isLoadingTagButton = false
+					this.setTheActiveTagDropdown(null)
+				})
+				$('.updTagOrGroup_BTN > a').click()
+			},
+			createPopper(parent) {
+				const child = document.getElementById('popperTagsDropdown')
+				Popper.createPopper(
+					parent,
+					child,
+					{
+						// Popper options
+						placement: 'bottom-start',
+						modifiers: [
+							{
+								name: 'offset',
+								options: {
+									offset: [0, 10], // x-axis: 0, y-axis: -10
+								},
+							},
+						],
+					}
+				);
+			},
+			setTheActiveTagDropdown(tagType, itemCase, evt) {
+				if (!tagType) {
+					this.theShowTagDropdown = null
+					this.theActiveCaseIdTag = null
+					return
+				}
+				console.log(itemCase)
+				this.theActiveCaseIdTag = itemCase.onid
+				this.theShowTagDropdown = tagType
+				this.$nextTick(_ => {
+					this.createPopper(evt.target)
+					document.getElementById('tag_selector_search_input').focus()
+				})
+			},
+			/* END 17-12-23 */
 			setTheEndCustomerEmailConfigFormActiveType(type) {
 				//console.log(this.theEndCustomerEmailConfigFormActiveType)
 				this.theEndCustomerEmailConfigFormActiveType = type
@@ -1870,7 +2038,6 @@ $(document).one("trigger::vue_loaded", function () {
 				$(".o-page").removeClass("o-page--is-loading");
 
 				if (openCasesHtml.length >= 3) {
-					console.log('cases::$(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html()', $(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html())
 					this.encodeCases(openCasesHtml);
 					// $(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html("");
 				}
@@ -2871,6 +3038,23 @@ function openBurgerMenu() {
 	}
 }
 
+/* START 17-12-23 */
+addPopperFromCDN()
+
+function addPopperFromCDN() {
+	// Create a <link> element for the CSS file
+	const link = document.createElement('link')
+	link.rel = 'stylesheet'
+	link.href = 'https://unpkg.com/vue-virtual-scroller/dist/vue-virtual-scroller.css'
+	document.head.appendChild(link)
+
+	// Create a <script> element for the Vue Multiselect script
+	$.getScript("https://unpkg.com/@popperjs/core@2", function (e, t, s) {
+		console.log('popper loaded')
+		$(document).trigger("trigger::vue__virtual_scroller_loaded")
+	})
+}
+/* END 17-12-23 */
 function closeBurgerMenu() {
 	$(".js-menu-toggle").removeClass("active"), $(".o-page").removeClass("o-page--menu-open"), $(".o-menu__items").removeClass("o-menu__items--active"), $(".o-menu__overlay").removeClass("o-menu__overlay--active")
 }
