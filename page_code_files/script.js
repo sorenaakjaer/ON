@@ -576,7 +576,6 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			tagsWithProps() {
 				return this.tags.map(tag => {
-					console.log('this.theLoadingTags', this.theLoadingTags)
 					// Check if the current tag exists in this.selectedTags
 					const isSelected = this.selectedTags.findIndex(selectedTag => selectedTag.value === tag.value) > -1
 					const isLoading = this.theLoadingTags.findIndex(loadingTag => loadingTag.value === tag.value) > -1
@@ -958,16 +957,17 @@ $(document).one("trigger::vue_loaded", function () {
 				return []
 			},
 			allCaseTags() {
-				// Accumulate all tags from each case
-				const allTags = this.cases.reduce((acc, currentCase) => {
-					if (currentCase.v_tags && Array.isArray(currentCase.v_tags)) {
-						return acc.concat(currentCase.v_tags);
+				const uniqueTags = []
+				this.cases.forEach(caseItem => {
+					if (caseItem['v_tags']) {
+						caseItem['v_tags'].forEach(tag => {
+							const idx = uniqueTags.findIndex(allTag => allTag.value === tag.value)
+							if (idx < 0) {
+								uniqueTags.push(tag)
+							}
+						})
 					}
-					return acc;
-				}, []);
-
-				// Create a Set to get unique tags, then convert back to an array
-				const uniqueTags = Array.from(new Set(allTags));
+				})
 
 				return uniqueTags;
 			},
@@ -1400,6 +1400,9 @@ $(document).one("trigger::vue_loaded", function () {
 						],
 					}
 				);
+				this.$nextTick(_ => {
+					document.getElementById('tag_selector_search_input').focus()
+				})
 			},
 			setTheActiveTagDropdown(tagType, itemCase, evt) {
 				if (!tagType) {
@@ -1412,7 +1415,6 @@ $(document).one("trigger::vue_loaded", function () {
 				this.theShowTagDropdown = tagType
 				this.$nextTick(_ => {
 					this.createPopper(evt.target)
-					document.getElementById('tag_selector_search_input').focus()
 				})
 			},
 			/* END 17-12-23 */
