@@ -9824,6 +9824,7 @@ ul.tags-selector__dropdow__create {
     padding: 0.5rem;
     font-style: italic;
     cursor: default !important;
+    font-size: 14px;
 }
 
 .item-tag {

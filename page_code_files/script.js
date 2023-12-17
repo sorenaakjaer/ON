@@ -537,17 +537,24 @@ $(document).one("trigger::vue_loaded", function () {
 			is_loading_tag_button: {
 				type: Boolean,
 				default: false
+			},
+			tags: {
+				type: Array,
+				default: () => []
+			},
+			groups: {
+				type: Array,
+				default: () => []
+			},
+			active_case: {
+				type: Object,
+				default: null
 			}
 		},
 		data() {
 			return {
 				theTagsSelectorView: 1,
 				tagsSearch: '',
-				tags: [
-					{ "value": "ProduktID 261962", "color": "#cfdbfc" },
-					{ "value": "AddressID: IA01792376" },
-					{ "value": "ServiceOrderID: WSO0079631" }
-				],
 				highlightedIndex: -1,
 				tagColors: ['#0a37aa', '#cfdbfc', 'rgba(230, 35, 56, 1)', 'rgba(32, 118, 86, 1)', 'rgba(255, 240, 89, 1)', 'rgba(85, 105, 220, 1)'],
 				tagFormName: '',
@@ -555,8 +562,24 @@ $(document).one("trigger::vue_loaded", function () {
 			};
 		},
 		computed: {
+			selectedTags() {
+				return this.active_case.v_tags
+			},
+			tagsWithProps() {
+				return this.tags.map(tag => {
+					// Check if the current tag exists in this.selectedTags
+					const isSelected = this.selectedTags.includes(tag);
+
+					// Return a new object for the tag with the v_selected property
+					return {
+						...tag,
+						v_selected: isSelected,
+						v_isLoading: false
+					};
+				});
+			},
 			filteredTags() {
-				return this.tags.filter(tag => tag.value.toLowerCase().includes(this.tagsSearch.toLowerCase()));
+				return this.tagsWithProps.filter(tag => tag.value.toLowerCase().includes(this.tagsSearch.toLowerCase()));
 			}
 		},
 		methods: {
@@ -587,8 +610,11 @@ $(document).one("trigger::vue_loaded", function () {
 				this.setTheTagsSelectorView(2)
 			},
 			onSelectTag(tag) {
-				console.log('selectedTag', tag);
-				// ... select tag ...
+				if (tag.v_selected) {
+					this.$emit('remove_tag', tag)
+				} else {
+					this.$emit('add_tag', tag)
+				}
 			},
 			setCreateNewTag() {
 				this.resetForm()
@@ -623,7 +649,7 @@ $(document).one("trigger::vue_loaded", function () {
 		el: "#o-app",
 		data: {
 			isLoadingTagButton: false, /* START 17-12-23 */
-			theActiveCaseIdTag: null, /* START 17-12-23 */
+			theActiveCaseForTag: null, /* START 17-12-23 */
 			theShowTagDropdown: null, /* START 17-12-23 */
 			isVueModalOverlay: !1,
 			items: [],
@@ -910,6 +936,25 @@ $(document).one("trigger::vue_loaded", function () {
 			theEndCustomerEmailConfigFormActiveType: 'web'
 		},
 		computed: {
+			/* START 17-12-23 */
+			allCaseGroups() {
+				return []
+			},
+			allCaseTags() {
+				// Accumulate all tags from each case
+				const allTags = this.cases.reduce((acc, currentCase) => {
+					if (currentCase.v_tags && Array.isArray(currentCase.v_tags)) {
+						return acc.concat(currentCase.v_tags);
+					}
+					return acc;
+				}, []);
+
+				// Create a Set to get unique tags, then convert back to an array
+				const uniqueTags = Array.from(new Set(allTags));
+
+				return uniqueTags;
+			},
+			/* END 17-12-23 */
 			onpSSIDDetailsGrouped() {
 				let obj = {}
 				const itemsSorted = this.OnpSSIDDetails.sort((a, b) => a.LABEL !== b.LABEL ? a.LABEL < b.LABEL ? -1 : 1 : 0);
@@ -1252,6 +1297,18 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		methods: {
 			/* START 17-12-23 */
+			onRemoveTag(tag) {
+				const caseOnId = this.theActiveCaseForTag.onid
+				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
+				const idxOfTag = this.cases[caseIdx]['v_tags'].findIndex(itemTag => itemTag.value === tag.value)
+				this.cases[caseIdx]['v_tags'].splice(idxOfTag, 1)
+				// const tagsArr = [...this.cases[caseIdx].v_tags, newTagObj];
+			},
+			onAddTag(tag) {
+				const caseOnId = this.theActiveCaseForTag.onid
+				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
+				this.cases[caseIdx]['v_tags'].push(tag)
+			},
 			observeChanges(selector, callback) {
 				const el = $(selector)
 				if (!el || el.length === 0) {
@@ -1280,11 +1337,12 @@ $(document).one("trigger::vue_loaded", function () {
 					}, 100)
 					return
 				}
-				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === this.theActiveCaseIdTag)
+				const caseOnId = this.theActiveCaseForTag.onid
+				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
 				const tagsArr = [...this.cases[caseIdx].v_tags, newTagObj];
 				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArr));
 				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
-				$('.updTagOrGroup_Input_caseid > input').val(this.theActiveCaseIdTag)
+				$('.updTagOrGroup_Input_caseid > input').val(caseOnId)
 				this.isLoadingTagButton = true
 				this.observeChanges('.updTagOrGroup_Output > div', data => {
 					this.isLoadingTagButton = false
@@ -1315,11 +1373,11 @@ $(document).one("trigger::vue_loaded", function () {
 			setTheActiveTagDropdown(tagType, itemCase, evt) {
 				if (!tagType) {
 					this.theShowTagDropdown = null
-					this.theActiveCaseIdTag = null
+					this.theActiveCaseForTag = null
 					return
 				}
 				console.log(itemCase)
-				this.theActiveCaseIdTag = itemCase.onid
+				this.theActiveCaseForTag = itemCase
 				this.theShowTagDropdown = tagType
 				this.$nextTick(_ => {
 					this.createPopper(evt.target)

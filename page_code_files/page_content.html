@@ -981,8 +981,10 @@
             </div>
         </transition>
         <!-- START 17-12-23 -->
-        <tags-selector v-if="theShowTagDropdown" :is_loading_tag_button="isLoadingTagButton"
-            @close="setTheActiveTagDropdown(null)" @create_and_add_new_tag="onCreateAndAddNewTag($event)">
+        <tags-selector v-if="theShowTagDropdown" :active_case="theActiveCaseForTag"
+            :is_loading_tag_button="isLoadingTagButton" :tags="allCaseTags" :groups="allCaseGroups"
+            @close="setTheActiveTagDropdown(null)" @create_and_add_new_tag="onCreateAndAddNewTag($event)"
+            @remove_tag="onRemoveTag($event)" @add_tag="onAddTag($event)"></tags-selector>>
         </tags-selector>
         <!-- END 17-12-23 -->
         <transition name="modalFadeIn">
@@ -1549,9 +1551,10 @@
             <ul class="tags-selector__dropdown">
                 <li v-for="(tag, index) in filteredTags" 
                 :key="tag.value" 
-                class="tags-selector__tag-item" :class="{ 'tags-selector__tag-item--highlighted': index === highlightedIndex }"
+                class="tags-selector__tag-item" :class="[{'tags-selector__tag-item--selected': tag.v_selected}, { 'tags-selector__tag-item--highlighted': index === highlightedIndex }]"
                 @click="onSelectTag(tag)">
                     <span class="item-tag" :style="{'backgroundColor': tag.color ? tag.color : '#0a37aa'}">{{ tag.value }}</span>
+                    <i class="tio" v-if="tag.v_selected">checkmark_circle_outlined</i>
                     <div class="tags-selector__tag-item__edit-bttn" @click.stop="setTheEditTag(tag)"><i class="tio">edit</i></div>
                 </li>
                 <li class="tag-item__no-match" v-if="filteredTags.length < 1">
