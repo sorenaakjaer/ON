@@ -1280,7 +1280,9 @@ $(document).one("trigger::vue_loaded", function () {
 					}, 100)
 					return
 				}
-				$('.updTagOrGroup_Input > input').val(JSON.stringify(newTagObj))
+				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === this.theActiveCaseIdTag)
+				const tagsArr = this.cases[caseIdx].v_tags.push(newTagObj)
+				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArr))
 				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
 				$('.updTagOrGroup_Input_caseid > input').val(this.theActiveCaseIdTag)
 				this.isLoadingTagButton = true
