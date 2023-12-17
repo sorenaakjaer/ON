@@ -2249,8 +2249,9 @@ $(document).one("trigger::vue_loaded", function () {
 								Vue.set(caseItem, 'v_openByOtherEmp', vOpenByOtherObj)
 								// START ADDED 27-12-23
 							} else if (key === 'tags') {
-								const tags = caseItem['tags'].length > 0 ? caseItem['tags'] : []
-								Vue.set(caseItem, 'v_tags', tags)
+								const tags = caseItem['tags'].length > 0 ? caseItem['tags'] : [];
+								const filteredTags = tags.filter(item => item && typeof item === 'object' && item['value']);
+								Vue.set(caseItem, 'v_tags', filteredTags);
 							}
 							// END ADDED 27-12-23
 							else {
