@@ -9806,11 +9806,25 @@ ul.tags-selector__dropdown {
     background-color: #fff;
     border-radius: 4px;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .tags-selector__tag-item:hover {
     background-color: var(--primary);
     color: #fff !important;
+}
+
+.tags-selector__tag-item.tags-selector__tag-item--loading {
+    pointer-events: none;
+    cursor: default;
+}
+
+.tags-selector__tag-item__right {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
 }
 
 ul.tags-selector__dropdow__create {
@@ -9832,15 +9846,12 @@ ul.tags-selector__dropdow__create {
     border-radius: 4px;
     padding: 2px 4px;
     font-size: 11px;
+    font-weight: bold;
 }
 
 .tags-selector__tag-item__edit-bttn {
-    position: absolute;
-    top: 0.4rem;
-    right: 0.4rem;
-    z-index: 1000;
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -9925,6 +9936,12 @@ ul.tags-selector__dropdow__create {
     top: 7px;
     height: 16px;
     width: 16px;
+}
+
+.o-spinner.o-spinner--small {
+    width: 18px;
+    height: 18px;
+    margin-top: 0;
 }
 
 /* END ADDED 17-12-23 */

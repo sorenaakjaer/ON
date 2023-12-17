@@ -549,6 +549,10 @@ $(document).one("trigger::vue_loaded", function () {
 			active_case: {
 				type: Object,
 				default: null
+			},
+			loading_tags: {
+				type: Array,
+				default: () => []
 			}
 		},
 		data() {
@@ -559,7 +563,7 @@ $(document).one("trigger::vue_loaded", function () {
 				tagColors: ['#0a37aa', '#cfdbfc', 'rgba(230, 35, 56, 1)', 'rgba(32, 118, 86, 1)', 'rgba(255, 240, 89, 1)', 'rgba(85, 105, 220, 1)'],
 				tagFormName: '',
 				tagFormColor: '#0a37aa',
-				theLoadingTags: []
+				theEditingExisting: null
 			};
 		},
 		computed: {
@@ -578,7 +582,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return this.tags.map(tag => {
 					// Check if the current tag exists in this.selectedTags
 					const isSelected = this.selectedTags.findIndex(selectedTag => selectedTag.value === tag.value) > -1
-					const isLoading = this.theLoadingTags.findIndex(loadingTag => loadingTag.value === tag.value) > -1
+					const isLoading = this.loading_tags.findIndex(loadingTag => loadingTag.value === tag.value) > -1
 					// Return a new object for the tag with the v_selected property
 					return {
 						...tag,
@@ -595,7 +599,10 @@ $(document).one("trigger::vue_loaded", function () {
 			createAndAddNewTag() {
 				const newTagObj = {
 					value: this.tagFormName,
-					color: this.tagFormColor
+					color: this.tagFormColor,
+				}
+				if (this.theEditingExisting) {
+					newTagObj['theEditTag'] = this.theEditingExisting
 				}
 				this.$emit('create_and_add_new_tag', newTagObj)
 			},
@@ -618,19 +625,18 @@ $(document).one("trigger::vue_loaded", function () {
 			setTheEditTag(tag) {
 				this.tagFormName = tag.value
 				this.tagFormColor = tag.color ? tag.color : this.tagColors[0]
-				this.isEditingExisting = true
+				this.theEditingExisting = tag
 				this.setTheTagsSelectorView(2)
+			},
+			removeTag(tag) {
+				this.$emit('remove_tag', tag)
 			},
 			onSelectTag(tag) {
 				if (tag.v_selected) {
-					this.theLoadingTags.push(tag)
-					setTimeout(_ => {
-						this.$emit('remove_tag', tag)
-					}, 1500)
-				} else {
-					tag.v_isLoading = true
-					this.$emit('add_tag', tag)
+					return
 				}
+				tag.v_isLoading = true
+				this.$emit('add_tag', tag)
 			},
 			setCreateNewTag() {
 				this.resetForm()
@@ -639,6 +645,7 @@ $(document).one("trigger::vue_loaded", function () {
 			resetForm() {
 				this.tagFormName = ''
 				this.tagFormColor = this.tagColors[0]
+				this.theEditingExisting = null
 			},
 			onCreateTag() {
 				console.log('onCreateTag', this.tagsSearch)
@@ -664,6 +671,7 @@ $(document).one("trigger::vue_loaded", function () {
 	new Vue({
 		el: "#o-app",
 		data: {
+			theLoadingTags: [],
 			isLoadingTagButton: false, /* START 17-12-23 */
 			theActiveCaseForTag: null, /* START 17-12-23 */
 			theShowTagDropdown: null, /* START 17-12-23 */
@@ -1320,6 +1328,7 @@ $(document).one("trigger::vue_loaded", function () {
 				const tagsArr = [...this.cases[caseIdx]['v_tags']]
 				const idxOfTag = tagsArr.findIndex(itemTag => itemTag.value === tag.value)
 				tagsArr.splice(idxOfTag, 1)
+				this.theLoadingTags.push(tag)
 				this.updateItemTags(tagsArr)
 			},
 			onAddTag(tag) {
@@ -1327,6 +1336,7 @@ $(document).one("trigger::vue_loaded", function () {
 				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
 				const tagsArr = [...this.cases[caseIdx]['v_tags']]
 				tagsArr.push(tag)
+				this.theLoadingTags.push(tag)
 				this.updateItemTags(tagsArr)
 			},
 			updateItemTags(tagsArr) {
@@ -1337,6 +1347,7 @@ $(document).one("trigger::vue_loaded", function () {
 				$('.updTagOrGroup_Input_caseid > input').val(caseOnId)
 				this.observeChanges('.updTagOrGroup_Output > div', data => {
 					this.cases[caseIdx].v_tags = tagsArr
+					this.theLoadingTags = []
 				})
 				$('.updTagOrGroup_BTN > a').click()
 			},
@@ -1368,9 +1379,21 @@ $(document).one("trigger::vue_loaded", function () {
 					}, 100)
 					return
 				}
+				const newObj = {
+					value: newTagObj['value'],
+					color: newTagObj['color']
+				}
 				const caseOnId = this.theActiveCaseForTag.onid
 				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
-				const tagsArr = [...this.cases[caseIdx].v_tags, newTagObj];
+				const tagsArr = [...this.cases[caseIdx].v_tags, newObj];
+				// Edit tag
+				if (newTagObj['theEditTag']) {
+					const editTagIdx = tagsArr.findIndex(tag => tag.value === newTagObj['theEditTag']['value']);
+					if (editTagIdx > -1) {
+						tagsArr.splice(editTagIdx, 1);
+					}
+					tagsArr
+				}
 				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArr));
 				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
 				$('.updTagOrGroup_Input_caseid > input').val(caseOnId)
@@ -1379,6 +1402,13 @@ $(document).one("trigger::vue_loaded", function () {
 					this.isLoadingTagButton = false
 					this.setTheActiveTagDropdown(null)
 					this.cases[caseIdx].v_tags.push(newTagObj)
+					// Edit tag
+					if (newTagObj['theEditTag']) {
+						const editTagIdx = this.cases[caseIdx].v_tags.findIndex(tag => tag.value === newTagObj['theEditTag']['value']);
+						if (editTagIdx > -1) {
+							this.cases[caseIdx].v_tags.splice(editTagIdx, 1);
+						}
+					}
 				})
 				$('.updTagOrGroup_BTN > a').click()
 			},
