@@ -550,9 +550,8 @@ $(document).one("trigger::vue_loaded", function () {
 				type: Object,
 				default: null
 			},
-			loading_tags: {
-				type: Array,
-				default: () => []
+			active_tag_type: {
+				type: String
 			}
 		},
 		data() {
@@ -573,18 +572,20 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		computed: {
 			oldAndNewTags() {
-				return this.tags.concat(this.newTags)
+				if (this.active_tag_type === 'tag') {
+					return this.tags.concat(this.newTags)
+				} else {
+					return this.groups.concat(this.newTags)
+				}
 			},
 			tagsWithProps() {
 				return this.oldAndNewTags.map(tag => {
 					// Check if the current tag exists in this.selectedTags
 					const isSelected = this.selectedTags.findIndex(selectedTag => selectedTag.value === tag.value) > -1
-					const isLoading = this.loading_tags.findIndex(loadingTag => loadingTag.value === tag.value) > -1
 					// Return a new object for the tag with the v_selected property
 					return {
 						...tag,
-						v_selected: isSelected,
-						v_isLoading: isLoading
+						v_selected: isSelected
 					};
 				});
 			},
@@ -698,7 +699,11 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		mounted() {
-			this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_tags))
+			if (this.active_tag_type === 'tag') {
+				this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_tags))
+			} else {
+				this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_groups))
+			}
 		}
 	})
 	/* END 17-12-23 */
@@ -1370,18 +1375,18 @@ $(document).one("trigger::vue_loaded", function () {
 			updateItemTags(tagsArr) {
 				const caseOnId = this.theActiveCaseForTag.onid
 				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
-				if (tagsArr.length === 0) {
-					$('.updTagOrGroup_Input > input').val('');
-				} else {
-					$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArr));
-				}
+				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArr));
 				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
 				$('.updTagOrGroup_Input_caseid > input').val(caseOnId)
 				this.isLoadingTagButton = true
 				this.observeChanges('.updTagOrGroup_Output > div', data => {
 					this.setTheActiveTagDropdown(null)
 					this.isLoadingTagButton = false
-					this.cases[caseIdx].v_tags = tagsArr
+					if (this.theShowTagDropdown === 'tag') {
+						this.cases[caseIdx].v_tags = tagsArr
+					} else {
+						this.cases[caseIdx].v_groups = tagsArr
+					}
 				})
 				$('.updTagOrGroup_BTN > a').click()
 			},
@@ -2268,13 +2273,17 @@ $(document).one("trigger::vue_loaded", function () {
 									}
 								})
 								Vue.set(caseItem, 'v_openByOtherEmp', vOpenByOtherObj)
-								// START ADDED 27-12-23
+								// START ADDED 17-12-23
 							} else if (key === 'tags') {
 								const tags = caseItem['tags'].length > 0 ? caseItem['tags'] : [];
 								const filteredTags = tags.filter(item => item && typeof item === 'object' && item['value']);
 								Vue.set(caseItem, 'v_tags', filteredTags);
+							} else if (key === 'groups') {
+								const groups = caseItem['groups'].length > 0 ? caseItem['groups'] : [];
+								const filteredGroups = groups.filter(item => item && typeof item === 'object' && item['value']);
+								Vue.set(caseItem, 'v_groups', filteredGroups);
 							}
-							// END ADDED 27-12-23
+							// END ADDED 17-12-23
 							else {
 								caseItem[key] = unescape(caseItem[key])
 							}
