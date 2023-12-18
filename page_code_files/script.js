@@ -640,12 +640,6 @@ $(document).one("trigger::vue_loaded", function () {
 				this.tagFormColor = this.tagColors[0]
 				this.setTheTagsSelectorView(1)
 				this.isEdited = true
-				/*
-				if (this.theEditingExisting) {
-					newTagObj['theEditTag'] = this.theEditingExisting
-				}
-				this.$emit('create_and_add_new_tag', newTagObj)
-				*/
 			},
 			onTagsBGClick() {
 				if (this.isEdited) {
@@ -1376,7 +1370,11 @@ $(document).one("trigger::vue_loaded", function () {
 			updateItemTags(tagsArr) {
 				const caseOnId = this.theActiveCaseForTag.onid
 				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
-				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArr));
+				if (tagsArr.length === 0) {
+					$('.updTagOrGroup_Input > input').val('');
+				} else {
+					$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArr));
+				}
 				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
 				$('.updTagOrGroup_Input_caseid > input').val(caseOnId)
 				this.isLoadingTagButton = true
@@ -1403,41 +1401,6 @@ $(document).one("trigger::vue_loaded", function () {
 						// console.log('observer::empty', { selector }, el.html())
 					}
 				}, 1000)
-			},
-			onCreateAndAddNewTag(newTagObj) {
-				// Formvalidation
-				const newObj = {
-					value: newTagObj['value'],
-					color: newTagObj['color']
-				}
-				const caseOnId = this.theActiveCaseForTag.onid
-				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
-				const tagsArr = [...this.cases[caseIdx].v_tags, newObj];
-				// Edit tag
-				if (newTagObj['theEditTag']) {
-					const editTagIdx = tagsArr.findIndex(tag => tag.value === newTagObj['theEditTag']['value']);
-					if (editTagIdx > -1) {
-						tagsArr.splice(editTagIdx, 1);
-					}
-					tagsArr
-				}
-				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArr));
-				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
-				$('.updTagOrGroup_Input_caseid > input').val(caseOnId)
-				this.isLoadingTagButton = true
-				this.observeChanges('.updTagOrGroup_Output > div', data => {
-					this.isLoadingTagButton = false
-					this.setTheActiveTagDropdown(null)
-					this.cases[caseIdx].v_tags.push(newTagObj)
-					// Edit tag
-					if (newTagObj['theEditTag']) {
-						const editTagIdx = this.cases[caseIdx].v_tags.findIndex(tag => tag.value === newTagObj['theEditTag']['value']);
-						if (editTagIdx > -1) {
-							this.cases[caseIdx].v_tags.splice(editTagIdx, 1);
-						}
-					}
-				})
-				$('.updTagOrGroup_BTN > a').click()
 			},
 			createPopper(parent) {
 				const child = document.getElementById('popperTagsDropdown')
@@ -1467,7 +1430,6 @@ $(document).one("trigger::vue_loaded", function () {
 					this.theActiveCaseForTag = null
 					return
 				}
-				console.log(itemCase)
 				this.theActiveCaseForTag = itemCase
 				this.theShowTagDropdown = tagType
 				this.$nextTick(_ => {
