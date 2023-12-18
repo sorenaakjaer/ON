@@ -1545,8 +1545,23 @@
 </div>
 <!-- START 17-12-23 -->
 <script type="text/x-template" id="tags-selector-template">
-    <div class="tags-selector">
-        <div class="tags-selector__bg" @click="onTagsBGClick"></div>
+    <div class="tags-selector" v-cloak>
+        <transition name="modalFadeIn">
+            <div class="o-modal--alwaysactive vue-modal vue-modal--small" v-if="isForgotToSave" >
+                <div class="o-modal__body">
+                    <h4>Vil du gemme dine ændringer?</h4>
+                    <div class="o-modal__body__actions">
+                        <button class="o-btn o-btn--small" @click="closeWithoutSaving">
+                            Annuller
+                        </button>
+                        <button class="o-btn o-btn--primary o-btn--small" :class="{'o-btn--loading': is_loading_tag_button}"
+                            @click="saveTags">Gem ændringerne
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </transition>
+        <div class="tags-selector__bg" :class="{'tags-selector__bg--dark': isForgotToSave}" @click="onTagsBGClick"></div>
         <div class="tags-selector__container" id="popperTagsDropdown">
         <div v-if="theTagsSelectorView === 1">
             <div class="tags-selector__search">
@@ -1571,10 +1586,10 @@
                 </li>
             </ul>
             <ul class="tags-selector__dropdow__create">
-                <li class="tags-selector__tag-item" v-if="!isEdited" @click="setCreateNewTag">+ Opret nyt</li>
-                <li class="tags-selector__dropdow__create__submit" v-else>
+                <li class="tags-selector__tag-item" @click="setCreateNewTag">+ Opret nyt</li>
+                <li class="tags-selector__dropdow__create__submit" v-if="isEdited">
                     <button class="o-btn o-btn--small" @click="onTagsBGClick">Annuller</button>
-                    <button class="o-btn o-btn--small o-btn--primary" @click="saveTags" :class="{'o-btn--loading': is_loading_tag_button}">Gem</button>
+                    <button class="o-btn o-btn--small o-btn--primary" @click="saveTags" :class="{'o-btn--loading': is_loading_tag_button && !isForgotToSave}">Gem</button>
                 </li>
             </ul>
         </div>
@@ -1587,7 +1602,7 @@
                     <div class="o-group">
                         <label>Navn</label>
                         <input type="text" ref="create_new_tag_input" :class="{'o-input--error': isInputError}" id="create_new_tag_input" @keyup="isInputError = false" v-model="tagFormName"/>
-                        <p class="tag-input-error-text" v-if="isInputError">Eksisterer allerede på sagen</p>
+                        <p class="tag-input-error-text" v-if="isInputError">Eksisterer allerede</p>
                     </div>
                     <div class="o-group">
                         <label>Farve</label>
@@ -1606,8 +1621,7 @@
             <div class="tags-selector__form__footer">
                 <button class="o-btn o-btn--small" @click="setTheTagsSelectorView(1)">Tilbage</button>
                 <div class="tags-selector__form__footer__buttons">
-                    <button class="o-btn o-btn--small" @click="setTheTagsSelectorView(1)">Annuller</button>
-                    <button class="o-btn o-btn--small o-btn--primary" :class="{'o-btn--loading': is_loading_tag_button}" @click="createAndAddNewTag()">Gem</button>
+                    <button class="o-btn o-btn--small o-btn--primary" :class="{'o-btn--loading': is_loading_tag_button}" @click="createAndAddNewTag()">Fortsæt</button>
                 </div>
             </div>
         </div>

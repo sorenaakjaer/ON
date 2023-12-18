@@ -566,12 +566,17 @@ $(document).one("trigger::vue_loaded", function () {
 				theEditingExisting: null,
 				isInputError: false,
 				isEdited: false,
-				selectedTags: []
+				selectedTags: [],
+				newTags: [],
+				isForgotToSave: false
 			};
 		},
 		computed: {
+			oldAndNewTags() {
+				return this.tags.concat(this.newTags)
+			},
 			tagsWithProps() {
-				return this.tags.map(tag => {
+				return this.oldAndNewTags.map(tag => {
 					// Check if the current tag exists in this.selectedTags
 					const isSelected = this.selectedTags.findIndex(selectedTag => selectedTag.value === tag.value) > -1
 					const isLoading = this.loading_tags.findIndex(loadingTag => loadingTag.value === tag.value) > -1
@@ -609,7 +614,17 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		methods: {
 			createAndAddNewTag() {
-				const idxOfCurrent = this.selectedTags.findIndex(tag => tag.value === this.tagFormName)
+				// Validation
+				if (this.tagFormName.length < 1) {
+					const el = document.querySelector('#create_new_tag_input')
+					el.focus()
+					el.classList.remove('animate-shake')
+					setTimeout(_ => {
+						el.classList.add('animate-shake')
+					}, 100)
+					return
+				}
+				const idxOfCurrent = this.oldAndNewTags.findIndex(tag => tag.value === this.tagFormName)
 				if (idxOfCurrent > -1) {
 					this.isInputError = true
 					return
@@ -618,12 +633,28 @@ $(document).one("trigger::vue_loaded", function () {
 					value: this.tagFormName,
 					color: this.tagFormColor,
 				}
+				this.newTags.push(newTagObj)
+				this.selectedTags.push(newTagObj)
+				this.tagFormName = ''
+				this.tagsSearch = ''
+				this.tagFormColor = this.tagColors[0]
+				this.setTheTagsSelectorView(1)
+				this.isEdited = true
+				/*
 				if (this.theEditingExisting) {
 					newTagObj['theEditTag'] = this.theEditingExisting
 				}
 				this.$emit('create_and_add_new_tag', newTagObj)
+				*/
 			},
 			onTagsBGClick() {
+				if (this.isEdited) {
+					this.isForgotToSave = true
+				} else {
+					this.$emit('close')
+				}
+			},
+			closeWithoutSaving() {
 				this.$emit('close')
 			},
 			setTheTagsSelectorView(num) {
@@ -669,6 +700,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.tagFormName = ''
 				this.tagFormColor = this.tagColors[0]
 				this.theEditingExisting = null
+				this.newTags = []
 			}
 		},
 		mounted() {
@@ -1374,15 +1406,6 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			onCreateAndAddNewTag(newTagObj) {
 				// Formvalidation
-				if (newTagObj.value.length < 1) {
-					const el = document.querySelector('#create_new_tag_input')
-					el.focus()
-					el.classList.remove('animate-shake')
-					setTimeout(_ => {
-						el.classList.add('animate-shake')
-					}, 100)
-					return
-				}
 				const newObj = {
 					value: newTagObj['value'],
 					color: newTagObj['color']
