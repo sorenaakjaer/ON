@@ -559,9 +559,25 @@ $(document).one("trigger::vue_loaded", function () {
 				theTagsSelectorView: 1,
 				highlightedIndex: -1,
 				tagsSearch: '',
-				tagColors: ['#0a37aa', '#cfdbfc', 'rgba(230, 35, 56, 1)', 'rgba(32, 118, 86, 1)', 'rgba(255, 240, 89, 1)', 'rgba(85, 105, 220, 1)'],
+				tagColors: [
+					"#F87171",
+					"#FB923C",
+					"#FBBF24",
+					"#4ADE80",
+					"#34D399",
+					"#2DD4BF",
+					"#22D3EE",
+					"#38BDF8",
+					"#60A5FA",
+					"#A78BFA",
+					"#C084FC",
+					"#F472B6",
+					"#FB7185",
+					"#A8A29E",
+					"#A1A1AA"
+				],
 				tagFormName: '',
-				tagFormColor: '#0a37aa',
+				tagFormColor: '#F87171',
 				theEditingExisting: null,
 				isInputError: false,
 				isEdited: false,
@@ -695,7 +711,6 @@ $(document).one("trigger::vue_loaded", function () {
 				this.tagFormName = ''
 				this.tagFormColor = this.tagColors[0]
 				this.theEditingExisting = null
-				this.newTags = []
 			}
 		},
 		mounted() {
@@ -1380,13 +1395,13 @@ $(document).one("trigger::vue_loaded", function () {
 				$('.updTagOrGroup_Input_caseid > input').val(caseOnId)
 				this.isLoadingTagButton = true
 				this.observeChanges('.updTagOrGroup_Output > div', data => {
-					this.setTheActiveTagDropdown(null)
 					this.isLoadingTagButton = false
 					if (this.theShowTagDropdown === 'tag') {
 						this.cases[caseIdx].v_tags = tagsArr
 					} else {
 						this.cases[caseIdx].v_groups = tagsArr
 					}
+					this.setTheActiveTagDropdown(null)
 				})
 				$('.updTagOrGroup_BTN > a').click()
 			},

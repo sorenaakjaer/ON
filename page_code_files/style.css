@@ -9819,6 +9819,7 @@ ul.tags-selector__dropdown {
     overflow-y: auto;
     list-style: none;
     padding: 0.5rem !important;
+    overscroll-behavior: contain;
 }
 
 .tags-selector__tag-item {
@@ -9919,6 +9920,7 @@ ul.tags-selector__dropdow__create {
 
 .tags-selector__form__colors {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.25rem;
 }
