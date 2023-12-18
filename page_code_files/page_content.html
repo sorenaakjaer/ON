@@ -546,7 +546,8 @@
                                             v-for="tag in itemCase.v_tags">
                                             {{ tag.value }}
                                         </div>
-                                        <div class="itemcase-tags__add" v-if="itemCase.v_tags.length < 1">Tilføj tag
+                                        <div class="itemcase-tags__add"
+                                            v-if="!itemCase.v_tags || itemCase.v_tags.length < 1">Tilføj tag
                                         </div>
                                     </div>
                                 </div>
