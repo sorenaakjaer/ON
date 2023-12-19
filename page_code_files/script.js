@@ -725,9 +725,11 @@ $(document).one("trigger::vue_loaded", function () {
 	new Vue({
 		el: "#o-app",
 		data: {
-			isLoadingTagButton: false, /* START 17-12-23 */
-			theActiveCaseForTag: null, /* START 17-12-23 */
-			theShowTagDropdown: null, /* START 17-12-23 */
+			/* START 17-12-23 */
+			theActiveLoggedInCompany: null,
+			isLoadingTagButton: false,
+			theActiveCaseForTag: null,
+			theShowTagDropdown: null, /* END 17-12-23 */
 			isVueModalOverlay: !1,
 			items: [],
 			isOpenDocsLoading: !0,
@@ -1014,6 +1016,10 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		computed: {
 			/* START 17-12-23 */
+			isNewDesignActive() {
+				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet']
+				return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
+			},
 			allCaseGroups() {
 				const uniqueTags = []
 				this.cases.forEach(caseItem => {
@@ -2990,9 +2996,15 @@ $(document).one("trigger::vue_loaded", function () {
 				var a = t.substring(s + 4, t.indexOf("&GUID="));
 				this.setActivecCategory("all_cases"), this.$refs.v_search_query.value = a, this.searchQuery = a
 			}
+			this.theActiveLoggedInCompany = $(".FROM_COMPANY > input").val()
+			/* START 17-12-23 */
+			this.$nextTick(_ => {
+				$(document).trigger("trigger::vue_mounted")
+			})
+			/* END 17-12-23 */
 			"OpenNet" == $(".FROM_COMPANY > input").val() && $(".LOGIN_CUSTOMER_TYPE > input").val("ON"), this.theUserType = $(".LOGIN_CUSTOMER_TYPE > input").val(), "ON" == this.theUserType && $(".INQUIRY_TYPE_LEVEL0 > select").html($(".INQUIRY_TYPE_LEVEL0 > select").html().replace("SP</option>", "Til Infrastructure owner (IO)</option>").replace("IO</option>", "Til Service Provider (SP)</option>")), "ON" == this.theUserType ? ($(".js-click-case-edit-ref").removeClass("hidden_field"), $(".toggle-timeline-read-msg").removeClass("hidden_field"), readTimelineReadMsgCookie()) : ($("#js-checkbox__toogle-timeline_read_msg").prop("checked", !0), readTimelineReadMsgCookie()), document.querySelector("#o-page").addEventListener("click", function (t) {
 				e.onClickOutside(t)
-			}), e.funcObserveThisUser(), $(".BTN_GetListOfUserProfilesUser > a").click(), e.readOpenCasesV2(e.open_startLength, e.open_endLength), e.readOpenDocs(), $(document).trigger("trigger::vue_mounted"), $(document).on("vue::BILoadingTrigger", function (t, s) {
+			}), e.funcObserveThisUser(), $(".BTN_GetListOfUserProfilesUser > a").click(), e.readOpenCasesV2(e.open_startLength, e.open_endLength), e.readOpenDocs(), $(document).on("vue::BILoadingTrigger", function (t, s) {
 				e.isLoadingBIReport = s
 			}), $(document).on("vue::BIChangeTrigger", function (t, s) {
 				e.theUnreadSelected = s
@@ -3045,6 +3057,7 @@ $(document).on("trigger::vue_mounted", function () {
 	});
 	// Bind click event for case creation button
 	$(".js-btn-create-case").off("click").on("click", function () {
+
 		run_autoupdate = false;
 		window.scroll(0, 0);
 		subCatChangeSelect("Create Case");

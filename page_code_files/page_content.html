@@ -9,18 +9,72 @@
     </div>
 </div>
 <div class="o-content" id="o-app">
-    <div class="o-header">
+    <div class="o-header" :class="{'o-header__container': isNewDesignActive}">
         <div class="o-container">
             <div class="o-navbar">
-                <div class="o-navbar__home" @click="setActivecCategory('my_cases')"><img
-                        src="https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/opennet_logo.png"
-                        class="o-logo"></div>
-                <div class="o-menu js-menu-toggle">
-                    <svg viewBox="0 0 64 48" class="bg-icon-hover">
-                        <path d="M19,15 L45,15 C70,15 58,-2 49.0177126,7 L19,37"></path>
-                        <path d="M19,24 L45,24 C61.2371586,24 57,49 41,33 L32,24"></path>
-                        <path d="M45,33 L19,33 C-8,33 6,-2 22,14 L45,37"></path>
-                    </svg>
+                <div class="o-navbar__left">
+                    <div class="o-navbar__home" @click="setActivecCategory('my_cases')"><img
+                            src="https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/opennet_logo.png"
+                            class="o-logo"></div>
+                    <h4 class="js-page-title" v-if="isNewDesignActive">Hjem / Mine sager</h1>
+                </div>
+                <div class="o-navbar__right">
+                    <div class="o-navbar__right__buttons" v-if="isNewDesignActive">
+                        <button class="o-btn o-btn--primary createAnnouncement_btn"
+                            @click="CreateExtDocument('Announcement')"
+                            v-show="activeCategory==='Announcement' && theUserType=='IO'" v-cloak>Opret udmelding
+                        </button>
+                        <button class="o-btn o-btn--primary createAnnouncement_btn"
+                            @click="CreateExtDocument('Announcement')"
+                            v-show="activeCategory==='Announcement' && theUserType=='ON'" v-cloak>Opret udmelding
+                        </button>
+                        <button class="o-btn o-btn--primary createAnnouncement_btn" @click="CreateExtDocument('Report')"
+                            v-show="activeCategory==='Report' && theUserType=='ON'" v-cloak>Opret Rapport
+                        </button>
+                        <button class="o-btn o-btn--primary createAnnouncement_btn"
+                            @click="CreateExtDocument('Contract')"
+                            v-show="activeCategory==='Contract' && theUserType=='ON'" v-cloak>Opret Kontrakt
+                        </button>
+                        <button class="o-btn o-btn--primary createAnnouncement_btn"
+                            @click="CreateExtDocument('Invoices')"
+                            v-show="activeCategory==='Invoice' && theUserType=='ON'" v-cloak>Opret Faktura
+                        </button>
+                        <button class="o-btn o-btn--primary createAnnouncement_btn"
+                            @click="CreateExtDocument('Documentation')"
+                            v-show="activeCategory==='Documentation' && theUserType=='ON'" v-cloak>Opret
+                            Dokumentation
+                        </button>
+                        <button class="o-btn o-btn--primary" @click="setIsCreateOnpModal"
+                            v-if="activeCategory==='end_customer_pricing_config' && !isLoadingOnpProductList" v-cloak>
+                            Opret
+                            ny
+                        </button>
+                        <button class="o-btn o-btn--primary" @click="createUserModal" v-show="activeCategory==='roles'"
+                            v-cloak>
+                            Opret bruger
+                        </button>
+                        <button class="o-btn o-btn--primary js-btn-create-case" v-show="isCases">Opret ny
+                            sag</button>
+                        <div class="pos-relative" v-if="activeCategory==='end_customer_orders'" v-cloak>
+                            <div class="input-with-button"><input type="text" class="o-input"
+                                    :class="[{'animate-shake': !isSSIDValid},{'o-input--error': !isSSIDValid}]"
+                                    placeholder="Indtast SSID" v-model="ssid" @keyup="isSSIDValid=true"
+                                    ref="ssid_input">
+                                <button class="o-btn o-btn--primary" @click="findPrices"
+                                    :class="{'o-btn--loading': isSSIDLoading}">Opret ny ordre
+                                </button>
+                            </div>
+                            <span class="input-with-button__error-message o-input-error__explainer" v-if="!isSSIDValid"
+                                v-cloak>SSID er ugyldigt</span>
+                        </div>
+                    </div>
+                    <div class="o-menu js-menu-toggle">
+                        <svg viewBox="0 0 64 48" class="bg-icon-hover">
+                            <path d="M19,15 L45,15 C70,15 58,-2 49.0177126,7 L19,37"></path>
+                            <path d="M19,24 L45,24 C61.2371586,24 57,49 41,33 L32,24"></path>
+                            <path d="M45,33 L19,33 C-8,33 6,-2 22,14 L45,37"></path>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>
@@ -123,9 +177,9 @@
         </div>
         <div class="o-menu__overlay js-o-menu__overlay"></div>
     </div>
-    <div class="o-body">
+    <div class="o-body" :class="{'o-body__container': isNewDesignActive}">
         <div class="o-list-of-cases">
-            <div class="o-body__header o-wrapper">
+            <div class="o-body__header o-wrapper" v-if="!isNewDesignActive">
                 <h1 class="js-page-title">Hjem / Mine sager</h1>
                 <button class="o-btn o-btn--primary createAnnouncement_btn" @click="CreateExtDocument('Announcement')"
                     v-show="activeCategory==='Announcement' && theUserType=='IO'" v-cloak>Opret udmelding
@@ -537,34 +591,36 @@
                                     <div v-if="itemCase.onhold_until && itemCase.onhold_until.length > 0">Opfølgning
                                         udløber: {{itemCase.onhold_until}}</div>
                                 </div>
-                                <div class="o-cases__case_element__header__row__tags">
-                                    <label>Tags</label>
-                                    <div class="o-cases__case_element__header__row__tags__container"
-                                        @click.stop="setTheActiveTagDropdown('tag', itemCase, $event)">
-                                        <div class="item-tag"
-                                            :style="{'backgroundColor': tag.color ? tag.color : '#0a37aa'}"
-                                            v-for="tag in itemCase.v_tags">
-                                            {{ tag.value }}
-                                        </div>
-                                        <div class="itemcase-tags__add"
-                                            v-if="!itemCase.v_tags || itemCase.v_tags.length < 1">Tilføj tag
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="o-cases__case_element__header__row__tags">
-                                    <label>Grupper</label>
-                                    <div class="o-cases__case_element__header__row__tags__container"
-                                        @click.stop="setTheActiveTagDropdown('group', itemCase, $event)">
-                                        <div class="item-tag"
-                                            :style="{'backgroundColor': tag.color ? tag.color : 'blue'}"
-                                            v-for="tag in itemCase.v_groups">
-                                            {{ tag.value }}
-                                        </div>
-                                        <div class="itemcase-tags__add"
-                                            v-if="!itemCase.v_groups || itemCase.v_groups.length < 1">Tilføj gruppe
+                                <template v-if="isNewDesignActive">
+                                    <div class="o-cases__case_element__header__row__tags">
+                                        <label>Tags</label>
+                                        <div class="o-cases__case_element__header__row__tags__container"
+                                            @click.stop="setTheActiveTagDropdown('tag', itemCase, $event)">
+                                            <div class="item-tag"
+                                                :style="{'backgroundColor': tag.color ? tag.color : '#0a37aa'}"
+                                                v-for="tag in itemCase.v_tags">
+                                                {{ tag.value }}
+                                            </div>
+                                            <div class="itemcase-tags__add"
+                                                v-if="!itemCase.v_tags || itemCase.v_tags.length < 1">Tilføj tag
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <div class="o-cases__case_element__header__row__tags">
+                                        <label>Grupper</label>
+                                        <div class="o-cases__case_element__header__row__tags__container"
+                                            @click.stop="setTheActiveTagDropdown('group', itemCase, $event)">
+                                            <div class="item-tag"
+                                                :style="{'backgroundColor': tag.color ? tag.color : 'blue'}"
+                                                v-for="tag in itemCase.v_groups">
+                                                {{ tag.value }}
+                                            </div>
+                                            <div class="itemcase-tags__add"
+                                                v-if="!itemCase.v_groups || itemCase.v_groups.length < 1">Tilføj gruppe
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
                             </div>
                             <!-- END 17-12-23 -->
                             <div class="o-cases__case_element__body">
