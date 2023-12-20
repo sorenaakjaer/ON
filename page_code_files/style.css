@@ -10011,6 +10011,7 @@ ul.tags-selector__dropdow__create {
     padding: 12rem 0 0;
 }
 
+
 .o-multi-select {
     position: relative;
 }
@@ -10023,6 +10024,12 @@ ul.tags-selector__dropdow__create {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
+}
+
+.o-multi-select .tags-selector__tag-item.tags-selector__tag-item--selected {
+    background: rgb(10 55 170 / 10%);
+    font-weight: bold;
+    color: var(--primary);
 }
 
 .o-multi-select .tags-selector__tag-item.tags-selector__tag-item--selected:hover {
@@ -10211,5 +10218,3 @@ ul.tags-selector__dropdow__create {
         gap: 3rem;
     }
 }
-
-/* END ADDED 17-12-23 */
