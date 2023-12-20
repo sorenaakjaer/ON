@@ -531,6 +531,77 @@ $(document).one("trigger::vue_loaded", function () {
 		}
 	})
 	/* START 17-12-23 */
+	Vue.component('o-multi-select', {
+		template: '#o-multi-select-template',
+		props: {
+			select_title: {
+				type: String,
+				default: 'Vælg..'
+			},
+			items: {
+				type: Array,
+				default: () => []
+			},
+			selected_items: {
+				type: Array,
+				default: () => []
+			}
+		},
+		data() {
+			return {
+				query: '',
+				isOpen: false,
+			}
+		},
+		computed: {
+			itemsWithProps() {
+				return this.items.map(item => {
+					// Check if the current tag exists in this.selectedTags
+					const isSelected = this.selected_items.findIndex(selectedItem => selectedItem === item.value) > -1
+					// Return a new object for the tag with the v_selected property
+					return {
+						...item,
+						v_selected: isSelected
+					};
+				})
+			},
+			itemsSorted() {
+				return this.itemsWithProps.slice().sort((a, b) => {
+					// Then, sort alphabetically by value
+					if (a.value < b.value) {
+						return -1;
+					}
+					if (a.value > b.value) {
+						return 1;
+					}
+					return 0;
+				});
+			},
+			filteredItems() {
+				return this.itemsSorted.filter(item => item.value.toLowerCase().includes(this.query.toLowerCase()));
+			}
+		},
+		methods: {
+			setIsOpen(bool) {
+				console.log('isOpen', bool)
+				this.isOpen = bool
+				if (bool) {
+					this.$nextTick(_ => {
+						this.$refs.query_input.focus()
+					})
+				}
+			},
+			toggleItem(item) {
+				console.log('emit::toggle_item')
+				this.$emit('toggle_item', item)
+			},
+			onMultiSelectBGClick() {
+				this.setIsOpen(false)
+				this.$emit('close')
+			}
+		}
+	})
+
 	Vue.component('tags-selector', {
 		template: '#tags-selector-template',
 		props: {
@@ -726,6 +797,8 @@ $(document).one("trigger::vue_loaded", function () {
 		el: "#o-app",
 		data: {
 			/* START 17-12-23 */
+			theActiveFilterTags: [],
+			theActiveFilterGroups: [],
 			theActiveLoggedInCompany: null,
 			isLoadingTagButton: false,
 			theActiveCaseForTag: null,
@@ -1012,7 +1085,8 @@ $(document).one("trigger::vue_loaded", function () {
 				{ value: '003', title: 'Uberettiget fejlretning' }
 			],
 			isLoadingEndCustomerEmailConfigFormData: false,
-			theEndCustomerEmailConfigFormActiveType: 'web'
+			theEndCustomerEmailConfigFormActiveType: 'web',
+			theFilteredSelectedTags: []
 		},
 		computed: {
 			/* START 17-12-23 */
@@ -1143,14 +1217,52 @@ $(document).one("trigger::vue_loaded", function () {
 				return this.casesFiltered.filter(e => "partnerCases" == e.filter_open_closed)
 			},
 			casesFiltered2() {
-				return "active" == this.theActiveFilter ? this.casesOpen : this.casesClosed
+				if (this.theActiveFilter === "active") {
+					return this.casesOpen
+				} else {
+					return this.casesClosed
+				}
+			},
+			caseFilteredWithGroups() {
+				if (this.theActiveFilterGroups.length < 1) {
+					return this.casesFiltered2
+				} else {
+					return this.casesFiltered2.filter(itemCase => {
+						if (!itemCase.v_groups || itemCase.v_groups.length === 0) {
+							return false;
+						}
+						return this.theActiveFilterGroups.every(group =>
+							itemCase.v_groups.map(vGroup => vGroup.value).includes(group))
+					})
+				}
+			},
+			caseFilteredWithTags() {
+				if (this.theActiveFilterTags.length < 1) {
+					return this.caseFilteredWithGroups
+				} else {
+					return this.caseFilteredWithGroups.filter(itemCase => {
+						if (!itemCase.v_tags || itemCase.v_tags.length === 0) {
+							return false;
+						}
+						return this.theActiveFilterTags.every(tag =>
+							itemCase.v_tags.map(vTag => vTag.value).includes(tag))
+					})
+				}
 			},
 			casesFiltered3() {
 				let e = this.activeType;
-				return "not_assigned" == e ? this.casesFiltered2.filter(e => e.assign_to.length < 1) : "filter_not_follow_up" == e ? this.casesFiltered2.filter(e => !this.activeType || "true" != e.filter_follow_up) : this.casesFiltered2.filter(t => !this.activeType || "true" == t[e])
+				return "not_assigned" == e ? this.caseFilteredWithTags.filter(e => e.assign_to.length < 1) : "filter_not_follow_up" == e ? this.caseFilteredWithTags.filter(e => !this.activeType || "true" != e.filter_follow_up) : this.caseFilteredWithTags.filter(t => !this.activeType || "true" == t[e])
 			},
 			caseFiltered4() {
-				return "Alle kategorier" !== this.theActiveCaseCategory ? this.casesFiltered3.filter(e => e.filter_category == this.theActiveCaseCategory) : this.casesFiltered3
+				// Check if the active case category is not 'Alle kategorier'
+				if (this.theActiveCaseCategory !== "Alle kategorier") {
+					// If it's a specific category, filter the cases
+					return this.casesFiltered3.filter(caseItem =>
+						caseItem.filter_category === this.theActiveCaseCategory);
+				} else {
+					// If the active category is 'Alle kategorier', return all cases
+					return this.casesFiltered3;
+				}
 			},
 			casesSorted() {
 				switch (this.theSortSettingCases.value) {
@@ -1389,10 +1501,47 @@ $(document).one("trigger::vue_loaded", function () {
 				this.isEncodedHappenedBeforeUser && this.cases.forEach((e, t) => {
 					e.created_by_id && e.created_by_id == this.theUser.id && (Vue.set(e, "filter_created_by_me", "true"), Vue.set(e, "filter_my_cases", "true")), e.assign_to_id && e.assign_to_id == this.theUser.id && (Vue.set(e, "filter_assigned_me", "true"), Vue.set(e, "filter_my_cases", "true")), e.followed_by_list && e.followed_by_list.split(";").indexOf(this.theUser.id) > -1 && (Vue.set(e, "filter_followed_by_me", "true"), Vue.set(e, "filter_my_cases", "true"))
 				})
+			},
+			allCaseTags(newArr, oldArr) {
+				newArr.forEach(item => {
+					const idx = this.theActiveFilterTags.indexOf(item.value)
+					if (idx > -1) {
+						this.theActiveFilterTags.splice(idx, 1)
+					}
+				})
+			},
+			allCaseGroups(newArr, oldArr) {
+				newArr.forEach(item => {
+					const idx = this.theActiveFilterGroups.indexOf(item.value)
+					if (idx > -1) {
+						this.theActiveFilterGroups.splice(idx, 1)
+					}
+				})
 			}
 		},
 		methods: {
 			/* START 17-12-23 */
+			removeAllFilters() {
+				this.theActiveFilterTags = []
+				this.theActiveFilterGroups = []
+				this.resetFilters()
+			},
+			toggleFilterTag(item) {
+				const idx = this.theActiveFilterTags.indexOf(item.value)
+				if (idx < 0) {
+					this.theActiveFilterTags.push(item.value)
+				} else {
+					this.theActiveFilterTags.splice(idx, 1)
+				}
+			},
+			toggleFilterGroup(item) {
+				const idx = this.theActiveFilterGroups.indexOf(item.value)
+				if (idx < 0) {
+					this.theActiveFilterGroups.push(item.value)
+				} else {
+					this.theActiveFilterGroups.splice(idx, 1)
+				}
+			},
 			updateItemTags(tagsArr) {
 				const caseOnId = this.theActiveCaseForTag.onid
 				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)

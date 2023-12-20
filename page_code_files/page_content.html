@@ -314,8 +314,118 @@
                 </div>
             </div>
             <div class="o-cases">
-                <div class="vue-subheader-filters o-body__list-of-cases o-wrapper" v-cloak v-if="!isViewRoles">
-                    <div class="o-body__list-of-cases__left"><i class="tio"> filter </i>
+                <div class="vue-subheader-filters o-body__list-of-cases o-wrapper"
+                    :class="{'vue-subheader-filters__flex': isNewDesignActive}" v-cloak v-if="!isViewRoles">
+                    <!-- START 17-12-23 -->
+                    <template v-if="isNewDesignActive && isCases">
+                        <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__space">
+                            <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__left">
+                                <div class="o-dropdown vue-dropdown" v-click-outside="closeVueDropdown"
+                                    @click="setIsVueDropdown"
+                                    :class="[{'o-dropdown--active': isVueDropdown},{'o-dropdown--has-selection': theActiveCaseCategory !=='Alle kategorier'}]">
+                                    <div class="o-dropdown__selected">
+                                        <p id="">{{theActiveCaseCategory}}</p><i class="tio">chevron_down</i>
+                                    </div>
+                                    <div class="o-dropdown__dropdown" style="width:400px;">
+                                        <ul>
+                                            <li v-for="caseCategory in allCasesCategories"
+                                                @click="setActiveCaseCategory(caseCategory)">{{caseCategory}}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <o-multi-select :items="allCaseTags" :selected_items="theActiveFilterTags"
+                                    @toggle_item="toggleFilterTag" select_title="Vælg tag"></o-multi-select>
+                                <o-multi-select :items="allCaseGroups" :selected_items="theActiveFilterGroups"
+                                    @toggle_item="toggleFilterGroup" select_title="Vælg gruppe"></o-multi-select>
+                            </div>
+                            <div class="o-body__list-of-cases__right" v-if="theActiveFilter !=='dynamic'">
+                                <div class="o-search-group">
+                                    <div class="o-icon">
+                                        <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24">
+                                            <title>search</title>
+                                            <path
+                                                d="M20.85,19.44l-4-4a2.44,2.44,0,0,0-.43-.35l-1-.69h0A7,7,0,1,0,10,17a7,7,0,0,0,4.37-1.53h0l.75,1a2.6,2.6,0,0,0,.3.36l4,4a.5.5,0,0,0,.71,0l.7-.7A.5.5,0,0,0,20.85,19.44ZM10,15a5,5,0,1,1,5-5A5,5,0,0,1,10,15Z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <input type="search" ref="v_search_query" @input="debounceSearch"
+                                        class="o-search-cases" placeholder="Søg.."
+                                        :class="{'o-search-cases--active': searchQuery.length > 0}">
+                                    <div class="o-search-group__clear" @click="clearSearchQuery"><i
+                                            class="tio">clear_circle</i>
+                                    </div>
+                                </div>
+                                <div class="o-sort-setting o-dropdown vue-dropdown hint--left" aria-label="Sortér"
+                                    v-if="isCases || isDocs" v-click-outside="closeSortDropdown"
+                                    @click="setIsSortDropdown" :class="[{'o-dropdown--active': isSortDropdown}]">
+                                    <div class="o-dropdown__selected"><i class="tio">sort</i></div>
+                                    <div class="o-dropdown__dropdown" style="width:240px;">
+                                        <ul>
+                                            <li v-for="sortSetting in allSortSettings" class="o-sort-setting__setting"
+                                                :class="{'o-sort-setting__setting--selected': sortSetting.value===theSortSetting.value}"
+                                                @click="setTheSortSetting(sortSetting)" :key="sortSetting.value">
+                                                <p>
+                                                    {{sortSetting.title}}</p><i class="tio"
+                                                    v-show="sortSetting.value===theSortSetting.value">checkmark_circle_outlined</i>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__space">
+                            <div class="vue-subheader-filters__flex__row">
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_created_by_me', $event)"> Oprettet af mig
+                                    <div class="o-badge">{{lengthOfCases.filter_created_by_me}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_assigned_me', $event)"> Tildelt til mig
+                                    <div class="o-badge">{{lengthOfCases.filter_assigned_me}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_followed_by_me', $event)"> Jeg følger
+                                    <div class="o-badge">{{lengthOfCases.filter_followed_by_me}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    @click="setActiveType('filter_sla_expired', $event)"> Overskredet SLA
+                                    <div class="o-badge">{{lengthOfCases.filter_sla_expired}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_new', $event)"> Ulæste / Nye
+                                    <div class="o-badge">{{lengthOfCases.filter_new}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('not_assigned', $event)"> Ikke tildelt
+                                    <div class="o-badge">{{lengthOfCases.not_assigned}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_follow_up', $event)"> Opfølgning
+                                    <div class="o-badge">{{lengthOfCases.filter_follow_up}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="this.theUserType=='ON' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_not_follow_up', $event)"> Ikke opfølgning
+                                    <div class="o-badge">{{lengthOfCases.filter_not_follow_up}}</div>
+                                </div>
+                            </div>
+                            <div class="vue-o-right-items">
+                                <p>Sager i listen: {{ searchedCases.length }}</p>
+                                <a @click.prevent="removeAllFilters" href="#">Fjern alle filtre</a>
+                            </div>
+                        </div>
+                    </template>
+                    <!-- END 17-12-23 -->
+                    <div class="o-body__list-of-cases__left" v-if="!isNewDesignActive || !isCases"><i class="tio">
+                            filter </i>
                         <div class="o-body__list-of-cases__left__filters"
                             v-if="activeCategory==='end_customer_pricing_config'">
                             <div class="o-dropdown vue-dropdown" v-click-outside="closeVueDropdown"
@@ -377,64 +487,65 @@
                                 <div class="o-badge">{{type.onIds.length}}</div>
                             </div>
                         </div>
-                        <!-- <div class="o-body__list-of-cases__left__filters" v-if="isDocs"> <div class="o-dropdown vue-dropdown" v-click-outside="closeVueDropdown" @click="setIsVueDropdown" :class="[{'o-dropdown--active': isVueDropdown},{'o-dropdown--has-selection': theUnreadSelected !=='Alle'}]"> <div class="o-dropdown__selected"> <p id="">{{theUnreadSelected}}</p><i class="tio">chevron_down</i> </div><div class="o-dropdown__dropdown" style="width:150px;"> <ul> <li @click="setTheUnreadSelected('Alle')">Alle</li><li @click="setTheUnreadSelected('Ulæst')">Ulæst</li><li @click="setTheUnreadSelected('Læst')">Læst</li></ul> </div></div><div class="o-btn o-btn__filter vue-filter-2" v-for="type in allTypesFromCategory" @click="setActiveType(type.title, $event)">{{type.title}}<div class="o-badge">{{type.onIds.length}}</div></div></div>-->
-                        <div class="o-body__list-of-cases__left__filters" v-if="isCases">
-                            <div class="o-dropdown vue-dropdown" v-click-outside="closeVueDropdown"
-                                @click="setIsVueDropdown"
-                                :class="[{'o-dropdown--active': isVueDropdown},{'o-dropdown--has-selection': theActiveCaseCategory !=='Alle kategorier'}]">
-                                <div class="o-dropdown__selected">
-                                    <p id="">{{theActiveCaseCategory}}</p><i class="tio">chevron_down</i>
+                        <template v-if="!isNewDesignActive">
+                            <div class="o-body__list-of-cases__left__filters" v-if="isCases">
+                                <div class="o-dropdown vue-dropdown" v-click-outside="closeVueDropdown"
+                                    @click="setIsVueDropdown"
+                                    :class="[{'o-dropdown--active': isVueDropdown},{'o-dropdown--has-selection': theActiveCaseCategory !=='Alle kategorier'}]">
+                                    <div class="o-dropdown__selected">
+                                        <p id="">{{theActiveCaseCategory}}</p><i class="tio">chevron_down</i>
+                                    </div>
+                                    <div class="o-dropdown__dropdown" style="width:400px;">
+                                        <ul>
+                                            <li v-for="caseCategory in allCasesCategories"
+                                                @click="setActiveCaseCategory(caseCategory)">{{caseCategory}}
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
-                                <div class="o-dropdown__dropdown" style="width:400px;">
-                                    <ul>
-                                        <li v-for="caseCategory in allCasesCategories"
-                                            @click="setActiveCaseCategory(caseCategory)">{{caseCategory}}
-                                        </li>
-                                    </ul>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_created_by_me', $event)"> Oprettet af mig
+                                    <div class="o-badge">{{lengthOfCases.filter_created_by_me}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_assigned_me', $event)"> Tildelt til mig
+                                    <div class="o-badge">{{lengthOfCases.filter_assigned_me}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_followed_by_me', $event)"> Jeg følger
+                                    <div class="o-badge">{{lengthOfCases.filter_followed_by_me}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    @click="setActiveType('filter_sla_expired', $event)"> Overskredet SLA
+                                    <div class="o-badge">{{lengthOfCases.filter_sla_expired}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_new', $event)"> Ulæste / Nye
+                                    <div class="o-badge">{{lengthOfCases.filter_new}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('not_assigned', $event)"> Ikke tildelt
+                                    <div class="o-badge">{{lengthOfCases.not_assigned}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_follow_up', $event)"> Opfølgning
+                                    <div class="o-badge">{{lengthOfCases.filter_follow_up}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="this.theUserType=='ON' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_not_follow_up', $event)"> Ikke opfølgning
+                                    <div class="o-badge">{{lengthOfCases.filter_not_follow_up}}</div>
                                 </div>
                             </div>
-                            <div class="o-btn o-btn__filter vue-filter-2"
-                                v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
-                                @click="setActiveType('filter_created_by_me', $event)"> Oprettet af mig
-                                <div class="o-badge">{{lengthOfCases.filter_created_by_me}}</div>
-                            </div>
-                            <div class="o-btn o-btn__filter vue-filter-2"
-                                v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
-                                @click="setActiveType('filter_assigned_me', $event)"> Tildelt til mig
-                                <div class="o-badge">{{lengthOfCases.filter_assigned_me}}</div>
-                            </div>
-                            <div class="o-btn o-btn__filter vue-filter-2"
-                                v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
-                                @click="setActiveType('filter_followed_by_me', $event)"> Jeg følger
-                                <div class="o-badge">{{lengthOfCases.filter_followed_by_me}}</div>
-                            </div>
-                            <div class="o-btn o-btn__filter vue-filter-2"
-                                @click="setActiveType('filter_sla_expired', $event)"> Overskredet SLA
-                                <div class="o-badge">{{lengthOfCases.filter_sla_expired}}</div>
-                            </div>
-                            <div class="o-btn o-btn__filter vue-filter-2"
-                                v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
-                                @click="setActiveType('filter_new', $event)"> Ulæste / Nye
-                                <div class="o-badge">{{lengthOfCases.filter_new}}</div>
-                            </div>
-                            <div class="o-btn o-btn__filter vue-filter-2"
-                                v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
-                                @click="setActiveType('not_assigned', $event)"> Ikke tildelt
-                                <div class="o-badge">{{lengthOfCases.not_assigned}}</div>
-                            </div>
-                            <div class="o-btn o-btn__filter vue-filter-2"
-                                v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
-                                @click="setActiveType('filter_follow_up', $event)"> Opfølgning
-                                <div class="o-badge">{{lengthOfCases.filter_follow_up}}</div>
-                            </div>
-                            <div class="o-btn o-btn__filter vue-filter-2"
-                                v-if="this.theUserType=='ON' && theActiveFilter=='active'"
-                                @click="setActiveType('filter_not_follow_up', $event)"> Ikke opfølgning
-                                <div class="o-badge">{{lengthOfCases.filter_not_follow_up}}</div>
-                            </div>
-                        </div>
+                        </template>
                     </div>
-                    <div class="o-body__list-of-cases__right" v-if="theActiveFilter !=='dynamic'">
+                    <div class="o-body__list-of-cases__right" v-if="theActiveFilter !=='dynamic' && !isNewDesignActive">
                         <div class="o-search-group">
                             <div class="o-icon">
                                 <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
@@ -475,16 +586,19 @@
                     <div v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter==='dynamic'"
                         v-cloak>
                         <div v-if="activeCategory==='Report' && theUnreadSelected==='Vælg'"
-                            v-html="theReportBIExplainer"></div>
+                            v-html="theReportBIExplainer">
+                        </div>
                         <div v-if="activeCategory==='Invoice' && theUnreadSelected==='Vælg'"
-                            v-html="theInvoiceBIExplainer"></div>
+                            v-html="theInvoiceBIExplainer">
+                        </div>
                         <template v-if="theUnreadSelected !=='Vælg'">
                             <div class="vue-spinner__container" v-if="isLoadingBIReport" v-cloak>
                                 <div class="vue-spinner o-spinner"></div>
                                 <p class="text-explainer o-spinner__text">Indlæser dashboard..</p>
                             </div>
                             <div class="PowerBI_Container" id="embedContainer"
-                                :class="{'hidePowerBi': isLoadingBIReport}"></div>
+                                :class="{'hidePowerBi': isLoadingBIReport}">
+                            </div>
                         </template>
                     </div>
                     <h4 class="text-explainer"
@@ -526,7 +640,8 @@
                         v-if="((isNewAnnouncementLoading || isUpdatedAnnouncementLoading) && activeCategory=='Announcement')">
                     </div>
                     <p class="text-explainer o-spinner__text" v-if="isNewUserLoading && activeCategory=='roles'"
-                        v-cloak>Bruger oprettes / opdateres</p>
+                        v-cloak>
+                        Bruger oprettes / opdateres</p>
                     <p class="text-explainer o-spinner__text"
                         v-if="isNewAnnouncementLoading && activeCategory=='Announcement'" v-cloak>Ny udmelding
                         oprettes</p>
@@ -1134,7 +1249,8 @@
                                         <p>{{theActiveItem.expire_date}}</p>
                                     </div>
                                     <div v-if="theActiveItem.attachment_list"
-                                        class="item-with-files o-cases__case-group"><label>Filer:</label>
+                                        class="item-with-files o-cases__case-group">
+                                        <label>Filer:</label>
                                         <ul class="item-files">
                                             <li v-for="file in theActiveItem.attachment_list" :key="file.link"><a
                                                     :href="file.link" @click="downloadItem(theActiveItem)"
@@ -1300,7 +1416,8 @@
                                     <div class="o-cart__summary__item__left">
                                         <p>{{orderItem.LABEL}}
                                             <span class="o-cart__summary__item__labels"
-                                                v-if="theActiveOrderType!=='002'">, {{orderItem.v_count}}stk.</span>
+                                                v-if="theActiveOrderType!=='002'">,
+                                                {{orderItem.v_count}}stk.</span>
                                         <p>
                                         <p class="o-cart__summary__item__labels" v-if="theActiveOrderType!=='002'">
                                             {{orderItem.PRICE}}kr. pr. stk. </p>
@@ -1611,6 +1728,38 @@
     </div>
 </div>
 <!-- START 17-12-23 -->
+<script type="text/x-template" id="o-multi-select-template">
+    <div class="o-multi-select tags-selector">
+        <div class="tags-selector__selected" :class="[{'tags-selector__selected--has-selection ': selected_items.length > 0}, {'tags-selector__selected--active': isOpen}]" @click="setIsOpen(true)">
+            <p v-if="selected_items.length === 1">{{ selected_items[0] }}</p>
+            <p v-if="selected_items.length > 1">{{ selected_items.length }} valgt</>
+            <p v-if="selected_items.length === 0">{{ select_title }}</p>
+            <i class="tio">chevron_down</i>
+        </div>
+        <div class="tags-selector__bg" @click="onMultiSelectBGClick" v-if="isOpen"></div>
+        <div class="tags-selector__container" v-if="isOpen">
+        <div>
+            <div class="tags-selector__search">
+                <input type="search" placeholder="Søg.." id="o-multi-select_search_input" ref="query_input" v-model="query">
+                </div>
+                <ul class="tags-selector__dropdown">
+                    <li v-for="(item, index) in filteredItems" 
+                    :key="item.value" 
+                    class="tags-selector__tag-item" :class="[{'tags-selector__tag-item--selected': item.v_selected}]"
+                    @click="toggleItem(item)">{{ item.value }}
+                        <div class="tags-selector__tag-item__right">
+                            <i class="tio" v-if="item.v_selected">checkmark_circle_outlined</i>
+                        </div>
+                    </li>
+                    <li class="tag-item__no-match" v-if="filteredItems.length < 1">
+                        Ingen matchende resultater...
+                    </li>
+                </ul>
+        </div>
+    </div>
+    </div>
+</script>
+
 <script type="text/x-template" id="tags-selector-template">
     <div class="tags-selector" v-cloak>
         <transition name="modalFadeIn">
