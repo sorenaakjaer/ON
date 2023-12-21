@@ -1552,7 +1552,13 @@ $(document).one("trigger::vue_loaded", function () {
 			updateItemTags(tagsArr) {
 				const caseOnId = this.theActiveCaseForTag.onid
 				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
-				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArr));
+				const tagsArrDb = tagsArr.map(tag => {
+					return {
+						value: tag.value,
+						color: tag.color
+					}
+				})
+				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArrDb));
 				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
 				$('.updTagOrGroup_Input_caseid > input').val(caseOnId)
 				this.isLoadingTagButton = true
