@@ -140,6 +140,16 @@
                     </div>
                     <div class="tio chevron_right"></div>
                 </li>
+                <!-- START OpenNet OpenAnalytics  -->
+                <li @click="setActivecCategory('OpenAnalytics')" :class="{'li--active': activeCategory==='OpenAnalytics'}"
+                    class="menu_openanalytics">
+                    <div>
+                        <h4>OpenAnalytics</h4>
+                        <p>Access and retrieve insightful, dynamic data from OpenNet expansive data universe</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+                <!-- END OpenNet OpenAnalytics  -->
                 <li @click="setActivecCategory('Invoice')" :class="{'li--active': activeCategory==='Invoice'}"
                     class="menu_invoice">
                     <div>
