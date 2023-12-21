@@ -710,6 +710,7 @@
                                     <div class="o-cases__case_element__header__row__tags">
                                         <label>Tags</label>
                                         <div class="o-cases__case_element__header__row__tags__container"
+                                            data-tag-type="tag"
                                             @click.stop="setTheActiveTagDropdown('tag', itemCase, $event)">
                                             <div class="item-tag"
                                                 :style="{'backgroundColor': tag.color ? tag.color : '#0a37aa'}"
@@ -724,6 +725,7 @@
                                     <div class="o-cases__case_element__header__row__tags">
                                         <label>Grupper</label>
                                         <div class="o-cases__case_element__header__row__tags__container"
+                                            data-tag-type="group"
                                             @click.stop="setTheActiveTagDropdown('group', itemCase, $event)">
                                             <div class="item-tag"
                                                 :style="{'backgroundColor': tag.color ? tag.color : 'blue'}"

@@ -730,6 +730,9 @@ $(document).one("trigger::vue_loaded", function () {
 				this.isEdited = true
 			},
 			onTagsBGClick() {
+				if (this.is_loading_tag_button) {
+					return
+				}
 				if (this.isEdited) {
 					this.isForgotToSave = true
 				} else {
@@ -737,6 +740,9 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			closeWithoutSaving() {
+				if (this.is_loading_tag_button) {
+					return
+				}
 				this.$emit('close')
 			},
 			setTheTagsSelectorView(num) {
@@ -1556,6 +1562,32 @@ $(document).one("trigger::vue_loaded", function () {
 					} else {
 						this.cases[caseIdx].v_groups = tagsArr
 					}
+					// If modal is open then we need to update the jquery part tags and timeline
+					if ($('#js-case-element__inserted').length > 0) {
+						// Update tags/groups
+						const tagType = `data-tag-type="${this.theShowTagDropdown}"`;
+						var container = $('#js-case-element__inserted .o-cases__case_element__header__row__tags__container[' + tagType + ']');
+						var self = this
+						updateTagsHTML()
+
+						function updateTagsHTML() {
+							container.empty();
+							let htmlArr = [];
+							tagsArr.forEach(tag => {
+								var tagDiv = `<div class="item-tag" style="background-color: ${tag.color};">${tag.value}</div>`;
+								htmlArr.push(tagDiv);
+							});
+							const typei18n = self.theShowTagDropdown === 'group' ? 'gruppe' : 'tag'
+							if (htmlArr.length === 0) {
+								container.html('<div class="itemcase-tags__add">Tilføj ' + typei18n + '</div>')
+							} else {
+								container.html(htmlArr.join(''));
+							}
+						}
+						// Update timeline
+						const newHtml = $('.updTagOrGroup_Output > div').html()
+						$('.js-o-modal__case__timeline').html(newHtml)
+					}
 					this.setTheActiveTagDropdown(null)
 				})
 				$('.updTagOrGroup_BTN > a').click()
@@ -1831,12 +1863,20 @@ $(document).one("trigger::vue_loaded", function () {
 				});
 
 				// Set date and time picker
-				setDateTimePicker();
+				// setDateTimePicker();
 				// START ADDED 26-11-23 For openByOtherEmp
 				isSeeCaseOpenByOthers = true
 				this.seeCaseOpenByOthers();
 				this.setCheckCaseByOtherInInterval();
 				// END ADDED 26-11-23 For openByOtherEmp
+				// START 17-12-23
+				this.$nextTick(_ => {
+					$('#js-case-element__inserted .o-cases__case_element__header__row__tags__container').on('click', (evt) => {
+						const tagType = evt.target.dataset.tagType
+						const caseItem = this.searchedCases[caseIndex]
+						this.setTheActiveTagDropdown(tagType, caseItem, evt)
+					})
+				})
 			},
 			// START ADDED 26-11-23 For openByOtherEmp
 			seeCaseOpenByOthers() {
