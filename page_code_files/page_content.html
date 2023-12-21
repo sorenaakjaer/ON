@@ -140,6 +140,16 @@
                     </div>
                     <div class="tio chevron_right"></div>
                 </li>
+                <!-- START OpenNet OpenAnalytics  -->
+                <li @click="setActivecCategory('OpenAnalytics')" :class="{'li--active': activeCategory==='OpenAnalytics'}"
+                    class="menu_openanalytics">
+                    <div>
+                        <h4>OpenAnalytics</h4>
+                        <p>Access and retrieve insightful, dynamic data from OpenNet expansive data universe</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+                <!-- END OpenNet OpenAnalytics  -->
                 <li @click="setActivecCategory('Invoice')" :class="{'li--active': activeCategory==='Invoice'}"
                     class="menu_invoice">
                     <div>
@@ -268,32 +278,53 @@
                         </template>
                         <template v-if="isDocs" v-cloak>
                             <div class="o-filters__filter vue-filter-level2"
-                                :class="{'o-filters__filter--active': theActiveFilter==='active'}"
-                                @click="setTheActiveFilter('active')"><span>Aktive</span>
+                                 v-if="activeCategory!='OpenAnalytics'"
+                                 :class="{'o-filters__filter--active': theActiveFilter==='active'}"
+                                 @click="setTheActiveFilter('active')">
+                                <span>Aktive</span>
                                 <div class="o-badge" :class="{'o-badge--loading': isOpenDocsLoading}">
                                     {{itemsActiveFromCategory.length}}
                                 </div>
                             </div>
                             <div :class="[{'hint--top': isClosedDocsLoading},{'pointer-not-allowed': isClosedDocsLoading}]"
-                                aria-label="Tidligere indlæses stadig">
+                                 v-if="activeCategory!='OpenAnalytics'"
+                                 aria-label="Tidligere indlæses stadig">
                                 <div class="o-filters__filter vue-filter-level2"
-                                    :class="[{'o-filters__filter--active': theActiveFilter==='inactive'},{'filters__filter--inactive': isClosedDocsLoading}]"
-                                    @click="setTheActiveFilter('inactive')"><span>Tidligere</span>
+                                     :class="[{'o-filters__filter--active': theActiveFilter==='inactive'},{'filters__filter--inactive': isClosedDocsLoading}]"
+                                     @click="setTheActiveFilter('inactive')">
+                                    <span>Tidligere</span>
                                     <div class="o-badge" :class="{'o-badge--loading': isClosedDocsLoading}">
                                         {{itemsExpiredFromCategory.length}}
                                     </div>
                                 </div>
                             </div>
                             <div class="o-filters__filter vue-filter-level2"
-                                v-if="theUserType=='IO' || theUserType=='ON'"
-                                :class="{'o-filters__filter--active': theActiveFilter==='future'}"
-                                @click="setTheActiveFilter('future')"><span>Fremtidige</span>
+                                 v-if="theUserType=='IO' && activeCategory!='OpenAnalytics' || theUserType=='ON' && activeCategory!='OpenAnalytics'" 
+                                 :class="{'o-filters__filter--active': theActiveFilter==='future'}"
+                                 @click="setTheActiveFilter('future')">
+                                <span>Fremtidige</span>
                                 <div class="o-badge">{{itemsFutureFromCategory.length}}</div>
                             </div>
                             <div class="o-filters__filter vue-filter-level2"
-                                v-if="(activeCategory=='Report' && pbiReports.length > 0) || (activeCategory=='Invoice' && pbiReports.length > 0)"
-                                :class="{'o-filters__filter--active': theActiveFilter==='dynamic'}"
-                                @click="setTheActiveFilter('dynamic')"><span>Dashboard</span></div>
+                                 v-if="(activeCategory=='OpenAnalytics' && pbiReports.length > 0) || (activeCategory=='OpenAnalytics' && pbiReports.length > 0)"
+                                 :class="{'o-filters__filter--active': theActiveFilter==='dynamic'}"
+                                 @click="setTheActiveFilter('dynamic')">
+                                <span>Dashboard</span>
+                            </div>
+                            <div class="o-filters__filter vue-filter-level2"
+                                 v-if="activeCategory=='OpenAnalytics'"
+                                 :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab1'}"
+                                 @click="setTheActiveFilter('OpenAnalytics_tab1')">
+                                <span>Data</span>
+                            </div>
+                            <div class="o-filters__filter vue-filter-level2"
+                                 v-if="activeCategory=='OpenAnalytics'"
+                                 :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab2'}"
+                                 @click="setTheActiveFilter('OpenAnalytics_tab2')">
+                                <span>Data Subscription</span>
+                            </div>
+
+
                         </template>
                         <template v-if="activeCategory==='roles'" v-cloak>
                             <div class="o-filters__filter vue-filter-level2"
