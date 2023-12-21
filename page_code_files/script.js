@@ -565,6 +565,10 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				if (this.selected_items.length === 1) {
 					const selectedItem = this.selected_items[0]
+					const labelIdx = this.items.findIndex(tagItem => tagItem['label'] && tagItem['value'] == this.selected_items[0])
+					if (labelIdx > -1) {
+						return this.items[labelIdx]['label']
+					}
 					if (this.i18n) {
 						return this.i18n[selectedItem] ? this.i18n[selectedItem] : selectedItem
 					}
@@ -575,19 +579,30 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			itemsWithProps() {
-				return this.items.map(item => {
-					// Check if the current tag exists in this.selectedTags
-					const isSelected = this.selected_items.findIndex(selectedItem => selectedItem === item.value) > -1
-					// Return a new object for the tag with the v_selected property
+				const combinedItems = [...this.items];
+
+				this.selected_items.forEach(selectedItem => {
+					if (!combinedItems.some(item => item.value === selectedItem)) {
+						combinedItems.push({ value: selectedItem });
+					}
+				});
+				return combinedItems.map(item => {
+					const isSelected = this.selected_items.includes(item.value);
 					return {
 						...item,
 						v_selected: isSelected
 					};
-				})
+				});
 			},
 			itemsSorted() {
 				return this.itemsWithProps.slice().sort((a, b) => {
-					// Then, sort alphabetically by value
+					if (a.value === 'v_no_selected') {
+						return -1;
+					}
+					if (b.value === 'v_no_selected') {
+						return 1;
+					}
+					// Standard alphabetical sorting for other cases
 					if (a.value < b.value) {
 						return -1;
 					}
@@ -598,7 +613,18 @@ $(document).one("trigger::vue_loaded", function () {
 				});
 			},
 			filteredItems() {
-				return this.itemsSorted.filter(item => item.value.toLowerCase().includes(this.query.toLowerCase()));
+				const lowerCaseQuery = this.query.toLowerCase();
+
+				return this.itemsSorted.filter(item => {
+					let itemTitle = item.label ? item.label.toLowerCase() : item.value.toLowerCase()
+
+					// Check if a localized version of the item title exists
+					if (this.i18n && this.i18n[item.value]) {
+						itemTitle = this.i18n[item.value].toLowerCase()
+					}
+
+					return itemTitle.includes(lowerCaseQuery)
+				})
 			}
 		},
 		methods: {
@@ -608,6 +634,9 @@ $(document).one("trigger::vue_loaded", function () {
 					this.$nextTick(_ => {
 						this.$refs.query_input.focus()
 					})
+				}
+				if (!bool) {
+					this.query = ''
 				}
 			},
 			toggleItem(item) {
@@ -684,7 +713,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			tagsWithProps() {
-				return this.oldAndNewTags.map(tag => {
+				return this.oldAndNewTags.filter(tag => tag.value !== 'v_no_selected').map(tag => {
 					// Check if the current tag exists in this.selectedTags
 					const isSelected = this.selectedTags.findIndex(selectedTag => selectedTag.value === tag.value) > -1
 					// Return a new object for the tag with the v_selected property
@@ -830,6 +859,7 @@ $(document).one("trigger::vue_loaded", function () {
 				Follow_up: 'Opfølgning udløbet',
 				Closed: 'Afsluttet'
 			},
+			theActiveFilterCategories: [],
 			theActiveFilterStatus: [],
 			thePredefinedGroups: [],
 			theActiveFilterTags: [],
@@ -1129,14 +1159,28 @@ $(document).one("trigger::vue_loaded", function () {
 				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet']
 				return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
 			},
-			allCaseStatus() {
-				const uniqueArr = []
-				this.casesFiltered2.forEach(caseItem => {
-					const dbStatus = caseItem['status']
-					if (dbStatus) {
-						const idx = uniqueArr.findIndex(allTag => allTag.value === dbStatus)
+			allCaseCategories() {
+				const uniqueArr = [{ value: 'v_no_selected', label: 'Uden kategori' }]
+				this.cases.forEach(caseItem => {
+					const dbValue = caseItem['filter_category']
+					if (dbValue) {
+						const idx = uniqueArr.findIndex(allTag => allTag.value === dbValue)
 						if (idx < 0) {
-							const obj = { value: dbStatus, label: this.statusI18N[dbStatus] }
+							const obj = { value: dbValue }
+							uniqueArr.push(obj)
+						}
+					}
+				})
+				return uniqueArr
+			},
+			allCaseStatus() {
+				const uniqueArr = [{ value: 'v_no_selected', label: 'Uden status' }]
+				this.cases.forEach(caseItem => {
+					const dbValue = caseItem['status']
+					if (dbValue) {
+						const idx = uniqueArr.findIndex(allTag => allTag.value === dbValue)
+						if (idx < 0) {
+							const obj = { value: dbValue, label: this.statusI18N[dbValue] }
 							uniqueArr.push(obj)
 						}
 					}
@@ -1144,7 +1188,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return uniqueArr
 			},
 			allCaseGroups() {
-				const uniqueTags = []
+				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden gruppe' }]
 				this.cases.forEach(caseItem => {
 					if (caseItem['v_groups']) {
 						caseItem['v_groups'].forEach(tag => {
@@ -1159,7 +1203,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return uniqueTags.concat(this.thePredefinedGroups)
 			},
 			allCaseTags() {
-				const uniqueTags = []
+				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden tags' }]
 				this.cases.forEach(caseItem => {
 					if (caseItem['v_tags']) {
 						caseItem['v_tags'].forEach(tag => {
@@ -1274,40 +1318,64 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			caseFilteredWithGroups() {
 				if (this.theActiveFilterGroups.length < 1) {
-					return this.casesFiltered2
+					return this.casesFiltered2;
 				} else {
 					return this.casesFiltered2.filter(itemCase => {
-						if (!itemCase.v_groups || itemCase.v_groups.length === 0) {
-							return false;
+						const hasNoSelectedGroup = this.theActiveFilterGroups.includes('v_no_selected');
+						if (hasNoSelectedGroup && (!itemCase.v_groups || itemCase.v_groups.length === 0)) {
+							return true;
 						}
-						return this.theActiveFilterGroups.some(group =>
-							itemCase.v_groups.map(vGroup => vGroup.value).includes(group))
+						return itemCase.v_groups && itemCase.v_groups.some(vGroup =>
+							this.theActiveFilterGroups.includes(vGroup.value));
 					})
 				}
 			},
 			caseFilteredWithStatus() {
 				if (this.theActiveFilterStatus.length < 1) {
-					return this.caseFilteredWithGroups
+					return this.caseFilteredWithGroups;
 				} else {
 					return this.caseFilteredWithGroups.filter(itemCase => {
-						if (!itemCase.status || itemCase.status.length === 0) {
-							return false;
+						// Check if 'v_no_selected' is one of the active filter statuses
+						const hasNoSelectedStatus = this.theActiveFilterStatus.includes('v_no_selected');
+
+						// If 'v_no_selected' is present and the item has an empty status, include it in the filter
+						if (hasNoSelectedStatus && (!itemCase.status || itemCase.status === '')) {
+							return true;
 						}
-						return this.theActiveFilterStatus.indexOf(itemCase.status) > -1
+
+						// If item has a status, check if it matches any of the active filter statuses
+						return this.theActiveFilterStatus.includes(itemCase.status);
+					})
+				}
+			},
+			caseFilteredWithCategories() {
+				if (this.theActiveFilterCategories.length < 1) {
+					return this.caseFilteredWithStatus;
+				} else {
+					return this.caseFilteredWithStatus.filter(itemCase => {
+						// Check if 'v_no_selected' is one of the active filter statuses
+						const hasNoSelectedStatus = this.theActiveFilterCategories.includes('v_no_selected');
+
+						// If 'v_no_selected' is present and the item has an empty status, include it in the filter
+						if (hasNoSelectedStatus && (!itemCase.filter_category || itemCase.filter_category === '')) {
+							return true;
+						}
+						return this.theActiveFilterCategories.includes(itemCase.filter_category);
 					})
 				}
 			},
 			caseFilteredWithTags() {
 				if (this.theActiveFilterTags.length < 1) {
-					return this.caseFilteredWithStatus
+					return this.caseFilteredWithCategories;
 				} else {
-					return this.caseFilteredWithStatus.filter(itemCase => {
-						if (!itemCase.v_tags || itemCase.v_tags.length === 0) {
-							return false;
+					return this.caseFilteredWithCategories.filter(itemCase => {
+						const hasNoSelectedTag = this.theActiveFilterTags.includes('v_no_selected');
+						if (hasNoSelectedTag && (!itemCase.v_tags || itemCase.v_tags.length === 0)) {
+							return true;
 						}
-						return this.theActiveFilterTags.some(tag =>
-							itemCase.v_tags.map(vTag => vTag.value).includes(tag))
-					})
+						return itemCase.v_tags && itemCase.v_tags.some(vTag =>
+							this.theActiveFilterTags.includes(vTag.value));
+					});
 				}
 			},
 			casesFiltered3() {
@@ -1562,26 +1630,18 @@ $(document).one("trigger::vue_loaded", function () {
 				this.isEncodedHappenedBeforeUser && this.cases.forEach((e, t) => {
 					e.created_by_id && e.created_by_id == this.theUser.id && (Vue.set(e, "filter_created_by_me", "true"), Vue.set(e, "filter_my_cases", "true")), e.assign_to_id && e.assign_to_id == this.theUser.id && (Vue.set(e, "filter_assigned_me", "true"), Vue.set(e, "filter_my_cases", "true")), e.followed_by_list && e.followed_by_list.split(";").indexOf(this.theUser.id) > -1 && (Vue.set(e, "filter_followed_by_me", "true"), Vue.set(e, "filter_my_cases", "true"))
 				})
-			},
-			allCaseTags(newArr, oldArr) {
-				newArr.forEach(item => {
-					const idx = this.theActiveFilterTags.indexOf(item.value)
-					if (idx > -1) {
-						this.theActiveFilterTags.splice(idx, 1)
-					}
-				})
-			},
-			allCaseGroups(newArr, oldArr) {
-				newArr.forEach(item => {
-					const idx = this.theActiveFilterGroups.indexOf(item.value)
-					if (idx > -1) {
-						this.theActiveFilterGroups.splice(idx, 1)
-					}
-				})
 			}
 		},
 		methods: {
 			/* START 17-12-23 */
+			toggleFilterCategory(item) {
+				const idx = this.theActiveFilterCategories.indexOf(item.value)
+				if (idx < 0) {
+					this.theActiveFilterCategories.push(item.value)
+				} else {
+					this.theActiveFilterCategories.splice(idx, 1)
+				}
+			},
 			toggleFilterStatus(item) {
 				const idx = this.theActiveFilterStatus.indexOf(item.value)
 				if (idx < 0) {
