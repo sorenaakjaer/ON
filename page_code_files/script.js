@@ -1864,7 +1864,7 @@ $(document).one("trigger::vue_loaded", function () {
 				});
 
 				// Set date and time picker
-				// setDateTimePicker();
+				setDateTimePicker();
 				// START ADDED 26-11-23 For openByOtherEmp
 				isSeeCaseOpenByOthers = true
 				this.seeCaseOpenByOthers();
@@ -2017,11 +2017,11 @@ $(document).one("trigger::vue_loaded", function () {
 						case "Contract":
 							s = "Kontrakter";
 							break;
-                //< !--START OpenNet OpenAnalytics-- >
+						//< !--START OpenNet OpenAnalytics-- >
 						case "OpenAnalytics":
 							s = "OpenAnalytics";
 							break;
-				//< !--END  OpenNet OpenAnalytics-- >
+						//< !--END  OpenNet OpenAnalytics-- >
 						case "Invoice":
 							s = "Fakturaer";
 							break;
