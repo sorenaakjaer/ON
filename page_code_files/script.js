@@ -1638,6 +1638,7 @@ $(document).one("trigger::vue_loaded", function () {
 					this.theActiveCaseForTag = null
 					return
 				}
+				console.log('event::setTheActiveTagDropdown', { itemCase })
 				this.theActiveCaseForTag = itemCase
 				this.theShowTagDropdown = tagType
 				this.$nextTick(_ => {
@@ -1874,7 +1875,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.$nextTick(_ => {
 					$('#js-case-element__inserted .o-cases__case_element__header__row__tags__container').on('click', (evt) => {
 						const tagType = evt.target.dataset.tagType
-						const caseItem = this.searchedCases[caseIndex]
+						const caseItem = this.cases[caseIndex]
 						this.setTheActiveTagDropdown(tagType, caseItem, evt)
 					})
 				})
