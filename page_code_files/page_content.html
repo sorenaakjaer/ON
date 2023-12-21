@@ -365,6 +365,9 @@
                                     @toggle_item="toggleFilterTag" select_title="Vælg tag"></o-multi-select>
                                 <o-multi-select :items="allCaseGroups" :selected_items="theActiveFilterGroups"
                                     @toggle_item="toggleFilterGroup" select_title="Vælg gruppe"></o-multi-select>
+                                <o-multi-select :items="allCaseStatus" :selected_items="theActiveFilterStatus"
+                                    @toggle_item="toggleFilterStatus" select_title="Vælg status"
+                                    :i18n="statusI18N"></o-multi-select>
                             </div>
                             <div class="o-body__list-of-cases__right" v-if="theActiveFilter !=='dynamic'">
                                 <div class="o-search-group">
@@ -1760,9 +1763,7 @@
 <script type="text/x-template" id="o-multi-select-template">
     <div class="o-multi-select tags-selector">
         <div class="tags-selector__selected" :class="[{'tags-selector__selected--has-selection ': selected_items.length > 0}, {'tags-selector__selected--active': isOpen}]" @click="setIsOpen(true)">
-            <p v-if="selected_items.length === 1">{{ selected_items[0] }}</p>
-            <p v-if="selected_items.length > 1">{{ selected_items.length }} valgt</>
-            <p v-if="selected_items.length === 0">{{ select_title }}</p>
+            <p>{{ selectTitle }}</p>
             <i class="tio">chevron_down</i>
         </div>
         <div class="tags-selector__bg" @click="onMultiSelectBGClick" v-if="isOpen"></div>
@@ -1775,7 +1776,7 @@
                     <li v-for="(item, index) in filteredItems" 
                     :key="item.value" 
                     class="tags-selector__tag-item" :class="[{'tags-selector__tag-item--selected': item.v_selected}, {'tags-selector__tag-item__no-tags': item.v_none_selected}]"
-                    @click="toggleItem(item)">{{ item.value }}
+                    @click="toggleItem(item)">{{ item.label ? item.label : item.value }}
                         <div class="tags-selector__tag-item__right">
                             <i class="tio" v-if="item.v_selected">checkmark_circle_outlined</i>
                         </div>

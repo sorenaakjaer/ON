@@ -546,6 +546,10 @@ $(document).one("trigger::vue_loaded", function () {
 			selected_items: {
 				type: Array,
 				default: () => []
+			},
+			i18n: {
+				type: Object,
+				default: () => null
 			}
 		},
 		data() {
@@ -555,6 +559,21 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		computed: {
+			selectTitle() {
+				if (this.selected_items.length === 0) {
+					return this.select_title
+				}
+				if (this.selected_items.length === 1) {
+					const selectedItem = this.selected_items[0]
+					if (this.i18n) {
+						return this.i18n[selectedItem] ? this.i18n[selectedItem] : selectedItem
+					}
+					return selectedItem
+				}
+				if (this.selected_items.length > 1) {
+					return this.selected_items.length + ' valgt'
+				}
+			},
 			itemsWithProps() {
 				return this.items.map(item => {
 					// Check if the current tag exists in this.selectedTags
@@ -802,6 +821,16 @@ $(document).one("trigger::vue_loaded", function () {
 		el: "#o-app",
 		data: {
 			/* START 17-12-23 */
+			statusI18N: {
+				New_msg: 'Ny besked',
+				New: 'Ny',
+				Åben: 'Åben',
+				Pending: 'Åben',
+				On_Hold: 'Opfølgning',
+				Follow_up: 'Opfølgning udløbet',
+				Closed: 'Afsluttet'
+			},
+			theActiveFilterStatus: [],
 			thePredefinedGroups: [],
 			theActiveFilterTags: [],
 			theActiveFilterGroups: [],
@@ -1100,6 +1129,20 @@ $(document).one("trigger::vue_loaded", function () {
 				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet']
 				return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
 			},
+			allCaseStatus() {
+				const uniqueArr = []
+				this.casesFiltered2.forEach(caseItem => {
+					const dbStatus = caseItem['status']
+					if (dbStatus) {
+						const idx = uniqueArr.findIndex(allTag => allTag.value === dbStatus)
+						if (idx < 0) {
+							const obj = { value: dbStatus, label: this.statusI18N[dbStatus] }
+							uniqueArr.push(obj)
+						}
+					}
+				})
+				return uniqueArr
+			},
 			allCaseGroups() {
 				const uniqueTags = []
 				this.cases.forEach(caseItem => {
@@ -1242,11 +1285,23 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 				}
 			},
-			caseFilteredWithTags() {
-				if (this.theActiveFilterTags.length < 1) {
+			caseFilteredWithStatus() {
+				if (this.theActiveFilterStatus.length < 1) {
 					return this.caseFilteredWithGroups
 				} else {
 					return this.caseFilteredWithGroups.filter(itemCase => {
+						if (!itemCase.status || itemCase.status.length === 0) {
+							return false;
+						}
+						return this.theActiveFilterStatus.indexOf(itemCase.status) > -1
+					})
+				}
+			},
+			caseFilteredWithTags() {
+				if (this.theActiveFilterTags.length < 1) {
+					return this.caseFilteredWithStatus
+				} else {
+					return this.caseFilteredWithStatus.filter(itemCase => {
 						if (!itemCase.v_tags || itemCase.v_tags.length === 0) {
 							return false;
 						}
@@ -1527,9 +1582,18 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		methods: {
 			/* START 17-12-23 */
+			toggleFilterStatus(item) {
+				const idx = this.theActiveFilterStatus.indexOf(item.value)
+				if (idx < 0) {
+					this.theActiveFilterStatus.push(item.value)
+				} else {
+					this.theActiveFilterStatus.splice(idx, 1)
+				}
+			},
 			removeAllFilters() {
 				this.theActiveFilterTags = []
 				this.theActiveFilterGroups = []
+				this.theActiveFilterStatus = []
 				this.resetFilters()
 			},
 			toggleFilterTag(item) {
@@ -3204,7 +3268,6 @@ $(document).one("trigger::vue_loaded", function () {
 				if (el && el.length > 0) {
 					const arrOfPredifinedGroups = el.html() && el.html().length > 2 ? JSON.parse(el.html()) : []
 					this.thePredefinedGroups = arrOfPredifinedGroups
-					console.log('this.thePredefinedGroups', this.thePredefinedGroups)
 				}
 			})
 			/* END 17-12-23 */
