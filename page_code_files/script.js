@@ -584,7 +584,6 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		methods: {
 			setIsOpen(bool) {
-				console.log('isOpen', bool)
 				this.isOpen = bool
 				if (bool) {
 					this.$nextTick(_ => {
@@ -593,7 +592,6 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			toggleItem(item) {
-				console.log('emit::toggle_item')
 				this.$emit('toggle_item', item)
 			},
 			onMultiSelectBGClick() {
@@ -804,6 +802,7 @@ $(document).one("trigger::vue_loaded", function () {
 		el: "#o-app",
 		data: {
 			/* START 17-12-23 */
+			thePredefinedGroups: [],
 			theActiveFilterTags: [],
 			theActiveFilterGroups: [],
 			theActiveLoggedInCompany: null,
@@ -1107,14 +1106,14 @@ $(document).one("trigger::vue_loaded", function () {
 					if (caseItem['v_groups']) {
 						caseItem['v_groups'].forEach(tag => {
 							const idx = uniqueTags.findIndex(allTag => allTag.value === tag.value)
-							if (idx < 0) {
+							const idxInPredefined = this.thePredefinedGroups.findIndex(predefinedTag => predefinedTag.value === tag.value)
+							if (idx < 0 && idxInPredefined < 0) {
 								uniqueTags.push(tag)
 							}
 						})
 					}
 				})
-
-				return uniqueTags;
+				return uniqueTags.concat(this.thePredefinedGroups)
 			},
 			allCaseTags() {
 				const uniqueTags = []
@@ -1238,7 +1237,7 @@ $(document).one("trigger::vue_loaded", function () {
 						if (!itemCase.v_groups || itemCase.v_groups.length === 0) {
 							return false;
 						}
-						return this.theActiveFilterGroups.every(group =>
+						return this.theActiveFilterGroups.some(group =>
 							itemCase.v_groups.map(vGroup => vGroup.value).includes(group))
 					})
 				}
@@ -1251,7 +1250,7 @@ $(document).one("trigger::vue_loaded", function () {
 						if (!itemCase.v_tags || itemCase.v_tags.length === 0) {
 							return false;
 						}
-						return this.theActiveFilterTags.every(tag =>
+						return this.theActiveFilterTags.some(tag =>
 							itemCase.v_tags.map(vTag => vTag.value).includes(tag))
 					})
 				}
@@ -3190,7 +3189,6 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		mounted() {
-			//console.log('mounted')
 			var e = this,
 				t = window.location.href,
 				s = t.indexOf("&ID=");
@@ -3202,6 +3200,12 @@ $(document).one("trigger::vue_loaded", function () {
 			/* START 17-12-23 */
 			this.$nextTick(_ => {
 				$(document).trigger("trigger::vue_mounted")
+				const el = $('.updTagOrGroup_Output_mvp_groups > div')
+				if (el && el.length > 0) {
+					const arrOfPredifinedGroups = el.html() && el.html().length > 2 ? JSON.parse(el.html()) : []
+					this.thePredefinedGroups = arrOfPredifinedGroups
+					console.log('this.thePredefinedGroups', this.thePredefinedGroups)
+				}
 			})
 			/* END 17-12-23 */
 			"OpenNet" == $(".FROM_COMPANY > input").val() && $(".LOGIN_CUSTOMER_TYPE > input").val("ON"), this.theUserType = $(".LOGIN_CUSTOMER_TYPE > input").val(), "ON" == this.theUserType && $(".INQUIRY_TYPE_LEVEL0 > select").html($(".INQUIRY_TYPE_LEVEL0 > select").html().replace("SP</option>", "Til Infrastructure owner (IO)</option>").replace("IO</option>", "Til Service Provider (SP)</option>")), "ON" == this.theUserType ? ($(".js-click-case-edit-ref").removeClass("hidden_field"), $(".toggle-timeline-read-msg").removeClass("hidden_field"), readTimelineReadMsgCookie()) : ($("#js-checkbox__toogle-timeline_read_msg").prop("checked", !0), readTimelineReadMsgCookie()), document.querySelector("#o-page").addEventListener("click", function (t) {
