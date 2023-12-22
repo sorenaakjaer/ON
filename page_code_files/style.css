@@ -5379,6 +5379,7 @@ body, .o-page {
     -ms-flex-pack: end;
     justify-content: flex-end;
     width: 100%;
+    margin-bottom: 0.5rem;
 }
 
 .o-search-group {
@@ -9751,6 +9752,7 @@ li.o-case-active-users__user.hint--bottom:after {
     padding: 0 1rem 0.5rem 1rem;
     position: relative;
     width: 100% !important;
+    border-top: 1px solid #eee;
 }
 
 .o-cases__case_element__header__row__tags__container {
@@ -9796,6 +9798,7 @@ li.o-case-active-users__user.hint--bottom:after {
 
 .tags-selector__search {
     padding: 0.5rem;
+    position: relative;
 }
 
 .tags-selector input[type="search"] {
@@ -10016,6 +10019,7 @@ ul.tags-selector__dropdow__create {
 
 .o-multi-select {
     position: relative;
+    width: 100%;
 }
 
 .o-multi-select .tags-selector__tag-item {
@@ -10141,6 +10145,7 @@ ul.tags-selector__dropdow__create {
     -ms-flex-align: center;
     align-items: center;
     gap: 0.5rem;
+    flex-direction: column;
 }
 
 .vue-subheader-filters__flex__row .o-btn.o-btn__filter {
@@ -10200,7 +10205,36 @@ ul.tags-selector__dropdow__create {
     font-weight: bold;
 }
 
+.tags-selector__modal__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+}
+
+.tags-selector .o-modal__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.tags-selector__search>.o-search-group__clear {
+    top: calc(0.5rem + 4px);
+    right: calc(0.5rem + 4px);
+}
+
+.tags-selector__search--filled.tags-selector__search>.o-search-group__clear {
+    opacity: 0.8;
+    transform: scale(0.85);
+    pointer-events: initial;
+}
+
+
+
 @media only screen and (min-width: 600px) {
+    .o-cases__case_element__header__row__tags {
+        border-top: none;
+    }
 
     .o-navbar__left {
         -webkit-box-orient: horizontal;
@@ -10229,5 +10263,23 @@ ul.tags-selector__dropdow__create {
         -ms-flex-align: center;
         align-items: center;
         gap: 3rem;
+    }
+
+    .o-multi-select {
+        width: auto;
+    }
+
+    .vue-subheader-filters__flex__row {
+        flex-direction: row;
+    }
+
+    .o-body__list-of-cases__right {
+        margin-bottom: 0;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .vue-subheader-filters__flex__row {
+        width: 100%;
     }
 }

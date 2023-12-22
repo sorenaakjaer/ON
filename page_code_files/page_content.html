@@ -1765,9 +1765,10 @@
         <div class="tags-selector__bg" @click="onMultiSelectBGClick" v-if="isOpen"></div>
         <div class="tags-selector__container" v-if="isOpen">
         <div>
-            <div class="tags-selector__search">
+            <div class="tags-selector__search" :class="{'tags-selector__search--filled': query.length > 0}">
                 <input type="search" placeholder="Søg.." id="o-multi-select_search_input" ref="query_input" v-model="query">
-                </div>
+                <div class="o-search-group__clear" @click="clearQuery" style=""><i class="tio">clear_circle</i></div>
+            </div>
                 <ul class="tags-selector__dropdown">
                     <li v-for="(item, index) in filteredItems" 
                     :key="item.value" 
@@ -1792,9 +1793,13 @@
             <div class="o-modal--alwaysactive vue-modal vue-modal--small" v-if="isForgotToSave" >
                 <div class="o-modal__body">
                     <h4>Vil du gemme dine ændringer?</h4>
+                    <div class="tags-selector__modal__close" @click="isForgotToSave = false">
+                        <div class="tio clear bg-icon-hover"></div>
+                    </div>
+                    <div class="bg_icon">
                     <div class="o-modal__body__actions">
                         <button class="o-btn o-btn--small" @click="closeWithoutSaving">
-                            Annuller
+                            Gem ikke
                         </button>
                         <button class="o-btn o-btn--primary o-btn--small" :class="{'o-btn--loading': is_loading_tag_button}"
                             @click="saveTags">Gem ændringerne

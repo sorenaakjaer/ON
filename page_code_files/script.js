@@ -645,7 +645,11 @@ $(document).one("trigger::vue_loaded", function () {
 			onMultiSelectBGClick() {
 				this.setIsOpen(false)
 				this.$emit('close')
-			}
+			},
+			clearQuery() {
+				this.query = ''
+				this.$refs.query_input.focus()
+			},
 		}
 	})
 
@@ -1635,6 +1639,9 @@ $(document).one("trigger::vue_loaded", function () {
 		methods: {
 			/* START 17-12-23 */
 			getAllLocalStorageFilter() {
+				if (!this.isNewDesignActive) {
+					return
+				}
 				this.theActiveFilterTags = []
 				this.theActiveFilterGroups = []
 				this.theActiveFilterStatus = []
@@ -2032,7 +2039,7 @@ $(document).one("trigger::vue_loaded", function () {
 				});
 
 				// Set date and time picker
-				setDateTimePicker();
+				// setDateTimePicker();
 				// START ADDED 26-11-23 For openByOtherEmp
 				isSeeCaseOpenByOthers = true
 				this.seeCaseOpenByOthers();
@@ -2232,7 +2239,7 @@ $(document).one("trigger::vue_loaded", function () {
 					$(".js-page-title").text(s);
 
 					this.activeCategory = e;
-					if (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases') {
+					if (this.isNewDesignActive && (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases')) {
 						this.getAllLocalStorageFilter()
 						return
 					}
@@ -2243,6 +2250,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.infiniteScrollNumber = 50;
 				this.clearSearchQuery();
 				this.activeType = null;
+				console.log('resetFilters', this.activeType)
 				$(".vue-filter-2").each(function () {
 					$(this).removeClass("o-btn__filter---active");
 				});
@@ -2264,7 +2272,7 @@ $(document).one("trigger::vue_loaded", function () {
 				$(".vue-filter-2").each(function () {
 					$(this).removeClass("o-btn__filter---active");
 				})
-				if (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases') {
+				if (this.isNewDesignActive && (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases')) {
 					this.getAllLocalStorageFilter()
 				}
 			},
