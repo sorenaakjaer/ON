@@ -3384,16 +3384,18 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		mounted() {
-			var e = this,
-				t = window.location.href,
-				s = t.indexOf("&ID=");
-			if (0 > t.indexOf("&ID=&GUID")) {
-				var a = t.substring(s + 4, t.indexOf("&GUID="));
-				this.setActivecCategory("all_cases"), this.$refs.v_search_query.value = a, this.searchQuery = a
-			}
+			var e = this
 			this.theActiveLoggedInCompany = $(".FROM_COMPANY > input").val()
 			/* START 17-12-23 */
 			this.$nextTick(_ => {
+				t = window.location.href
+				s = t.indexOf("&ID=");
+				if (0 > t.indexOf("&ID=&GUID")) {
+					var a = t.substring(s + 4, t.indexOf("&GUID="));
+					this.setActivecCategory("all_cases")
+					this.$refs.v_search_query.value = a
+					this.searchQuery = a
+				}
 				$(document).trigger("trigger::vue_mounted")
 				const el = $('.updTagOrGroup_Output_mvp_groups > div')
 				if (el && el.length > 0) {
