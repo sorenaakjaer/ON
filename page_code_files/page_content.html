@@ -358,6 +358,13 @@
                                     :i18n="statusI18N"></o-multi-select>
                             </div>
                             <div class="o-body__list-of-cases__right" v-if="theActiveFilter !=='dynamic'">
+                                <div class="o-sort-setting o-dropdown vue-dropdown hint--left vue2-remove-all-filter-icon"
+                                    aria-label="Fjern alle filtre" @click.prevent="removeAllFilters"
+                                    v-if="isAnyFiltersActive">
+                                    <div class="o-dropdown__selected">
+                                        <i class="tio">remove_from_trash</i>
+                                    </div>
+                                </div>
                                 <div class="o-search-group">
                                     <div class="o-icon">
                                         <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
@@ -445,7 +452,6 @@
                             </div>
                             <div class="vue-o-right-items">
                                 <p>Sager i listen: {{ searchedCases.length }}</p>
-                                <a @click.prevent="removeAllFilters" href="#">Fjern alle filtre</a>
                             </div>
                         </div>
                     </template>

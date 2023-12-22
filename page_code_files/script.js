@@ -1159,6 +1159,9 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		computed: {
 			/* START 17-12-23 */
+			isAnyFiltersActive() {
+				return this.theActiveFilterTags.length > 0 || this.theActiveFilterGroups.length > 0 || this.theActiveFilterStatus.length > 0 || this.theActiveFilterCategories.length > 0 || this.activeType
+			},
 			isNewDesignActive() {
 				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet']
 				return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1

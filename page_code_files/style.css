@@ -5380,6 +5380,7 @@ body, .o-page {
     justify-content: flex-end;
     width: 100%;
     margin-bottom: 0.5rem;
+    gap: 0.5rem;
 }
 
 .o-search-group {
@@ -10229,6 +10230,21 @@ ul.tags-selector__dropdow__create {
     pointer-events: initial;
 }
 
+.vue2-remove-all-filter-icon {
+    background-color: #fdf1f2 !important;
+}
+
+.vue2-remove-all-filter-icon .tio {
+    color: #9f374f;
+}
+
+.vue2-remove-all-filter-icon:hover {
+    border-color: #9f374f !important;
+}
+
+.o-page.o-page--docs .vue-subheader-filters.vue-subheader-filters__flex {
+    gap: 0.5rem;
+}
 
 
 @media only screen and (min-width: 600px) {
