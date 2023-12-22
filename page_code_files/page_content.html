@@ -397,39 +397,47 @@
                             <div class="vue-subheader-filters__flex__row">
                                 <div class="o-btn o-btn__filter vue-filter-2"
                                     v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
+                                    :class="{'vue-filter-2--active': activeType === 'filter_created_by_me'}"
                                     @click="setActiveType('filter_created_by_me', $event)"> Oprettet af mig
                                     <div class="o-badge">{{lengthOfCases.filter_created_by_me}}</div>
                                 </div>
                                 <div class="o-btn o-btn__filter vue-filter-2"
                                     v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
+                                    :class="{'vue-filter-2--active': activeType === 'filter_assigned_me'}"
                                     @click="setActiveType('filter_assigned_me', $event)"> Tildelt til mig
                                     <div class="o-badge">{{lengthOfCases.filter_assigned_me}}</div>
                                 </div>
                                 <div class="o-btn o-btn__filter vue-filter-2"
                                     v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
+                                    :class="{'vue-filter-2--active': activeType === 'filter_followed_by_me'}"
                                     @click="setActiveType('filter_followed_by_me', $event)"> Jeg følger
                                     <div class="o-badge">{{lengthOfCases.filter_followed_by_me}}</div>
                                 </div>
                                 <div class="o-btn o-btn__filter vue-filter-2"
+                                    :class="{'vue-filter-2--active': activeType === 'filter_sla_expired'}"
                                     @click="setActiveType('filter_sla_expired', $event)"> Overskredet SLA
                                     <div class="o-badge">{{lengthOfCases.filter_sla_expired}}</div>
                                 </div>
                                 <div class="o-btn o-btn__filter vue-filter-2"
+                                    :class="{'vue-filter-2--active': activeType === 'filter_new'}"
                                     v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
                                     @click="setActiveType('filter_new', $event)"> Ulæste / Nye
                                     <div class="o-badge">{{lengthOfCases.filter_new}}</div>
                                 </div>
                                 <div class="o-btn o-btn__filter vue-filter-2"
+                                    :class="{'vue-filter-2--active': activeType === 'not_assigned'}"
                                     v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
                                     @click="setActiveType('not_assigned', $event)"> Ikke tildelt
                                     <div class="o-badge">{{lengthOfCases.not_assigned}}</div>
                                 </div>
                                 <div class="o-btn o-btn__filter vue-filter-2"
+                                    :class="{'vue-filter-2--active': activeType === 'filter_follow_up'}"
                                     v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
                                     @click="setActiveType('filter_follow_up', $event)"> Opfølgning
                                     <div class="o-badge">{{lengthOfCases.filter_follow_up}}</div>
                                 </div>
                                 <div class="o-btn o-btn__filter vue-filter-2"
+                                    :class="{'vue-filter-2--active': activeType === 'filter_not_follow_up'}"
                                     v-if="this.theUserType=='ON' && theActiveFilter=='active'"
                                     @click="setActiveType('filter_not_follow_up', $event)"> Ikke opfølgning
                                     <div class="o-badge">{{lengthOfCases.filter_not_follow_up}}</div>

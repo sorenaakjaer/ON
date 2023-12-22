@@ -1161,7 +1161,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			allCaseCategories() {
 				const uniqueArr = [{ value: 'v_no_selected', label: 'Uden kategori' }]
-				this.cases.forEach(caseItem => {
+				this.casesFiltered2.forEach(caseItem => {
 					const dbValue = caseItem['filter_category']
 					if (dbValue) {
 						const idx = uniqueArr.findIndex(allTag => allTag.value === dbValue)
@@ -1175,7 +1175,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			allCaseStatus() {
 				const uniqueArr = [{ value: 'v_no_selected', label: 'Uden status' }]
-				this.cases.forEach(caseItem => {
+				this.casesFiltered2.forEach(caseItem => {
 					const dbValue = caseItem['status']
 					if (dbValue) {
 						const idx = uniqueArr.findIndex(allTag => allTag.value === dbValue)
@@ -1189,7 +1189,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			allCaseGroups() {
 				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden gruppe' }]
-				this.cases.forEach(caseItem => {
+				this.casesFiltered2.forEach(caseItem => {
 					if (caseItem['v_groups']) {
 						caseItem['v_groups'].forEach(tag => {
 							const idx = uniqueTags.findIndex(allTag => allTag.value === tag.value)
@@ -1204,7 +1204,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			allCaseTags() {
 				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden tags' }]
-				this.cases.forEach(caseItem => {
+				this.casesFiltered2.forEach(caseItem => {
 					if (caseItem['v_tags']) {
 						caseItem['v_tags'].forEach(tag => {
 							const idx = uniqueTags.findIndex(allTag => allTag.value === tag.value)
@@ -1634,6 +1634,46 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		methods: {
 			/* START 17-12-23 */
+			getAllLocalStorageFilter() {
+				this.theActiveFilterTags = []
+				this.theActiveFilterGroups = []
+				this.theActiveFilterStatus = []
+				this.theActiveFilterCategories = []
+				this.activeType = null
+				this.getLocalStorageFilter('theActiveFilterTags')
+				this.getLocalStorageFilter('theActiveFilterGroups')
+				this.getLocalStorageFilter('theActiveFilterStatus')
+				this.getLocalStorageFilter('theActiveFilterCategories')
+				this.getLocalStorageFilter('activeType')
+			},
+			removeAllFilters() {
+				this.theActiveFilterTags = []
+				this.setLocalStorageFilter('theActiveFilterTags', this.theActiveFilterTags)
+				this.theActiveFilterGroups = []
+				this.setLocalStorageFilter('theActiveFilterGroups', this.theActiveFilterGroups)
+				this.theActiveFilterStatus = []
+				this.setLocalStorageFilter('theActiveFilterStatus', this.theActiveFilterStatus)
+				this.theActiveFilterCategories = []
+				this.setLocalStorageFilter('theActiveFilterCategories', this.theActiveFilterCategories)
+				this.activeType = null;
+				this.setLocalStorageFilter('activeType', null)
+				this.infiniteScrollNumber = 50;
+				this.clearSearchQuery();
+			},
+			setLocalStorageFilter(filterType, filterArr) {
+				const localTitle = this.activeCategory + '_' + this.theActiveFilter + '_' + filterType
+				if (!filterArr || filterArr.length === 0) {
+					localStorage.removeItem(localTitle)
+				} else {
+					localStorage.setItem(localTitle, JSON.stringify(filterArr))
+				}
+			},
+			getLocalStorageFilter(filterType, filterArr) {
+				const localTitle = this.activeCategory + '_' + this.theActiveFilter + '_' + filterType
+				if (localStorage.getItem(localTitle)) {
+					this[filterType] = JSON.parse(localStorage.getItem(localTitle));
+				}
+			},
 			toggleFilterCategory(item) {
 				const idx = this.theActiveFilterCategories.indexOf(item.value)
 				if (idx < 0) {
@@ -1641,6 +1681,7 @@ $(document).one("trigger::vue_loaded", function () {
 				} else {
 					this.theActiveFilterCategories.splice(idx, 1)
 				}
+				this.setLocalStorageFilter('theActiveFilterCategories', this.theActiveFilterCategories)
 			},
 			toggleFilterStatus(item) {
 				const idx = this.theActiveFilterStatus.indexOf(item.value)
@@ -1649,12 +1690,7 @@ $(document).one("trigger::vue_loaded", function () {
 				} else {
 					this.theActiveFilterStatus.splice(idx, 1)
 				}
-			},
-			removeAllFilters() {
-				this.theActiveFilterTags = []
-				this.theActiveFilterGroups = []
-				this.theActiveFilterStatus = []
-				this.resetFilters()
+				this.setLocalStorageFilter('theActiveFilterStatus', this.theActiveFilterStatus)
 			},
 			toggleFilterTag(item) {
 				const idx = this.theActiveFilterTags.indexOf(item.value)
@@ -1663,6 +1699,7 @@ $(document).one("trigger::vue_loaded", function () {
 				} else {
 					this.theActiveFilterTags.splice(idx, 1)
 				}
+				this.setLocalStorageFilter('theActiveFilterTags', this.theActiveFilterTags)
 			},
 			toggleFilterGroup(item) {
 				const idx = this.theActiveFilterGroups.indexOf(item.value)
@@ -1671,6 +1708,7 @@ $(document).one("trigger::vue_loaded", function () {
 				} else {
 					this.theActiveFilterGroups.splice(idx, 1)
 				}
+				this.setLocalStorageFilter('theActiveFilterGroups', this.theActiveFilterGroups)
 			},
 			updateItemTags(tagsArr) {
 				const caseOnId = this.theActiveCaseForTag.onid
@@ -2194,27 +2232,60 @@ $(document).one("trigger::vue_loaded", function () {
 					$(".js-page-title").text(s);
 
 					this.activeCategory = e;
+					if (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases') {
+						this.getAllLocalStorageFilter()
+						return
+					}
 					this.resetFilters();
 				}
 			},
 			resetFilters() {
-
-				this.infiniteScrollNumber = 50, this.clearSearchQuery(), this.activeType = null, $(".vue-filter-2").each(function () {
-					$(this).removeClass("o-btn__filter---active")
-				}), this.theUnreadSelected = "Alle", this.theActiveFilter = "active", this.theActiveCaseCategory = "Alle kategorier", this.theActiveOnpProductListFilter = "Fra alle"
+				this.infiniteScrollNumber = 50;
+				this.clearSearchQuery();
+				this.activeType = null;
+				$(".vue-filter-2").each(function () {
+					$(this).removeClass("o-btn__filter---active");
+				});
+				this.theUnreadSelected = "Alle";
+				this.theActiveFilter = "active";
+				this.theActiveCaseCategory = "Alle kategorier";
+				this.theActiveOnpProductListFilter = "Fra alle";
 			},
 			setActiveCaseCategory(e) {
 				this.theActiveCaseCategory = e
 			},
-			setTheActiveFilter(e) {
-				this.theActiveFilter = e, this.clearSearchQuery(), this.theUnreadSelected = "Alle", this.activeType = null, $(".vue-filter-2").each(function () {
-					$(this).removeClass("o-btn__filter---active")
+			setTheActiveFilter(event) {
+				this.theActiveFilter = event;
+				this.clearSearchQuery();
+				this.theUnreadSelected = "Alle";
+
+				// Set the active type to null
+				this.activeType = null;
+				$(".vue-filter-2").each(function () {
+					$(this).removeClass("o-btn__filter---active");
 				})
+				if (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases') {
+					this.getAllLocalStorageFilter()
+				}
 			},
-			setActiveType(e, t) {
-				this.infiniteScrollNumber = 50, $(".vue-filter-2").each(function () {
-					$(this).removeClass("o-btn__filter---active")
-				}), this.activeType === e ? this.activeType = null : (this.activeType = e, $(t.currentTarget).addClass("o-btn__filter---active"))
+			setActiveType(event, target) {
+				// Reset the infinite scroll number
+				this.infiniteScrollNumber = 50;
+				$(".vue-filter-2").removeClass("o-btn__filter---active");
+
+				// Toggle the active type
+				if (this.activeType === event) {
+					this.activeType = null;
+				} else {
+					this.activeType = event;
+					$(target.currentTarget).addClass("o-btn__filter---active");
+				}
+
+				// Added 17-12-23
+				if (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases') {
+					this.setLocalStorageFilter('activeType', this.activeType)
+					return
+				}
 			},
 			createUserModal() {
 				window.scroll(0, 0), subCatChangeSelect("Create User"), Set_UM_USER_INIT = !0, $(".UM_DISPLAY_NAME > input").val(""), $(".UM_COPY_OF > select").val(""), $(".UM_USER_ID > input").val(""), $(".UM_USER_INIT > input").val(""), $(".UM_USER_INIT > .Web_Error").html(""), $(".UM_USER_INIT > .Web_Error").hide(), $(".UM_USER_NAME > input").val(""), $(".UM_EMAIL > input").val(""), $(".UM_GROUP_ID > input").val(""), $(".UM_MOBILE_NO > input").val(""), $(".UM_PASSWORD > input").val(""), $(".UM_EVENT_TYPE > input").val(""), $(".o-bg-overlay").addClass("o-bg-overlay--active"), $(".js-o-modal__create-case").addClass("o-create-case--active"), $("body").css("overflow", "hidden"), $(".js-modal-create-title").text("Opret bruger")
@@ -3329,6 +3400,7 @@ $(document).one("trigger::vue_loaded", function () {
 					const arrOfPredifinedGroups = el.html() && el.html().length > 2 ? JSON.parse(el.html()) : []
 					this.thePredefinedGroups = arrOfPredifinedGroups
 				}
+				this.getAllLocalStorageFilter()
 			})
 			/* END 17-12-23 */
 			"OpenNet" == $(".FROM_COMPANY > input").val() && $(".LOGIN_CUSTOMER_TYPE > input").val("ON"), this.theUserType = $(".LOGIN_CUSTOMER_TYPE > input").val(), "ON" == this.theUserType && $(".INQUIRY_TYPE_LEVEL0 > select").html($(".INQUIRY_TYPE_LEVEL0 > select").html().replace("SP</option>", "Til Infrastructure owner (IO)</option>").replace("IO</option>", "Til Service Provider (SP)</option>")), "ON" == this.theUserType ? ($(".js-click-case-edit-ref").removeClass("hidden_field"), $(".toggle-timeline-read-msg").removeClass("hidden_field"), readTimelineReadMsgCookie()) : ($("#js-checkbox__toogle-timeline_read_msg").prop("checked", !0), readTimelineReadMsgCookie()), document.querySelector("#o-page").addEventListener("click", function (t) {

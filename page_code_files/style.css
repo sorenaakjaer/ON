@@ -10084,6 +10084,7 @@ ul.tags-selector__dropdow__create {
 
 .tags-selector__selected p {
     margin-bottom: 0;
+    text-wrap: nowrap;
 }
 
 .tags-selector__selected .tio {
@@ -10191,6 +10192,12 @@ ul.tags-selector__dropdow__create {
 
 .tags-selector__tag-item__no-tags {
     font-style: italic;
+}
+
+.o-btn.o-btn__filter.vue-filter-2.vue-filter-2--active {
+    border-color: var(--primary);
+    background: rgb(10 55 170 / 10%);
+    font-weight: bold;
 }
 
 @media only screen and (min-width: 600px) {
