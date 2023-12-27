@@ -2305,14 +2305,13 @@ $(document).one("trigger::vue_loaded", function () {
 				this.setIframeForOpenAnalytics()
 			},
 			setIframeForOpenAnalytics() {
-				// this.isLoadingTheOpenAnalyticsIframe = true
+				this.isLoadingTheOpenAnalyticsIframe = true
 				function constructURLWithSecret(baseURL, secretValue) {
 					const queryParams = new URLSearchParams(window.location.search);
 					queryParams.set('secret', secretValue);
 					const newURL = `${baseURL}?${queryParams.toString()}`;
 					return newURL;
 				}
-				const openAnalyticsSecret = 'your_secret_value_here';
 				if (this.theActiveFilter === 'OpenAnalytics_tab1') {
 					const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/1';
 					this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
@@ -2322,23 +2321,19 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				if (this.theActiveFilter === 'OpenAnalytics_tab2') {
 					const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/2';
-					this.theOpenAnalyticsIframeUrl = 'http://hrmedia.dk/' // constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
+					this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
 				}
 				// Wait for Vue's next tick to ensure the DOM updates
 				this.$nextTick(() => {
 					const iframe = this.$refs.openAnalyticsIframe;
-					console.log(iframe)
 					if (iframe) {
 						iframe.onload = () => {
-							console.log('iframe loaded')
-							// The iframe is now fully loaded, add your event listeners here
 							this.addIframeEventListeners(iframe);
 						};
 					}
 				})
 			},
 			addIframeEventListeners(iframe) {
-				console.log('iFrameAddEventListener')
 				const self = this
 				const handleMessage = (event) => {
 					console.log('message!', event)
@@ -2348,11 +2343,10 @@ $(document).one("trigger::vue_loaded", function () {
 					if (event.data.type === 'Inspari_iframeChanged') {
 						console.log('Inspari_iframeChanged event received', event.data);
 					}
-					if (event.data.type === 'Inspari_iframeChanged') {
+					if (event.data.type === 'Inspari_iframeLoaded') {
 						self.isLoadingTheOpenAnalyticsIframe = false
 						console.log('Inspari_iframeLoaded event received', event.data);
 					}
-					console.log('Message received from iframe:', event.data);
 				};
 
 				window.addEventListener('message', handleMessage);
@@ -3494,6 +3488,25 @@ $(document).one("trigger::vue_loaded", function () {
 					this.$refs.v_search_query.value = a
 					this.searchQuery = a
 				}
+				const getQueryParams = (url) => {
+					const urlObj = new URL(url);
+					const params = new URLSearchParams(urlObj.search);
+					const area = params.get('area');
+					const tab = params.get('tab');
+					return { area, tab }
+				}
+				const urlParams = getQueryParams(window.location)
+				if (urlParams.area && urlParams.tab) {
+					if (urlParams.area === 'openanalytics') {
+						this.setActivecCategory('OpenAnalytics')
+					}
+					if (urlParams.tab === 'data') {
+						this.setTheActiveFilter('OpenAnalytics_tab1')
+					}
+					if (urlParams.tab === 'datasubscriptions') {
+						this.setTheActiveFilter('OpenAnalytics_tab2')
+					}
+				}
 				$(document).trigger("trigger::vue_mounted")
 				const el = $('.updTagOrGroup_Output_mvp_groups > div')
 				if (el && el.length > 0) {
@@ -3663,6 +3676,7 @@ var run_autoupdate = !1;
 var $form = $(".js-case-drop-files");
 var droppedFiles = !1;
 var Set_UM_USER_INIT = !0;
+var openAnalyticsSecret = 'your_secret_value_here_global';
 
 // Variables - START //
 
