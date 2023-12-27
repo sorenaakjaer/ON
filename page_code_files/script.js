@@ -867,6 +867,7 @@ $(document).one("trigger::vue_loaded", function () {
 		el: "#o-app",
 		data: {
 			/* START 17-12-23 */
+			isLoadingTheOpenAnalyticsIframe: false,
 			theOpenAnalyticsIframeUrl: 'https://opn-iframes-dev.azurewebsites.net/',
 			statusI18N: {
 				New_msg: 'Ny besked',
@@ -2304,10 +2305,11 @@ $(document).one("trigger::vue_loaded", function () {
 				this.setIframeForOpenAnalytics()
 			},
 			setIframeForOpenAnalytics() {
+				// this.isLoadingTheOpenAnalyticsIframe = true
 				function constructURLWithSecret(baseURL, secretValue) {
 					const queryParams = new URLSearchParams(window.location.search);
 					queryParams.set('secret', secretValue);
-					const newURL = `${baseURL}&${queryParams.toString()}`;
+					const newURL = `${baseURL}?${queryParams.toString()}`;
 					return newURL;
 				}
 				const openAnalyticsSecret = 'your_secret_value_here';
@@ -2320,22 +2322,26 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				if (this.theActiveFilter === 'OpenAnalytics_tab2') {
 					const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/2';
-					this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
+					this.theOpenAnalyticsIframeUrl = 'http://hrmedia.dk/' // constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
 				}
 				// Wait for Vue's next tick to ensure the DOM updates
 				this.$nextTick(() => {
 					const iframe = this.$refs.openAnalyticsIframe;
-					console.log({ iframe })
+					console.log(iframe)
 					if (iframe) {
 						iframe.onload = () => {
+							console.log('iframe loaded')
 							// The iframe is now fully loaded, add your event listeners here
 							this.addIframeEventListeners(iframe);
 						};
 					}
-				});
+				})
 			},
 			addIframeEventListeners(iframe) {
+				console.log('iFrameAddEventListener')
+				const self = this
 				const handleMessage = (event) => {
+					console.log('message!', event)
 					if (event.origin !== 'https://opn-iframes-dev.azurewebsites.net') {
 						return; // Ensure the message is from a trusted origin
 					}
@@ -2343,6 +2349,7 @@ $(document).one("trigger::vue_loaded", function () {
 						console.log('Inspari_iframeChanged event received', event.data);
 					}
 					if (event.data.type === 'Inspari_iframeChanged') {
+						self.isLoadingTheOpenAnalyticsIframe = false
 						console.log('Inspari_iframeLoaded event received', event.data);
 					}
 					console.log('Message received from iframe:', event.data);
