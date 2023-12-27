@@ -1814,7 +1814,7 @@
         </transition>
         <div class="tags-selector__bg" :class="{'tags-selector__bg--dark': isForgotToSave}" @click="onTagsBGClick"></div>
         <div class="tags-selector__container" id="popperTagsDropdown">
-            <div class="tags-selector__container__header" v-if="initSelectedTags.length > 0 && theTagsSelectorView === 1">
+            <div class="tags-selector__container__header" v-if="selectedTags.length > 0 && theTagsSelectorView === 1">
                 <p @click="removeAllTags" class="tags-selector__container__header__remove-all">Fjern alle valgte</p>
             </div>
         <div v-if="theTagsSelectorView === 1">

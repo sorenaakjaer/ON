@@ -709,8 +709,7 @@ $(document).one("trigger::vue_loaded", function () {
 				isEdited: false,
 				selectedTags: [],
 				newTags: [],
-				isForgotToSave: false,
-				initSelectedTags: []
+				isForgotToSave: false
 			};
 		},
 		computed: {
@@ -832,7 +831,6 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			removeAllTags() {
 				this.selectedTags = []
-				this.initSelectedTags = []
 				this.isEdited = true
 			},
 			onSelectTag(tag) {
@@ -858,10 +856,8 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		mounted() {
 			if (this.active_tag_type === 'tag') {
-				this.initSelectedTags = JSON.parse(JSON.stringify(this.active_case.v_tags))
 				this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_tags))
 			} else {
-				this.initSelectedTags = JSON.parse(JSON.stringify(this.active_case.v_groups))
 				this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_groups))
 			}
 		}
