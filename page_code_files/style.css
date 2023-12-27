@@ -10338,3 +10338,23 @@ ul.tags-selector__dropdow__create {
         width: 100%;
     }
 }
+
+.o-cases--is-open-analytics {
+    position: relative;
+}
+
+.o-iframe-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #eee;
+    z-index: 123;
+}
+
+.o-iframe-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}

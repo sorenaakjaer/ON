@@ -867,6 +867,7 @@ $(document).one("trigger::vue_loaded", function () {
 		el: "#o-app",
 		data: {
 			/* START 17-12-23 */
+			theOpenAnalyticsIframeUrl: 'https://opn-iframes-dev.azurewebsites.net/',
 			statusI18N: {
 				New_msg: 'Ny besked',
 				New: 'Ny',
@@ -2191,9 +2192,12 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			setActivecCategory(e, t) {
 				if (e !== this.activeCategory) {
-					window.scroll(0, 0), $('ul.o-menu__items__inner > li[class^="js-"]').each(function () {
+					window.scroll(0, 0)
+
+					$('ul.o-menu__items__inner > li[class^="js-"]').each(function () {
 						$(this).removeClass("li--active")
-					}), $(".js-o-cases__container").removeClass("o-cases__container--loading"), $(".o-page").removeClass("o-page--all-cases"), $(".o-page").hasClass("o-page--docs") || $(".o-page").addClass("o-page--docs");
+					})
+					$(".js-o-cases__container").removeClass("o-cases__container--loading"), $(".o-page").removeClass("o-page--all-cases"), $(".o-page").hasClass("o-page--docs") || $(".o-page").addClass("o-page--docs");
 					var s = "";
 					switch (e) {
 						case "my_cases":
@@ -2260,13 +2264,15 @@ $(document).one("trigger::vue_loaded", function () {
 						return
 					}
 					this.resetFilters();
+					if (e === 'OpenAnalytics') {
+						this.setTheActiveFilter('')
+					}
 				}
 			},
 			resetFilters() {
 				this.infiniteScrollNumber = 50;
 				this.clearSearchQuery();
 				this.activeType = null;
-				console.log('resetFilters', this.activeType)
 				$(".vue-filter-2").each(function () {
 					$(this).removeClass("o-btn__filter---active");
 				});
@@ -2291,6 +2297,62 @@ $(document).one("trigger::vue_loaded", function () {
 				if (this.isNewDesignActive && (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases')) {
 					this.getAllLocalStorageFilter()
 				}
+				if (this.activeCategory !== 'OpenAnalytics') {
+					return
+				}
+				// For OpenAnalytics
+				this.setIframeForOpenAnalytics()
+			},
+			setIframeForOpenAnalytics() {
+				function constructURLWithSecret(baseURL, secretValue) {
+					const queryParams = new URLSearchParams(window.location.search);
+					queryParams.set('secret', secretValue);
+					const newURL = `${baseURL}&${queryParams.toString()}`;
+					return newURL;
+				}
+				const openAnalyticsSecret = 'your_secret_value_here';
+				if (this.theActiveFilter === 'OpenAnalytics_tab1') {
+					const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/1';
+					this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
+					// For demonstration purpose
+					const openAnalyticsIframeURL = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret);
+					console.log(openAnalyticsIframeURL);
+				}
+				if (this.theActiveFilter === 'OpenAnalytics_tab2') {
+					const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/2';
+					this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
+				}
+				// Wait for Vue's next tick to ensure the DOM updates
+				this.$nextTick(() => {
+					const iframe = this.$refs.openAnalyticsIframe;
+					console.log({ iframe })
+					if (iframe) {
+						iframe.onload = () => {
+							// The iframe is now fully loaded, add your event listeners here
+							this.addIframeEventListeners(iframe);
+						};
+					}
+				});
+			},
+			addIframeEventListeners(iframe) {
+				const handleMessage = (event) => {
+					if (event.origin !== 'https://opn-iframes-dev.azurewebsites.net') {
+						return; // Ensure the message is from a trusted origin
+					}
+					if (event.data.type === 'Inspari_iframeChanged') {
+						console.log('Inspari_iframeChanged event received', event.data);
+					}
+					if (event.data.type === 'Inspari_iframeChanged') {
+						console.log('Inspari_iframeLoaded event received', event.data);
+					}
+					console.log('Message received from iframe:', event.data);
+				};
+
+				window.addEventListener('message', handleMessage);
+
+				this.$once('hook:beforeDestroy', () => {
+					window.removeEventListener('message', handleMessage);
+				});
 			},
 			setActiveType(event, target) {
 				// Reset the infinite scroll number

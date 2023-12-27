@@ -340,7 +340,7 @@
                     </div>
                 </div>
             </div>
-            <div class="o-cases">
+            <div class="o-cases" :class="{'o-cases--is-open-analytics': activeCategory === 'OpenAnalytics'}">
                 <div class="vue-subheader-filters o-body__list-of-cases o-wrapper"
                     :class="{'vue-subheader-filters__flex': isNewDesignActive}" v-cloak v-if="!isViewRoles">
                     <!-- START 17-12-23 -->
@@ -456,7 +456,8 @@
                         </div>
                     </template>
                     <!-- END 17-12-23 -->
-                    <div class="o-body__list-of-cases__left" v-if="!isNewDesignActive || !isCases"><i class="tio">
+                    <div class="o-body__list-of-cases__left"
+                        v-if="(!isNewDesignActive || !isCases) && activeCategory !== 'OpenAnalytics'"><i class=" tio">
                             filter </i>
                         <div class="o-body__list-of-cases__left__filters"
                             v-if="activeCategory==='end_customer_pricing_config'">
@@ -633,8 +634,20 @@
                             </div>
                         </template>
                     </div>
-                    <h4 class="text-explainer"
-                        v-if="activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && !isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter !=='dynamic'"
+                    <div v-if="activeCategory === 'OpenAnalytics'">
+                        <div v-if="theActiveFilter === ''">
+                            <h1>Velkommen til OpenAnalytics</h1>
+                            <h4>Vælg et filter i toppen</h4>
+                        </div>
+                        <template v-if="theActiveFilter !== ''">
+                            <div class="o-iframe-container"
+                                v-if="theActiveFilter === 'OpenAnalytics_tab1' ||theActiveFilter === 'OpenAnalytics_tab2'">
+                                <iframe ref="openAnalyticsIframe" :src="theOpenAnalyticsIframeUrl"></iframe>
+                            </div>
+                        </template>
+                    </div>
+                    <h4 class=" text-explainer"
+                        v-if="activeCategory !=='OpenAnalytics' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && !isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter !=='dynamic'"
                         v-cloak> Ingen dokumenter matcher din søgning (1) {{ activeCategory }}
                     </h4>
                     <!-- <h4 class="text-explainer" v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1" v-cloak> Ingen dokumenter matcher din søgning</h4>-->
@@ -646,9 +659,11 @@
                         <div class="vue-spinner__container" v-if="isSearchingOldCases || isSearchingPartnerCases"
                             v-cloak>
                             <div class="vue-spinner o-spinner"></div>
-                            <p class="text-explainer o-spinner__text" v-if="isSearchingOldCases">Søger i gamle sager på
+                            <p class="text-explainer o-spinner__text" v-if="isSearchingOldCases">Søger i gamle
+                                sager på
                                 serveren. Det kan tage lidt tid.. </p>
-                            <p class="text-explainer o-spinner__text" v-if="isSearchingPartnerCases">Søger sager hos
+                            <p class="text-explainer o-spinner__text" v-if="isSearchingPartnerCases">Søger sager
+                                hos
                                 partnere. Det kan tage lidt tid.. </p>
                         </div>
                         <template v-if="!isSearchingOldCases && !isSearchingPartnerCases">
@@ -657,13 +672,15 @@
                                 serveren
                             </button>
                             <button v-if="theUserType==='ON' && activeCategory==='all_cases'"
-                                class="o-btn no-cases-matches__btn" @click="setSearchInParnerCases">Søg i sager hos
+                                class="o-btn no-cases-matches__btn" @click="setSearchInParnerCases">Søg i sager
+                                hos
                                 partnerne
                             </button>
                         </template>
                     </div>
                     <div class="empty_list vu-message" style="font-style: italic"
-                        v-if="isCases && isClosedCasesLoading && this.theActiveFilter=='inactive'">Der indlæses stadig
+                        v-if="isCases && isClosedCasesLoading && this.theActiveFilter=='inactive'">Der indlæses
+                        stadig
                         afsluttede sager
                     </div>
                     <div class="vue-spinner o-spinner" v-if="isCases && casesIsLoading" v-cloak></div>
@@ -715,7 +732,8 @@
                                     <div v-if="itemCase.filter_sla_expired=='true'">SLA: <span
                                             class="o-pill o-pill--red">{{itemCase.sla_deadline_date}}</span>
                                     </div>
-                                    <div v-if="itemCase.filter_sla_expired=='false'">SLA:{{itemCase.sla_deadline_date}}
+                                    <div v-if="itemCase.filter_sla_expired=='false'">
+                                        SLA:{{itemCase.sla_deadline_date}}
                                     </div>
                                     <div class="etray_case_status"> Status:
                                         <span class="o-pill" :class="{
@@ -726,10 +744,12 @@
                                     </div>
                                     <div class="js-case-assigned-to">Tildelt: {{itemCase.assign_to}}</div>
                                     <div>SSID: {{itemCase.ssid}}</div>
-                                    <div v-if="itemCase.basket_id.length > 0">Basked ID:{{itemCase.basket_id}}</div>
+                                    <div v-if="itemCase.basket_id.length > 0">Basked ID:{{itemCase.basket_id}}
+                                    </div>
                                     <div class="js-intern-ref">Intern ref.: {{itemCase.company_ref}}</div>
                                     <div v-if="itemCase.adr.length > 0">Adresse: {{itemCase.adr}}</div>
-                                    <div v-if="itemCase.onhold_until && itemCase.onhold_until.length > 0">Opfølgning
+                                    <div v-if="itemCase.onhold_until && itemCase.onhold_until.length > 0">
+                                        Opfølgning
                                         udløber: {{itemCase.onhold_until}}</div>
                                 </div>
                                 <template v-if="isNewDesignActive">
@@ -759,7 +779,8 @@
                                                 {{ tag.value }}
                                             </div>
                                             <div class="itemcase-tags__add"
-                                                v-if="!itemCase.v_groups || itemCase.v_groups.length < 1">Tilføj gruppe
+                                                v-if="!itemCase.v_groups || itemCase.v_groups.length < 1">Tilføj
+                                                gruppe
                                             </div>
                                         </div>
                                     </div>
@@ -790,14 +811,17 @@
                     <div class="no-cases-matches"
                         v-if="(activeCategory==='all_cases' && searchedCases.length > 0 ) || (activeCategory==='my_cases' && searchedCases.length > 0)"
                         v-cloak>
-                        <h4 v-if="!isSearchingOldCases && !isSearchingPartnerCases && searchedCases.length < 1"> Ingen
+                        <h4 v-if="!isSearchingOldCases && !isSearchingPartnerCases && searchedCases.length < 1">
+                            Ingen
                             sager matcher din søgning </h4>
                         <div class="vue-spinner__container" v-if="isSearchingOldCases || isSearchingPartnerCases"
                             v-cloak>
                             <div class="vue-spinner o-spinner"></div>
-                            <p class="text-explainer o-spinner__text" v-if="isSearchingOldCases">Søger i gamle sager på
+                            <p class="text-explainer o-spinner__text" v-if="isSearchingOldCases">Søger i gamle
+                                sager på
                                 serveren. Det kan tage lidt tid.. </p>
-                            <p class="text-explainer o-spinner__text" v-if="isSearchingPartnerCases">Søger sager hos
+                            <p class="text-explainer o-spinner__text" v-if="isSearchingPartnerCases">Søger sager
+                                hos
                                 partnere. Det kan tage lidt tid.. </p>
                         </div>
                         <template>
@@ -806,7 +830,8 @@
                                 serveren
                             </button>
                             <button v-if="theUserType==='ON' && activeCategory==='all_cases'"
-                                class="o-btn no-cases-matches__btn" @click="setSearchInParnerCases">Søg i sager hos
+                                class="o-btn no-cases-matches__btn" @click="setSearchInParnerCases">Søg i sager
+                                hos
                                 partnerne
                             </button>
                         </template>
@@ -820,7 +845,8 @@
                                 <div>Aktiv:{{item.active_date}}</div>
                                 <div>Udløb:{{item.expire_date}}</div>
                                 <div v-if="theUserType !='ON'">{{item.created_by}},{{item.from_company}}</div>
-                                <div v-if="theUserType=='ON'">Fra:{{item.created_by}},{{item.from_company}}</div>
+                                <div v-if="theUserType=='ON'">Fra:{{item.created_by}},{{item.from_company}}
+                                </div>
                                 <div v-if="theUserType=='ON'">Til:{{item.to_company}}</div>
                                 <div>Opdateret:{{item.last_updated_date}}</div>
                                 <div class="etray_case_status"><span class="o-pill o-pill--yellow"
@@ -909,7 +935,8 @@
                                                 <div v-if="item.status==='APPROVED'" class="o-pill o-pill--green">
                                                     Godkendt
                                                 </div>
-                                                <div v-if="item.status==='DECLINED'" class="o-pill o-pill--red"> Afvist
+                                                <div v-if="item.status==='DECLINED'" class="o-pill o-pill--red">
+                                                    Afvist
                                                     af
                                                     kunde
                                                 </div>
@@ -925,7 +952,8 @@
                                                 {{item.created_time}}
                                             </td>
                                             <td class="o-table__orders__edit-btn">
-                                                <div class="o-table__edit-button"><span class="tio">edit</span></div>
+                                                <div class="o-table__edit-button"><span class="tio">edit</span>
+                                                </div>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -964,17 +992,20 @@
                                                     v-if="theReadMoreOnp===item.REC_ID">{{item.TEXT_DESC}}</span>
                                                 <a href="javascript:void(0)" @click="setTheReadMoreOnp(item)"
                                                     class="o-read-more o-read-more-btn"> <span
-                                                        v-if="theReadMoreOnp !==item.REC_ID">Læs mere</span> <span
-                                                        v-if="theReadMoreOnp===item.REC_ID">Vis mindre</span> </a>
+                                                        v-if="theReadMoreOnp !==item.REC_ID">Læs mere</span>
+                                                    <span v-if="theReadMoreOnp===item.REC_ID">Vis mindre</span>
+                                                </a>
                                             </td>
-                                            <td class="o-table__number the-read-more-onp-td__price">{{item.PRICE}}kr.
+                                            <td class="o-table__number the-read-more-onp-td__price">
+                                                {{item.PRICE}}kr.
                                             </td>
                                             <td class="o-table__number"><span
                                                     class="o-unit-label">{{item.UNIT_LABEL}}</span>{{item.UNIT_DEFAULT_VALUE}}
                                             </td>
                                             <td>
-                                                <div class="o-table__edit-button" @click="setTheEditOnp(item)"><span
-                                                        class="tio">edit</span></div>
+                                                <div class="o-table__edit-button" @click="setTheEditOnp(item)">
+                                                    <span class="tio">edit</span>
+                                                </div>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -1031,8 +1062,9 @@
                                                                     <th class="o-list-of-roles__headline"
                                                                         @click="toggleRolesAcc(group.group)">
                                                                         <div>{{group.group}}
-                                                                            <div class="o-list-of-roles__acc-chevron"><i
-                                                                                    class="tio">chevron_down</i></div>
+                                                                            <div class="o-list-of-roles__acc-chevron">
+                                                                                <i class="tio">chevron_down</i>
+                                                                            </div>
                                                                         </div>
                                                                     </th>
                                                                 </tr>
@@ -1071,20 +1103,23 @@
                                                         <div class="o-select__dropdown" v-if="getIsTheOSelect(1)">
                                                             <ul class="o-items">
                                                                 <li v-for="user in usersWithoutActiveRole"
-                                                                    @click="selectUserForRole(user)">{{user.name}}
+                                                                    @click="selectUserForRole(user)">
+                                                                    {{user.name}}
                                                                 </li>
                                                             </ul>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <p class="text-explainer"
-                                                    v-if="usersWithRole(theActiveRoleForFilter).length < 1">Ingen
+                                                    v-if="usersWithRole(theActiveRoleForFilter).length < 1">
+                                                    Ingen
                                                     brugere
                                                     har denne rolle </p>
                                                 <ul>
                                                     <li class="hover"
                                                         v-for="user in usersWithRole(theActiveRoleForFilter)"
-                                                        @click="setTheActiveUserRoleChangeModal(user)">{{user.name}}
+                                                        @click="setTheActiveUserRoleChangeModal(user)">
+                                                        {{user.name}}
                                                     </li>
                                                 </ul>
                                             </div>
@@ -1102,7 +1137,8 @@
             <div class="o-modal--alwaysactive vue-modal" v-if="isEndCustomerEmailConfigModal" v-cloak>
                 <div class="o-modal__header">
                     <h4>Ret tekster</h4>
-                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay"></div>
+                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay">
+                    </div>
                 </div>
                 <div class="o-modal__body">
                     <div class="o-modal-form__o-spinner__container" v-if="isLoadingEndCustomerEmailConfigFormData">
@@ -1157,7 +1193,8 @@
                                     <h4 v-html="theEndCustomerEmailConfigFormHash['title_til_hjemmeside']['value']">
                                     </h4>
                                     <template v-if="theEndCustomerEmailConfigFormActiveType === 'email'">
-                                        <p v-html="theEndCustomerEmailConfigFormHash['tekst_til_email']['value']"></p>
+                                        <p v-html="theEndCustomerEmailConfigFormHash['tekst_til_email']['value']">
+                                        </p>
                                         <p class="o-form__preview__body__email__link">
                                             {{ theEndCustomerEmailConfigFormHash['link_i_email']['value'] }}
                                         </p>
@@ -1205,7 +1242,8 @@
             <div class="o-modal--alwaysactive vue-modal" v-if="theActiveItem" v-cloak>
                 <div class="o-modal__header">
                     <h4>{{theActiveItem.onid}}-{{theActiveItem.headline}}</h4>
-                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay"></div>
+                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay">
+                    </div>
                 </div>
                 <div class="o-modal__body">
                     <div class="o-modal__create-case__body">
@@ -1280,8 +1318,8 @@
                                         class="item-with-files o-cases__case-group">
                                         <label>Filer:</label>
                                         <ul class="item-files">
-                                            <li v-for="file in theActiveItem.attachment_list" :key="file.link"><a
-                                                    :href="file.link" @click="downloadItem(theActiveItem)"
+                                            <li v-for="file in theActiveItem.attachment_list" :key="file.link">
+                                                <a :href="file.link" @click="downloadItem(theActiveItem)"
                                                     class="item-files-li-link"
                                                     :aria-label="'Seneste opdateret: ' + file.updated">
                                                     <div><i v-if="file.new_file_icon==='Yes'"
@@ -1292,7 +1330,8 @@
                                                     <div class="o-cases__case_element__body__arrow"> Hent
                                                         <div class="tio chevron_right"></div>
                                                     </div>
-                                                </a></li>
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -1307,7 +1346,8 @@
                 <div class="o-modal__header">
                     <h4><span v-if="onpForm[0] && onpForm[0].value">Redigér</span><span v-else>Opret</span>
                     </h4>
-                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay"></div>
+                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay">
+                    </div>
                 </div>
                 <div class="o-modal__body">
                     <div class="o-modal__create-case__body">
@@ -1360,7 +1400,8 @@
                 v-cloak>
                 <div class="o-modal__header">
                     <h4>Ny ordre</h4>
-                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay"></div>
+                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay">
+                    </div>
                 </div>
                 <div class="o-modal__body">
                     <div class="o-filters">
@@ -1404,8 +1445,8 @@
                                 <li class="o-cart__items__item"
                                     v-for="item in onpSSIDDetailsGrouped[theActiveOrderType]" :key="item.REC_ID">
                                     <div class="o-cart__items__item__left">{{item.LABEL}}, <span
-                                            class="o-cart__summary__item__labels">{{item.PRICE}}kr.</span> <br><span
-                                            class="o-read-more"
+                                            class="o-cart__summary__item__labels">{{item.PRICE}}kr.</span>
+                                        <br><span class="o-read-more"
                                             :class="{'o-read-more--active': theActiveDescExpanded===item.REC_ID}"
                                             @click="setTheActiveDescExpanded(item.REC_ID)"><span
                                                 v-if="theActiveDescExpanded !==item.REC_ID">Vis</span><span
@@ -1490,7 +1531,8 @@
             <div class="o-modal--alwaysactive vue-modal vue-modal__order" v-if="theActivePrevOrder" v-cloak>
                 <div class="o-modal__header">
                     <h4>ONID:{{theActivePrevOrder.id}}// SSID:{{theActivePrevOrder.ssid}}</h4>
-                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay"></div>
+                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay">
+                    </div>
                 </div>
                 <div class="o-modal__body">
                     <div class="o-cart">
@@ -1514,7 +1556,8 @@
                             </li>
                             <li class="o-cart__items__item">
                                 <div class="o-cart__items__item__left">Dato</div>
-                                <div class="o-cart__items__item__right">{{theActivePrevOrder.created_time}}</div>
+                                <div class="o-cart__items__item__right">{{theActivePrevOrder.created_time}}
+                                </div>
                             </li>
                             <li class="o-cart__items__item">
                                 <div class="o-cart__items__item__left">SSID</div>
@@ -1522,7 +1565,8 @@
                             </li>
                             <li class="o-cart__items__item">
                                 <div class="o-cart__items__item__left">Kundens email</div>
-                                <div class="o-cart__items__item__right">{{theActivePrevOrder.customer_email}}</div>
+                                <div class="o-cart__items__item__right">{{theActivePrevOrder.customer_email}}
+                                </div>
                             </li>
                             <li class="o-cart__items__item">
                                 <div class="o-cart__items__item__left">Oprettet af</div>
@@ -1544,7 +1588,8 @@
                                 <li class="o-cart__summary__item" v-for="orderItem in theActivePrevOrder.order_items">
                                     <div class="o-cart__summary__item__left">
                                         <p>{{orderItem.LABEL}}<span class="o-cart__summary__item__labels"
-                                                v-if="orderItem.TYPE !== '002'">, {{orderItem.QUANTITY}}stk.</span>
+                                                v-if="orderItem.TYPE !== '002'">,
+                                                {{orderItem.QUANTITY}}stk.</span>
                                         <p>
                                         <p class="o-cart__summary__item__labels" v-if="orderItem.TYPE !== '002'">
                                             {{orderItem.PRICE}}kr. pr. stk. </p>
@@ -1555,7 +1600,8 @@
                                 <li class="o-cart__summary__item o-cart__summary__item__sum">
                                     <h4>Samlet pris</h4>
                                     <div>
-                                        <h4 class="o-cart__summary__item__price">{{theActivePrevOrder.order_sum}}kr.
+                                        <h4 class="o-cart__summary__item__price">
+                                            {{theActivePrevOrder.order_sum}}kr.
                                         </h4>
                                     </div>
                                 </li>
@@ -1585,7 +1631,8 @@
                 <div class="o-modal__header">
                     <h4><span v-if="!isProfileClick">Redigér for{{theActiveUser.display_name}}</span><span v-else>Din
                             profil</span></h4>
-                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay"></div>
+                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay">
+                    </div>
                 </div>
                 <div class="o-modal__body">
                     <div class="o-modal__create-case__body">
@@ -1968,7 +2015,8 @@
                 <li class="o-btn js-case-click-assign-case"><i class="tio">user_add</i> Tildel sag</li>
                 <li class="o-btn js-click-case-follow-up"><i class="tio">appointment</i> Opfølgning</li>
                 <li class="o-btn js-click-case-create-note"><i class="tio">edit</i> Intern note</li>
-                <li class="o-btn js-click-case-edit-ref hidden_field"><i class="tio">edit</i> Rediger Intern ref</li>
+                <li class="o-btn js-click-case-edit-ref hidden_field"><i class="tio">edit</i> Rediger Intern ref
+                </li>
                 <li class="o-btn js-follow-case"><i class="tio js-follow-case__follow">notifications_off</i> <i
                         class="tio js-follow-case__following">notifications</i> <span
                         class="js-follow-case__follow">Følger ikke</span>
