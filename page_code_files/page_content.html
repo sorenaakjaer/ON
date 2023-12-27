@@ -717,18 +717,12 @@
                                     </div>
                                     <div v-if="itemCase.filter_sla_expired=='false'">SLA:{{itemCase.sla_deadline_date}}
                                     </div>
-                                    <div class="etray_case_status"> Status: <span class="o-pill o-pill--red"
-                                            v-if="itemCase.status=='New_msg'">Ny besked</span>
-                                        <span class="o-pill o-pill--red" v-if="itemCase.status=='New'">Ny</span> <span
-                                            class="o-pill o-pill--yellow" v-if="itemCase.status=='Åben'">Åben</span>
-                                        <span class="o-pill o-pill--yellow"
-                                            v-if="itemCase.status=='Pending'">Åben</span>
-                                        <span class="o-pill o-pill--red"
-                                            v-if="itemCase.status=='On_Hold'">Opfølgning</span>
-                                        <span class="o-pill o-pill--red" v-if="itemCase.status=='Follow_up'">Opfølgning
-                                            udløbet</span>
-                                        <span class="o-pill o-pill--grey"
-                                            v-if="itemCase.status=='Closed'">Afsluttet</span>
+                                    <div class="etray_case_status"> Status:
+                                        <span class="o-pill" :class="{
+                                            'o-pill--red': itemCase.status === 'New_msg' || itemCase.status === 'New' || itemCase.status === 'On_Hold' || itemCase.status === 'Follow_up',
+                                            'o-pill--yellow': itemCase.status === 'Åben' || itemCase.status === 'Pending',
+                                            'o-pill--grey': itemCase.status === 'Closed'
+                                          }">{{ itemCase.v_status }}</span>
                                     </div>
                                     <div class="js-case-assigned-to">Tildelt: {{itemCase.assign_to}}</div>
                                     <div>SSID: {{itemCase.ssid}}</div>
@@ -1779,7 +1773,11 @@
                     <li v-for="(item, index) in filteredItems" 
                     :key="item.value" 
                     class="tags-selector__tag-item" :class="[{'tags-selector__tag-item--selected': item.v_selected}, {'tags-selector__tag-item__no-tags': item.value === 'v_no_selected'}]"
-                    @click="toggleItem(item)">{{ item.label ? item.label : item.value }}
+                    @click="toggleItem(item)">
+                    <div class="tags-selector__tag-item__icon">
+                    <i class="tio" v-if="item.v_sort">lock</i>
+                    {{ item.label ? item.label : item.value }}
+                    </div>
                         <div class="tags-selector__tag-item__right">
                             <i class="tio" v-if="item.v_selected">checkmark_circle_outlined</i>
                         </div>
@@ -1816,6 +1814,9 @@
         </transition>
         <div class="tags-selector__bg" :class="{'tags-selector__bg--dark': isForgotToSave}" @click="onTagsBGClick"></div>
         <div class="tags-selector__container" id="popperTagsDropdown">
+            <div class="tags-selector__container__header" v-if="initSelectedTags.length > 0 && theTagsSelectorView === 1">
+                <p @click="removeAllTags" class="tags-selector__container__header__remove-all">Fjern alle valgte</p>
+            </div>
         <div v-if="theTagsSelectorView === 1">
             <div class="tags-selector__search">
             <input type="search" placeholder="Søg.." id="tag_selector_search_input" v-model="tagsSearch">
@@ -1825,7 +1826,10 @@
                 :key="tag.value" 
                 class="tags-selector__tag-item" :class="[{'tags-selector__tag-item--selected': tag.v_selected}, { 'tags-selector__tag-item--highlighted': index === highlightedIndex }]"
                 @click="onSelectTag(tag)">
+                <div class="tags-selector__tag-item__icon">
+                    <i class="tio" v-if="tag.v_sort">lock</i>
                     <span class="item-tag" :style="{'backgroundColor': tag.color ? tag.color : '#0a37aa'}">{{ tag.value }}</span>
+                    </div>
                     <div class="tags-selector__tag-item__right">
                         <i class="tio" v-if="tag.v_selected">checkmark_circle_outlined</i>
                         <div class="tags-selector__tag-item__edit-bttn" v-if="tag.v_selected" @click.stop="removeTag(tag)"><i class="tio">clear</i></div>
@@ -1840,7 +1844,7 @@
             <ul class="tags-selector__dropdow__create">
                 <li class="tags-selector__tag-item" @click="setCreateNewTag">+ Opret nyt</li>
                 <li class="tags-selector__dropdow__create__submit" v-if="isEdited">
-                    <button class="o-btn o-btn--small" @click="onTagsBGClick">Annuller</button>
+                    <button class="o-btn o-btn--small" @click="onCancelClick">Annuller</button>
                     <button class="o-btn o-btn--small o-btn--primary" @click="saveTags" :class="{'o-btn--loading': is_loading_tag_button && !isForgotToSave}">Gem</button>
                 </li>
             </ul>

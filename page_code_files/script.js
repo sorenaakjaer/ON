@@ -596,20 +596,24 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			itemsSorted() {
 				return this.itemsWithProps.slice().sort((a, b) => {
-					if (a.value === 'v_no_selected') {
-						return -1;
+					// Prioritize items with value 'v_no_selected'
+					if (a.value === 'v_no_selected') return -1;
+					if (b.value === 'v_no_selected') return 1;
+
+					// Prioritize items with 'v_sort' property next
+					const aHasVSort = 'v_sort' in a;
+					const bHasVSort = 'v_sort' in b;
+
+					if (aHasVSort && !bHasVSort) return -1;
+					if (!aHasVSort && bHasVSort) return 1;
+
+					// For items with 'v_sort', sort them alphabetically
+					if (aHasVSort && bHasVSort) {
+						return a.value.localeCompare(b.value);
 					}
-					if (b.value === 'v_no_selected') {
-						return 1;
-					}
+
 					// Standard alphabetical sorting for other cases
-					if (a.value < b.value) {
-						return -1;
-					}
-					if (a.value > b.value) {
-						return 1;
-					}
-					return 0;
+					return a.value.localeCompare(b.value);
 				});
 			},
 			filteredItems() {
@@ -705,7 +709,8 @@ $(document).one("trigger::vue_loaded", function () {
 				isEdited: false,
 				selectedTags: [],
 				newTags: [],
-				isForgotToSave: false
+				isForgotToSave: false,
+				initSelectedTags: []
 			};
 		},
 		computed: {
@@ -729,22 +734,24 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			tagsWithPropsSorted() {
 				return this.tagsWithProps.slice().sort((a, b) => {
-					// First, sort by the v_selected property
-					if (a.v_selected && !b.v_selected) {
-						return -1;
-					}
-					if (!a.v_selected && b.v_selected) {
-						return 1;
+					// Prioritize items with value 'v_no_selected'
+					if (a.value === 'v_no_selected') return -1;
+					if (b.value === 'v_no_selected') return 1;
+
+					// Prioritize items with 'v_sort' property next
+					const aHasVSort = 'v_sort' in a;
+					const bHasVSort = 'v_sort' in b;
+
+					if (aHasVSort && !bHasVSort) return -1;
+					if (!aHasVSort && bHasVSort) return 1;
+
+					// For items with 'v_sort', sort them alphabetically
+					if (aHasVSort && bHasVSort) {
+						return a.value.localeCompare(b.value);
 					}
 
-					// Then, sort alphabetically by value
-					if (a.value < b.value) {
-						return -1;
-					}
-					if (a.value > b.value) {
-						return 1;
-					}
-					return 0;
+					// Standard alphabetical sorting for other cases
+					return a.value.localeCompare(b.value);
 				});
 			},
 			filteredTags() {
@@ -796,6 +803,9 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				this.$emit('close')
 			},
+			onCancelClick() {
+				this.$emit('close')
+			},
 			setTheTagsSelectorView(num) {
 				this.theTagsSelectorView = num
 				this.$nextTick(_ => {
@@ -820,6 +830,11 @@ $(document).one("trigger::vue_loaded", function () {
 				const idx = this.selectedTags.findIndex(selectedTag => selectedTag.value === tag.value)
 				this.selectedTags.splice(idx, 1)
 			},
+			removeAllTags() {
+				this.selectedTags = []
+				this.initSelectedTags = []
+				this.isEdited = true
+			},
 			onSelectTag(tag) {
 				if (tag.v_selected) {
 					return
@@ -843,8 +858,10 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		mounted() {
 			if (this.active_tag_type === 'tag') {
+				this.initSelectedTags = JSON.parse(JSON.stringify(this.active_case.v_tags))
 				this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_tags))
 			} else {
+				this.initSelectedTags = JSON.parse(JSON.stringify(this.active_case.v_groups))
 				this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_groups))
 			}
 		}
@@ -1167,7 +1184,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
 			},
 			allCaseCategories() {
-				const uniqueArr = [{ value: 'v_no_selected', label: 'Uden kategori' }]
+				const uniqueArr = [{ value: 'v_no_selected', label: 'Uden kategori', v_sort: true }]
 				this.casesFiltered2.forEach(caseItem => {
 					const dbValue = caseItem['filter_category']
 					if (dbValue) {
@@ -1181,9 +1198,9 @@ $(document).one("trigger::vue_loaded", function () {
 				return uniqueArr
 			},
 			allCaseStatus() {
-				const uniqueArr = [{ value: 'v_no_selected', label: 'Uden status' }]
+				const uniqueArr = [{ value: 'v_no_selected', label: 'Uden status', v_sort: true }]
 				this.casesFiltered2.forEach(caseItem => {
-					const dbValue = caseItem['status']
+					const dbValue = caseItem['v_status']
 					if (dbValue) {
 						const idx = uniqueArr.findIndex(allTag => allTag.value === dbValue)
 						if (idx < 0) {
@@ -1195,7 +1212,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return uniqueArr
 			},
 			allCaseGroups() {
-				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden gruppe' }]
+				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden gruppe', v_sort: true }]
 				this.casesFiltered2.forEach(caseItem => {
 					if (caseItem['v_groups']) {
 						caseItem['v_groups'].forEach(tag => {
@@ -1210,7 +1227,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return uniqueTags.concat(this.thePredefinedGroups)
 			},
 			allCaseTags() {
-				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden tags' }]
+				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden tags', v_sort: true }]
 				this.casesFiltered2.forEach(caseItem => {
 					if (caseItem['v_tags']) {
 						caseItem['v_tags'].forEach(tag => {
@@ -1346,12 +1363,12 @@ $(document).one("trigger::vue_loaded", function () {
 						const hasNoSelectedStatus = this.theActiveFilterStatus.includes('v_no_selected');
 
 						// If 'v_no_selected' is present and the item has an empty status, include it in the filter
-						if (hasNoSelectedStatus && (!itemCase.status || itemCase.status === '')) {
+						if (hasNoSelectedStatus && (!itemCase.v_status || itemCase.v_status === '')) {
 							return true;
 						}
 
 						// If item has a status, check if it matches any of the active filter statuses
-						return this.theActiveFilterStatus.includes(itemCase.status);
+						return this.theActiveFilterStatus.includes(itemCase.v_status);
 					})
 				}
 			},
@@ -2685,6 +2702,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 
 			encodeCases(html) {
+				const self = this
 				if (html.length >= 3) {
 					var cases = JSON.parse(html);
 
@@ -2710,6 +2728,10 @@ $(document).one("trigger::vue_loaded", function () {
 								const groups = caseItem['groups'].length > 0 ? caseItem['groups'] : [];
 								const filteredGroups = groups.filter(item => item && typeof item === 'object' && item['value']);
 								Vue.set(caseItem, 'v_groups', filteredGroups);
+							} else if (key === 'status') {
+								const initStatus = caseItem['status'].length > 0 ? caseItem['status'] : '';
+								const statusI18N = self.statusI18N[initStatus] ? self.statusI18N[initStatus] : ''
+								Vue.set(caseItem, 'v_status', statusI18N);
 							}
 							// END ADDED 17-12-23
 							else {
@@ -3410,8 +3432,11 @@ $(document).one("trigger::vue_loaded", function () {
 				$(document).trigger("trigger::vue_mounted")
 				const el = $('.updTagOrGroup_Output_mvp_groups > div')
 				if (el && el.length > 0) {
-					const arrOfPredifinedGroups = el.html() && el.html().length > 2 ? JSON.parse(el.html()) : []
-					this.thePredefinedGroups = arrOfPredifinedGroups
+					const arrOfPredifinedGroups = el.html() && el.html().length > 2 ? JSON.parse(el.html()) : [];
+					const modifiedArrOfPredifinedGroups = arrOfPredifinedGroups.map(group => {
+						return { ...group, v_sort: true };
+					});
+					this.thePredefinedGroups = modifiedArrOfPredifinedGroups;
 				}
 				this.getAllLocalStorageFilter()
 			})

@@ -10219,6 +10219,7 @@ ul.tags-selector__dropdow__create {
     justify-content: space-between;
 }
 
+
 .tags-selector__search>.o-search-group__clear {
     top: calc(0.5rem + 4px);
     right: calc(0.5rem + 4px);
@@ -10226,6 +10227,8 @@ ul.tags-selector__dropdow__create {
 
 .tags-selector__search--filled.tags-selector__search>.o-search-group__clear {
     opacity: 0.8;
+    -webkit-transform: scale(0.85);
+    -ms-transform: scale(0.85);
     transform: scale(0.85);
     pointer-events: initial;
 }
@@ -10246,6 +10249,39 @@ ul.tags-selector__dropdow__create {
     gap: 0.5rem;
 }
 
+.tags-selector__tag-item__icon {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.tags-selector__tag-item__icon>.tio {
+    margin-right: 5px;
+}
+
+.tags-selector__container__header {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    font-size: 11px;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+}
+
+.tags-selector__container__header__remove-all {
+    color: var(--grey);
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+.tags-selector__container__header__remove-all:hover {
+    color: var(--red);
+}
 
 @media only screen and (min-width: 600px) {
     .o-cases__case_element__header__row__tags {
@@ -10286,6 +10322,9 @@ ul.tags-selector__dropdow__create {
     }
 
     .vue-subheader-filters__flex__row {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
         flex-direction: row;
     }
 
