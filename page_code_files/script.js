@@ -2240,11 +2240,16 @@ $(document).one("trigger::vue_loaded", function () {
 							s = "Slutkundeordre"
 					}
 					if ("Report" === e || "Invoice" === e || "OpenAnalytics" === e) {
-						var a = $(".PBI_ListOfReports > div").html();
+						// Retrieve HTML content from the specified element
+						var PBIListOfReportsHTML = $(".PBI_ListOfReports > div").html();
+						console.log('$(".PBI_ListOfReports > div").html()', $(".PBI_ListOfReports > div").html());
 
+						if (PBIListOfReportsHTML.length > 3) {
+							this.PBIReportsData = JSON.parse(PBIListOfReportsHTML);
+						}
 
-						a.length > 3 && (this.PBIReportsData = JSON.parse(a)), this.theInvoiceBIExplainer = $(".PBI_Intro_Invoice > div").html(), this.theReportBIExplainer = $(".PBI_Intro_Report > div").html()
-
+						this.theInvoiceBIExplainer = $(".PBI_Intro_Invoice > div").html()
+						this.theReportBIExplainer = $(".PBI_Intro_Report > div").html()
 					}
 					switch (e) {
 						case "end_customer_orders":
