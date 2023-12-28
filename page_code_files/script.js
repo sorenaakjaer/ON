@@ -2308,6 +2308,8 @@ $(document).one("trigger::vue_loaded", function () {
 				this.setIframeForOpenAnalytics()
 			},
 			setIframeForOpenAnalytics() {
+				openAnalyticsSecret = JSON.parse($('.PBI_sharedSecretJSON > input').val()).sharedSecret;
+				console.log('openAnalyticsSecret',openAnalyticsSecret);
 				this.isLoadingTheOpenAnalyticsIframe = true
 				function constructURLWithSecret(baseURL, secretValue) {
 					const queryParams = new URLSearchParams(window.location.search);
@@ -3680,7 +3682,7 @@ var $form = $(".js-case-drop-files");
 var droppedFiles = !1;
 var Set_UM_USER_INIT = !0;
 var openAnalyticsSecret = 'your_secret_value_here_global';
-
+console.log(openAnalyticsSecret)
 // Variables - START //
 
 // FUNCTIONS - START //
