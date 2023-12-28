@@ -2239,7 +2239,7 @@ $(document).one("trigger::vue_loaded", function () {
 						case "end_customer_orders":
 							s = "Slutkundeordre"
 					}
-					if ("Report" === e || "Invoice" === e) {
+					if ("Report" === e || "Invoice" === e || "OpenAnalytics" === e ) {
 						var a = $(".PBI_ListOfReports > div").html();
 
 
