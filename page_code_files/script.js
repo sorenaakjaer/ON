@@ -32,7 +32,10 @@ $(document).one("TRIGGER_AFTER_LOGIN", function () {
 $(document).one("trigger::o_page_loaded", function () {
 	//console.log('trigger::o_page_loaded')	
 
+	// Set Secret record
+	$('.PBI_Set_sharedSecret > a').click();
 
+	
 	var e, t, s = $(".LOGIN_CUSTOMER_TYPE > input").val();
 	"SP" == s && ($(".typ_of_cust_cat option").filter(function () {
 		return $(this).text() == $(".LOGIN_CUSTOMER_TYPE > input").val()
