@@ -1181,7 +1181,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return this.theActiveFilterTags.length > 0 || this.theActiveFilterGroups.length > 0 || this.theActiveFilterStatus.length > 0 || this.theActiveFilterCategories.length > 0 || this.activeType
 			},
 			isNewDesignActive() {
-				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet']
+				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet', 'SP Dev Company','IO Dev Company']
 				return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
 			},
 			allCaseCategories() {
