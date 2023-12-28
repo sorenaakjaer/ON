@@ -870,6 +870,7 @@ $(document).one("trigger::vue_loaded", function () {
 		el: "#o-app",
 		data: {
 			/* START 17-12-23 */
+			PBIReportsData: [],
 			isLoadingTheOpenAnalyticsIframe: false,
 			theOpenAnalyticsIframeUrl: 'https://opn-iframes-dev.azurewebsites.net/',
 			statusI18N: {
@@ -1255,37 +1256,26 @@ $(document).one("trigger::vue_loaded", function () {
 				})
 				return obj
 			},
-			/*pbiReports() {
-				let e = this.PBIReportsData.filter(e => e.area === this.activeCategory),
-					t = e.findIndex(e => e && "V\xe6lg" === e.reportDisplayName);
-					return e.length > 0 && t < 0 && e.unshift({
-					reportDisplayName: "V\xe6lg",
-					reportId: "placeholderDropdown"
-				}), e
-			},
-			*/
-
 			pbiReports() {
-				if (!this.PBIReportsData) {
-					// throw new Error('PBIReportsData is not defined')
-					return []
+				if (!this.PBIReportsData || this.PBIReportsData.length < 1) {
+					return [];
 				}
 
-				let e = this.PBIReportsData.filter(e => e.area === this.activeCategory),
-					t = e.findIndex(e => e && "Vælg" === e.reportDisplayName);
-				if (e.length > 0 && t < 0) {
-					e.unshift({
+				// Filter reports by the active category
+				let filteredReports = this.PBIReportsData.filter(report => report.area === this.activeCategory);
+
+				// Find the index of the report with the display name "Vælg"
+				let indexOfValg = filteredReports.findIndex(report => report && report.reportDisplayName === "Vælg");
+
+				// If there are reports and "Vælg" is not found, add a placeholder to the beginning
+				if (filteredReports.length > 0 && indexOfValg < 0) {
+					filteredReports.unshift({
 						reportDisplayName: "Vælg",
 						reportId: "placeholderDropdown"
 					});
 				}
-
-				return e;
+				return filteredReports;
 			},
-
-
-
-
 			theSortSetting() {
 				return this.isCases ? this.theSortSettingCases : this.theSortSettingDocs
 			},
