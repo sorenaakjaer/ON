@@ -2310,7 +2310,7 @@ $(document).one("trigger::vue_loaded", function () {
 			setIframeForOpenAnalytics() {
 				openAnalyticsSecret = JSON.parse($('.PBI_sharedSecretJSON > input').val()).sharedSecret;
 				console.log('openAnalyticsSecret', openAnalyticsSecret);
-				// this.isLoadingTheOpenAnalyticsIframe = true
+				this.isLoadingTheOpenAnalyticsIframe = true
 				function constructURLWithSecret(baseURL, secretValue) {
 					const queryParams = new URLSearchParams(window.location.search);
 					queryParams.set('secret', secretValue);
@@ -2326,7 +2326,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				if (this.theActiveFilter === 'OpenAnalytics_tab2') {
 					const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/2';
-					this.theOpenAnalyticsIframeUrl = 'https://vodskovvvs.dk/page2.html' // constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
+					this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
 				}
 				// Wait for Vue's next tick to ensure the DOM updates
 				this.$nextTick(() => {
@@ -2345,10 +2345,10 @@ $(document).one("trigger::vue_loaded", function () {
 					if (event.origin !== 'https://opn-iframes-dev.azurewebsites.net') {
 						return; // Ensure the message is from a trusted origin
 					}
-					if (event.data.type === 'Inspari_iframeChanged') {
+					if (event.data.event === 'Inspari_iframeChanged') {
 						console.log('Inspari_iframeChanged event received', event.data);
 					}
-					if (event.data.type === 'Inspari_iframeLoaded') {
+					if (event.data.event === 'Inspari_iframeLoaded') {
 						self.isLoadingTheOpenAnalyticsIframe = false
 						console.log('Inspari_iframeLoaded event received', event.data);
 					}

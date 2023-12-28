@@ -10378,3 +10378,11 @@ ul.tags-selector__dropdow__create {
     justify-content: center;
     padding-top: 80px;
 }
+
+.fadeOut-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.fadeOut-leave-to {
+    opacity: 0;
+}
