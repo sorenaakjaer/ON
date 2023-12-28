@@ -35,7 +35,7 @@ $(document).one("trigger::o_page_loaded", function () {
 	// Set Secret record
 	$('.PBI_Set_sharedSecret > a').click();
 
-	
+
 	var e, t, s = $(".LOGIN_CUSTOMER_TYPE > input").val();
 	"SP" == s && ($(".typ_of_cust_cat option").filter(function () {
 		return $(this).text() == $(".LOGIN_CUSTOMER_TYPE > input").val()
@@ -1181,7 +1181,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return this.theActiveFilterTags.length > 0 || this.theActiveFilterGroups.length > 0 || this.theActiveFilterStatus.length > 0 || this.theActiveFilterCategories.length > 0 || this.activeType
 			},
 			isNewDesignActive() {
-				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet', 'SP Dev Company','IO Dev Company']
+				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet', 'SP Dev Company', 'IO Dev Company']
 				return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
 			},
 			allCaseCategories() {
@@ -2239,7 +2239,7 @@ $(document).one("trigger::vue_loaded", function () {
 						case "end_customer_orders":
 							s = "Slutkundeordre"
 					}
-					if ("Report" === e || "Invoice" === e || "OpenAnalytics" === e ) {
+					if ("Report" === e || "Invoice" === e || "OpenAnalytics" === e) {
 						var a = $(".PBI_ListOfReports > div").html();
 
 
@@ -2309,8 +2309,8 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			setIframeForOpenAnalytics() {
 				openAnalyticsSecret = JSON.parse($('.PBI_sharedSecretJSON > input').val()).sharedSecret;
-				console.log('openAnalyticsSecret',openAnalyticsSecret);
-				this.isLoadingTheOpenAnalyticsIframe = true
+				console.log('openAnalyticsSecret', openAnalyticsSecret);
+				// this.isLoadingTheOpenAnalyticsIframe = true
 				function constructURLWithSecret(baseURL, secretValue) {
 					const queryParams = new URLSearchParams(window.location.search);
 					queryParams.set('secret', secretValue);
@@ -2326,7 +2326,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				if (this.theActiveFilter === 'OpenAnalytics_tab2') {
 					const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/2';
-					this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
+					this.theOpenAnalyticsIframeUrl = 'https://vodskovvvs.dk/page2.html' // constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
 				}
 				// Wait for Vue's next tick to ensure the DOM updates
 				this.$nextTick(() => {
