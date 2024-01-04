@@ -1772,7 +1772,17 @@ $(document).one("trigger::vue_loaded", function () {
 						}
 						// Update timeline
 						const newHtml = $('.updTagOrGroup_Output > div').html()
-						$('.js-o-modal__case__timeline').html(newHtml)
+					        var timelineContent = '<div class="timeline_body">' +
+					            $(".updTagOrGroup_Output > div > .ETRAY_CASE_TIMELINE").text()+
+					            "</div>";
+					
+					        // Update the ETRAY_CASE_TIMELINE with the new content
+					        $(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").html(timelineContent);
+					
+					        // Set the new timeline content to the modal
+					        $(".js-o-modal__case__timeline").html($(".ETRAY_CASE_TIMELINE_PARRENT > div").html());
+
+
 					}
 					this.setTheActiveTagDropdown(null)
 				})
@@ -3959,6 +3969,39 @@ function readEtrayCaseComments() {
 		$(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").html(e), $(".js-o-modal__case__timeline").prepend($(".ETRAY_CASE_TIMELINE_PARRENT > div").html()), $(".o-modal__case__timeline").removeClass("o-modal__case__timeline--loading"), enable_all_btns()
 	})
 }
+
+function readEtrayCaseComments() {
+    // Check if the timeline is currently loading, if not, add the loading class
+    if (!$(".o-modal__case__timeline").hasClass("o-modal__case__timeline--loading")) {
+        $(".o-modal__case__timeline").addClass("o-modal__case__timeline--loading");
+    }
+
+    // Set up a one-time event listener for when the single case comments are loaded
+    $(document).one("etray::single-case-comments-loaded", function () {
+        // Clear the existing timeline content
+        $(".js-o-modal__case__timeline").html("");
+
+        // Construct the new timeline body with content from ETRAY_CASE_TIMELINE
+        var timelineContent = '<div class="timeline_body">' +
+            $(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").text() +
+            "</div>";
+
+        // Update the ETRAY_CASE_TIMELINE with the new content
+        $(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").html(timelineContent);
+
+        // Prepend the new timeline content to the modal
+        $(".js-o-modal__case__timeline").prepend($(".ETRAY_CASE_TIMELINE_PARRENT > div").html());
+
+        // Remove the loading class from the timeline
+        $(".o-modal__case__timeline").removeClass("o-modal__case__timeline--loading");
+
+        // Re-enable all buttons
+        enable_all_btns();
+    });
+}
+
+
+
 
 function addMutationObserverOnCommentFiles() {
 	var e = new MutationObserver(function (t) {
