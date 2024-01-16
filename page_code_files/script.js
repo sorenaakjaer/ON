@@ -869,6 +869,16 @@ $(document).one("trigger::vue_loaded", function () {
 	new Vue({
 		el: "#o-app",
 		data: {
+			toast: {
+				message: '',
+				visible: false
+			},
+			isCreateGhostUser: false,
+			isLoadingGhostUserList: false,
+			theGhostUserList: [],
+			theGhostUserSelectedPartner: null,
+			theGhostUserSelectedPartnerUser: null,
+			isGhostUserCreating: false,
 			/* START 17-12-23 */
 			PBIReportsData: [],
 			isLoadingTheOpenAnalyticsIframe: false,
@@ -1177,9 +1187,20 @@ $(document).one("trigger::vue_loaded", function () {
 			theFilteredSelectedTags: []
 		},
 		computed: {
+			theGhostUserListPartners() {
+				return this.theGhostUserList.map(company => company.company)
+			},
+			theGhostUserSelectedPartnerUsers() {
+				const company = this.theGhostUserList.find(c => c.company === this.theGhostUserSelectedPartner);
+				return company ? company.users : [];
+			},
 			/* START 17-12-23 */
 			isAnyFiltersActive() {
 				return this.theActiveFilterTags.length > 0 || this.theActiveFilterGroups.length > 0 || this.theActiveFilterStatus.length > 0 || this.theActiveFilterCategories.length > 0 || this.activeType
+			},
+			isUserOpennetOrSP() {
+				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet']
+				return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
 			},
 			isNewDesignActive() {
 				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet', 'SP Dev Company', 'IO Dev Company']
@@ -1648,6 +1669,40 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			showToast(message) {
+				this.toast.message = message;
+				this.toast.visible = true;
+				setTimeout(() => {
+					this.toast.visible = false;
+				}, 3000); // Hide after 3 seconds
+			},
+			createGhostUser() {
+				this.isGhostUserCreating = true
+				$('.UM_EVENT_TYPE > input').val('GHOST')
+				$('.UM_USER_ID > input').val(this.theGhostUserSelectedPartnerUser)
+				$('.BTN_UserManagement > a').click()
+				setTimeout(_ => {
+					this.closeVueModalOverlay()
+					this.showToast('“ghost profile” er oprettet og detaljer kommer pr email')
+				}, 1000)
+			},
+			onTheGhostUserSelectedPartner() {
+				this.theGhostUserSelectedPartnerUser = null
+			},
+			setIsCreateGhostUser() {
+				if (!this.isCreateGhostUser) {
+					this.isCreateGhostUser = true
+					this.isLoadingGhostUserList = true
+					this.observeChanges('.getUserFullList_Output > div', data => {
+						this.theGhostUserList = data.length > 0 ? JSON.parse(data) : []
+						this.isLoadingGhostUserList = false
+						$('.getUserFullList_Output > div').html('')
+					})
+					$('.getUserFullList_BTN > a').click()
+				} else {
+					this.isCreateGhostUser = false
+				}
+			},
 			/* START 17-12-23 */
 			getAllLocalStorageFilter() {
 				if (!this.isNewDesignActive) {
@@ -1772,15 +1827,15 @@ $(document).one("trigger::vue_loaded", function () {
 						}
 						// Update timeline
 						const newHtml = $('.updTagOrGroup_Output > div').html()
-					        var timelineContent = '<div class="timeline_body">' +
-					            $(".updTagOrGroup_Output > div > .ETRAY_CASE_TIMELINE").text()+
-					            "</div>";
-					
-					        // Update the ETRAY_CASE_TIMELINE with the new content
-					        $(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").html(timelineContent);
-					
-					        // Set the new timeline content to the modal
-					        $(".js-o-modal__case__timeline").html($(".ETRAY_CASE_TIMELINE_PARRENT > div").html());
+						var timelineContent = '<div class="timeline_body">' +
+							$(".updTagOrGroup_Output > div > .ETRAY_CASE_TIMELINE").text() +
+							"</div>";
+
+						// Update the ETRAY_CASE_TIMELINE with the new content
+						$(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").html(timelineContent);
+
+						// Set the new timeline content to the modal
+						$(".js-o-modal__case__timeline").html($(".ETRAY_CASE_TIMELINE_PARRENT > div").html());
 
 
 					}
@@ -2543,6 +2598,10 @@ $(document).one("trigger::vue_loaded", function () {
 				this.theEndCustomerEmailConfigForm.forEach(item => {
 					item.value = ''
 				})
+				this.isGhostUserCreating = false
+				this.isCreateGhostUser = false
+				this.theGhostUserSelectedPartner = null
+				this.theGhostUserSelectedPartnerUser = null
 			},
 			formValidation() {
 				this.userform.name.length < 1 ? Vue.set(this.formErrors, "name", "Skal mindst 1 tegn") : this.removeErrors("name"), this.userform.display_name.length < 1 ? Vue.set(this.formErrors, "display_name", "Skal mindst 1 tegn") : this.removeErrors("display_name"), this.userform.user_init.length < 1 ? Vue.set(this.formErrors, "user_init", "Skal mindst 1 tegn") : this.removeErrors("user_init"), this.validateEmail(this.userform.email) ? this.removeErrors("email") : Vue.set(this.formErrors, "email", "Skal v\xe6re en gyldig emailaddresse"), this.userform.sms_no.length < 8 ? Vue.set(this.formErrors, "sms_no", "Skal v\xe6re et gyldigt telefonnummer") : this.removeErrors("sms_no"), this.userform.sms_no.length < 8 ? Vue.set(this.formErrors, "sms_no", "Skal v\xe6re et gyldigt telefonnummer") : this.removeErrors("sms_no"), this.userform.new_password != this.userform.new_password_confirmed ? Vue.set(this.formErrors, "new_password_confirmed", "Kodeordene skal v\xe6re det ens") : this.removeErrors("new_password_confirmed")
@@ -3971,33 +4030,33 @@ function readEtrayCaseComments() {
 }
 
 function readEtrayCaseComments() {
-    // Check if the timeline is currently loading, if not, add the loading class
-    if (!$(".o-modal__case__timeline").hasClass("o-modal__case__timeline--loading")) {
-        $(".o-modal__case__timeline").addClass("o-modal__case__timeline--loading");
-    }
+	// Check if the timeline is currently loading, if not, add the loading class
+	if (!$(".o-modal__case__timeline").hasClass("o-modal__case__timeline--loading")) {
+		$(".o-modal__case__timeline").addClass("o-modal__case__timeline--loading");
+	}
 
-    // Set up a one-time event listener for when the single case comments are loaded
-    $(document).one("etray::single-case-comments-loaded", function () {
-        // Clear the existing timeline content
-        $(".js-o-modal__case__timeline").html("");
+	// Set up a one-time event listener for when the single case comments are loaded
+	$(document).one("etray::single-case-comments-loaded", function () {
+		// Clear the existing timeline content
+		$(".js-o-modal__case__timeline").html("");
 
-        // Construct the new timeline body with content from ETRAY_CASE_TIMELINE
-        var timelineContent = '<div class="timeline_body">' +
-            $(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").text() +
-            "</div>";
+		// Construct the new timeline body with content from ETRAY_CASE_TIMELINE
+		var timelineContent = '<div class="timeline_body">' +
+			$(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").text() +
+			"</div>";
 
-        // Update the ETRAY_CASE_TIMELINE with the new content
-        $(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").html(timelineContent);
+		// Update the ETRAY_CASE_TIMELINE with the new content
+		$(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").html(timelineContent);
 
-        // Prepend the new timeline content to the modal
-        $(".js-o-modal__case__timeline").prepend($(".ETRAY_CASE_TIMELINE_PARRENT > div").html());
+		// Prepend the new timeline content to the modal
+		$(".js-o-modal__case__timeline").prepend($(".ETRAY_CASE_TIMELINE_PARRENT > div").html());
 
-        // Remove the loading class from the timeline
-        $(".o-modal__case__timeline").removeClass("o-modal__case__timeline--loading");
+		// Remove the loading class from the timeline
+		$(".o-modal__case__timeline").removeClass("o-modal__case__timeline--loading");
 
-        // Re-enable all buttons
-        enable_all_btns();
-    });
+		// Re-enable all buttons
+		enable_all_btns();
+	});
 }
 
 

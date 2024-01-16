@@ -1616,6 +1616,12 @@
                 </div>
             </div>
         </transition>
+        <!-- Toast Notification -->
+        <transition name="fade">
+            <div v-if="toast.visible" class="toast">
+                {{ toast.message }}
+            </div>
+        </transition>
         <transition name="modalFadeIn">
             <div class="o-modal--alwaysactive vue-modal vue-modal--small" v-if="isCancelOrderConfirmation" v-cloak>
                 <div class="o-modal__body">
@@ -1705,6 +1711,38 @@
                                     <button class="o-btn o-btn--primary" @click="submitEditUserForm">Gem</button>
                                 </div>
                             </div>
+                        </div>
+                        <div class="o-card" v-if="isUserOpennetOrSP">
+                            <div class="o-toggle-group" @click.stop="setIsCreateGhostUser">
+                                <label class="o-label">Opret "Ghost" profil</label>
+                                <div class="o-toggle" :class="{'o-toggle--activated': isCreateGhostUser }">
+                                </div>
+                            </div>
+                            <template v-if="isCreateGhostUser">
+                                <div class="o-spinner-container" v-if="isLoadingGhostUserList">
+                                    <div class="o-spinner"></div>
+                                </div>
+                                <template v-else>
+                                    <select class="o-select" v-model="theGhostUserSelectedPartner"
+                                        @change="onTheGhostUserSelectedPartner">
+                                        <option selected disabled hidden>Vælg..</option>
+                                        <option v-for="partner in theGhostUserListPartners" :value="partner">
+                                            {{ partner }}
+                                        </option>
+                                    </select>
+                                    <select class="o-select" v-model="theGhostUserSelectedPartnerUser"
+                                        v-if="theGhostUserSelectedPartnerUsers.length > 0">
+                                        <option selected disabled hidden>Vælg..</option>
+                                        <option v-for="user in theGhostUserSelectedPartnerUsers" :value="user.id">
+                                            {{ user.display_name }}
+                                        </option>
+                                    </select>
+                                    <button class="o-btn o-btn--small o-btn--primary o-btn--primary--loading"
+                                        :class="{'o-btn--loading': isGhostUserCreating}" @click="createGhostUser"
+                                        v-if="theGhostUserSelectedPartnerUser && theGhostUserSelectedPartner">Opret
+                                        ”Ghost” profil</button>
+                                </template>
+                            </template>
                         </div>
                         <div class="list-of-roles-in-groups o-card" v-if="isEditUserRoles || isProfileClick">
                             <ul>

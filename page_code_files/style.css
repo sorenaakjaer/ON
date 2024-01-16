@@ -6213,6 +6213,7 @@ body, .o-page {
     height: calc(100%);
     overflow-y: auto;
     padding: calc(1rem + 65px) 1rem 1rem;
+    overscroll-behavior: contain;
 }
 
 .o-modal__body:before {
@@ -10385,4 +10386,52 @@ ul.tags-selector__dropdow__create {
 
 .fadeOut-leave-to {
     opacity: 0;
+}
+
+.o-toggle-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.15s;
+    padding: 0.5rem;
+    margin: -0.5rem;
+    border-radius: 4px;
+}
+
+.o-toggle-group:hover {
+    background: rgb(10 55 170 / 5%);
+}
+
+.o-spinner-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+    background-color: black;
+    color: white;
+    border-radius: 5px;
+    z-index: 123123123;
+    transition: all 0.5s ease;
+    /* Transition effect */
+    opacity: 1;
+    /* Fully visible */
+}
+
+/* Transition classes for Vue's transition wrapper */
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s ease, transform 0.5s;
+}
+
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
 }
