@@ -10467,3 +10467,7 @@ ul.tags-selector__dropdow__create {
 .o-card__ghost-form>select {
     margin-bottom: 1rem;
 }
+
+.o-card__ghost-form .o-btn--primary {
+    width: 100%;
+}
