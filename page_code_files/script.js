@@ -1686,8 +1686,12 @@ $(document).one("trigger::vue_loaded", function () {
 					this.showToast('“ghost profile” er oprettet og detaljer kommer pr email')
 				}, 1000)
 			},
-			onTheGhostUserSelectedPartner() {
+			onTheGhostUserSelectedPartner(val) {
+				this.theGhostUserSelectedPartner = val
 				this.theGhostUserSelectedPartnerUser = null
+			},
+			onTheGhostUserSelectedPartnerUser(val) {
+				this.theGhostUserSelectedPartnerUser = val
 			},
 			setIsCreateGhostUser() {
 				if (!this.isCreateGhostUser) {

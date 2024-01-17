@@ -1722,15 +1722,16 @@
                                 <div class="o-spinner-container" v-if="isLoadingGhostUserList">
                                     <div class="o-spinner"></div>
                                 </div>
-                                <template v-else>
-                                    <select class="o-select" v-model="theGhostUserSelectedPartner"
-                                        @change="onTheGhostUserSelectedPartner">
+                                <div class="o-card__ghost-form" v-else>
+                                    <select class="o-select__options"
+                                        @change="onTheGhostUserSelectedPartner($event.target.value)">
                                         <option selected disabled hidden>Vælg..</option>
                                         <option v-for="partner in theGhostUserListPartners" :value="partner">
                                             {{ partner }}
                                         </option>
                                     </select>
-                                    <select class="o-select" v-model="theGhostUserSelectedPartnerUser"
+                                    <select class="o-select__options"
+                                        @change="onTheGhostUserSelectedPartnerUser($event.target.value)"
                                         v-if="theGhostUserSelectedPartnerUsers.length > 0">
                                         <option selected disabled hidden>Vælg..</option>
                                         <option v-for="user in theGhostUserSelectedPartnerUsers" :value="user.id">
@@ -1741,7 +1742,7 @@
                                         :class="{'o-btn--loading': isGhostUserCreating}" @click="createGhostUser"
                                         v-if="theGhostUserSelectedPartnerUser && theGhostUserSelectedPartner">Opret
                                         ”Ghost” profil</button>
-                                </template>
+                                </div>
                             </template>
                         </div>
                         <div class="list-of-roles-in-groups o-card" v-if="isEditUserRoles || isProfileClick">

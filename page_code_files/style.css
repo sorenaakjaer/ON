@@ -10389,10 +10389,18 @@ ul.tags-selector__dropdow__create {
 }
 
 .o-toggle-group {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
     justify-content: space-between;
     cursor: pointer;
+    -webkit-transition: background 0.15s;
+    -o-transition: background 0.15s;
     transition: background 0.15s;
     padding: 0.5rem;
     margin: -0.5rem;
@@ -10404,8 +10412,14 @@ ul.tags-selector__dropdow__create {
 }
 
 .o-spinner-container {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
     margin: 2rem 0;
 }
@@ -10414,12 +10428,16 @@ ul.tags-selector__dropdow__create {
     position: fixed;
     top: 20px;
     left: 50%;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
     transform: translateX(-50%);
     padding: 10px;
     background-color: black;
     color: white;
     border-radius: 5px;
     z-index: 123123123;
+    -webkit-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
     /* Transition effect */
     opacity: 1;
@@ -10428,10 +10446,24 @@ ul.tags-selector__dropdow__create {
 
 /* Transition classes for Vue's transition wrapper */
 .fade-enter-active, .fade-leave-active {
+    -webkit-transition: opacity 0.5s ease, -webkit-transform 0.5s;
+    transition: opacity 0.5s ease, -webkit-transform 0.5s;
+    -o-transition: opacity 0.5s ease, transform 0.5s;
     transition: opacity 0.5s ease, transform 0.5s;
+    transition: opacity 0.5s ease, transform 0.5s, -webkit-transform 0.5s;
 }
 
 .fade-enter, .fade-leave-to {
     opacity: 0;
+    -webkit-transform: translateX(-50%) translateY(-20px);
+    -ms-transform: translateX(-50%) translateY(-20px);
     transform: translateX(-50%) translateY(-20px);
+}
+
+.o-card__ghost-form {
+    padding: 1rem 0;
+}
+
+.o-card__ghost-form>select {
+    margin-bottom: 1rem;
 }
