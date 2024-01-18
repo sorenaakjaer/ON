@@ -846,17 +846,19 @@
                             v-for="item in searchedItems" :key="item.onid" @click="onItemClicked(item)"
                             v-if="activeCategory !=='roles' && !isCases">
                             <div class="o-cases__case_element__header">
-                                <div>ONID:{{item.onid}}</div>
-                                <div>Aktiv:{{item.active_date}}</div>
-                                <div>Udløb:{{item.expire_date}}</div>
-                                <div v-if="theUserType !='ON'">{{item.created_by}},{{item.from_company}}</div>
-                                <div v-if="theUserType=='ON'">Fra:{{item.created_by}},{{item.from_company}}
-                                </div>
-                                <div v-if="theUserType=='ON'">Til:{{item.to_company}}</div>
-                                <div>Opdateret:{{item.last_updated_date}}</div>
-                                <div class="etray_case_status"><span class="o-pill o-pill--yellow"
-                                        v-if="item.show_unread_icon==='Yes'">Ulæst</span>
-                                    <span class="o-pill o-pill--pad" v-if="item.show_unread_icon==='No'">Læst</span>
+                                <div class="o-cases__case_element__header__row">
+                                    <div>ONID:{{item.onid}}</div>
+                                    <div>Aktiv:{{item.active_date}}</div>
+                                    <div>Udløb:{{item.expire_date}}</div>
+                                    <div v-if="theUserType !='ON'">{{item.created_by}},{{item.from_company}}</div>
+                                    <div v-if="theUserType=='ON'">Fra:{{item.created_by}},{{item.from_company}}
+                                    </div>
+                                    <div v-if="theUserType=='ON'">Til:{{item.to_company}}</div>
+                                    <div>Opdateret:{{item.last_updated_date}}</div>
+                                    <div class="etray_case_status"><span class="o-pill o-pill--yellow"
+                                            v-if="item.show_unread_icon==='Yes'">Ulæst</span>
+                                        <span class="o-pill o-pill--pad" v-if="item.show_unread_icon==='No'">Læst</span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="o-cases__case_element__body">
@@ -1295,14 +1297,16 @@
                         </div>
                         <div class="case_element case_element--unclickable case_element__document">
                             <div class="o-cases__case_element__header">
-                                <div>ONID:{{theActiveItem.onid}}</div>
-                                <div>Aktiv:{{theActiveItem.active_date}}</div>
-                                <div>Udløb:{{theActiveItem.expire_date}}</div>
-                                <div>{{theActiveItem.created_by}},{{theActiveItem.from_company}}</div>
-                                <div class="etray_case_status"><span class="o-pill o-pill--yellow"
-                                        v-if="theActiveItem.show_unread_icon==='Yes'">Ulæst</span>
-                                    <span class="o-pill o-pill--pad"
-                                        v-if="theActiveItem.show_unread_icon==='No'">Læst</span>
+                                <div class="o-cases__case_element__header__row">
+                                    <div>ONID:{{theActiveItem.onid}}</div>
+                                    <div>Aktiv:{{theActiveItem.active_date}}</div>
+                                    <div>Udløb:{{theActiveItem.expire_date}}</div>
+                                    <div>{{theActiveItem.created_by}},{{theActiveItem.from_company}}</div>
+                                    <div class="etray_case_status"><span class="o-pill o-pill--yellow"
+                                            v-if="theActiveItem.show_unread_icon==='Yes'">Ulæst</span>
+                                        <span class="o-pill o-pill--pad"
+                                            v-if="theActiveItem.show_unread_icon==='No'">Læst</span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="o-cases__case_element__body">

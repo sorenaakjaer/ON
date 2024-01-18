@@ -6011,9 +6011,6 @@ body, .o-page {
     -ms-flex-pack: justify;
     -webkit-box-pack: justify;
     justify-content: space-between;
-    -ms-flex-align: end;
-    -webkit-box-align: end;
-    align-items: flex-end;
 }
 
 .o-cases__case-group {
@@ -9751,7 +9748,7 @@ li.o-case-active-users__user.hint--bottom:after {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0 1rem 0.5rem 1rem;
+    padding: 0.25rem 1rem;
     position: relative;
     width: 100% !important;
     border-top: 1px solid #eee;
@@ -10285,9 +10282,6 @@ ul.tags-selector__dropdow__create {
 }
 
 @media only screen and (min-width: 600px) {
-    .o-cases__case_element__header__row__tags {
-        border-top: none;
-    }
 
     .o-navbar__left {
         -webkit-box-orient: horizontal;
