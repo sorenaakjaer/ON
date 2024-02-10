@@ -5077,7 +5077,7 @@ body, .o-page {
     line-height: 1.5;
     padding: 0.5rem 1rem 0.5rem calc(20px + 1.5rem);
     transition: border-color 0.25s, width 0.25s;
-    width: 100%;
+    width: 100% !important;
 }
 
 .o-search-group--active input[type="search"],

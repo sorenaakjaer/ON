@@ -55,7 +55,13 @@ $(document).one("trigger::vue_loaded", function () {
 					{ id: 1, title: 'Søgning', content: 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which ' },
 					{ id: 2, title: 'Visiteringsguide', content: 'ctetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, w' },
 				],
-				isSearching: false
+				isSearching: false,
+				i18nArr: []
+			}
+		},
+		computed: {
+			userKey() {
+				return eTrayWebportal && eTrayWebportal.User.Key ? eTrayWebportal.User.Key : null
 			}
 		},
 		methods: {
@@ -67,7 +73,7 @@ $(document).one("trigger::vue_loaded", function () {
 				if (this.theActiveMenuItem === 'welcome') {
 					this.setTheActiveMenuItem('search')
 				}
-				console.log('search', this.theActiveMenuItem)
+				this.fetchTickeyDetails()
 			},
 			startTrans(el) {
 				el.style.height = el.scrollHeight + 'px'
@@ -110,6 +116,26 @@ $(document).one("trigger::vue_loaded", function () {
 				this.debounce = setTimeout(() => {
 					this.searchQuery = e.target.value
 				}, 600)
+			},
+			fetchTickeyDetails() {
+				var myHeaders = new Headers();
+				myHeaders.append("PP_USER_KEY", this.userKey);
+
+				var requestOptions = {
+					method: 'GET',
+					headers: myHeaders,
+					redirect: 'follow'
+				};
+
+				console.log('fetch', 'https://test-portal.opennet.dk/ppServices/api/dc/gettroubleticketdetails/' + this.searchQuery, this.userKey)
+
+				fetch('https://test-portal.opennet.dk/ppServices/api/dc/gettroubleticketdetails/' + this.searchQuery, requestOptions)
+					.then(response => response.text())
+					.then(result => console.log(result))
+					.catch(error => console.log('error', error));
+			},
+			fetchI18N() {
+				this.i18nArr = I18N
 			}
 		},
 		mounted() {
@@ -119,6 +145,7 @@ $(document).one("trigger::vue_loaded", function () {
 					this.$refs.v_search_query.focus()
 				}
 			})
+			this.fetchI18N()
 		}
 	})
 })
