@@ -38,6 +38,80 @@ $(document).one("trigger::o_page_loaded", function () {
 });
 // TRIGGER trigger::o_page_loaded - END //
 $(document).one("trigger::vue_loaded", function () {
+
+	Vue.directive('autosize', {
+		inserted(el) {
+			el.style.overflowY = 'hidden';
+			el.style.resize = 'none'; // Prevent manual resizing
+			el.addEventListener('input', () => {
+				el.style.height = 'auto';
+				el.style.height = el.scrollHeight + 'px';
+			});
+			// Initialize size on load
+			el.style.height = 'auto';
+			el.style.height = el.scrollHeight + 'px';
+		},
+		componentUpdated(el) {
+			// Adjust height whenever component updates
+			el.style.height = 'auto';
+			el.style.height = el.scrollHeight + 'px';
+		}
+	});
+
+	Vue.component('o-multi-select', {
+		template: '#o-multi-select-template',
+		props: {
+			items: {
+				type: Array,
+				default: () => []
+			},
+			multiple: {
+				type: Boolean,
+				default: false,
+			},
+			selected_item: {
+				type: Object,
+				default: () => null
+			},
+			i18n: {
+				type: Object,
+				default: () => null
+			}
+		},
+		data() {
+			return {
+				isOpen: false,
+			}
+		},
+		computed: {
+			selectTitle() {
+				if (!this.selected_item) {
+					return 'Vælg...'
+				}
+				const idx = this.items.findIndex(item => item.value === this.selected_item)
+				return idx > -1 ? this.items[idx]['title'] : ''
+			},
+			filteredItems() {
+				if (!this.searchable) {
+					return this.items
+				}
+			}
+		},
+		methods: {
+			setIsOpen(bool) {
+				this.isOpen = bool
+			},
+			toggleItem(item) {
+				this.$emit('toggle_item', item)
+				this.setIsOpen(false)
+			},
+			onMultiSelectBGClick() {
+				this.setIsOpen(false)
+				this.$emit('close')
+			}
+		}
+	})
+
 	new Vue({
 		el: "#o-app",
 		data() {
@@ -49,6 +123,7 @@ $(document).one("trigger::vue_loaded", function () {
 				],
 				theActiveMenuItem: 'welcome',
 				searchQuery: '',
+				savedSearchQuery: '',
 				theActiveAccItem: 0,
 				accItems: [
 					{ id: 0, title: 'Kaldstyper', content: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to us' },
@@ -56,24 +131,124 @@ $(document).one("trigger::vue_loaded", function () {
 					{ id: 2, title: 'Visiteringsguide', content: 'ctetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, w' },
 				],
 				isSearching: false,
-				i18nArr: []
+				i18nArr: [],
+				tickets: [],
+				isLoadingTickets: false,
+				noteInputs: {},
+				savingStates: {},
+				theDropdownFilters: [
+					{ value: 7, title: 'Seneste 7 dage' },
+					{ value: 14, title: 'Seneste 14 dage' },
+					{ value: 21, title: 'Seneste 21 dage' },
+					{ value: 30, title: 'Seneste 30 dage' }
+				],
+				theSelectedFilter: null
 			}
 		},
 		computed: {
+			locale() {
+				return 'da'
+			},
 			userKey() {
 				return eTrayWebportal && eTrayWebportal.User.Key ? eTrayWebportal.User.Key : null
+			},
+			i18n() {
+				const hash = {};
+				this.i18nArr.forEach(item => {
+					hash[item.api_value] = item.display_value;
+				});
+				return hash;
+			},
+			ticketsVProps() {
+				const valuesToShow = ['type', 'description', 'serviceSubscriptionId', 'address', 'contactName', 'contactNumber', 'contactEmail'];
+
+				return this.tickets.map(ticket => ({
+					...ticket,
+					v_props: valuesToShow.reduce((props, propName) => {
+						if (ticket.hasOwnProperty(propName)) {
+							// Use i18nHash for property names if available
+							const displayName = this.i18n[propName] || propName;
+							props[displayName] = ticket[propName];
+						}
+						return props;
+					}, {}),
+					v_lastUpdated: ticket.lastUpdated ? this.formatDateTime(ticket.lastUpdated) : '',
+					v_notes: ticket.notes ? ticket.notes
+						.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)) // Sort notes by timestamp, newest first
+						.map(note => ({
+							...note,
+							v_timestamp: this.formatDateTime(note.timestamp) // Assuming formatDateTime is defined and formats correctly
+						})) : []
+				}));
 			}
 		},
 		methods: {
+			onToggleFilter(filter) {
+				if (this.theSelectedFilter === filter) {
+					this.theSelectedFilter = null
+					this.resetTickets()
+				} else {
+					this.theSelectedFilter = filter
+					this.loadTickets()
+				}
+			},
+			resetTickets() {
+				this.tickets = []
+			},
+			getIsSaving(ticketId) {
+				return !!this.savingStates[ticketId]; // Convert to boolean
+			},
+			saveNote(ticketId) {
+				// Access the note from noteInputs using the ticketId
+				const note = this.noteInputs[ticketId];
+				if (!note || note.length === 0) {
+					const el = document.querySelector('#ticket_' + ticketId + ' textarea')
+					if (el) {
+						el.focus()
+					}
+					return
+				}
+				this.$set(this.savingStates, ticketId, true);
+				console.log(`Saving note for ticket ${ticketId}: ${note}`);
+				setTimeout(() => {
+					console.log(`Saving note for ticket ${ticketId}: ${this.noteInputs[ticketId]}`);
+
+					this.$delete(this.noteInputs, ticketId);
+					this.$delete(this.savingStates, ticketId);
+
+				}, 1000);
+			},
+			formatDateTime(dateString) {
+				let locale = 'en-US', hour12 = true;
+				const i18nTime = this.locale === 'da' ? 'kl.' : 'at';
+
+				if (this.locale === 'da') {
+					locale = 'da-DK';
+					hour12 = false;
+				}
+
+				const date = new Date(dateString);
+				const dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+				const timeOptions = { hour: '2-digit', minute: '2-digit', hour12 };
+
+				const formattedDate = date.toLocaleDateString(locale, dateOptions);
+				const formattedTime = date.toLocaleTimeString(locale, timeOptions);
+
+				const specificReadableDateTime = `${formattedDate} ${i18nTime} ${formattedTime}`;
+
+				return specificReadableDateTime;
+			},
 			onSearch() {
 				if (this.searchQuery.length < 1) {
 					this.$refs.v_search_query.focus()
 					return
 				}
+				this.savedSearchQuery = this.searchQuery
 				if (this.theActiveMenuItem === 'welcome') {
 					this.setTheActiveMenuItem('search')
 				}
-				this.fetchTickeyDetails()
+				this.fetchTicketDetails()
+				console.log('search', this.theActiveMenuItem)
 			},
 			startTrans(el) {
 				el.style.height = el.scrollHeight + 'px'
@@ -108,7 +283,6 @@ $(document).one("trigger::vue_loaded", function () {
 				const menuItemsToDebounce = ['notes']
 				if (menuItemsToDebounce.indexOf(this.theActiveMenuItem) < 0) {
 					this.searchQuery = e.target.value
-					console.log('no debounce')
 					return
 				}
 				this.searchQuery = ""
@@ -117,7 +291,10 @@ $(document).one("trigger::vue_loaded", function () {
 					this.searchQuery = e.target.value
 				}, 600)
 			},
-			fetchTickeyDetails() {
+			fetchTicketDetails() {
+				this.tickets = [];
+				this.isLoadingTickets = true;
+
 				var myHeaders = new Headers();
 				myHeaders.append("PP_USER_KEY", this.userKey);
 
@@ -126,16 +303,56 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: 'follow'
 				};
-
-				console.log('fetch', 'https://test-portal.opennet.dk/ppServices/api/dc/gettroubleticketdetails/' + this.searchQuery, this.userKey)
-
-				fetch('https://test-portal.opennet.dk/ppServices/api/dc/gettroubleticketdetails/' + this.searchQuery, requestOptions)
-					.then(response => response.text())
-					.then(result => console.log(result))
-					.catch(error => console.log('error', error));
+				console.log('Fetching ticket details from API for search query:', this.searchQuery, 'with user key:', this.userKey);
+				fetch('https://test-portal.opennet.dk/ppServices/api/dc/gettroubleticketdetails/' + encodeURIComponent(this.searchQuery), requestOptions)
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(result => {
+						console.log('result', this.tickets);
+						this.tickets = result;
+					})
+					.catch(error => {
+						console.error('Error fetching ticket details:', error);
+					})
+					.finally(() => {
+						this.isLoadingTickets = false;
+						this.clearSearchQuery();
+					});
 			},
 			fetchI18N() {
-				this.i18nArr = I18N
+				this.isLoadingI18N = true
+
+				var myHeaders = new Headers();
+				myHeaders.append("PP_USER_KEY", this.userKey)
+
+				var requestOptions = {
+					method: 'GET',
+					headers: myHeaders,
+					redirect: 'follow'
+				};
+
+				// Perform the fetch operation
+				fetch("https://test-portal.opennet.dk/ppServices/api/general/getDisplayDetails/gettroubleticketdetails?language=DA", requestOptions)
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(result => {
+						this.i18nData = result;
+						console.log(this.i18nData);
+					})
+					.catch(error => {
+						console.error('Error fetching i18n data:', error);
+					})
+					.finally(() => {
+						this.isLoadingI18N = false;
+					});
 			}
 		},
 		mounted() {
