@@ -296,6 +296,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.isLoadingTickets = true;
 
 				var myHeaders = new Headers();
+				myHeaders.append("Accept", "application/json");
 				myHeaders.append("PP_USER_KEY", this.userKey);
 
 				var requestOptions = {
@@ -327,6 +328,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.isLoadingI18N = true
 
 				var myHeaders = new Headers();
+				myHeaders.append("Accept", "application/json");
 				myHeaders.append("PP_USER_KEY", this.userKey)
 
 				var requestOptions = {
