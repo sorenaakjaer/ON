@@ -58,6 +58,135 @@ $(document).one("trigger::vue_loaded", function () {
 		}
 	});
 
+
+
+	Vue.component('o-tickets', {
+		template: '#o-tickets-template',
+		props: {
+			tickets: {
+				type: Array,
+				default: () => []
+			},
+			search_query: {
+				type: String,
+				default: ''
+			},
+			i18n: {
+				type: Object,
+				default: null
+			},
+			saving_states: {
+				type: Object,
+				default: {}
+			}
+		},
+		data() {
+			return {
+				noteInputs: {},
+				showNotes: {}
+			}
+		},
+		computed: {
+			ticketsVProps() {
+				const valuesToShow = ['type', 'description', 'serviceSubscriptionId', 'address', 'contactName', 'contactNumber', 'contactEmail'];
+
+				return this.tickets.map(ticket => ({
+					...ticket,
+					v_props: valuesToShow.reduce((props, propName) => {
+						if (ticket.hasOwnProperty(propName)) {
+							// Use i18nHash for property names if available
+							const displayName = this.i18n[propName] || propName;
+							props[displayName] = ticket[propName];
+						}
+						return props;
+					}, {}),
+					v_lastUpdated: ticket.lastUpdated ? this.formatDateTime(ticket.lastUpdated) : '',
+					v_notes: ticket.notes ? ticket.notes
+						.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)) // Sort notes by timestamp, newest first
+						.map(note => ({
+							...note,
+							v_timestamp: this.formatDateTime(note.timestamp) // Assuming formatDateTime is defined and formats correctly
+						})) : []
+				}));
+			},
+			filteredTickets() {
+				if (!this.search_query.trim()) {
+					return this.ticketsVProps;
+				}
+				const searchLower = this.search_query.toLowerCase();
+
+				const searchInObject = (obj) => {
+					return Object.values(obj).some(value => {
+						// Check if the value is an object and not null, then recursively search
+						if (typeof value === 'object' && value !== null) {
+							return searchInObject(value);
+						} else if (Array.isArray(value)) {
+							// If the value is an array, search within each element
+							return value.some(element => searchInObject(element));
+						} else {
+							// Check for null before calling toString to avoid TypeError
+							return value !== null && value.toString().toLowerCase().includes(searchLower);
+						}
+					});
+				};
+				return this.ticketsVProps.filter(ticket => searchInObject(ticket));
+			}
+		},
+		methods: {
+			formatDateTime(dateString) {
+				let locale = 'en-US', hour12 = true;
+				const i18nTime = this.locale === 'da' ? 'kl.' : 'at';
+
+				if (this.locale === 'da') {
+					locale = 'da-DK';
+					hour12 = false;
+				}
+
+				const date = new Date(dateString);
+				const dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+				const timeOptions = { hour: '2-digit', minute: '2-digit', hour12 };
+
+				const formattedDate = date.toLocaleDateString(locale, dateOptions);
+				const formattedTime = date.toLocaleTimeString(locale, timeOptions);
+
+				const specificReadableDateTime = `${formattedDate} ${i18nTime} ${formattedTime}`;
+
+				return specificReadableDateTime;
+			},
+			setShowNotes(ticketId) {
+				console.log('show notes', ticketId)
+				if (!this.showNotes[ticketId]) {
+					this.$set(this.showNotes, ticketId, true);
+				} else {
+					this.$delete(this.showNotes, ticketId)
+				}
+			},
+			getShowNotes(ticketId) {
+				console.log('getShowNotes', this.showNotes)
+				return this.showNotes[ticketId];
+			},
+			getIsSaving(ticketId) {
+				return !!this.saving_states[ticketId]; // Convert to boolean
+			},
+			saveNote(ticketId) {
+				const note = this.noteInputs[ticketId];
+				if (!note || note.length === 0) {
+					const el = document.querySelector('#ticket_' + ticketId + ' textarea')
+					if (el) {
+						el.focus()
+					}
+					return
+				}
+				const noteObj = {
+					note: note,
+					ticketId: ticketId
+				}
+				this.$emit('save_note', noteObj)
+				this.$delete(this.noteInputs, ticketId);
+			}
+		}
+	})
+
 	Vue.component('o-multi-select', {
 		template: '#o-multi-select-template',
 		props: {
@@ -65,7 +194,7 @@ $(document).one("trigger::vue_loaded", function () {
 				type: Array,
 				default: () => []
 			},
-			multiple: {
+			canUnselectSelectedItem: {
 				type: Boolean,
 				default: false,
 			},
@@ -80,7 +209,7 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		data() {
 			return {
-				isOpen: false,
+				isOpen: false
 			}
 		},
 		computed: {
@@ -134,7 +263,6 @@ $(document).one("trigger::vue_loaded", function () {
 				i18nArr: [],
 				tickets: [],
 				isLoadingTickets: false,
-				noteInputs: {},
 				savingStates: {},
 				theDropdownFilters: [
 					{ value: 7, title: 'Seneste 7 dage' },
@@ -142,7 +270,15 @@ $(document).one("trigger::vue_loaded", function () {
 					{ value: 21, title: 'Seneste 21 dage' },
 					{ value: 30, title: 'Seneste 30 dage' }
 				],
-				theSelectedFilter: null
+				theSelectedFilter: 7,
+				earlierTickets: [],
+				isLoadingEarlierTickets: false,
+				uxSearchQuery: '',
+				toast: {
+					visible: false,
+					message: '',
+					type: 'info', // 'success', 'info', 'warning', 'error'
+				}
 			}
 		},
 		computed: {
@@ -158,85 +294,70 @@ $(document).one("trigger::vue_loaded", function () {
 					hash[item.api_value] = item.display_value;
 				});
 				return hash;
-			},
-			ticketsVProps() {
-				const valuesToShow = ['type', 'description', 'serviceSubscriptionId', 'address', 'contactName', 'contactNumber', 'contactEmail'];
-
-				return this.tickets.map(ticket => ({
-					...ticket,
-					v_props: valuesToShow.reduce((props, propName) => {
-						if (ticket.hasOwnProperty(propName)) {
-							// Use i18nHash for property names if available
-							const displayName = this.i18n[propName] || propName;
-							props[displayName] = ticket[propName];
-						}
-						return props;
-					}, {}),
-					v_lastUpdated: ticket.lastUpdated ? this.formatDateTime(ticket.lastUpdated) : '',
-					v_notes: ticket.notes ? ticket.notes
-						.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)) // Sort notes by timestamp, newest first
-						.map(note => ({
-							...note,
-							v_timestamp: this.formatDateTime(note.timestamp) // Assuming formatDateTime is defined and formats correctly
-						})) : []
-				}));
 			}
 		},
 		methods: {
+			showToast(message, type = 'info') {
+				this.toast.message = message;
+				this.toast.type = type;
+				this.toast.visible = true;
+
+				setTimeout(() => {
+					this.toast.visible = false;
+				}, 2500); // Hide after 3 seconds
+			},
 			onToggleFilter(filter) {
-				if (this.theSelectedFilter === filter) {
-					this.theSelectedFilter = null
-					this.resetTickets()
-				} else {
-					this.theSelectedFilter = filter
-					this.loadTickets()
-				}
+				this.theSelectedFilter = filter
+				this.fetchEarlierTickets()
 			},
 			resetTickets() {
 				this.tickets = []
 			},
-			getIsSaving(ticketId) {
-				return !!this.savingStates[ticketId]; // Convert to boolean
-			},
-			saveNote(ticketId) {
-				// Access the note from noteInputs using the ticketId
-				const note = this.noteInputs[ticketId];
-				if (!note || note.length === 0) {
-					const el = document.querySelector('#ticket_' + ticketId + ' textarea')
-					if (el) {
-						el.focus()
-					}
-					return
-				}
+			saveNote(noteObj) {
+				const note = noteObj.note
+				const ticketId = noteObj.ticketId
 				this.$set(this.savingStates, ticketId, true);
-				console.log(`Saving note for ticket ${ticketId}: ${note}`);
-				setTimeout(() => {
-					console.log(`Saving note for ticket ${ticketId}: ${this.noteInputs[ticketId]}`);
-
-					this.$delete(this.noteInputs, ticketId);
-					this.$delete(this.savingStates, ticketId);
-
-				}, 1000);
+				this.addNoteToTicket(ticketId, note)
 			},
-			formatDateTime(dateString) {
-				let locale = 'en-US', hour12 = true;
-				const i18nTime = this.locale === 'da' ? 'kl.' : 'at';
+			async addNoteToTicket(ticketId, noteContent) {
+				const apiUrl = 'http://test-portal.opennet.dk/ppServices/api/dc/addnote';
+				const userKey = this.userKey
 
-				if (this.locale === 'da') {
-					locale = 'da-DK';
-					hour12 = false;
+				const headers = new Headers({
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'PP_USER_KEY': userKey
+				});
+
+				// Prepare the request body
+				const body = JSON.stringify({
+					ticketId: ticketId,
+					note: noteContent,
+				});
+
+				try {
+					const response = await fetch(apiUrl, {
+						method: 'POST',
+						headers: headers,
+						body: body,
+					});
+
+					if (!response.ok) {
+						this.$delete(this.savingStates, ticketId);
+						throw new Error(`HTTP error! status: ${response.status}`);
+					}
+
+					const result = await response.json();
+					console.log('Note added successfully:', result);
+					this.showToast('Noten er gemt!', 'success');
+					this.$delete(this.savingStates, ticketId);
+					// Handle success response
+				} catch (error) {
+					this.$delete(this.savingStates, ticketId);
+					this.showToast('Noget gik galt', 'info');
+					console.error('Error adding note:', error);
+					// Handle errors
 				}
-
-				const date = new Date(dateString);
-				const dateOptions = { year: 'numeric', month: 'short', day: 'numeric' };
-				const timeOptions = { hour: '2-digit', minute: '2-digit', hour12 };
-
-				const formattedDate = date.toLocaleDateString(locale, dateOptions);
-				const formattedTime = date.toLocaleTimeString(locale, timeOptions);
-
-				const specificReadableDateTime = `${formattedDate} ${i18nTime} ${formattedTime}`;
-
-				return specificReadableDateTime;
 			},
 			onSearch() {
 				if (this.searchQuery.length < 1) {
@@ -248,7 +369,6 @@ $(document).one("trigger::vue_loaded", function () {
 					this.setTheActiveMenuItem('search')
 				}
 				this.fetchTicketDetails()
-				console.log('search', this.theActiveMenuItem)
 			},
 			startTrans(el) {
 				el.style.height = el.scrollHeight + 'px'
@@ -266,11 +386,20 @@ $(document).one("trigger::vue_loaded", function () {
 			setTheActiveMenuItem(menuItemKey) {
 				this.theActiveMenuItem = menuItemKey
 				if (menuItemKey === 'welcome') {
+					this.clearSearchQuery()
 					this.$nextTick(_ => {
 						if (this.$refs.v_search_query) {
 							this.$refs.v_search_query.focus()
 						}
 					})
+				}
+				if (menuItemKey === 'search') {
+					if (this.$refs.v_search_query) {
+						this.$refs.v_search_query.focus()
+					}
+				}
+				if (menuItemKey === 'notes') {
+					this.fetchEarlierTickets()
 				}
 			},
 			clearSearchQuery() {
@@ -279,24 +408,52 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				this.searchQuery = ""
 			},
-			debounceSearch(e) {
-				const menuItemsToDebounce = ['notes']
-				if (menuItemsToDebounce.indexOf(this.theActiveMenuItem) < 0) {
-					this.searchQuery = e.target.value
-					return
+			clearUxSearchQuery() {
+				if (this.$refs.v_ux_search_query) {
+					this.$refs.v_ux_search_query.value = ""
 				}
-				this.searchQuery = ""
+				this.uxSearchQuery = ""
+			},
+			debounceSearch(e) {
 				clearTimeout(this.debounce)
 				this.debounce = setTimeout(() => {
-					this.searchQuery = e.target.value
+					this.uxSearchQuery = e.target.value
 				}, 600)
+			},
+			fetchEarlierTickets() {
+				this.earlierTickets = [];
+				this.isLoadingEarlierTickets = true;
+				var myHeaders = new Headers();
+				myHeaders.append("PP_USER_KEY", this.userKey);
+
+				var requestOptions = {
+					method: 'GET',
+					headers: myHeaders,
+					redirect: 'follow'
+				};
+				console.log('Fetching ticket details from API for days-filter:', this.theSelectedFilter, 'with user key:', this.userKey);
+				fetch('https://test-portal.opennet.dk/ppServices/api/dc/gettroubleticketdetails/' + this.theSelectedFilter, requestOptions)
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(result => {
+						console.log('success', result);
+						this.earlierTickets = result;
+					})
+					.catch(error => {
+						console.error('Error fetching earlierTickets details:', error);
+					})
+					.finally(() => {
+						this.isLoadingEarlierTickets = false;
+					});
 			},
 			fetchTicketDetails() {
 				this.tickets = [];
 				this.isLoadingTickets = true;
-
 				var myHeaders = new Headers();
-				myHeaders.append("Accept", "application/json");
 				myHeaders.append("PP_USER_KEY", this.userKey);
 
 				var requestOptions = {
@@ -313,7 +470,7 @@ $(document).one("trigger::vue_loaded", function () {
 						return response.json();
 					})
 					.then(result => {
-						console.log('result', this.tickets);
+						console.log('success search', result);
 						this.tickets = result;
 					})
 					.catch(error => {
@@ -326,10 +483,9 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			fetchI18N() {
 				this.isLoadingI18N = true
-
 				var myHeaders = new Headers();
+				myHeaders.append("PP_USER_KEY", this.userKey);
 				myHeaders.append("Accept", "application/json");
-				myHeaders.append("PP_USER_KEY", this.userKey)
 
 				var requestOptions = {
 					method: 'GET',

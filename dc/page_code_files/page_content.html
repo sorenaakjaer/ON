@@ -46,8 +46,7 @@
                                 hhv. Cerillion Trouble Ticket eller sag på partnerportalen.</p>
                         </div>
                     </template>
-                    <div class="o-input-group__search custom-marg"
-                        v-if="theActiveMenuItem === 'welcome' || theActiveMenuItem === 'search'">
+                    <div class="o-input-group__search custom-marg" v-if="theActiveMenuItem === 'welcome'">
                         <div class="o-search-group" :class="{'o-search-group--active': searchQuery.length > 0}">
                             <div class="o-icon">
                                 <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
@@ -58,16 +57,18 @@
                                     </path>
                                 </svg>
                             </div>
-                            <input type="search" ref="v_search_query" @keyup.enter="onSearch" @input="debounceSearch"
+                            <input type="search" ref="v_search_query" @keyup.enter="onSearch" v-model="searchQuery"
                                 placeholder="Angiv ONID, Trouble Ticket ID eller Service subscription ID">
                             <div class="o-search-group__clear" @click="clearSearchQuery"><i class="tio">clear_circle</i>
                             </div>
                         </div>
-                        <button class="o-btn o-btn--primary" @click="onSearch">Søg</button>
+                        <button class="o-btn o-btn--primary" :class="{'o-btn--loading': isLoadingTickets}"
+                            @click="onSearch">Søg</button>
                     </div>
+                    <!-- PAGE 1 -->
                     <template v-if="theActiveMenuItem === 'welcome'">
                         <label class="o-label">Quick guide</label>
-                        <div class="o-acc">
+                        <div class="o-acc" :class="{'o-acc--transitions': theActiveMenuItem === 'welcome'}">
                             <div class="o-acc__item" v-for="accItem in accItems"
                                 :class="{'o-acc__item--active': theActiveAccItem === accItem.id}">
                                 <div class="o-acc__item__header" @click="setTheActiveAccItem(accItem.id)">
@@ -84,10 +85,9 @@
                             </div>
                         </div>
                     </template>
-                    <template v-if="theActiveMenuItem === 'notes'">
-                        <div class="o-page__notes__header">
-                            <o-multi-select :items="theDropdownFilters" :selected_item="theSelectedFilter"
-                                @toggle_item="onToggleFilter($event)"></o-multi-select>
+                    <!-- PAGE 2 -->
+                    <template v-if="theActiveMenuItem === 'search'">
+                        <div class="o-input-group__search custom-marg">
                             <div class="o-search-group" :class="{'o-search-group--active': searchQuery.length > 0}">
                                 <div class="o-icon">
                                     <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
@@ -98,80 +98,130 @@
                                         </path>
                                     </svg>
                                 </div>
-                                <input type="search" ref="v_search_query" @keyup.enter="onSearch"
-                                    @input="debounceSearch" placeholder="Søg">
+                                <input type="search" ref="v_search_query" @keyup.enter="onSearch" v-model="searchQuery"
+                                    placeholder="Angiv ONID, Trouble Ticket ID eller Service subscription ID">
                                 <div class="o-search-group__clear" @click="clearSearchQuery"><i
                                         class="tio">clear_circle</i>
                                 </div>
                             </div>
+                            <button class="o-btn o-btn--primary" :class="{'o-btn--loading': isLoadingTickets}"
+                                @click="onSearch">Søg</button>
                         </div>
-                </div>
-                </template>
-                <template v-if="theActiveMenuItem === 'search'">
-                    <div class="o-page__search">
-                        <div class="o-spinner--center" v-if="isLoadingTickets">
-                            <div class="o-spinner"></div>
+                        <div class="o-page__search">
+                            <div v-if="!isLoadingTickets && savedSearchQuery">
+                                <label class="o-label marg-05-bottom">{{ tickets.length }}
+                                    relatede
+                                    sager til '{{
+                                    savedSearchQuery }}'</label>
+                                <o-tickets :tickets="tickets" :saving_states="savingStates" :i18n="i18n"
+                                    @save_note="saveNote"></o-tickets>
+                            </div>
                         </div>
-                        <div v-else>
-                            <label class="o-label marg-05-bottom" v-if="savedSearchQuery">{{ tickets.length }} relatede
-                                sager til '{{
-                                savedSearchQuery }}'</label>
-                            <div class="o-tickets" v-if="tickets.length > 0">
-                                <div class="o-card" :id="'ticket_' + ticket.ticketId" v-for="ticket in ticketsVProps">
-                                    <div class="o-card__header">
-                                        <h4>Trouble ticket id: {{ ticket.ticketId }} </h4>
-                                        <label class="o-label">Senest opdateret: {{ ticket.v_lastUpdated }}</label>
-                                    </div>
-                                    <table class="o-table" v-if="tickets.length > 0">
-                                        <tbody>
-                                            <tr v-for="(prop, key) in ticket.v_props">
-                                                <td>{{ key }}</td>
-                                                <td>{{ prop }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <div class="o-card__notes">
-                                        <p v-if="ticket.v_notes.length > 0">Tidligere noter</p>
-                                        <p v-else class="p-italic">Ingen noter</p>
-                                        <ul v-if="ticket.notes">
-                                            <li class="timeline-element" :class="{'timeline-element--end': note.is_to}"
-                                                :key="note.timestamp" v-for="note in ticket.v_notes">
-                                                <div class="timeline-element__body">
-                                                    <label class="o-label timeline-element__header">
-                                                        {{ note.userName }} - {{
-                                                        note.v_timestamp }}
-                                                    </label>
-                                                    <div class="o-card__notes__note__body timeline-element__text">
-                                                        {{ note.note }}
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <div class="o-card__notes__add-note">
-                                            <textarea v-autosize class="o-textarea" placeholder="Skriv note.."
-                                                v-model="noteInputs[ticket.ticketId]"></textarea>
-                                            <button class="o-btn o-btn--primary"
-                                                :class="{'o-btn--loading': getIsSaving(ticket.ticketId)}"
-                                                @click="saveNote(ticket.ticketId)">Tilføj note</button>
-                                        </div>
-                                    </div>
+                    </template>
+                    <!-- PAGE 3 -->
+                    <template v-if="theActiveMenuItem === 'notes'">
+                        <div class="o-page__notes__header">
+                            <o-multi-select :items="theDropdownFilters" :selected_item="theSelectedFilter"
+                                @toggle_item="onToggleFilter($event)"></o-multi-select>
+                            <div class="o-search-group" :class="{'o-search-group--active': uxSearchQuery.length > 0}"
+                                v-if="earlierTickets.length > 0">
+                                <div class="o-icon">
+                                    <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24">
+                                        <title>search</title>
+                                        <path
+                                            d="M20.85,19.44l-4-4a2.44,2.44,0,0,0-.43-.35l-1-.69h0A7,7,0,1,0,10,17a7,7,0,0,0,4.37-1.53h0l.75,1a2.6,2.6,0,0,0,.3.36l4,4a.5.5,0,0,0,.71,0l.7-.7A.5.5,0,0,0,20.85,19.44ZM10,15a5,5,0,1,1,5-5A5,5,0,0,1,10,15Z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <input type="search" ref="v_ux_search_query" @input="debounceSearch" placeholder="Søg">
+                                <div class="o-search-group__clear" @click="clearUxSearchQuery"><i
+                                        class="tio">clear_circle</i>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </template>
+                        <div class="o-page__note__body">
+                            <div class="o-spinner--center" v-if="isLoadingEarlierTickets">
+                                <div class="o-spinner"></div>
+                            </div>
+                            <div class="marg-1-bottom" v-else>
+                                <o-tickets :tickets="earlierTickets" :i18n="i18n" :saving_states="savingStates"
+                                    :search_query="uxSearchQuery" @save_note="saveNote"></o-tickets>
+                            </div>
+                        </div>
+                    </template>
+
+                </div>
             </div>
         </div>
     </div>
+    <transition name="toast">
+        <div v-if="toast.visible" class="toast" :class="`toast-${toast.type}`">
+            <i class="tio" v-if="toast.type === 'success'">checkmark_circle</i> <i class="tio" v-else>error</i> {{
+            toast.message }}
+        </div>
+    </transition>
 </div>
 <div class="o-footer">
     <div class="copyright"><span>© 2024<a href="#">OpenNet A/S</a>All Right Reseved</span></div>
 </div>
 </div>
 
+<script type="text/x-template" id="o-tickets-template">
+    <div>
+    <h4 class="p-italic" v-if="filteredTickets.length === 0">Ingen tickets matcher din søgning</h4>
+    <div class="o-tickets" v-if="filteredTickets.length > 0">
+        <div class="o-card" :id="'ticket_' + ticket.ticketId"
+            v-for="ticket in filteredTickets">
+            <div class="o-card__header">
+                <h4>Trouble ticket id: {{ ticket.ticketId }} </h4>
+                <label class="o-label">Senest opdateret: {{ ticket.v_lastUpdated }}</label>
+            </div>
+            <table class="o-table" v-if="tickets.length > 0">
+                <tbody>
+                    <tr v-for="(prop, key) in ticket.v_props">
+                        <td>{{ key }}</td>
+                        <td>{{ prop }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="o-card__notes">
+                <div class="o-card__notes__add-note">
+                    <textarea v-autosize class="o-textarea" placeholder="Skriv note.."
+                        v-model="noteInputs[ticket.ticketId]"></textarea>
+                    <button class="o-btn o-btn--primary"
+                        :class="{'o-btn--loading': getIsSaving(ticket.ticketId)}"
+                        @click="saveNote(ticket.ticketId)">Tilføj note</button>
+                </div>
+                <p class="toggle-notes-button" 
+                v-if="ticket.v_notes.length > 0"
+                :class="{'toogle-notes-button--open': getShowNotes(ticket.ticketId)}" 
+                @click="setShowNotes(ticket.ticketId)">
+                <template v-if="getShowNotes(ticket.ticketId)">Skjul</template><template v-else>Se</template> tidligere noter <i class="tio">chevron_down</i>
+            </p>
+                <p v-else class="p-italic">Ingen noter</p>
+                <ul v-if="ticket.notes && getShowNotes(ticket.ticketId)">
+                    <li class="timeline-element"
+                        :class="{'timeline-element--end': note.is_to}" :key="note.timestamp"
+                        v-for="note in ticket.v_notes">
+                        <div class="timeline-element__body">
+                            <label class="o-label timeline-element__header">
+                                {{ note.userName }} - {{
+                                note.v_timestamp }}
+                            </label>
+                            <div class="o-card__notes__note__body timeline-element__text">
+                                {{ note.note }}
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</script>
 
 <script type="text/x-template" id="o-multi-select-template">
-    <div class="o-multi-select tags-selector">
+    <div class="o-multi-select tags-selector" :class="{'tags-selector__only-select': !canUnselectSelectedItem}">
         <div class="tags-selector__selected" :class="[{'tags-selector__selected--has-selection ': selected_item}, {'tags-selector__selected--active': isOpen}]" @click="setIsOpen(true)">
             <p>{{ selectTitle }}</p>
             <i class="tio">chevron_down</i>
@@ -196,6 +246,5 @@
                     </li>
                 </ul>
         </div>
-    </div>
     </div>
 </script>
