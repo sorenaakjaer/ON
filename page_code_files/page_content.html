@@ -278,18 +278,18 @@
                         </template>
                         <template v-if="isDocs" v-cloak>
                             <div class="o-filters__filter vue-filter-level2" v-if="activeCategory!='OpenAnalytics'"
-                                :class="{'o-filters__filter--active': theActiveFilter==='active'}"
-                                @click="setTheActiveFilter('active')">
+                                 :class="{'o-filters__filter--active': theActiveFilter==='active'}"
+                                 @click="setTheActiveFilter('active')">
                                 <span>Aktive</span>
                                 <div class="o-badge" :class="{'o-badge--loading': isOpenDocsLoading}">
                                     {{itemsActiveFromCategory.length}}
                                 </div>
                             </div>
                             <div :class="[{'hint--top': isClosedDocsLoading},{'pointer-not-allowed': isClosedDocsLoading}]"
-                                v-if="activeCategory!='OpenAnalytics'" aria-label="Tidligere indlæses stadig">
+                                 v-if="activeCategory!='OpenAnalytics'" aria-label="Tidligere indlæses stadig">
                                 <div class="o-filters__filter vue-filter-level2"
-                                    :class="[{'o-filters__filter--active': theActiveFilter==='inactive'},{'filters__filter--inactive': isClosedDocsLoading}]"
-                                    @click="setTheActiveFilter('inactive')">
+                                     :class="[{'o-filters__filter--active': theActiveFilter==='inactive'},{'filters__filter--inactive': isClosedDocsLoading}]"
+                                     @click="setTheActiveFilter('inactive')">
                                     <span>Tidligere</span>
                                     <div class="o-badge" :class="{'o-badge--loading': isClosedDocsLoading}">
                                         {{itemsExpiredFromCategory.length}}
@@ -297,27 +297,32 @@
                                 </div>
                             </div>
                             <div class="o-filters__filter vue-filter-level2"
-                                v-if="theUserType=='IO' && activeCategory!='OpenAnalytics' || theUserType=='ON' && activeCategory!='OpenAnalytics'"
-                                :class="{'o-filters__filter--active': theActiveFilter==='future'}"
-                                @click="setTheActiveFilter('future')">
+                                 v-if="theUserType=='IO' && activeCategory!='OpenAnalytics' || theUserType=='ON' && activeCategory!='OpenAnalytics'"
+                                 :class="{'o-filters__filter--active': theActiveFilter==='future'}"
+                                 @click="setTheActiveFilter('future')">
                                 <span>Fremtidige</span>
                                 <div class="o-badge">{{itemsFutureFromCategory.length}}</div>
                             </div>
+                            <div class="o-filters__filter vue-filter-level2" v-if="activeCategory=='OpenAnalytics'"
+                                 :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab0'}"
+                                 @click="setTheActiveFilter('OpenAnalytics_tab0')">
+                                <span>Info</span>
+                            </div>
                             <div class="o-filters__filter vue-filter-level2"
-                                v-if="activeCategory=='OpenAnalytics' && pbiReports.length > 0"
-                                :class="{'o-filters__filter--active': theActiveFilter==='dynamic'}"
-                                @click="setTheActiveFilter('dynamic')">
-                                <span>Dashboard</span>
+                                 v-if="activeCategory=='OpenAnalytics' && pbiReports.length > 0"
+                                 :class="{'o-filters__filter--active': theActiveFilter==='dynamic'}"
+                                 @click="setTheActiveFilter('dynamic')">
+                                <span>Analytics</span>
                             </div>
                             <div class="o-filters__filter vue-filter-level2" v-if="activeCategory=='OpenAnalytics'"
-                                :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab1'}"
-                                @click="setTheActiveFilter('OpenAnalytics_tab1')">
-                                <span>Data</span>
+                                 :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab1'}"
+                                 @click="setTheActiveFilter('OpenAnalytics_tab1')">
+                                <span>Hent filer</span>
                             </div>
                             <div class="o-filters__filter vue-filter-level2" v-if="activeCategory=='OpenAnalytics'"
-                                :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab2'}"
-                                @click="setTheActiveFilter('OpenAnalytics_tab2')">
-                                <span>Data Subscription</span>
+                                 :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab2'}"
+                                 @click="setTheActiveFilter('OpenAnalytics_tab2')">
+                                <span>Administrer udsendelse</span>
                             </div>
 
 
@@ -635,13 +640,14 @@
                         </template>
                     </div>
                     <div v-if="activeCategory === 'OpenAnalytics'">
-                        <div v-if="theActiveFilter === ''">
+                        <div v-if="theActiveFilter === 'OpenAnalytics_tab0'">
                             <h1>Velkommen til OpenAnalytics</h1>
                             <h4>Vælg et filter i toppen</h4>
+                            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
                         </div>
                         <template v-if="theActiveFilter !== ''">
                             <div class="o-iframe-container"
-                                v-if="theActiveFilter === 'OpenAnalytics_tab1' || theActiveFilter === 'OpenAnalytics_tab2'">
+                                 v-if="theActiveFilter === 'OpenAnalytics_tab1' || theActiveFilter === 'OpenAnalytics_tab2'">
                                 <transition name="fadeOut">
                                     <div class="o-iframe-container--loader" v-if="isLoadingTheOpenAnalyticsIframe">
                                         <div class="o-spinner"></div>
@@ -649,6 +655,20 @@
                                 </transition>
                                 <iframe ref="openAnalyticsIframe" :src="theOpenAnalyticsIframeUrl"></iframe>
                             </div>
+                            <div class="o-iframe-container"
+                                 v-if="theActiveFilter === 'OpenAnalytics_tab0">
+                                <transition name="fadeOut">
+                                    <h1>Velkommen til OpenAnalytics</h1>
+                                    <h4>Vælg et filter i toppen</h4>
+                                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                                </transition>
+                                <iframe ref="openAnalyticsIframe" :src="theOpenAnalyticsIframeUrl"></iframe>
+                            </div>
+
+
+
+
+
                         </template>
                     </div>
                     <h4 class=" text-explainer"
