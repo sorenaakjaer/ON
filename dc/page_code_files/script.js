@@ -320,7 +320,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.addNoteToTicket(ticketId, note)
 			},
 			async addNoteToTicket(ticketId, noteContent) {
-				const apiUrl = 'http://test-portal.opennet.dk/ppServices/api/dc/addnote';
+				const apiUrl = 'https://test-portal.opennet.dk/ppServices/api/dc/addnote';
 				const userKey = this.userKey
 
 				const headers = new Headers({
