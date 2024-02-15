@@ -303,6 +303,12 @@
                                 <span>Fremtidige</span>
                                 <div class="o-badge">{{itemsFutureFromCategory.length}}</div>
                             </div>
+
+                            <div class="o-filters__filter vue-filter-level2" v-if="activeCategory=='OpenAnalytics'"
+                                 :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab0'}"
+                                 @click="setTheActiveFilter('OpenAnalytics_tab0')">
+                                <span>Info</span>
+                            </div>
                             <div class="o-filters__filter vue-filter-level2"
                                  v-if="activeCategory=='OpenAnalytics' && pbiReports.length > 0"
                                  :class="{'o-filters__filter--active': theActiveFilter==='dynamic'}"
