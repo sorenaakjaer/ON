@@ -620,15 +620,15 @@
                 </div>
                 <div class="o-body__content js-o-cases__container o-cases__container">
                     <p class="text-explainer"
-                        v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter==='dynamic'"
-                        v-cloak></p>
+                       v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter==='dynamic'"
+                       v-cloak></p>
                     <div v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter==='dynamic'"
-                        v-cloak>
+                         v-cloak>
                         <div v-if="activeCategory==='OpenAnalytics' && theUnreadSelected==='Vælg'"
-                            v-html="theReportBIExplainer">
+                             v-html="theReportBIExplainer">
                         </div>
                         <div v-if="activeCategory==='Invoice' && theUnreadSelected==='Vælg'"
-                            v-html="theInvoiceBIExplainer">
+                             v-html="theInvoiceBIExplainer">
                         </div>
                         <template v-if="theUnreadSelected !=='Vælg'">
                             <div class="vue-spinner__container" v-if="isLoadingBIReport" v-cloak>
@@ -636,7 +636,7 @@
                                 <p class="text-explainer o-spinner__text">Indlæser dashboard..</p>
                             </div>
                             <div class="PowerBI_Container" id="embedContainer"
-                                :class="{'hidePowerBi': isLoadingBIReport}">
+                                 :class="{'hidePowerBi': isLoadingBIReport}">
                             </div>
                         </template>
                     </div>
@@ -656,20 +656,14 @@
                                 </transition>
                                 <iframe ref="openAnalyticsIframe" :src="theOpenAnalyticsIframeUrl"></iframe>
                             </div>
-                            <div class="o-iframe-container"
-                                 v-if="theActiveFilter === 'OpenAnalytics_tab0">
-                                <transition name="fadeOut">
-                                    <div class="o-iframe-container--loader" v-if="isLoadingTheOpenAnalyticsIframe">
-                                        <div class="o-spinner"></div>
-                                    </div>
-                                </transition>
+                            <div v-if="theActiveFilter === 'OpenAnalytics_tab0'">
                                 <h1>Velkommen til OpenAnalytics</h1>
                                 <h4>Vælg et filter i toppen</h4>
                                 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
                             </div>
 
-                        </template>
-                    </div>
+                    </template>
+                </div>
                     <h4 class=" text-explainer"
                         v-if="activeCategory !=='OpenAnalytics' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && !isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter !=='dynamic'"
                         v-cloak> Ingen dokumenter matcher din søgning (1) {{ activeCategory }}
