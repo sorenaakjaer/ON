@@ -432,7 +432,7 @@ $(document).one("trigger::vue_loaded", function () {
 					redirect: 'follow'
 				};
 				console.log('Fetching ticket details from API for days-filter:', this.theSelectedFilter, 'with user key:', this.userKey);
-				fetch('https://test-portal.opennet.dk/ppServices/api/dc/gettroubleticketdetails/' + this.theSelectedFilter, requestOptions)
+				fetch('https://dev-portal.opennet.dk/ppServices/api/dc/gettroubleticketdetails/' + this.theSelectedFilter, requestOptions)
 					.then(response => {
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
@@ -462,7 +462,7 @@ $(document).one("trigger::vue_loaded", function () {
 					redirect: 'follow'
 				};
 				console.log('Fetching ticket details from API for search query:', this.searchQuery, 'with user key:', this.userKey);
-				fetch('https://test-portal.opennet.dk/ppServices/api/dc/gettroubleticketdetails/' + encodeURIComponent(this.searchQuery), requestOptions)
+				fetch('https://dev-portal.opennet.dk/ppServices/api/dc/gettroubleticketdetails/' + encodeURIComponent(this.searchQuery), requestOptions)
 					.then(response => {
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
@@ -494,7 +494,7 @@ $(document).one("trigger::vue_loaded", function () {
 				};
 
 				// Perform the fetch operation
-				fetch("https://test-portal.opennet.dk/ppServices/api/general/getDisplayDetails/gettroubleticketdetails?language=DA", requestOptions)
+				fetch("https://dev-portal.opennet.dk/ppServices/api/general/getDisplayDetails/gettroubleticketdetails?language=DA", requestOptions)
 					.then(response => {
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
