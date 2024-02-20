@@ -329,14 +329,6 @@ $(document).one("trigger::vue_loaded", function () {
 				const note = noteObj.note
 				const ticketId = noteObj.ticketId
 				this.$set(this.savingStates, ticketId, true);
-				if (ISLOCALHOST) {
-					setTimeout(_ => {
-						this.showToast('Noten er gemt!', 'success');
-						this.$delete(this.savingStates, ticketId);
-						this.updateTicketNotes(RESULTFROMNOTE)
-					}, 1500)
-					return
-				}
 				this.addNoteToTicket(ticketId, note)
 			},
 			async addNoteToTicket(ticketId, noteContent) {
@@ -442,10 +434,6 @@ $(document).one("trigger::vue_loaded", function () {
 				}, 600)
 			},
 			fetchEarlierTickets() {
-				if (ISLOCALHOST) {
-					this.earlierTickets = EARLIERTICKETS;
-					return
-				}
 				this.earlierTickets = [];
 				this.isLoadingEarlierTickets = true;
 				var myHeaders = new Headers();
@@ -476,10 +464,6 @@ $(document).one("trigger::vue_loaded", function () {
 					});
 			},
 			fetchTicketDetails() {
-				if (ISLOCALHOST) {
-					this.tickets = TICKETDETAILS;
-					return;
-				}
 				this.tickets = [];
 				this.isLoadingTickets = true;
 				var myHeaders = new Headers();
@@ -520,11 +504,6 @@ $(document).one("trigger::vue_loaded", function () {
 					});
 			},
 			fetchI18N() {
-				if (ISLOCALHOST) {
-					this.i18nData = I18N
-					this.isLoadingI18N = false
-					return
-				}
 				this.isLoadingI18N = true
 				var myHeaders = new Headers();
 				myHeaders.append("PP_USER_KEY", this.userKey);
