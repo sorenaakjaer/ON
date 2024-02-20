@@ -253,7 +253,7 @@ $(document).one("trigger::vue_loaded", function () {
 				theActiveMenuItem: 'welcome',
 				searchQuery: '',
 				savedSearchQuery: '',
-				theActiveAccItem: 0,
+				theActiveAccItem: 'Kaldstyper',
 				accItems: [
 					{ id: 0, title: 'Kaldstyper', content: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to us' },
 					{ id: 1, title: 'Søgning', content: 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which ' },
@@ -313,10 +313,30 @@ $(document).one("trigger::vue_loaded", function () {
 			resetTickets() {
 				this.tickets = []
 			},
+			updateTicketNotes(success) {
+				const targetArray = this.theActiveMenuItem === 'search' ? this.tickets : this.earlierTickets
+
+				success.forEach(updatedTicket => {
+					const idx = targetArray.findIndex(ticket => ticket.ticketId === updatedTicket.ticketId)
+					if (idx < 0) {
+						targetArray.push(updatedTicket)
+					} else {
+						this.$set(targetArray, idx, updatedTicket)
+					}
+				})
+			},
 			saveNote(noteObj) {
 				const note = noteObj.note
 				const ticketId = noteObj.ticketId
 				this.$set(this.savingStates, ticketId, true);
+				if (ISLOCALHOST) {
+					setTimeout(_ => {
+						this.showToast('Noten er gemt!', 'success');
+						this.$delete(this.savingStates, ticketId);
+						this.updateTicketNotes(RESULTFROMNOTE)
+					}, 1500)
+					return
+				}
 				this.addNoteToTicket(ticketId, note)
 			},
 			async addNoteToTicket(ticketId, noteContent) {
@@ -348,6 +368,7 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 
 					const result = await response.json();
+					this.updateTicketNotes(result)
 					console.log('Note added successfully:', result);
 					this.showToast('Noten er gemt!', 'success');
 					this.$delete(this.savingStates, ticketId);
@@ -361,7 +382,10 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			onSearch() {
 				if (this.searchQuery.length < 1) {
-					this.$refs.v_search_query.focus()
+					const el = $('.input_search')
+					if (el) {
+						el.focus()
+					}
 					return
 				}
 				this.savedSearchQuery = this.searchQuery
@@ -376,41 +400,38 @@ $(document).one("trigger::vue_loaded", function () {
 			endTrans(el) {
 				el.style.height = ''
 			},
-			setTheActiveAccItem(num) {
-				if (this.theActiveAccItem === num) {
+			setTheActiveAccItem(str) {
+				if (this.theActiveAccItem === str) {
 					this.theActiveAccItem = null
 				} else {
-					this.theActiveAccItem = num
+					this.theActiveAccItem = str
 				}
 			},
 			setTheActiveMenuItem(menuItemKey) {
 				this.theActiveMenuItem = menuItemKey
-				if (menuItemKey === 'welcome') {
-					this.clearSearchQuery()
-					this.$nextTick(_ => {
-						if (this.$refs.v_search_query) {
-							this.$refs.v_search_query.focus()
-						}
-					})
-				}
-				if (menuItemKey === 'search') {
-					if (this.$refs.v_search_query) {
-						this.$refs.v_search_query.focus()
+				this.$nextTick(_ => {
+					const el = $('.input_search')
+					if (el) {
+						el.focus()
 					}
-				}
+				})
 				if (menuItemKey === 'notes') {
 					this.fetchEarlierTickets()
 				}
 			},
 			clearSearchQuery() {
-				if (this.$refs.v_search_query) {
-					this.$refs.v_search_query.value = ""
-				}
+				this.$nextTick(_ => {
+					const el = $('.input_search')
+					if (el) {
+						el.focus()
+					}
+				})
 				this.searchQuery = ""
 			},
 			clearUxSearchQuery() {
 				if (this.$refs.v_ux_search_query) {
 					this.$refs.v_ux_search_query.value = ""
+					this.$refs.v_ux_search_query.focus()
 				}
 				this.uxSearchQuery = ""
 			},
@@ -421,6 +442,10 @@ $(document).one("trigger::vue_loaded", function () {
 				}, 600)
 			},
 			fetchEarlierTickets() {
+				if (ISLOCALHOST) {
+					this.earlierTickets = EARLIERTICKETS;
+					return
+				}
 				this.earlierTickets = [];
 				this.isLoadingEarlierTickets = true;
 				var myHeaders = new Headers();
@@ -451,6 +476,10 @@ $(document).one("trigger::vue_loaded", function () {
 					});
 			},
 			fetchTicketDetails() {
+				if (ISLOCALHOST) {
+					this.tickets = TICKETDETAILS;
+					return;
+				}
 				this.tickets = [];
 				this.isLoadingTickets = true;
 				var myHeaders = new Headers();
@@ -462,16 +491,25 @@ $(document).one("trigger::vue_loaded", function () {
 					redirect: 'follow'
 				};
 				console.log('Fetching ticket details from API for search query:', this.searchQuery, 'with user key:', this.userKey);
+
 				fetch('https://dev-portal.opennet.dk/ppServices/api/dc/gettroubleticketdetails/' + encodeURIComponent(this.searchQuery), requestOptions)
 					.then(response => {
+						console.log({ response })
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
-						return response.json();
+						return response.text();
 					})
-					.then(result => {
-						console.log('success search', result);
-						this.tickets = result;
+					.then(text => {
+						try {
+							const data = JSON.parse(text);
+							console.log('success search', data);
+							this.tickets = data;
+						} catch (e) {
+							// If JSON.parse fails, it means the response was text, handle accordingly
+							console.log('Response is text, not JSON:', text);
+							this.tickets = []; // Handle the case where the response is text, not JSON
+						}
 					})
 					.catch(error => {
 						console.error('Error fetching ticket details:', error);
@@ -482,6 +520,11 @@ $(document).one("trigger::vue_loaded", function () {
 					});
 			},
 			fetchI18N() {
+				if (ISLOCALHOST) {
+					this.i18nData = I18N
+					this.isLoadingI18N = false
+					return
+				}
 				this.isLoadingI18N = true
 				var myHeaders = new Headers();
 				myHeaders.append("PP_USER_KEY", this.userKey);
@@ -516,8 +559,9 @@ $(document).one("trigger::vue_loaded", function () {
 		mounted() {
 			$('.o-page').removeClass('o-page--is-loading')
 			this.$nextTick(_ => {
-				if (this.$refs.v_search_query) {
-					this.$refs.v_search_query.focus()
+				const el = $('.input_search')
+				if (el) {
+					el.focus()
 				}
 			})
 			this.fetchI18N()

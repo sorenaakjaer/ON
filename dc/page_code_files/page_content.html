@@ -57,7 +57,8 @@
                                     </path>
                                 </svg>
                             </div>
-                            <input type="search" ref="v_search_query" @keyup.enter="onSearch" v-model="searchQuery"
+                            <input type="search" class="input_search" ref="v_search_query_1" @keyup.enter="onSearch"
+                                v-model="searchQuery"
                                 placeholder="Angiv ONID, Trouble Ticket ID eller Service subscription ID">
                             <div class="o-search-group__clear" @click="clearSearchQuery"><i class="tio">clear_circle</i>
                             </div>
@@ -68,17 +69,244 @@
                     <!-- PAGE 1 -->
                     <template v-if="theActiveMenuItem === 'welcome'">
                         <label class="o-label">Quick guide</label>
-                        <div class="o-acc" :class="{'o-acc--transitions': theActiveMenuItem === 'welcome'}">
-                            <div class="o-acc__item" v-for="accItem in accItems"
-                                :class="{'o-acc__item--active': theActiveAccItem === accItem.id}">
-                                <div class="o-acc__item__header" @click="setTheActiveAccItem(accItem.id)">
-                                    {{ accItem.title }} <i class="tio">chevron_down</i>
+                        <div class="o-acc o-acc__faq" :class="{'o-acc--transitions': theActiveMenuItem === 'welcome'}">
+                            <!-- ACCORDIAN ITEM -->
+                            <div class="o-acc__item"
+                                :class="{'o-acc__item--active': theActiveAccItem === 'Kaldstyper'}">
+                                <div class="o-acc__item__header" @click="setTheActiveAccItem('Kaldstyper')">
+                                    Kaldstyper <i class="tio">chevron_down</i>
                                 </div>
                                 <transition name="accordion" @enter="startTrans" @after-enter="endTrans"
                                     @before-leave="startTrans" @after-leave="endTrans">
-                                    <div class="o-acc__item__body" v-if="theActiveAccItem === accItem.id">
+                                    <div class="o-acc__item__body" v-if="theActiveAccItem === 'Kaldstyper'">
                                         <div class="pad-1">
-                                            {{ accItem.content }}
+                                            <p>Vurdere problemstillingen og kategorisere henvendelsen i én af de seks
+                                                sagstyperne:</p>
+                                            <table class="o-table">
+                                                <thead>
+                                                    <th>KALDSTYPE</th>
+                                                    <th>BESKRIVELSE</th>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>POI*</td>
+                                                        <td>
+                                                            Poien er det sted, hvor sp (service provider)
+                                                            og netejer forbinder deres netværk hvis denne
+                                                            går ned betyder det, at der er en potentiel afbrydelse af
+                                                            kunderne for den pågældende service provider.
+                                                            <br><br><b>Ring
+                                                                til</b>
+                                                            pågældende neteje
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>FLERKUNDEFEJL/MULTIFEJL </td>
+                                                        <td>
+                                                            En flerkundefejl /multifejl betegnes ved, at der er mere end
+                                                            10 kunder ramt af samme fejl fra samme
+                                                            service provider.<br><br><b>Ring til</b>
+                                                            pågældende netejer
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>ENKELT KUNDEFEJL</td>
+                                                        <td>
+                                                            En enkeltkunde fejl er, når der bliver oprettet en ticket på
+                                                            en enkeltkunde. <br><br><b>Ring til</b> pågældende netejer
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>SKRIFTLIG HENVENDELSE (PARTNERPORTALEN)</td>
+                                                        <td>
+                                                            Dette er en henvendelsestype som kommer
+                                                            via opennets partnerportal, disse kan både sendes
+                                                            til opennet og netejer.<br><br> <b>Ring
+                                                                til</b>  opennet spoc
+                                                            eller pågældende netejer 
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>IT FEJL</td>
+                                                        <td>
+                                                            IT fejl, som rammer opennets systemer <br><br>
+                                                            <b>Ring til</b> opennet it-vagten
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>ANDRE HENVENDELSER</td>
+                                                        <td>
+                                                            Hvis der kommer andre henvendelser end ovenstående,
+                                                            skal disse henvises til at oprette en sag
+                                                            i partnerportalen ”generel henvendelse til opennet. 
+                                                            <br><br><b>Afvist</b> og notér i loggen
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </transition>
+                            </div>
+                            <!-- ACCORDIAN ITEM -->
+                            <div class="o-acc__item" :class="{'o-acc__item--active': theActiveAccItem === 'Søgning'}">
+                                <div class="o-acc__item__header" @click="setTheActiveAccItem('Søgning')">
+                                    Søgning <i class="tio">chevron_down</i>
+                                </div>
+                                <transition name="accordion" @enter="startTrans" @after-enter="endTrans"
+                                    @before-leave="startTrans" @after-leave="endTrans">
+                                    <div class="o-acc__item__body" v-if="theActiveAccItem === 'Søgning'">
+                                        <div class="pad-1">
+                                            <p>Service Provider opretter en Trouble Ticket (fejlmelding) af kundens
+                                                forbindelse, og hvis den aftalte fejlretningstid (SLA) overskrides, så
+                                                kan
+                                                SP eskalere sagen til DøgnCenter, som skal:</p>
+                                            <ul>
+                                                <li>
+                                                    Søge sagen frem via tekstfeltet på forsiden af
+                                                    Døgncenter-portalen: spørg efter sags ID.
+                                                    <ul>
+                                                        <li>
+                                                            Hvis der ikke kan oplyses ID, så kan der søges på adressen.
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li>
+                                                    Sikre, at oplysningerne i sagen er korrekte: tjek Trouble Ticket
+                                                    nr., adresse og
+                                                    <ul>
+                                                        <li>
+                                                            Hvis "Assignet til" står til SP selv, så kan
+                                                            sagen <b>ikke</b>
+                                                        </li>
+                                                        <li>
+                                                            Hvis "Status" står til Closed, så kan sagen <b>ikke</b>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </transition>
+                            </div>
+                            <!-- ACCORDIAN ITEM -->
+                            <div class="o-acc__item"
+                                :class="{'o-acc__item--active': theActiveAccItem === 'Visiteringsguide'}">
+                                <div class="o-acc__item__header" @click="setTheActiveAccItem('Visiteringsguide')">
+                                    Visiteringsguide <i class="tio">chevron_down</i>
+                                </div>
+                                <transition name="accordion" @enter="startTrans" @after-enter="endTrans"
+                                    @before-leave="startTrans" @after-leave="endTrans">
+                                    <div class="o-acc__item__body" v-if="theActiveAccItem === 'Visiteringsguide'">
+                                        <div class="pad-1">
+                                            <p>For at vurdere, om SLA er overskredet, så tjekkes først, om:</p>
+                                            <ul>
+                                                <li>
+                                                    Det er en Portalsag: følg step 1.
+                                                </li>
+                                                <li>
+                                                    Det er en Trouble Ticket: følg step 2.
+                                                </li>
+                                            </ul>
+                                            <p><b>Step 1:</b></p>
+                                            <ul>
+                                                <li>
+                                                    Tjek at ONID passer med det SP har oplyst.
+                                                </li>
+                                                <li>
+                                                    Tjek om SLA er overskredet: står med rød skrift i sagen.
+                                                </li>
+                                            </ul>
+                                            <p>Hvis ovenstående er overholdt eskaleres sagen til netejer.</p>
+                                            <p><b>Step 2: </b></p>
+                                            <ul>
+                                                <li>
+                                                    Leveringstidspunkt
+                                                </li>
+                                                <li>
+                                                    SLA started
+                                                </li>
+                                                <li>
+                                                    Remote started
+                                                </li>
+                                                <li>
+                                                    Onsite started
+                                                </li>
+                                                <li>
+                                                    Expected onsite start
+                                                </li>
+                                                <li>
+                                                    Expected onsite end
+                                                </li>
+                                            </ul>
+                                            <p>Hvis SLA er startet, og der ikke er sket yderligere i sagen, så skal "SLA
+                                                Started" sammenholdes med, om:</p>
+                                            <ul>
+                                                <li>SLA er overskredet ved at sammenligne "SLA Produkt" og
+                                                    "Klassifikation" med tabellen: </li>
+                                            </ul>
+                                            <table class="o-table">
+                                                <thead>
+                                                    <th>SERVICEELEMENTER</th>
+                                                    <th>STANDARD (SLA PRODUKT) </th>
+                                                    <th>
+                                                        BRONZE  (SLA PRODUKT)
+                                                    </th>
+                                                    <th>SØLV
+                                                        (SLA PRODUKT) </th>
+                                                    <th>GULD
+                                                        (SLA PRODUKT) </th>
+                                                    <th>STRAKSSERVICE
+                                                        (KLASSIFIKATION) </th>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Arbejdstimer</td>
+                                                        <td>8-16 </td>
+                                                        <td>8-16 </td>
+                                                        <td>8-20</td>
+                                                        <td>Hele døgnet</td>
+                                                        <td>Hele døgnet</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Reaktionstid major</td>
+                                                        <td>8 arbejdstimer</td>
+                                                        <td>5 arbejdstimer </td>
+                                                        <td>3 arbejdstimer</td>
+                                                        <td rowspan="2">1 arbejdstime</td>
+                                                        <td rowspan="2">1 arbejdstime</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Reaktionstid* minor</td>
+                                                        <td>5 arbejdsdage</td>
+                                                        <td>15 arbejdsdage</td>
+                                                        <td>8 arbejdstimer</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Teknikerbesøg* major</td>
+                                                        <td>3 arbejdsdage</td>
+                                                        <td>12 arbejdstimer</td>
+                                                        <td>8 arbejdstimer</td>
+                                                        <td rowspan="2">3 arbejdstimer</td>
+                                                        <td rowspan="2">3 arbejdstimer</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Teknikerbesøg minor</td>
+                                                        <td>10 arbejdsdage</td>
+                                                        <td>5 arbejdsdage</td>
+                                                        <td>Næste arbejdsdag</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Nyoprettet service løst</td>
+                                                        <td>1 arbejdsdag</td>
+                                                        <td>12 arbejdstimer</td>
+                                                        <td>8 arbejdstimer</td>
+                                                        <td>3 arbejdstimer</td>
+                                                        <td>1 arbejdstime</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            *Reaktionstid = Remote og teknikerbesøg = Onsite
                                         </div>
                                     </div>
                                 </transition>
@@ -98,7 +326,8 @@
                                         </path>
                                     </svg>
                                 </div>
-                                <input type="search" ref="v_search_query" @keyup.enter="onSearch" v-model="searchQuery"
+                                <input type="search" class="input_search" ref="v_search_query_2" @keyup.enter="onSearch"
+                                    v-model="searchQuery"
                                     placeholder="Angiv ONID, Trouble Ticket ID eller Service subscription ID">
                                 <div class="o-search-group__clear" @click="clearSearchQuery"><i
                                         class="tio">clear_circle</i>
