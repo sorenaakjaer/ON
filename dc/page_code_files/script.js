@@ -476,7 +476,7 @@ $(document).one("trigger::vue_loaded", function () {
 				};
 				console.log('Fetching ticket details from API for search query:', this.searchQuery, 'with user key:', this.userKey);
 
-				fetch('https://dev-portal.opennet.dk/ppServices/api/dc/gettroubleticketdetails/' + encodeURIComponent(this.searchQuery), requestOptions)
+				fetch('https://dev-portal.opennet.dk/ppServices/api/dc/gettroubleticketdetails/' + this.searchQuery, requestOptions)
 					.then(response => {
 						console.log({ response })
 						if (!response.ok) {
