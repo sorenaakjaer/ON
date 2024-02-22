@@ -293,10 +293,15 @@ $(document).one("trigger::vue_loaded", function () {
 				isLoadingTickets: false,
 				savingStates: {},
 				theDropdownFilters: [
+					{ value: 1, title: 'I dag' },
+					{ value: 3, title: '3 dage' },
 					{ value: 7, title: 'Seneste 7 dage' },
 					{ value: 14, title: 'Seneste 14 dage' },
 					{ value: 21, title: 'Seneste 21 dage' },
-					{ value: 30, title: 'Seneste 30 dage' }
+					{ value: 30, title: 'Seneste 30 dage' },
+					{ value: 60, title: 'Seneste 60 dage' },
+					{ value: 90, title: 'Seneste 90 dage' },					
+
 				],
 				theSelectedFilter: 7,
 				earlierTickets: [],
