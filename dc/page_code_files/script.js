@@ -88,54 +88,65 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		computed: {
 			ticketsVProps() {
-				const valuesToShow = [	'creationDate',
-							'lastUpdated',
-						      	'source',
-							'classification',
-							'severity',
-							'assignedTo',
-							'subState',
-						      	'startSLA',
-						      	'suspendedSLA',
-						      	'resumeddSLA',
-						      	'remoteStarted',
-						      	'onsideStarted',
-						      	'expectedOnsiteStart',
-						      	'expectedOnsiteEnd',
-						      	'initialInstallationTime',
-						      	'errAfterInstallation',
-							'serviceProviderName',
-							'infrastructureOwnerName',
-							'infrastructureOwnerInstruction',
-							'networkOperatorName',
-							'networkOperatorInstruction',
-							'type',
-							'description',
-							'serviceSubscriptionId',
-							'serviceStatus',
-						        'address',
-						      	'last_dc_note'
-						      
-						     ];
+				const valuesToShow = ['creationDate',
+					'lastUpdated',
+					'source',
+					'classification',
+					'severity',
+					'assignedTo',
+					'subState',
+					'startSLA',
+					'suspendedSLA',
+					'resumeddSLA',
+					'remoteStarted',
+					'onsideStarted',
+					'expectedOnsiteStart',
+					'expectedOnsiteEnd',
+					'initialInstallationTime',
+					'errAfterInstallation',
+					'serviceProviderName',
+					'infrastructureOwnerName',
+					'infrastructureOwnerInstruction',
+					'networkOperatorName',
+					'networkOperatorInstruction',
+					'type',
+					'description',
+					'serviceSubscriptionId',
+					'serviceStatus',
+					'address',
+					'last_dc_note'
+				];
+				return this.tickets.map(ticket => {
+					const v_props = valuesToShow.reduce((props, propName) => {
+						const propPath = propName.split('.');
+						let value = ticket;
 
-				return this.tickets.map(ticket => ({
-					...ticket,
-					v_props: valuesToShow.reduce((props, propName) => {
-						if (ticket.hasOwnProperty(propName)) {
-							// Use i18nHash for property names if available
+						for (let i = 0; i < propPath.length; i++) {
+							value = value[propPath[i]];
+							if (value === undefined || value === null) {
+								break;
+							}
+						}
+
+						if (value !== undefined && value !== null) {
 							const displayName = this.i18n[propName] || propName;
-							props[displayName] = ticket[propName];
+							props[displayName] = value;
 						}
 						return props;
-					}, {}),
-					v_lastUpdated: ticket.lastUpdated ? this.formatDateTime(ticket.lastUpdated) : '',
-					v_notes: ticket.notes ? ticket.notes
-						.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)) // Sort notes by timestamp, newest first
-						.map(note => ({
-							...note,
-							v_timestamp: this.formatDateTime(note.timestamp) // Assuming formatDateTime is defined and formats correctly
-						})) : []
-				}));
+					}, {});
+
+					return {
+						...ticket,
+						v_props: v_props,
+						v_lastUpdated: ticket.lastUpdated ? this.formatDateTime(ticket.lastUpdated) : '',
+						v_notes: ticket.notes ? ticket.notes
+							.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)) // Sort notes by timestamp, newest first
+							.map(note => ({
+								...note,
+								v_timestamp: this.formatDateTime(note.timestamp) // Assuming formatDateTime is defined and formats correctly
+							})) : []
+					};
+				});
 			},
 			filteredTickets() {
 				if (!this.search_query.trim()) {
@@ -288,7 +299,7 @@ $(document).one("trigger::vue_loaded", function () {
 					{ id: 2, title: 'Visiteringsguide', content: 'ctetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, w' },
 				],
 				isSearching: false,
-				i18nArr: [],
+				i18nData: [],
 				tickets: [],
 				isLoadingTickets: false,
 				savingStates: {},
@@ -300,7 +311,7 @@ $(document).one("trigger::vue_loaded", function () {
 					{ value: 21, title: 'Seneste 21 dage' },
 					{ value: 30, title: 'Seneste 30 dage' },
 					{ value: 60, title: 'Seneste 60 dage' },
-					{ value: 90, title: 'Seneste 90 dage' },					
+					{ value: 90, title: 'Seneste 90 dage' },
 
 				],
 				theSelectedFilter: 7,
@@ -323,7 +334,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			i18n() {
 				const hash = {};
-				this.i18nArr.forEach(item => {
+				this.i18nData.forEach(item => {
 					hash[item.api_value] = item.display_value;
 				});
 				return hash;
