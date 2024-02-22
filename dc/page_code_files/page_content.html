@@ -410,7 +410,7 @@
                 <tbody>
                     <tr v-for="(prop, key) in ticket.v_props">
                         <td>{{ key }}</td>
-                        <td>{{ prop }}</td>
+                        <td v-html="prop"></td>
                     </tr>
                 </tbody>
             </table>
