@@ -20,7 +20,7 @@ $(document).one("TRIGGER_AFTER_LOGIN", function () {
 				clearInterval(cInterval)
 				$(document).trigger('trigger::o_page_loaded')
 			} else {
-				console.log('observer::empty')
+				//console.log('observer::empty')
 			}
 		}, 1000)
 	}
@@ -162,7 +162,7 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		methods: {
 			formatDateTime(dateString) {
-				let locale = 'da-DK', hour12 = true;
+				let locale = 'en-US', hour12 = true;
 				const i18nTime = this.locale === 'da' ? 'kl.' : 'at';
 
 				if (this.locale === 'da') {
@@ -182,7 +182,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return specificReadableDateTime;
 			},
 			setShowNotes(ticketId) {
-				console.log('show notes', ticketId)
+				//console.log('show notes', ticketId)
 				if (!this.showNotes[ticketId]) {
 					this.$set(this.showNotes, ticketId, true);
 				} else {
@@ -190,7 +190,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			getShowNotes(ticketId) {
-				console.log('getShowNotes', this.showNotes)
+				//console.log('getShowNotes', this.showNotes)
 				return this.showNotes[ticketId];
 			},
 			getIsSaving(ticketId) {
@@ -394,7 +394,7 @@ $(document).one("trigger::vue_loaded", function () {
 
 					const result = await response.json();
 					this.updateTicketNotes(result)
-					console.log('Note added successfully:', result);
+					//console.log('Note added successfully:', result);
 					this.showToast('Noten er gemt!', 'success');
 					this.$delete(this.savingStates, ticketId);
 					// Handle success response
@@ -477,7 +477,7 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: 'follow'
 				};
-				console.log('Fetching ticket details from API for days-filter:', this.theSelectedFilter, 'with user key:', this.userKey);
+				//console.log('Fetching ticket details from API for days-filter:', this.theSelectedFilter, 'with user key:', this.userKey);
 				fetch('https://dev-portal.opennet.dk/ppServices/api/dc/getticketsbasedonnotes/' + this.theSelectedFilter, requestOptions)
 					.then(response => {
 						if (!response.ok) {
@@ -486,7 +486,7 @@ $(document).one("trigger::vue_loaded", function () {
 						return response.json();
 					})
 					.then(result => {
-						console.log('success', result);
+						//console.log('success', result);
 						this.earlierTickets = result;
 					})
 					.catch(error => {
@@ -507,11 +507,11 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: 'follow'
 				};
-				console.log('Fetching ticket details from API for search query:', this.searchQuery, 'with user key:', this.userKey);
+				//console.log('Fetching ticket details from API for search query:', this.searchQuery, 'with user key:', this.userKey);
 
 				fetch('https://dev-portal.opennet.dk/ppServices/api/dc/gettroubleticketdetails/' + this.searchQuery, requestOptions)
 					.then(response => {
-						console.log({ response })
+						//console.log({ response })
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
@@ -520,11 +520,11 @@ $(document).one("trigger::vue_loaded", function () {
 					.then(text => {
 						try {
 							const data = JSON.parse(text);
-							console.log('success search', data);
+							//console.log('success search', data);
 							this.tickets = data;
 						} catch (e) {
 							// If JSON.parse fails, it means the response was text, handle accordingly
-							console.log('Response is text, not JSON:', text);
+							//console.log('Response is text, not JSON:', text);
 							this.tickets = []; // Handle the case where the response is text, not JSON
 						}
 					})
@@ -558,10 +558,10 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 					.then(result => {
 						this.i18nData = result;
-						console.log(this.i18nData);
+						//console.log(this.i18nData);
 					})
 					.catch(error => {
-						console.error('Error fetching i18n data:', error);
+						//console.error('Error fetching i18n data:', error);
 					})
 					.finally(() => {
 						this.isLoadingI18N = false;
