@@ -88,7 +88,30 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		computed: {
 			ticketsVProps() {
-				const valuesToShow = ['type', 'description', 'serviceSubscriptionId', 'address', 'contactName', 'contactNumber', 'contactEmail'];
+				const valuesToShow = [	'creationDate',
+							'lastUpdated',
+						      	'source',
+							'classification',
+							'severity',
+							'assignedTo',
+							'subState',
+						      	'startSLA',
+						      	'suspendedSLA',
+						      	'resumeddSLA',
+						      	'remoteStarted',
+						      	'onsideStarted',
+						      	'expectedOnsiteStart',
+						      	'expectedOnsiteEnd',
+							'relatedEntities.serviceProviderName',
+							'relatedEntities.infrastructureOwnerName',
+							'relatedEntities.infrastructureOwnerInstruction',
+							'relatedEntities.networkOperatorName',
+							'relatedEntities.networkOperatorInstruction',
+							'type',
+							'description',
+							'serviceSubscriptionId',
+							'address'	
+						     ];
 
 				return this.tickets.map(ticket => ({
 					...ticket,
