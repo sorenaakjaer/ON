@@ -102,6 +102,8 @@ $(document).one("trigger::vue_loaded", function () {
 						      	'onsideStarted',
 						      	'expectedOnsiteStart',
 						      	'expectedOnsiteEnd',
+						      	'initialInstallationTime',
+						      	'errAfterInstallation',
 							'serviceProviderName',
 							'infrastructureOwnerName',
 							'infrastructureOwnerInstruction',
@@ -110,7 +112,8 @@ $(document).one("trigger::vue_loaded", function () {
 							'type',
 							'description',
 							'serviceSubscriptionId',
-							'address',
+							'serviceStatus',
+						        'address',
 						      	'last_dc_note'
 						      
 						     ];
