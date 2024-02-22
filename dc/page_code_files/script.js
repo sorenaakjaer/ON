@@ -102,15 +102,17 @@ $(document).one("trigger::vue_loaded", function () {
 						      	'onsideStarted',
 						      	'expectedOnsiteStart',
 						      	'expectedOnsiteEnd',
-							'relatedEntities.serviceProviderName',
-							'relatedEntities.infrastructureOwnerName',
-							'relatedEntities.infrastructureOwnerInstruction',
-							'relatedEntities.networkOperatorName',
-							'relatedEntities.networkOperatorInstruction',
+							'serviceProviderName',
+							'infrastructureOwnerName',
+							'infrastructureOwnerInstruction',
+							'networkOperatorName',
+							'networkOperatorInstruction',
 							'type',
 							'description',
 							'serviceSubscriptionId',
-							'address'	
+							'address',
+						      	'last_dc_note'
+						      
 						     ];
 
 				return this.tickets.map(ticket => ({
