@@ -162,7 +162,7 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		methods: {
 			formatDateTime(dateString) {
-				let locale = 'en-US', hour12 = true;
+				let locale = 'da-DK', hour12 = true;
 				const i18nTime = this.locale === 'da' ? 'kl.' : 'at';
 
 				if (this.locale === 'da') {
