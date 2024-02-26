@@ -625,7 +625,7 @@
                     <div v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter==='dynamic'"
                          v-cloak>
                         <div v-if="activeCategory==='OpenAnalytics' && theUnreadSelected==='Vælg'"
-                             v-html="theReportBIExplainer">
+                             v-html="theReportBIExplainer">{{theUnreadSelected}}
                         </div>
                         <div v-if="activeCategory==='Invoice' && theUnreadSelected==='Vælg'"
                              v-html="theInvoiceBIExplainer">
