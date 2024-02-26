@@ -3751,6 +3751,7 @@ $(document).on("TRIGGER_AFTER_EXT_DOC_RENDERRING", function () {
 var observerAllCases, singleCaseLoadedObserver, mediaQuery = window.matchMedia("(min-width: 1000px)");
 var offset = 250;
 var duration = 550;
+var report = null;
 var run_autoupdate = !1;
 var $form = $(".js-case-drop-files");
 var droppedFiles = !1;
