@@ -1295,6 +1295,7 @@ $(document).one("trigger::vue_loaded", function () {
 						reportId: "placeholderDropdown"
 					});
 				}
+				console.log('filteredReports',filteredReports)
 				return filteredReports;
 			},
 			theSortSetting() {
