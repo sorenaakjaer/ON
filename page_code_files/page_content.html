@@ -313,7 +313,7 @@
                                  v-if="activeCategory=='OpenAnalytics' && pbiReports.length > 0"
                                  :class="{'o-filters__filter--active': theActiveFilter==='dynamic'}"
                                  @click="setTheActiveFilter('dynamic')">
-                                <span>Analytics</span>
+                                <span>Analytics</span>{{theUnreadSelected}}
                             </div>
                             <div class="o-filters__filter vue-filter-level2" v-if="activeCategory=='OpenAnalytics'"
                                  :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab1'}"
