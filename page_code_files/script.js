@@ -2259,7 +2259,7 @@ $(document).one("trigger::vue_loaded", function () {
 				if (e !== this.activeCategory) {
 					window.scroll(0, 0)
 
-					if (e == OpenAnalytics) {
+					if (e == "OpenAnalytics") {
 					$(".o-wrapper").addClass("OpenAnalytics_full_width")
 					}
 					else
