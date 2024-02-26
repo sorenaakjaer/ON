@@ -463,6 +463,31 @@
                     </template>
                     <!-- END 17-12-23 -->
                     <div class="o-body__list-of-cases__left"
+                        v-if="activeCategory == 'OpenAnalytics'"><i class=" tio">
+                            filter </i>
+                        <div class="o-body__list-of-cases__left__filters" v-if="theActiveFilter==='dynamic'">
+                            <div class="o-dropdown vue-dropdown" v-click-outside="closeVueDropdown"
+                                @click="setIsVueDropdown"
+                                :class="[{'o-dropdown--active': isVueDropdown},{'o-dropdown--has-selection': theUnreadSelected !=='Vælg'}]">
+                                <div class="o-dropdown__selected">
+                                    <p id="">{{theUnreadSelected}}</p><i class="tio">chevron_down</i>
+                                </div>
+                                <div class="o-dropdown__dropdown" style="width:150px;">
+                                    <ul>
+                                        <li v-for="pbiReport in pbiReports" :key="pbiReport.reportId"
+                                            @click="RunReport(pbiReport.reportId, pbiReport.reportDisplayName)">
+                                            {{pbiReport.reportDisplayName}}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="o-btn o-btn__filter vue-filter-2" v-for="type in allTypesFromCategory"
+                                @click="setActiveType(type.title, $event)">{{type.title}}
+                                <div class="o-badge">{{type.onIds.length}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="o-body__list-of-cases__left"
                         v-if="(!isNewDesignActive || !isCases) && activeCategory !== 'OpenAnalytics'"><i class=" tio">
                             filter </i>
                         <div class="o-body__list-of-cases__left__filters"
@@ -505,27 +530,7 @@
                                 <div class="o-badge">{{type.onIds.length}}</div>
                             </div>
                         </div>
-                        <div class="o-body__list-of-cases__left__filters" v-if="theActiveFilter==='dynamic'">
-                            <div class="o-dropdown vue-dropdown" v-click-outside="closeVueDropdown"
-                                @click="setIsVueDropdown"
-                                :class="[{'o-dropdown--active': isVueDropdown},{'o-dropdown--has-selection': theUnreadSelected !=='Vælg'}]">
-                                <div class="o-dropdown__selected">
-                                    <p id="">{{theUnreadSelected}}</p><i class="tio">chevron_down</i>
-                                </div>
-                                <div class="o-dropdown__dropdown" style="width:150px;">
-                                    <ul>
-                                        <li v-for="pbiReport in pbiReports" :key="pbiReport.reportId"
-                                            @click="RunReport(pbiReport.reportId, pbiReport.reportDisplayName)">
-                                            {{pbiReport.reportDisplayName}}
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="o-btn o-btn__filter vue-filter-2" v-for="type in allTypesFromCategory"
-                                @click="setActiveType(type.title, $event)">{{type.title}}
-                                <div class="o-badge">{{type.onIds.length}}</div>
-                            </div>
-                        </div>
+                        
                         <template v-if="!isNewDesignActive">
                             <div class="o-body__list-of-cases__left__filters" v-if="isCases">
                                 <div class="o-dropdown vue-dropdown" v-click-outside="closeVueDropdown"
