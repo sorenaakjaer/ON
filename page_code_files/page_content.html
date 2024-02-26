@@ -505,7 +505,7 @@
                                 <div class="o-badge">{{type.onIds.length}}</div>
                             </div>
                         </div>
-                        <div class="o-body__list-of-cases__left__filters" v-if="activeCategory == 'OpenAnalytics' && theActiveFilter==='dynamic'">
+                        <div class="o-body__list-of-cases__left__filters" v-if="theActiveFilter==='dynamic'">
                             <div class="o-dropdown vue-dropdown" v-click-outside="closeVueDropdown"
                                 @click="setIsVueDropdown"
                                 :class="[{'o-dropdown--active': isVueDropdown},{'o-dropdown--has-selection': theUnreadSelected !=='Vælg'}]">
