@@ -2259,6 +2259,14 @@ $(document).one("trigger::vue_loaded", function () {
 				if (e !== this.activeCategory) {
 					window.scroll(0, 0)
 
+					if (e == OpenAnalytics) {
+					$(".o-wrapper").addClass("OpenAnalytics_full_width")
+					}
+					else
+					{
+					$(".o-wrapper").removeClass("OpenAnalytics_full_width")						
+					}
+					
 					$('ul.o-menu__items__inner > li[class^="js-"]').each(function () {
 						$(this).removeClass("li--active")
 					})
