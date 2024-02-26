@@ -1284,12 +1284,13 @@ $(document).one("trigger::vue_loaded", function () {
 
 				// Filter reports by the active category
 				let filteredReports = this.PBIReportsData.filter(report => report.area === this.activeCategory);
-
+				console.log('filteredReports',filteredReports);
 				// Find the index of the report with the display name "Vælg"
 				let indexOfValg = filteredReports.findIndex(report => report && report.reportDisplayName === "Vælg");
-
+				console.log('indexOfValg',indexOfValg);
 				// If there are reports and "Vælg" is not found, add a placeholder to the beginning
 				if (filteredReports.length > 0 && indexOfValg < 0) {
+					onsole.log('run_unshift');
 					filteredReports.unshift({
 						reportDisplayName: "Vælg",
 						reportId: "placeholderDropdown"
