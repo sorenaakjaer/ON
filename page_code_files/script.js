@@ -2358,7 +2358,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.theActiveFilter = event;
 				this.clearSearchQuery();
 				this.theUnreadSelected = "Alle";
-
+				
 				// Set the active type to null
 				this.activeType = null;
 				$(".vue-filter-2").each(function () {
@@ -2367,7 +2367,11 @@ $(document).one("trigger::vue_loaded", function () {
 				if (this.isNewDesignActive && (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases')) {
 					this.getAllLocalStorageFilter()
 				}
+				if (event == 'dynamic') {
+					this.theUnreadSelected = "Vælg";
+				}
 				if (this.activeCategory !== 'OpenAnalytics') {
+					
 					return
 				}
 				// For OpenAnalytics
