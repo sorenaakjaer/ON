@@ -1290,7 +1290,7 @@ $(document).one("trigger::vue_loaded", function () {
 				console.log('indexOfValg',indexOfValg);
 				// If there are reports and "Vælg" is not found, add a placeholder to the beginning
 				if (filteredReports.length > 0 && indexOfValg < 0) {
-					onsole.log('run_unshift');
+					console.log('run_unshift');
 					filteredReports.unshift({
 						reportDisplayName: "Vælg",
 						reportId: "placeholderDropdown"
