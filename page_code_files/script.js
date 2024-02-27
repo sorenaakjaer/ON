@@ -3593,6 +3593,18 @@ $(document).one("trigger::vue_loaded", function () {
 					if (urlParams.tab === 'datasubscriptions') {
 						this.setTheActiveFilter('OpenAnalytics_tab2')
 					}
+					if (urlParams.tab === '1') {
+						this.setTheActiveFilter('OpenAnalytics_tab1')
+					}
+					if (urlParams.tab === '2') {
+						this.setTheActiveFilter('OpenAnalytics_tab2')
+					}
+					if (urlParams.tab === 'hentfiler') {
+						this.setTheActiveFilter('OpenAnalytics_tab1')
+					}					
+
+
+					
 				}
 				$(document).trigger("trigger::vue_mounted")
 				const el = $('.updTagOrGroup_Output_mvp_groups > div')
