@@ -2427,8 +2427,8 @@ $(document).one("trigger::vue_loaded", function () {
 						console.log('Inspari_iframeChanged event received', event.data);
 						// Handling Inspari_iframeChanged event to adjust iframe size
 					        var iframe = document.querySelector('.o-iframe-container');
-					        iframe.style.height = data.iframeHeight + 'px';
-					        iframe.style.width = data.iframeWidth + 'px';
+					        iframe.style.height = event.data.iframeHeight + 'px';
+					        iframe.style.width = event.data.iframeWidth + 'px';
 
 						
 					}
@@ -2436,8 +2436,8 @@ $(document).one("trigger::vue_loaded", function () {
 						self.isLoadingTheOpenAnalyticsIframe = false
 						console.log('Inspari_iframeLoaded event received', event.data);
 						var iframe = document.querySelector('.o-iframe-container');
-					        iframe.style.height = data.iframeHeight + 'px';
-					        iframe.style.width = data.iframeWidth + 'px';
+					        iframe.style.height = event.data.iframeHeight + 'px';
+					        iframe.style.width = event.data.iframeWidth + 'px';
 					}
 				};
 
