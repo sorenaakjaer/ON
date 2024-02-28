@@ -2437,7 +2437,7 @@ $(document).one("trigger::vue_loaded", function () {
 							}
 						if (current_iframeWidth !=  event.data.iframeWidth)
 							{
-							console.log('Current iframe height',current_iframeHeight);
+							console.log('Current iframe width',current_iframeHeight);
 							iframe.style.width = event.data.iframeWidth + 'px';
 							console.log('New iframe width',event.data.iframeWidth);
 							current_iframeWidth = event.data.iframeWidth;
