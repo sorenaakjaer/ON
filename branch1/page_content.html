@@ -1,0 +1,2124 @@
+<script>// Set loaded div //
+    $('.triggers').html($('.triggers').html() + '<div class="v_html_loaded"></div>');
+</script>
+<div class="o-page-loading">
+    <div class="o-page-loading"><img
+            src="https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/opennet_logo__white.png"
+            class="o-logo o-logo--fade-in" style="width: 200px; height: 79px;">
+        <div class="o-spinner"></div>
+    </div>
+</div>
+<div class="o-content" id="o-app">
+    <div class="o-header" :class="{'o-header__container': isNewDesignActive}">
+        <div class="o-container">
+            <div class="o-navbar">
+                <div class="o-navbar__left">
+                    <div class="o-navbar__home" @click="setActivecCategory('my_cases')"><img
+                            src="https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/opennet_logo.png"
+                            class="o-logo"></div>
+                    <h4 class="js-page-title" v-if="isNewDesignActive">Hjem / Mine sager</h1>
+                </div>
+                <div class="o-navbar__right">
+                    <div class="o-navbar__right__buttons" v-if="isNewDesignActive">
+                        <button class="o-btn o-btn--primary createAnnouncement_btn"
+                            @click="CreateExtDocument('Announcement')"
+                            v-show="activeCategory==='Announcement' && theUserType=='IO'" v-cloak>Opret udmelding
+                        </button>
+                        <button class="o-btn o-btn--primary createAnnouncement_btn"
+                            @click="CreateExtDocument('Announcement')"
+                            v-show="activeCategory==='Announcement' && theUserType=='ON'" v-cloak>Opret udmelding
+                        </button>
+                        <button class="o-btn o-btn--primary createAnnouncement_btn" @click="CreateExtDocument('Report')"
+                            v-show="activeCategory==='Report' && theUserType=='ON'" v-cloak>Opret Rapport
+                        </button>
+                        <button class="o-btn o-btn--primary createAnnouncement_btn"
+                            @click="CreateExtDocument('Contract')"
+                            v-show="activeCategory==='Contract' && theUserType=='ON'" v-cloak>Opret Kontrakt
+                        </button>
+                        <button class="o-btn o-btn--primary createAnnouncement_btn"
+                            @click="CreateExtDocument('Invoices')"
+                            v-show="activeCategory==='Invoice' && theUserType=='ON'" v-cloak>Opret Faktura
+                        </button>
+                        <button class="o-btn o-btn--primary createAnnouncement_btn"
+                            @click="CreateExtDocument('Documentation')"
+                            v-show="activeCategory==='Documentation' && theUserType=='ON'" v-cloak>Opret
+                            Dokumentation
+                        </button>
+                        <button class="o-btn o-btn--primary" @click="setIsCreateOnpModal"
+                            v-if="activeCategory==='end_customer_pricing_config' && !isLoadingOnpProductList" v-cloak>
+                            Opret
+                            ny
+                        </button>
+                        <button class="o-btn o-btn--primary" @click="createUserModal" v-show="activeCategory==='roles'"
+                            v-cloak>
+                            Opret bruger
+                        </button>
+                        <button class="o-btn o-btn--primary js-btn-create-case" v-show="isCases">Opret ny
+                            sag</button>
+                        <div class="pos-relative" v-if="activeCategory==='end_customer_orders'" v-cloak>
+                            <div class="input-with-button"><input type="text" class="o-input"
+                                    :class="[{'animate-shake': !isSSIDValid},{'o-input--error': !isSSIDValid}]"
+                                    placeholder="Indtast SSID" v-model="ssid" @keyup="isSSIDValid=true"
+                                    ref="ssid_input">
+                                <button class="o-btn o-btn--primary" @click="findPrices"
+                                    :class="{'o-btn--loading': isSSIDLoading}">Opret ny ordre
+                                </button>
+                            </div>
+                            <span class="input-with-button__error-message o-input-error__explainer" v-if="!isSSIDValid"
+                                v-cloak>SSID er ugyldigt</span>
+                        </div>
+                    </div>
+                    <div class="o-menu js-menu-toggle">
+                        <svg viewBox="0 0 64 48" class="bg-icon-hover">
+                            <path d="M19,15 L45,15 C70,15 58,-2 49.0177126,7 L19,37"></path>
+                            <path d="M19,24 L45,24 C61.2371586,24 57,49 41,33 L32,24"></path>
+                            <path d="M45,33 L19,33 C-8,33 6,-2 22,14 L45,37"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="o-menu__items">
+            <ul class="o-menu__items__inner">
+                <div class="o-menu__items__inner__header">
+                    <h3>Partnerportal</h3>
+                    <h5 class="o-user-profile__link" v-cloak @click="setTheEditUserModal(theUser, true)" v-if="theUser">
+                        <i class="tio">account_circle</i><i class="tio">edit</i>{{theUser.display_name}}
+                    </h5>
+                </div>
+                <li @click="setActivecCategory('my_cases')" :class="{'li--active': activeCategory==='my_cases'}">
+                    <div>
+                        <h4>Hjem / Mine sager</h4>
+                        <p>Læs / behandle dine sager</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+                <li @click="setActivecCategory('all_cases')" :class="{'li--active': activeCategory==='all_cases'}">
+                    <div>
+                        <h4>Alle sager</h4>
+                        <p>Læs / behandle alle sager hos jer</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+                <li class="js-btn-create-case menu_create_cases">
+                    <div>
+                        <h4>Opret ny sag</h4>
+                        <p>Opret ny sag til Partner eller OpenNet</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+                <li @click="setActivecCategory('Announcement')" :class="{'li--active': activeCategory==='Announcement'}"
+                    class="menu_announcement">
+                    <div>
+                        <h4>Udmeldinger</h4>
+                        <p>Læs aktive og tidligere udmeldinger / varslinger</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+                <!-- <li> <div> <h4>Opret udmelding</h4> <p>Opret og den udmelding med dine partnere</p></div><div class="tio chevron_right"></div></li>-->
+                <li @click="setActivecCategory('Documentation')"
+                    :class="{'li--active': activeCategory==='Documentation'}" class="menu_documentaion">
+                    <div>
+                        <h4>Dokumentation</h4>
+                        <p>Se dokumentation fra OpenNet eller underliggende partnere</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+                <li @click="setActivecCategory('Report')" :class="{'li--active': activeCategory==='Report'}"
+                    class="menu_report">
+                    <div>
+                        <h4>Rapporter</h4>
+                        <p>Se delte rapporter fra OpenNet</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+                <li @click="setActivecCategory('Contract')" :class="{'li--active': activeCategory==='Contract'}"
+                    class="menu_contract">
+                    <div>
+                        <h4>Se kontrakter</h4>
+                        <p>Se jeres kontrakter med OpenNet og underliggende partnere</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+                <!-- START OpenNet OpenAnalytics  -->
+                <li @click="setActivecCategory('OpenAnalytics')"
+                    :class="{'li--active': activeCategory==='OpenAnalytics'}" class="menu_openanalytics">
+                    <div>
+                        <h4>OpenAnalytics</h4>
+                        <p>Access and retrieve insightful, dynamic data from OpenNet expansive data universe</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+                <!-- END OpenNet OpenAnalytics  -->
+                <li @click="setActivecCategory('Invoice')" :class="{'li--active': activeCategory==='Invoice'}"
+                    class="menu_invoice">
+                    <div>
+                        <h4>Hent faktura filer</h4>
+                        <p>Se jeres faktura filer fra OpenNet</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+                <li @click="setActivecCategory('roles')" :class="{'li--active': activeCategory==='roles'}"
+                    class="menu_user_admin">
+                    <div>
+                        <h4>Brugeradministration</h4>
+                        <p>Se/Rediger jeres brugerliste</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+                <li @click="setActivecCategory('end_customer_pricing_config')"
+                    :class="{'li--active': activeCategory==='end_customer_pricing_config'}"
+                    class="menu_end_customer_pricing_config">
+                    <div>
+                        <h4>Slutkundepriser</h4>
+                        <p>Konfiguration</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+                <li @click="setActivecCategory('end_customer_orders')"
+                    :class="{'li--active': activeCategory==='end_customer_orders'}" class="menu_end_customer_orders">
+                    <div>
+                        <h4>Slutkundeordre</h4>
+                        <p>Se/rediger slutkundeordre</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+            </ul>
+        </div>
+        <div class="o-menu__overlay js-o-menu__overlay"></div>
+    </div>
+    <div class="o-body" :class="{'o-body__container': isNewDesignActive}">
+        <div class="o-list-of-cases">
+            <div class="o-body__header o-wrapper" v-if="!isNewDesignActive">
+                <h1 class="js-page-title">Hjem / Mine sager</h1>
+                <button class="o-btn o-btn--primary createAnnouncement_btn" @click="CreateExtDocument('Announcement')"
+                    v-show="activeCategory==='Announcement' && theUserType=='IO'" v-cloak>Opret udmelding
+                </button>
+                <button class="o-btn o-btn--primary createAnnouncement_btn" @click="CreateExtDocument('Announcement')"
+                    v-show="activeCategory==='Announcement' && theUserType=='ON'" v-cloak>Opret udmelding
+                </button>
+                <button class="o-btn o-btn--primary createAnnouncement_btn" @click="CreateExtDocument('Report')"
+                    v-show="activeCategory==='Report' && theUserType=='ON'" v-cloak>Opret Rapport
+                </button>
+                <button class="o-btn o-btn--primary createAnnouncement_btn" @click="CreateExtDocument('Contract')"
+                    v-show="activeCategory==='Contract' && theUserType=='ON'" v-cloak>Opret Kontrakt
+                </button>
+                <button class="o-btn o-btn--primary createAnnouncement_btn" @click="CreateExtDocument('Invoices')"
+                    v-show="activeCategory==='Invoice' && theUserType=='ON'" v-cloak>Opret Faktura
+                </button>
+                <button class="o-btn o-btn--primary createAnnouncement_btn" @click="CreateExtDocument('Documentation')"
+                    v-show="activeCategory==='Documentation' && theUserType=='ON'" v-cloak>Opret Dokumentation
+                </button>
+                <button class="o-btn o-btn--primary" @click="setIsCreateOnpModal"
+                    v-if="activeCategory==='end_customer_pricing_config' && !isLoadingOnpProductList" v-cloak> Opret
+                    ny
+                </button>
+                <button class="o-btn o-btn--primary" @click="createUserModal" v-show="activeCategory==='roles'" v-cloak>
+                    Opret bruger
+                </button>
+                <button class="o-btn o-btn--primary js-btn-create-case" v-show="isCases">Opret ny sag</button>
+                <div class="pos-relative" v-if="activeCategory==='end_customer_orders'" v-cloak>
+                    <div class="input-with-button"><input type="text" class="o-input"
+                            :class="[{'animate-shake': !isSSIDValid},{'o-input--error': !isSSIDValid}]"
+                            placeholder="Indtast SSID" v-model="ssid" @keyup="isSSIDValid=true" ref="ssid_input">
+                        <button class="o-btn o-btn--primary" @click="findPrices"
+                            :class="{'o-btn--loading': isSSIDLoading}">Opret ny ordre
+                        </button>
+                    </div>
+                    <span class="input-with-button__error-message o-input-error__explainer" v-if="!isSSIDValid"
+                        v-cloak>SSID er ugyldigt</span>
+                </div>
+            </div>
+            <div class="o-body__intro_area">
+                <div class="intro_area_text">
+                    <h3>Velkommen på OpenNets Partnerportal.</h3>
+                    <p>Denne side er forbeholdt partnere som har indgået samarbejde gennem OpenNet samarbejdet. Her kan
+                        du blandet andet oprette, læse og behandle sager med dine dine samarbejdespartere og direkte med
+                        OpenNet. </p>
+                    <p>I menupunktet til højre kan vælge de områder de har adgang til.</p>
+                </div>
+                <div class="intro_area_img"><img
+                        src="https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/opennet-systemer-processor-illu.png"
+                        class="intro_img"></div>
+            </div>
+            <div class="o-body__subheader">
+                <div class="o-wrapper">
+                    <div class="o-filters">
+                        <template v-if="activeCategory==='all_cases' || activeCategory==='my_cases'" v-cloak>
+                            <div class="o-filters__filter vue-filter-level2"
+                                :class="{'o-filters__filter--active': theActiveFilter==='active'}"
+                                @click="setTheActiveFilter('active')"><span v-if="activeCategory==='my_cases'">Mine åbne
+                                    sager</span>
+                                <span v-else>Åbne sager</span>
+                                <div class="o-message js-filter__notifications" style="display: none;"></div>
+                                <div class="o-badge">{{casesOpen.length}}</div>
+                            </div>
+                            <div class="o-filters__filter__hint-container"
+                                :class="[{'hint--top': isClosedCasesLoading},{'pointer-not-allowed': isClosedCasesLoading}]"
+                                aria-label="Sager indlæses stadig">
+                                <div class="o-filters__filter vue-filter-level2"
+                                    :class="[{'o-filters__filter--active': theActiveFilter==='inactive'},{'filters__filter--inactive': isClosedCasesLoading}]"
+                                    @click="setTheActiveFilter('inactive')"><span
+                                        v-if="activeCategory==='my_cases'">Mine afsluttede sager</span>
+                                    <span v-else>Afsluttede sager</span>
+                                    <div class="o-message js-filter__notifications" style="display: none;">0</div>
+                                    <div class="o-badge" :class="{'o-badge--loading': isClosedCasesLoading}">
+                                        {{casesClosed.length}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o-filters__filter vue-filter-level2"
+                                :class="{'o-filters__filter--active': theActiveFilter==='inactive'}"
+                                @click="setTheActiveFilter('partnerCases')"
+                                v-if="activeCategory==='all_cases' && theUserType==='ONxx'">
+                                <span>Søgte partnersager</span>
+                                <div class="o-message js-filter__notifications" style="display: none;"></div>
+                                <div class="o-badge">{{partnerCases.length}}</div>
+                            </div>
+                        </template>
+                        <template v-if="isDocs" v-cloak>
+                            <div class="o-filters__filter vue-filter-level2" v-if="activeCategory!='OpenAnalytics'"
+                                 :class="{'o-filters__filter--active': theActiveFilter==='active'}"
+                                 @click="setTheActiveFilter('active')">
+                                <span>Aktive</span>
+                                <div class="o-badge" :class="{'o-badge--loading': isOpenDocsLoading}">
+                                    {{itemsActiveFromCategory.length}}
+                                </div>
+                            </div>
+                            <div :class="[{'hint--top': isClosedDocsLoading},{'pointer-not-allowed': isClosedDocsLoading}]"
+                                 v-if="activeCategory!='OpenAnalytics'" aria-label="Tidligere indlæses stadig">
+                                <div class="o-filters__filter vue-filter-level2"
+                                     :class="[{'o-filters__filter--active': theActiveFilter==='inactive'},{'filters__filter--inactive': isClosedDocsLoading}]"
+                                     @click="setTheActiveFilter('inactive')">
+                                    <span>Tidligere</span>
+                                    <div class="o-badge" :class="{'o-badge--loading': isClosedDocsLoading}">
+                                        {{itemsExpiredFromCategory.length}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o-filters__filter vue-filter-level2"
+                                 v-if="theUserType=='IO' && activeCategory!='OpenAnalytics' || theUserType=='ON' && activeCategory!='OpenAnalytics'"
+                                 :class="{'o-filters__filter--active': theActiveFilter==='future'}"
+                                 @click="setTheActiveFilter('future')">
+                                <span>Fremtidige</span>
+                                <div class="o-badge">{{itemsFutureFromCategory.length}}</div>
+                            </div>
+
+                            <div class="o-filters__filter vue-filter-level2" v-if="activeCategory=='OpenAnalytics'"
+                                 :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab0'}"
+                                 @click="setTheActiveFilter('OpenAnalytics_tab0')">
+                                <span>Info</span>
+                            </div>
+                            <div class="o-filters__filter vue-filter-level2"
+                                 v-if="activeCategory=='OpenAnalytics' && pbiReports.length > 0"
+                                 :class="{'o-filters__filter--active': theActiveFilter==='dynamic'}"
+                                 @click="setTheActiveFilter('dynamic')">
+                                <span>Analytics</span>
+                            </div>
+                            <div class="o-filters__filter vue-filter-level2" v-if="activeCategory=='OpenAnalytics'"
+                                 :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab1'}"
+                                 @click="setTheActiveFilter('OpenAnalytics_tab1')">
+                                <span>Hent filer</span>
+                            </div>
+                            <div class="o-filters__filter vue-filter-level2" v-if="activeCategory=='OpenAnalytics'"
+                                 :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab2'}"
+                                 @click="setTheActiveFilter('OpenAnalytics_tab2')">
+                                <span>Administrer udsendelse</span>
+                            </div>
+
+
+                        </template>
+                        <template v-if="activeCategory==='roles'" v-cloak>
+                            <div class="o-filters__filter vue-filter-level2"
+                                :class="{'o-filters__filter--active': !isViewRoles}" @click="setIsViewRoles(false)">
+                                <span>Brugere</span>
+                                <div class="o-badge" :class="{'o-badge--loading': usersIsLoading}">{{users.length}}
+                                </div>
+                            </div>
+                            <div class="o-filters__filter vue-filter-level2"
+                                :class="{'o-filters__filter--active': isViewRoles}" @click="setIsViewRoles(true)">
+                                <span>Roller</span>
+                                <div class="o-badge" :class="{'o-badge--loading': usersIsLoading}">{{allRoles.length}}
+                                </div>
+                            </div>
+                        </template>
+                        <!-- <div class="o-filters__filter js-filter-level2 js-filter__closed-cases js-filter-level2__new_announcements" data-filter="new_announcements"> Nye udmeldinger <div class="o-message js-filter__notifications" style="display: none;">0</div><div class="o-badge js-notifications js-filter__number-of-cases">0</div></div>-->
+                    </div>
+                </div>
+            </div>
+            <div class="o-cases" :class="{'o-cases--is-open-analytics': activeCategory === 'OpenAnalytics'}">
+                <div class="vue-subheader-filters o-body__list-of-cases o-wrapper"
+                    :class="{'vue-subheader-filters__flex': isNewDesignActive}" v-cloak v-if="!isViewRoles">
+                    <!-- START 17-12-23 -->
+                    <template v-if="isNewDesignActive && isCases">
+                        <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__space">
+                            <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__left">
+                                <o-multi-select :items="allCaseCategories" :selected_items="theActiveFilterCategories"
+                                    @toggle_item="toggleFilterCategory" select_title="Vælg kategorier"></o-multi-select>
+                                <o-multi-select :items="allCaseTags" :selected_items="theActiveFilterTags"
+                                    @toggle_item="toggleFilterTag" select_title="Vælg tag"></o-multi-select>
+                                <o-multi-select :items="allCaseGroups" :selected_items="theActiveFilterGroups"
+                                    @toggle_item="toggleFilterGroup" select_title="Vælg gruppe"></o-multi-select>
+                                <o-multi-select :items="allCaseStatus" :selected_items="theActiveFilterStatus"
+                                    @toggle_item="toggleFilterStatus" select_title="Vælg status"
+                                    :i18n="statusI18N"></o-multi-select>
+                            </div>
+                            <div class="o-body__list-of-cases__right" v-if="activeCategory !=='OpenAnalytics'">
+                                <div class="o-sort-setting o-dropdown vue-dropdown hint--left vue2-remove-all-filter-icon"
+                                    aria-label="Fjern alle filtre" @click.prevent="removeAllFilters"
+                                    v-if="isAnyFiltersActive">
+                                    <div class="o-dropdown__selected">
+                                        <i class="tio">remove_from_trash</i>
+                                    </div>
+                                </div>
+                                <div class="o-search-group">
+                                    <div class="o-icon">
+                                        <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24">
+                                            <title>search</title>
+                                            <path
+                                                d="M20.85,19.44l-4-4a2.44,2.44,0,0,0-.43-.35l-1-.69h0A7,7,0,1,0,10,17a7,7,0,0,0,4.37-1.53h0l.75,1a2.6,2.6,0,0,0,.3.36l4,4a.5.5,0,0,0,.71,0l.7-.7A.5.5,0,0,0,20.85,19.44ZM10,15a5,5,0,1,1,5-5A5,5,0,0,1,10,15Z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <input type="search" ref="v_search_query" @input="debounceSearch"
+                                        class="o-search-cases" placeholder="Søg.."
+                                        :class="{'o-search-cases--active': searchQuery.length > 0}">
+                                    <div class="o-search-group__clear" @click="clearSearchQuery"><i
+                                            class="tio">clear_circle</i>
+                                    </div>
+                                </div>
+                                <div class="o-sort-setting o-dropdown vue-dropdown hint--left" aria-label="Sortér"
+                                    v-if="isCases || isDocs" v-click-outside="closeSortDropdown"
+                                    @click="setIsSortDropdown" :class="[{'o-dropdown--active': isSortDropdown}]">
+                                    <div class="o-dropdown__selected"><i class="tio">sort</i></div>
+                                    <div class="o-dropdown__dropdown" style="width:240px;">
+                                        <ul>
+                                            <li v-for="sortSetting in allSortSettings" class="o-sort-setting__setting"
+                                                :class="{'o-sort-setting__setting--selected': sortSetting.value===theSortSetting.value}"
+                                                @click="setTheSortSetting(sortSetting)" :key="sortSetting.value">
+                                                <p>
+                                                    {{sortSetting.title}}</p><i class="tio"
+                                                    v-show="sortSetting.value===theSortSetting.value">checkmark_circle_outlined</i>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__space">
+                            <div class="vue-subheader-filters__flex__row">
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
+                                    :class="{'vue-filter-2--active': activeType === 'filter_created_by_me'}"
+                                    @click="setActiveType('filter_created_by_me', $event)"> Oprettet af mig
+                                    <div class="o-badge">{{lengthOfCases.filter_created_by_me}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
+                                    :class="{'vue-filter-2--active': activeType === 'filter_assigned_me'}"
+                                    @click="setActiveType('filter_assigned_me', $event)"> Tildelt til mig
+                                    <div class="o-badge">{{lengthOfCases.filter_assigned_me}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
+                                    :class="{'vue-filter-2--active': activeType === 'filter_followed_by_me'}"
+                                    @click="setActiveType('filter_followed_by_me', $event)"> Jeg følger
+                                    <div class="o-badge">{{lengthOfCases.filter_followed_by_me}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    :class="{'vue-filter-2--active': activeType === 'filter_sla_expired'}"
+                                    @click="setActiveType('filter_sla_expired', $event)"> Overskredet SLA
+                                    <div class="o-badge">{{lengthOfCases.filter_sla_expired}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    :class="{'vue-filter-2--active': activeType === 'filter_new'}"
+                                    v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_new', $event)"> Ulæste / Nye
+                                    <div class="o-badge">{{lengthOfCases.filter_new}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    :class="{'vue-filter-2--active': activeType === 'not_assigned'}"
+                                    v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('not_assigned', $event)"> Ikke tildelt
+                                    <div class="o-badge">{{lengthOfCases.not_assigned}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    :class="{'vue-filter-2--active': activeType === 'filter_follow_up'}"
+                                    v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_follow_up', $event)"> Opfølgning
+                                    <div class="o-badge">{{lengthOfCases.filter_follow_up}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    :class="{'vue-filter-2--active': activeType === 'filter_not_follow_up'}"
+                                    v-if="this.theUserType=='ON' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_not_follow_up', $event)"> Ikke opfølgning
+                                    <div class="o-badge">{{lengthOfCases.filter_not_follow_up}}</div>
+                                </div>
+                            </div>
+                            <div class="vue-o-right-items">
+                                <p>Sager i listen: {{ searchedCases.length }}</p>
+                            </div>
+                        </div>
+                    </template>
+                    <!-- END 17-12-23 -->
+                    <div class="o-body__list-of-cases__left"
+                        v-if="activeCategory == 'OpenAnalytics'">
+                        <div class="o-body__list-of-cases__left__filters" v-if="theActiveFilter==='dynamic'">
+                            <div class="o-dropdown vue-dropdown" v-click-outside="closeVueDropdown"
+                                @click="setIsVueDropdown"
+                                :class="[{'o-dropdown--active': isVueDropdown},{'o-dropdown--has-selection': theUnreadSelected !=='Vælg'}]">
+                                <div class="o-dropdown__selected">
+                                    <p id="">{{theUnreadSelected}}</p><i class="tio">chevron_down</i>
+                                </div>
+                                <div class="o-dropdown__dropdown" style="width:150px;">
+                                    <ul>
+                                        <li v-for="pbiReport in pbiReports" :key="pbiReport.reportId"
+                                            @click="RunReport(pbiReport.reportId, pbiReport.reportDisplayName)">
+                                            {{pbiReport.reportDisplayName}}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="o-btn o-btn__filter vue-filter-2" v-for="type in allTypesFromCategory"
+                                @click="setActiveType(type.title, $event)">{{type.title}}
+                                <div class="o-badge">{{type.onIds.length}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="o-body__list-of-cases__left"
+                        v-if="(!isNewDesignActive || !isCases) && activeCategory !== 'OpenAnalytics'"><i class=" tio">
+                            filter </i>
+                        <div class="o-body__list-of-cases__left__filters"
+                            v-if="activeCategory==='end_customer_pricing_config'">
+                            <div class="o-dropdown vue-dropdown" v-click-outside="closeVueDropdown"
+                                @click="setIsVueDropdown"
+                                :class="[{'o-dropdown--active': isVueDropdown},{'o-dropdown--has-selection': theActiveOnpProductListFilter !='Fra alle'}]">
+                                <div class="o-dropdown__selected">
+                                    <p id="">{{theActiveOnpProductListFilter}}</p><i class="tio">chevron_down</i>
+                                </div>
+                                <div class="o-dropdown__dropdown" style="width:300px;">
+                                    <ul>
+                                        <li v-for="filter in onpProductListFilters"
+                                            @click="setActiveOnpProductListFilter(filter)">{{filter}}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <button class="o-btn o-btn--small" id="btnEndCustomerEmailConfig"
+                                @click="setIsEndCustomerEmailConfigModal(true)">Ret tekster
+                            </button>
+                        </div>
+                        <div class="o-body__list-of-cases__left__filters" v-if="isDocs && theActiveFilter !=='dynamic'">
+                            <div class="o-dropdown vue-dropdown" v-click-outside="closeVueDropdown"
+                                @click="setIsVueDropdown"
+                                :class="[{'o-dropdown--active': isVueDropdown},{'o-dropdown--has-selection': theUnreadSelected !=='Alle'}]">
+                                <div class="o-dropdown__selected">
+                                    <p id="">{{theUnreadSelected}}</p><i class="tio">chevron_down</i>
+                                </div>
+                                <div class="o-dropdown__dropdown" style="width:150px;">
+                                    <ul>
+                                        <li @click="setTheUnreadSelected('Alle')">Alle</li>
+                                        <li @click="setTheUnreadSelected('Ulæst')">Ulæst</li>
+                                        <li @click="setTheUnreadSelected('Læst')">Læst</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="o-btn o-btn__filter vue-filter-2" v-for="type in allTypesFromCategory"
+                                @click="setActiveType(type.title, $event)">{{type.title}}
+                                <div class="o-badge">{{type.onIds.length}}</div>
+                            </div>
+                        </div>
+                        
+                        <template v-if="!isNewDesignActive">
+                            <div class="o-body__list-of-cases__left__filters" v-if="isCases">
+                                <div class="o-dropdown vue-dropdown" v-click-outside="closeVueDropdown"
+                                    @click="setIsVueDropdown"
+                                    :class="[{'o-dropdown--active': isVueDropdown},{'o-dropdown--has-selection': theActiveCaseCategory !=='Alle kategorier'}]">
+                                    <div class="o-dropdown__selected">
+                                        <p id="">{{theActiveCaseCategory}}</p><i class="tio">chevron_down</i>
+                                    </div>
+                                    <div class="o-dropdown__dropdown" style="width:400px;">
+                                        <ul>
+                                            <li v-for="caseCategory in allCasesCategories"
+                                                @click="setActiveCaseCategory(caseCategory)">{{caseCategory}}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_created_by_me', $event)"> Oprettet af mig
+                                    <div class="o-badge">{{lengthOfCases.filter_created_by_me}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_assigned_me', $event)"> Tildelt til mig
+                                    <div class="o-badge">{{lengthOfCases.filter_assigned_me}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='my_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_followed_by_me', $event)"> Jeg følger
+                                    <div class="o-badge">{{lengthOfCases.filter_followed_by_me}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    @click="setActiveType('filter_sla_expired', $event)"> Overskredet SLA
+                                    <div class="o-badge">{{lengthOfCases.filter_sla_expired}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_new', $event)"> Ulæste / Nye
+                                    <div class="o-badge">{{lengthOfCases.filter_new}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('not_assigned', $event)"> Ikke tildelt
+                                    <div class="o-badge">{{lengthOfCases.not_assigned}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="activeCategory=='all_cases' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_follow_up', $event)"> Opfølgning
+                                    <div class="o-badge">{{lengthOfCases.filter_follow_up}}</div>
+                                </div>
+                                <div class="o-btn o-btn__filter vue-filter-2"
+                                    v-if="this.theUserType=='ON' && theActiveFilter=='active'"
+                                    @click="setActiveType('filter_not_follow_up', $event)"> Ikke opfølgning
+                                    <div class="o-badge">{{lengthOfCases.filter_not_follow_up}}</div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="o-body__list-of-cases__right" v-if="theActiveFilter !=='dynamic' && !isNewDesignActive && activeCategory !=='OpenAnalytics'">
+                        <div class="o-search-group">
+                            <div class="o-icon">
+                                <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24">
+                                    <title>search</title>
+                                    <path
+                                        d="M20.85,19.44l-4-4a2.44,2.44,0,0,0-.43-.35l-1-.69h0A7,7,0,1,0,10,17a7,7,0,0,0,4.37-1.53h0l.75,1a2.6,2.6,0,0,0,.3.36l4,4a.5.5,0,0,0,.71,0l.7-.7A.5.5,0,0,0,20.85,19.44ZM10,15a5,5,0,1,1,5-5A5,5,0,0,1,10,15Z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <input type="search" ref="v_search_query" @input="debounceSearch" class="o-search-cases"
+                                placeholder="Søg.." :class="{'o-search-cases--active': searchQuery.length > 0}">
+                            <div class="o-search-group__clear" @click="clearSearchQuery"><i class="tio">clear_circle</i>
+                            </div>
+                        </div>
+                        <div class="o-sort-setting o-dropdown vue-dropdown hint--left" aria-label="Sortér"
+                            v-if="isCases || isDocs" v-click-outside="closeSortDropdown" @click="setIsSortDropdown"
+                            :class="[{'o-dropdown--active': isSortDropdown}]">
+                            <div class="o-dropdown__selected"><i class="tio">sort</i></div>
+                            <div class="o-dropdown__dropdown" style="width:240px;">
+                                <ul>
+                                    <li v-for="sortSetting in allSortSettings" class="o-sort-setting__setting"
+                                        :class="{'o-sort-setting__setting--selected': sortSetting.value===theSortSetting.value}"
+                                        @click="setTheSortSetting(sortSetting)" :key="sortSetting.value">
+                                        <p>
+                                            {{sortSetting.title}}</p><i class="tio"
+                                            v-show="sortSetting.value===theSortSetting.value">checkmark_circle_outlined</i>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="o-body__content js-o-cases__container o-cases__container">
+                    <p class="text-explainer"
+                       v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter==='dynamic'"
+                       v-cloak></p>
+                    <div v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter==='dynamic'"
+                         v-cloak>
+                        <div v-if="activeCategory==='OpenAnalytics' && theUnreadSelected==='Vælg'"
+                             v-html="theReportBIExplainer">
+                        </div>
+                        <div v-if="activeCategory==='Invoice' && theUnreadSelected==='Vælg'"
+                             v-html="theInvoiceBIExplainer">
+                        </div>
+                        <template v-if="theUnreadSelected !=='Vælg'">
+                            <div class="vue-spinner__container" v-if="isLoadingBIReport" v-cloak>
+                                <div class="vue-spinner o-spinner"></div>
+                                <p class="text-explainer o-spinner__text">Indlæser dashboard..</p>
+                            </div>
+                            <div class="PowerBI_Container" id="embedContainer"
+                                 :class="{'hidePowerBi': isLoadingBIReport}">
+                            </div>
+                        </template>
+                    </div>
+                    <div v-if="activeCategory === 'OpenAnalytics' && (theActiveFilter === '' || theActiveFilter === 'OpenAnalytics_tab0')" class="OpenAnalytics_tab_content">
+                        <h1>Velkommen til OpenAnalytics</h1>
+                        <h4>Vælg et filter i toppen</h4>
+                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                    </div>
+                    <div v-if="activeCategory === 'OpenAnalytics' && (theActiveFilter === 'OpenAnalytics_tab1' || theActiveFilter === 'OpenAnalytics_tab2')" class="OpenAnalytics_tab_content OpenAnalytics_tab_iframe ">
+                            <div class="o-iframe-container"
+                                 v-if="theActiveFilter === 'OpenAnalytics_tab1' || theActiveFilter === 'OpenAnalytics_tab2'">
+                                <transition name="fadeOut">
+                                    <div class="o-iframe-container--loader" v-if="isLoadingTheOpenAnalyticsIframe">
+                                        <div class="o-spinner"></div>
+                                    </div>
+                                </transition>
+                                <iframe ref="openAnalyticsIframe" :src="theOpenAnalyticsIframeUrl"></iframe>
+                            </div>
+                        
+                    </div>
+                    <h4 class=" text-explainer"
+                        v-if="activeCategory !=='OpenAnalytics' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && !isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter !=='dynamic'"
+                        v-cloak> Ingen dokumenter matcher din søgning (1) {{ activeCategory }}
+                    </h4>
+                    <!-- <h4 class="text-explainer" v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1" v-cloak> Ingen dokumenter matcher din søgning</h4>-->
+                    <div class="no-cases-matches"
+                        v-if="(activeCategory==='all_cases' && searchedCases.length < 1) || (activeCategory==='my_cases' && searchedCases.length < 1)"
+                        v-cloak>
+                        <h4 v-if="!isSearchingOldCases && !isSearchingPartnerCases"> Ingen sager matcher din
+                            søgning </h4>
+                        <div class="vue-spinner__container" v-if="isSearchingOldCases || isSearchingPartnerCases"
+                            v-cloak>
+                            <div class="vue-spinner o-spinner"></div>
+                            <p class="text-explainer o-spinner__text" v-if="isSearchingOldCases">Søger i gamle
+                                sager på
+                                serveren. Det kan tage lidt tid.. </p>
+                            <p class="text-explainer o-spinner__text" v-if="isSearchingPartnerCases">Søger sager
+                                hos
+                                partnere. Det kan tage lidt tid.. </p>
+                        </div>
+                        <template v-if="!isSearchingOldCases && !isSearchingPartnerCases">
+                            <button v-if="theActiveFilter==='inactive'" class="o-btn no-cases-matches__btn hint--top"
+                                aria-label="Kan tage lidt tid" @click="setSearchInOldCases">Søg i ældre sager på
+                                serveren
+                            </button>
+                            <button v-if="theUserType==='ON' && activeCategory==='all_cases'"
+                                class="o-btn no-cases-matches__btn" @click="setSearchInParnerCases">Søg i sager
+                                hos
+                                partnerne
+                            </button>
+                        </template>
+                    </div>
+                    <div class="empty_list vu-message" style="font-style: italic"
+                        v-if="isCases && isClosedCasesLoading && this.theActiveFilter=='inactive'">Der indlæses
+                        stadig
+                        afsluttede sager
+                    </div>
+                    <div class="vue-spinner o-spinner" v-if="isCases && casesIsLoading" v-cloak></div>
+                    <div class="vue-spinner o-spinner" v-if="isNewUserLoading && activeCategory=='roles'" v-cloak></div>
+                    <div class="vue-spinner o-spinner"
+                        v-if="((isNewAnnouncementLoading || isUpdatedAnnouncementLoading) && activeCategory=='Announcement')">
+                    </div>
+                    <p class="text-explainer o-spinner__text" v-if="isNewUserLoading && activeCategory=='roles'"
+                        v-cloak>
+                        Bruger oprettes / opdateres</p>
+                    <p class="text-explainer o-spinner__text"
+                        v-if="isNewAnnouncementLoading && activeCategory=='Announcement'" v-cloak>Ny udmelding
+                        oprettes</p>
+                    <p class="text-explainer o-spinner__text"
+                        v-if="isUpdatedAnnouncementLoading && activeCategory=='Announcement'" v-cloak>Udmelding
+                        opdateres</p>
+                    <template v-if="isCases && isNewCaseLoading" v-cloak>
+                        <div class="vue-spinner o-spinner"></div>
+                        <p class="text-explainer o-spinner__text">Ny sag oprettes</p>
+                    </template>
+                    <div class="vue-spinner__container" v-if="isDocs && isOpenDocsLoading" v-cloak>
+                        <div class="vue-spinner o-spinner"></div>
+                        <p class="text-explainer o-spinner__text">Henter dokumenter</p>
+                    </div>
+                    <transition-group name="list-complete" id="infinite-list" tag="div"
+                        class="vue-list-of-cases o-wrapper pos-relative" v-if="isCases">
+                        <div class="case_element case_element__document vue-list-complete__element"
+                            v-for="(itemCase, key) in searchedCases" :key="itemCase.onid"
+                            @click="onCaseClicked(itemCase, $event)" :data-onid="itemCase.onid"
+                            :data-onid_token="itemCase.onid_token" v-if="key < infiniteScrollNumber">
+                            <!-- START ADDED 26-11-23 For openByOtherEmp -->
+                            <ul class="o-case-active-users">
+                                <template v-for="(userObj, idx) in itemCase.v_openByOtherEmp">
+                                    <li v-if="idx < 5" class="o-case-active-users__user hint--bottom"
+                                        :aria-label="userObj.name">
+                                        {{ userObj.initials }}
+                                    </li>
+                                    <li v-if="idx == 5" class="o-case-active-users__user">+{{
+                                        itemCase.openByOtherEmp.length - 5 }}</li>
+                                </template>
+                            </ul>
+                            <!-- END ADDED 26-11-23 For openByOtherEmp -->
+                            <!-- START 17-12-23 -->
+                            <div class="o-cases__case_element__header">
+                                <div class="o-cases__case_element__header__row">
+                                    <div>ONID: {{itemCase.onid}}</div>
+                                    <div>Oprettet: {{itemCase.created_time_display}}</div>
+                                    <div>Til: {{itemCase.to_company}}/ Fra:{{itemCase.from_company}}</div>
+                                    <div v-if="itemCase.filter_sla_expired=='true'">SLA: <span
+                                            class="o-pill o-pill--red">{{itemCase.sla_deadline_date}}</span>
+                                    </div>
+                                    <div v-if="itemCase.filter_sla_expired=='false'">
+                                        SLA:{{itemCase.sla_deadline_date}}
+                                    </div>
+                                    <div class="etray_case_status"> Status:
+                                        <span class="o-pill" :class="{
+                                            'o-pill--red': itemCase.status === 'New_msg' || itemCase.status === 'New' || itemCase.status === 'On_Hold' || itemCase.status === 'Follow_up',
+                                            'o-pill--yellow': itemCase.status === 'Åben' || itemCase.status === 'Pending',
+                                            'o-pill--grey': itemCase.status === 'Closed'
+                                          }">{{ itemCase.v_status }}</span>
+                                    </div>
+                                    <div class="js-case-assigned-to">Tildelt: {{itemCase.assign_to}}</div>
+                                    <div>SSID: {{itemCase.ssid}}</div>
+                                    <div v-if="itemCase.basket_id.length > 0">Basked ID:{{itemCase.basket_id}}
+                                    </div>
+                                    <div class="js-intern-ref">Intern ref.: {{itemCase.company_ref}}</div>
+                                    <div v-if="itemCase.adr.length > 0">Adresse: {{itemCase.adr}}</div>
+                                    <div v-if="itemCase.onhold_until && itemCase.onhold_until.length > 0">
+                                        Opfølgning
+                                        udløber: {{itemCase.onhold_until}}</div>
+                                </div>
+                                <template v-if="isNewDesignActive">
+                                    <div class="o-cases__case_element__header__row__tags">
+                                        <label>Tags</label>
+                                        <div class="o-cases__case_element__header__row__tags__container"
+                                            @click.stop="setTheActiveTagDropdown('tag', itemCase, $event)"
+                                            data-tag-type="tag">
+                                            <div class="item-tag"
+                                                :style="{'backgroundColor': tag.color ? tag.color : '#0a37aa'}"
+                                                v-for="tag in itemCase.v_tags">
+                                                {{ tag.value }}
+                                            </div>
+                                            <div class="itemcase-tags__add"
+                                                v-if="!itemCase.v_tags || itemCase.v_tags.length < 1">Tilføj tag
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o-cases__case_element__header__row__tags">
+                                        <label>Grupper</label>
+                                        <div class="o-cases__case_element__header__row__tags__container"
+                                            data-tag-type="group"
+                                            @click.stop="setTheActiveTagDropdown('group', itemCase, $event)">
+                                            <div class="item-tag"
+                                                :style="{'backgroundColor': tag.color ? tag.color : 'blue'}"
+                                                v-for="tag in itemCase.v_groups">
+                                                {{ tag.value }}
+                                            </div>
+                                            <div class="itemcase-tags__add"
+                                                v-if="!itemCase.v_groups || itemCase.v_groups.length < 1">Tilføj
+                                                gruppe
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <!-- END 17-12-23 -->
+                            <div class="o-cases__case_element__body">
+                                <div class="o-cases__case_element__body__input">
+                                    <div class="o-cases__case-group"><label>Forespørgselstype:</label>
+                                        <p>{{itemCase.filter_inquiry_type}}</p>
+                                    </div>
+                                    <div class="o-cases__case-group"><label>Overskrift:</label>
+                                        <p>{{itemCase.subject}}</p>
+                                    </div>
+                                    <div class="o-cases__case-group"><label>Type:</label>
+                                        <p>{{itemCase.type}}</p>
+                                    </div>
+                                    <div class="o-cases__case-group"><label>Beskrivelse:</label>
+                                        <p>{{itemCase.desc_text.substring(0, 200)}}...</p>
+                                    </div>
+                                </div>
+                                <div class="o-cases__case_element__body__arrow"> Læs
+                                    <div class="tio chevron_right"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </transition-group>
+                    <div class="no-cases-matches"
+                        v-if="(activeCategory==='all_cases' && searchedCases.length > 0 ) || (activeCategory==='my_cases' && searchedCases.length > 0)"
+                        v-cloak>
+                        <h4 v-if="!isSearchingOldCases && !isSearchingPartnerCases && searchedCases.length < 1">
+                            Ingen
+                            sager matcher din søgning </h4>
+                        <div class="vue-spinner__container" v-if="isSearchingOldCases || isSearchingPartnerCases"
+                            v-cloak>
+                            <div class="vue-spinner o-spinner"></div>
+                            <p class="text-explainer o-spinner__text" v-if="isSearchingOldCases">Søger i gamle
+                                sager på
+                                serveren. Det kan tage lidt tid.. </p>
+                            <p class="text-explainer o-spinner__text" v-if="isSearchingPartnerCases">Søger sager
+                                hos
+                                partnere. Det kan tage lidt tid.. </p>
+                        </div>
+                        <template>
+                            <button v-if="theActiveFilter==='inactive'" class="o-btn no-cases-matches__btn hint--top"
+                                aria-label="Kan tage lidt tid" @click="setSearchInOldCases">Søg i ældre sager på
+                                serveren
+                            </button>
+                            <button v-if="theUserType==='ON' && activeCategory==='all_cases'"
+                                class="o-btn no-cases-matches__btn" @click="setSearchInParnerCases">Søg i sager
+                                hos
+                                partnerne
+                            </button>
+                        </template>
+                    </div>
+                    <transition-group name="list-complete" tag="div" class="vue-list-of-cases o-wrapper pos-relative">
+                        <div class="case_element--view_files_in_list case_element case_element__document vue-list-complete__element"
+                            v-for="item in searchedItems" :key="item.onid" @click="onItemClicked(item)"
+                            v-if="activeCategory !=='roles' && !isCases">
+                            <div class="o-cases__case_element__header">
+                                <div class="o-cases__case_element__header__row">
+                                    <div>ONID:{{item.onid}}</div>
+                                    <div>Aktiv:{{item.active_date}}</div>
+                                    <div>Udløb:{{item.expire_date}}</div>
+                                    <div v-if="theUserType !='ON'">{{item.created_by}},{{item.from_company}}</div>
+                                    <div v-if="theUserType=='ON'">Fra:{{item.created_by}},{{item.from_company}}
+                                    </div>
+                                    <div v-if="theUserType=='ON'">Til:{{item.to_company}}</div>
+                                    <div>Opdateret:{{item.last_updated_date}}</div>
+                                    <div class="etray_case_status"><span class="o-pill o-pill--yellow"
+                                            v-if="item.show_unread_icon==='Yes'">Ulæst</span>
+                                        <span class="o-pill o-pill--pad" v-if="item.show_unread_icon==='No'">Læst</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o-cases__case_element__body">
+                                <div class="o-cases__case_element__body__input">
+                                    <div class="o-cases__case-group"><label>Overskrift:</label>
+                                        <p>{{item.headline}}</p>
+                                    </div>
+                                    <div class="o-cases__case-group"><label>Type:</label>
+                                        <p>{{item.type}}</p>
+                                    </div>
+                                    <div class="o-cases__case-group" v-if="item.message_short"><label>Kort
+                                            beskrivelse:</label>
+                                        <p>{{item.message_short}}</p>
+                                    </div>
+                                    <div v-if="item.click==='No'" class="item-with-files o-cases__case-group">
+                                        <label>Filer:</label>
+                                        <ul class="item-files">
+                                            <li v-for="file in item.message" :key="file.link"><a :href="file.link"
+                                                    @click.stop="downloadItem(item)" class="item-files-li-link"
+                                                    :aria-label="'Seneste opdateret: ' + file.updated">
+                                                    <div><i v-if="file.new_file_icon==='Yes'"
+                                                            class="tio star_icon">star</i>
+                                                        <i class="tio">attachment</i>
+                                                        <p>{{file.title}}</p>
+                                                    </div>
+                                                    <div class="o-cases__case_element__body__arrow"> Hent
+                                                        <div class="tio chevron_right"></div>
+                                                    </div>
+                                                </a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="o-cases__case_element__body__arrow" v-if="item.click==='Yes'"> Læs
+                                    <div class="tio chevron_right"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </transition-group>
+                    <div class="o-wrapper">
+                        <template v-if="activeCategory==='end_customer_orders'" v-cloak>
+                            <div class="vue-spinner__container" v-if="isLoadingOnpPendingOrders" v-cloak>
+                                <div class="vue-spinner o-spinner"></div>
+                                <p class="text-explainer o-spinner__text">Henter slutkundeordre</p>
+                            </div>
+                            <template v-else>
+                                <h4>Tidligere ordre</h4>
+                                <h4 class="text-explainer" v-if="onpPendingOrders.length < 1">Der findes
+                                    ingen slutkundeordre </h4>
+                                <table class="o-table o-table__orders" v-else>
+                                    <thead>
+                                        <tr>
+                                            <th class="o-table__number">ONID</th>
+                                            <th class="o-table__number">SSID</th>
+                                            <th class="o-table__number">Pris</th>
+                                            <th></th>
+                                            <!-- <th>Type</th> -->
+                                            <th style="width: 50%">Email</th>
+                                            <th>Oprettet af</th>
+                                            <th>Oprettelsesdato</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(item, key) in onpPendingOrdersSearched" :key="item.id"
+                                            v-if="key < infiniteScrollNumberONPOrders"
+                                            @click="setActivePrevOrder(item)">
+                                            <td aria-label="Ordresum" class="o-table__number o-table__orders__id">
+                                                {{item.id}}
+                                            </td>
+                                            <td aria-label="Ordresum" class="o-table__number o-table__orders__id">
+                                                {{item.ssid}}
+                                            </td>
+                                            <td aria-label="Ordresum" class="o-table__number o-table__orders__price">
+                                                {{item.order_sum}}kr.
+                                            </td>
+                                            <!-- <td>{{item.v_type}}</td> -->
+                                            <td aria-label="Ordrestatus">
+                                                <div v-if="item.status==='PENDING'" class="o-pill o-pill--yellow">
+                                                    Afventer
+                                                </div>
+                                                <div v-if="item.status==='APPROVED'" class="o-pill o-pill--green">
+                                                    Godkendt
+                                                </div>
+                                                <div v-if="item.status==='DECLINED'" class="o-pill o-pill--red">
+                                                    Afvist
+                                                    af
+                                                    kunde
+                                                </div>
+                                                <div v-if="item.status==='CANCELLED'" class="o-pill o-pill--red">
+                                                    Annulleret
+                                                </div>
+                                            </td>
+                                            <td aria-label="Kundeemail">{{item.customer_email}}</td>
+                                            <td class="o-table__orders__created_by" aria-label="Oprettet af">
+                                                {{item.created_by}}
+                                            </td>
+                                            <td class="o-table__orders__created_at" aria-label="Oprettet den">
+                                                {{item.created_time}}
+                                            </td>
+                                            <td class="o-table__orders__edit-btn">
+                                                <div class="o-table__edit-button"><span class="tio">edit</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </template>
+                        </template>
+                        <template v-if="activeCategory==='end_customer_pricing_config'" v-cloak>
+                            <div class="vue-spinner__container" v-if="isLoadingOnpProductList" v-cloak>
+                                <div class="vue-spinner o-spinner"></div>
+                                <p class="text-explainer o-spinner__text">Henter slutkundepriser</p>
+                            </div>
+                            <template v-else>
+                                <h4 class="text-explainer" v-if="onpProductListFiltered.length < 1">Der
+                                    findes ingen slutkundepriser </h4>
+                                <table class="o-table" v-else>
+                                    <thead>
+                                        <tr>
+                                            <th>Partner</th>
+                                            <th>Produktnavn</th>
+                                            <th>Teknisk produktnavn</th>
+                                            <th>Type</th>
+                                            <th>Beskrivelse</th>
+                                            <th class="o-table__number">Pris pr. enhed</th>
+                                            <th class="o-table__number">Præudfyldt værdi</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(item, itemKey) in onpProductListSearched" :key="item.REC_ID"
+                                            v-if="itemKey < infiniteScrollNumberONP">
+                                            <td>{{item.FROM_COMPANY}}</td>
+                                            <td>{{item.LABEL}}</td>
+                                            <td>{{item.TRANSACTION_CODE}}</td>
+                                            <td>{{ item.v_type}}</td>
+                                            <td class="the-read-more-onp-td"><span
+                                                    v-if="theReadMoreOnp===item.REC_ID">{{item.TEXT_DESC}}</span>
+                                                <a href="javascript:void(0)" @click="setTheReadMoreOnp(item)"
+                                                    class="o-read-more o-read-more-btn"> <span
+                                                        v-if="theReadMoreOnp !==item.REC_ID">Læs mere</span>
+                                                    <span v-if="theReadMoreOnp===item.REC_ID">Vis mindre</span>
+                                                </a>
+                                            </td>
+                                            <td class="o-table__number the-read-more-onp-td__price">
+                                                {{item.PRICE}}kr.
+                                            </td>
+                                            <td class="o-table__number"><span
+                                                    class="o-unit-label">{{item.UNIT_LABEL}}</span>{{item.UNIT_DEFAULT_VALUE}}
+                                            </td>
+                                            <td>
+                                                <div class="o-table__edit-button" @click="setTheEditOnp(item)">
+                                                    <span class="tio">edit</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </template>
+                        </template>
+                        <transition name="fadeIn">
+                            <template v-if="activeCategory==='roles'" v-cloak>
+                                <div class="vue-spinner__container" v-if="usersIsLoading" v-cloak>
+                                    <div class="vue-spinner o-spinner"></div>
+                                    <p class="text-explainer o-spinner__text">Henter alle brugere og roller</p>
+                                </div>
+                                <template v-else>
+                                    <div class="o-users o-card case_element--unclickable" v-if="!isViewRoles">
+                                        <table class="o-users__list__table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Navn</th>
+                                                    <th>Brugernavn</th>
+                                                    <th>Email</th>
+                                                    <th>Telefonnummer</th>
+                                                    <th>Roller</th>
+                                                    <th>Rediger bruger</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="user in searchedUsers" :key="user.id">
+                                                    <td>{{user.display_name}}</td>
+                                                    <td>{{user.user_init}}</td>
+                                                    <td>{{user.email}}</td>
+                                                    <td>{{user.sms_no}}</td>
+                                                    <td class="link-text"
+                                                        @click="setTheActiveUserRoleChangeModal(user)">
+                                                        Vælg roller
+                                                    </td>
+                                                    <td class="link-text align-right"
+                                                        @click="setTheEditUserModal(user)">
+                                                        Redigér
+                                                    </td>
+                                                <tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="o-users o-card case_element--unclickable" v-if="isViewRoles">
+                                        <div class="o-roles__view">
+                                            <div class="o-roles__view__first list-of-roles-in-groups">
+                                                <h4 class="o-label">Vælg rolle</h4>
+                                                <ul>
+                                                    <li v-for="group in rolesInView(allRoles)" :key="group.group">
+                                                        <table
+                                                            :class="{'o-table--tbody-closed': getIsInTheToggleRolesAcc(group.group)}">
+                                                            <thead>
+                                                                <tr class="pos-relative o-table__tr-acc">
+                                                                    <th class="o-list-of-roles__headline"
+                                                                        @click="toggleRolesAcc(group.group)">
+                                                                        <div>{{group.group}}
+                                                                            <div class="o-list-of-roles__acc-chevron">
+                                                                                <i class="tio">chevron_down</i>
+                                                                            </div>
+                                                                        </div>
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr class="o-roles-tables__role"
+                                                                    v-for="role in group.roles" :key="role.group_id"
+                                                                    @click="setTheActiveRoleForFilter(role.group_id)"
+                                                                    :class="[{'o-roles-tables__role--active': role.group_id===theActiveRoleForFilter},{'o-roles-tables__role--no-users': usersWithRole(role.group_id).length < 1}]">
+                                                                    <td>{{role.group_name}}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    <li>
+                                                </ul>
+                                            </div>
+                                            <div class="o-roles__view__second">
+                                                <h4 class="o-label">Bruger med rollen
+                                                    ({{usersWithRole(theActiveRoleForFilter).length}}) </h4>
+                                                <div class="o-roles__view__add-user">
+                                                    <div class="o-select"
+                                                        :class="{'o-select--active': getIsTheOSelect(1)}" data-id="1"
+                                                        id="o-select-click">
+                                                        <div class="o-select__container">
+                                                            <div class="o-select__input__lookalike"
+                                                                @click="setTheOSelect(1)">
+                                                                <div class="tio clear_circle"></div>
+                                                                <span
+                                                                    class="o-select__input__lookalike__selected-item"></span>
+                                                                <input type="search"
+                                                                    class="o-select__input o-search-input"
+                                                                    placeholder="Tilføj bruger" v-model="oSelectQuery">
+                                                                <div class="tio expand_all"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="o-select__dropdown" v-if="getIsTheOSelect(1)">
+                                                            <ul class="o-items">
+                                                                <li v-for="user in usersWithoutActiveRole"
+                                                                    @click="selectUserForRole(user)">
+                                                                    {{user.name}}
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p class="text-explainer"
+                                                    v-if="usersWithRole(theActiveRoleForFilter).length < 1">
+                                                    Ingen
+                                                    brugere
+                                                    har denne rolle </p>
+                                                <ul>
+                                                    <li class="hover"
+                                                        v-for="user in usersWithRole(theActiveRoleForFilter)"
+                                                        @click="setTheActiveUserRoleChangeModal(user)">
+                                                        {{user.name}}
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                        </transition>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <transition name="modalFadeIn">
+            <div class="o-modal--alwaysactive vue-modal" v-if="isEndCustomerEmailConfigModal" v-cloak>
+                <div class="o-modal__header">
+                    <h4>Ret tekster</h4>
+                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay">
+                    </div>
+                </div>
+                <div class="o-modal__body">
+                    <div class="o-modal-form__o-spinner__container" v-if="isLoadingEndCustomerEmailConfigFormData">
+                        <div class="o-spinner"></div>
+                    </div>
+                    <template v-else>
+                        <div class="o-form">
+                            <div class="o-group" v-for="(formItem, key) in theEndCustomerEmailConfigFormWithoutFilter">
+                                <label>{{formItem.label}}</label>
+                                <input v-if="formItem.type === 'text'" type="text" v-model="formItem.value"
+                                    :placeholder="formItem.placeholder"
+                                    :class="[{'o-input--error': !formItem.validated}]"
+                                    @keyup="formItem.validated=true" />
+                            </div>
+                        </div>
+
+                        <div class="o-filters">
+                            <div class="o-filters__filter" @click="setTheEndCustomerEmailConfigFormActiveType('web')"
+                                :class="{'o-filters__filter--active': theEndCustomerEmailConfigFormActiveType === 'web'}">
+                                Hjemmeside</div>
+                            <div class="o-filters__filter" @click="setTheEndCustomerEmailConfigFormActiveType('email')"
+                                :class="{'o-filters__filter--active': theEndCustomerEmailConfigFormActiveType === 'email'}">
+                                Email
+                            </div>
+                        </div>
+                        <div class="o-filters__form-container o-form__container">
+                            <div class="o-form">
+                                <div class="o-group" v-for="(formItem, key) in theEndCustomerEmailConfigFormFiltered">
+                                    <label>{{formItem.label}} {{ formItem.id }}</label>
+                                    <input v-if="formItem.type === 'text'" type="text" v-model="formItem.value"
+                                        :placeholder="formItem.placeholder"
+                                        :class="[{'o-input--error': !formItem.validated}]"
+                                        @keyup="formItem.validated=true" />
+                                    <textarea v-if="formItem.type === 'textarea'" rows="3" class="o-textarea"
+                                        v-model="formItem.value" :class="[{'o-input--error': !formItem.validated}]"
+                                        @keyup="formItem.validated=true">
+                                 </textarea>
+                                </div>
+                            </div>
+                            <div class="o-form__preview"
+                                :class="{'o-form__preview__email': theEndCustomerEmailConfigFormActiveType === 'email'}">
+                                <label class="o-label">Preview af <span
+                                        v-if="theEndCustomerEmailConfigFormActiveType === 'email'">email</span><span
+                                        v-else>hjemmeside</span></label>
+                                <div class="o-form__preview__head">
+
+                                </div>
+                                <div class="o-form__preview__header">
+                                    <img :src="theEndCustomerEmailConfigFormHash['logo']['value']" />
+                                </div>
+                                <div class="o-form__preview__body">
+                                    <h4 v-html="theEndCustomerEmailConfigFormHash['title_til_hjemmeside']['value']">
+                                    </h4>
+                                    <template v-if="theEndCustomerEmailConfigFormActiveType === 'email'">
+                                        <p v-html="theEndCustomerEmailConfigFormHash['tekst_til_email']['value']">
+                                        </p>
+                                        <p class="o-form__preview__body__email__link">
+                                            {{ theEndCustomerEmailConfigFormHash['link_i_email']['value'] }}
+                                        </p>
+                                        <p v-html="theEndCustomerEmailConfigFormHash['afslutning_af_email']['value']">
+                                        </p>
+                                    </template>
+                                    <template v-else>
+                                        <p v-html="theEndCustomerEmailConfigFormHash['tekst_til_hjemmeside']['value']">
+                                        </p>
+                                        <div class="o-form__preview__body__order">
+                                            <h5>Teknikerydelse</h5>
+                                            <div></div>
+                                            <div></div>
+                                            <div class="o-form__preview__body__order__bttn"></div>
+                                        </div>
+                                        <p
+                                            v-html="theEndCustomerEmailConfigFormHash['afslutning_af_hjemmeside']['value']">
+                                        </p>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="o-group o-group__submit marg-1-top">
+                            <button class="o-btn" @click="closeVueModalOverlay">Annullér</button>
+                            <button class="o-btn o-btn--primary" @click="submitEndCustomerEmailConfigForm"
+                                v-if="!isUpdatingEndCustomerEmailConfigForm">Gem
+                            </button>
+                            <button class="o-btn o-btn--primary o-btn--primary--loading"
+                                v-if="isUpdatingEndCustomerEmailConfigForm">
+                                <div class="o-spinner"></div>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </transition>
+        <!-- START 17-12-23 -->
+        <tags-selector v-if="theShowTagDropdown" :active_case="theActiveCaseForTag"
+            :is_loading_tag_button="isLoadingTagButton" :tags="allCaseTags" :groups="allCaseGroups"
+            :active_tag_type="theShowTagDropdown" @close="setTheActiveTagDropdown(null)"
+            @save_tags="updateItemTags($event)">
+        </tags-selector>
+        <!-- END 17-12-23 -->
+        <transition name="modalFadeIn">
+            <div class="o-modal--alwaysactive vue-modal" v-if="theActiveItem" v-cloak>
+                <div class="o-modal__header">
+                    <h4>{{theActiveItem.onid}}-{{theActiveItem.headline}}</h4>
+                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay">
+                    </div>
+                </div>
+                <div class="o-modal__body">
+                    <div class="o-modal__create-case__body">
+                        <div class="o-modal__body__header-actions"
+                            v-if="theActiveItem.show_edit_btns==='Yes' && activeCategory==='Announcement' && theUserType=='IO'"
+                            @click="editExtDocument('Announcement')">
+                            <button class="o-btn o-btn--primary o-btn--small o-btn--with-icon"><i class="tio">edit</i>
+                                Rediger udmelding
+                            </button>
+                        </div>
+                        <div class="o-modal__body__header-actions"
+                            v-if="theActiveItem.show_edit_btns==='Yes' && activeCategory==='Announcement' && theUserType=='ON'"
+                            @click="editExtDocument('Announcement')">
+                            <button
+                                class="o-btn o-btn--primary o-btn--small o-btn--with-icon editExtDocument('Announcement')">
+                                <i class="tio">edit</i> Rediger udmelding
+                            </button>
+                        </div>
+                        <div class="o-modal__body__header-actions" v-if="activeCategory==='Report' && theUserType=='ON'"
+                            @click="editExtDocument('Report')">
+                            <button class="o-btn o-btn--primary o-btn--small o-btn--with-icon"><i class="tio">edit</i>
+                                Rediger rapport
+                            </button>
+                        </div>
+                        <div class="o-modal__body__header-actions"
+                            v-if="activeCategory==='Contract' && theUserType=='ON'"
+                            @click="editExtDocument('Contract')">
+                            <button class="o-btn o-btn--primary o-btn--small o-btn--with-icon"><i class="tio">edit</i>
+                                Rediger kontrakt
+                            </button>
+                        </div>
+                        <div class="o-modal__body__header-actions"
+                            v-if="activeCategory==='Invoice' && theUserType=='ON'" @click="editExtDocument('Invoices')">
+                            <button class="o-btn o-btn--primary o-btn--small o-btn--with-icon"><i class="tio">edit</i>
+                                Rediger faktura
+                            </button>
+                        </div>
+                        <div class="o-modal__body__header-actions"
+                            v-if="activeCategory==='Documentation' && theUserType=='ON'"
+                            @click="editExtDocument('Documentation')">
+                            <button class="o-btn o-btn--primary o-btn--small o-btn--with-icon"><i class="tio">edit</i>
+                                Rediger dokumentation
+                            </button>
+                        </div>
+                        <div class="case_element case_element--unclickable case_element__document">
+                            <div class="o-cases__case_element__header">
+                                <div class="o-cases__case_element__header__row">
+                                    <div>ONID:{{theActiveItem.onid}}</div>
+                                    <div>Aktiv:{{theActiveItem.active_date}}</div>
+                                    <div>Udløb:{{theActiveItem.expire_date}}</div>
+                                    <div>{{theActiveItem.created_by}},{{theActiveItem.from_company}}</div>
+                                    <div class="etray_case_status"><span class="o-pill o-pill--yellow"
+                                            v-if="theActiveItem.show_unread_icon==='Yes'">Ulæst</span>
+                                        <span class="o-pill o-pill--pad"
+                                            v-if="theActiveItem.show_unread_icon==='No'">Læst</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o-cases__case_element__body">
+                                <div class="o-cases__case_element__body__input">
+                                    <div class="o-cases__case-group"><label>Overskrift:</label>
+                                        <p>{{theActiveItem.headline}}</p>
+                                    </div>
+                                    <div class="o-cases__case-group"
+                                        v-if="activeCategory !='Invoice' && activeCategory !='Contract' && activeCategory !='Report'">
+                                        <label>Besked:</label>
+                                        <p>{{theActiveItem.message}}</p>
+                                    </div>
+                                    <div class="o-cases__case-group" v-if="theActiveItem.expire_date">
+                                        <label>Udløbsdato:</label>
+                                        <p>{{theActiveItem.expire_date}}</p>
+                                    </div>
+                                    <div v-if="theActiveItem.attachment_list"
+                                        class="item-with-files o-cases__case-group">
+                                        <label>Filer:</label>
+                                        <ul class="item-files">
+                                            <li v-for="file in theActiveItem.attachment_list" :key="file.link">
+                                                <a :href="file.link" @click="downloadItem(theActiveItem)"
+                                                    class="item-files-li-link"
+                                                    :aria-label="'Seneste opdateret: ' + file.updated">
+                                                    <div><i v-if="file.new_file_icon==='Yes'"
+                                                            class="tio star_icon">star</i>
+                                                        <i class="tio">attachment</i>
+                                                        <p>{{file.title}}</p>
+                                                    </div>
+                                                    <div class="o-cases__case_element__body__arrow"> Hent
+                                                        <div class="tio chevron_right"></div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </transition>
+        <transition name="modalFadeIn">
+            <div class="o-modal--alwaysactive vue-modal" v-if="isCreateOnpModal" v-cloak>
+                <div class="o-modal__header">
+                    <h4><span v-if="onpForm[0] && onpForm[0].value">Redigér</span><span v-else>Opret</span>
+                    </h4>
+                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay">
+                    </div>
+                </div>
+                <div class="o-modal__body">
+                    <div class="o-modal__create-case__body">
+                        <div class="o-form__container">
+                            <div class="o-form">
+                                <div class="o-group" v-for="(formItem, key) in onpForm" v-if="!formItem.hide">
+                                    <label>{{formItem.label}}</label>
+                                    <input v-if="!formItem.isDropdown && !formItem.isTextArea" type="text"
+                                        v-model="formItem.value" :disabled="formItem.disabled"
+                                        :class="[{'o-input--error': !formItem.validated}, {'o-input--disabled': formItem.disabled}]"
+                                        @keyup="formItem.validated=true" />
+                                    <template v-if="formItem.isDropdown">
+                                        <select v-if="formItem.optionsWithValues" v-model="formItem.value"
+                                            class="o-select__options" :class="[{'o-input--error': !formItem.validated}]"
+                                            @change="setFormItemValidated(formItem)">
+                                            <option v-for="option in formItem.options" :value="option.value">{{
+                                                option.title }}
+                                            </option>
+                                        </select>
+                                        <select v-else v-model="formItem.value" class="o-select__options"
+                                            :class="[{'o-input--error': !formItem.validated}]"
+                                            @change="setFormItemValidated(formItem)">
+                                            <option v-for="option in formItem.options">{{option}}</option>
+                                        </select>
+                                    </template>
+                                    <textarea v-if="formItem.isTextArea" rows="3" class="o-textarea"
+                                        v-model="formItem.value" :class="{'o-input--error': !formItem.validated}"
+                                        @keyup="formItem.validated=true"></textarea>
+                                    <p class="o-input-error__explainer" v-if="!formItem.validated">
+                                        {{formItem.formErrorDesc}}</p>
+                                </div>
+                                <div class="o-group o-group__submit">
+                                    <button class="o-btn" @click="closeVueModalOverlay">Annullér</button>
+                                    <button class="o-btn o-btn--primary" @click="submitOnpForm"
+                                        v-if="!isUpdatingOnpProductList">Gem
+                                    </button>
+                                    <button class="o-btn o-btn--primary o-btn--primary--loading"
+                                        v-if="isUpdatingOnpProductList">
+                                        <div class="o-spinner"></div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </transition>
+        <transition name="modalFadeIn">
+            <div class="o-modal--alwaysactive vue-modal vue-modal__order vue-modal__new-order" v-if="isNewOrderModal"
+                v-cloak>
+                <div class="o-modal__header">
+                    <h4>Ny ordre</h4>
+                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay">
+                    </div>
+                </div>
+                <div class="o-modal__body">
+                    <div class="o-filters">
+                        <div class="o-filters__filter vue-filter-level2"
+                            :class="{'o-filters__filter--active': theActiveOrderType === '001' }"
+                            v-if="onpSSIDDetailsGrouped['001']" @click="setTheActiveOrderType('001')">
+                            Installationsydelser
+                        </div>
+                        <div class="o-filters__filter vue-filter-level2" v-if="onpSSIDDetailsGrouped['002']"
+                            :class="{'o-filters__filter--active': theActiveOrderType === '002'}"
+                            @click="setTheActiveOrderType('002')">
+                            Skader / Reparation
+                        </div>
+                        <div class="o-filters__filter vue-filter-level2" v-if="onpSSIDDetailsGrouped['003']"
+                            :class="{'o-filters__filter--active': theActiveOrderType === '003'}"
+                            @click="setTheActiveOrderType('003')">
+                            Uberettiget fejlretning
+                        </div>
+                    </div>
+                    <div class="o-cart">
+                        <ul class="o-cart__items">
+                            <template v-if="theActiveOrderType === '002'">
+                                <li class="o-cart__items__item o-cart__items__item--form o-cart__items__item--header">
+                                    <label>Beskrivelse</label>
+                                    <label class="o-cart__items__item--form__number">Beløb</label>
+                                </li>
+                                <li class="o-cart__items__item o-cart__items__item--form"
+                                    v-for="(item, key) in theNewOrderSkaderItems" :key="item.v_id">
+                                    <input type="text" class="o-input" placeholder="Udfyld beskrivelse.."
+                                        v-model="item.LABEL">
+                                    <input type="number" class="o-input o-cart__items__item--form__number"
+                                        v-model="item.PRICE">
+                                    <div class="bg-icon-hover" @click="deleteNewOrderSkadeItem(key)"><i
+                                            class="tio">delete</i></button>
+                                </li>
+                                <li class="o-cart__items__item--form__add">
+                                    <p @click="addNewOrderSkadeItem">+ Tilføj linje</p>
+                                </li>
+                            </template>
+                            <template v-if="theActiveOrderType !== '002'">
+                                <li class="o-cart__items__item"
+                                    v-for="item in onpSSIDDetailsGrouped[theActiveOrderType]" :key="item.REC_ID">
+                                    <div class="o-cart__items__item__left">{{item.LABEL}}, <span
+                                            class="o-cart__summary__item__labels">{{item.PRICE}}kr.</span>
+                                        <br><span class="o-read-more"
+                                            :class="{'o-read-more--active': theActiveDescExpanded===item.REC_ID}"
+                                            @click="setTheActiveDescExpanded(item.REC_ID)"><span
+                                                v-if="theActiveDescExpanded !==item.REC_ID">Vis</span><span
+                                                v-else>Skjul</span> beskrivelse</span>
+                                        <div v-if="theActiveDescExpanded===item.REC_ID"
+                                            class="o-cart__items__item__desc">
+                                            {{item.TEXT_DESC}}
+                                        </div>
+                                    </div>
+                                    <div class="o-cart__items__item__right">
+                                        <p class="o-cart__items__item__label-unit">
+                                            {{item.UNIT_LABEL}}</p>
+                                        <div class="o-item-counter">
+                                            <button
+                                                class="o-btn o-btn--primary o-item-counter__btn o-item-counter__minus"
+                                                :class="{'o-item-counter__btn--disabled': item.v_count==0}"
+                                                @click="itemCountDecrement(item)">-
+                                            </button>
+                                            <input type="text" class="o-input" v-model="item.v_count"
+                                                @focus="$event.target.select()" @blur="validateOrderItem(item)">
+                                            <button
+                                                class="o-btn o-btn--primary o-item-counter__btn o-item-counter__plus"
+                                                @click="itemCountIncrement(item)">+
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                    <div class="o-cart">
+                        <div class="o-cart__summary">
+                            <h4>Ordreoversigt</h4>
+                            <ul>
+                                <li class="o-cart__summary__item" v-for="orderItem in order" v-if="orderItem.LABEL">
+                                    <div class="o-cart__summary__item__left">
+                                        <p>{{orderItem.LABEL}}
+                                            <span class="o-cart__summary__item__labels"
+                                                v-if="theActiveOrderType!=='002'">,
+                                                {{orderItem.v_count}}stk.</span>
+                                        <p>
+                                        <p class="o-cart__summary__item__labels" v-if="theActiveOrderType!=='002'">
+                                            {{orderItem.PRICE}}kr. pr. stk. </p>
+                                    </div>
+                                    <p class="o-cart__summary__item__price">{{orderItem.v_count *
+                                        orderItem.PRICE}}kr. </p>
+                                </li>
+                                <li class="o-cart__summary__item o-cart__summary__item__sum">
+                                    <h4>Samlet pris</h4>
+                                    <h4 class="o-cart__summary__item__price">{{orderSum}}kr.</h4>
+                                </li>
+                            </ul>
+                            <div>
+                                <div class="o-input__group">
+                                    <label class="o-label">Dato for udførelse</label>
+                                    <input type="date" v-model="theNewOrderCreatedDate">
+                                </div>
+                                <div class="o-input__group__submit"
+                                    v-if="theActiveOrderType !== '001' && order.length > 0 && order[0]['LABEL']">
+                                    <button class="o-btn o-btn--primary" @click="submitOrder"
+                                        :class="{'o-btn--loading': isSubmitOrderLoading}">Bekræft ordren
+                                    </button>
+                                </div>
+                                <div class="input-with-button" v-if="theActiveOrderType === '001' && order.length > 0">
+                                    <input type="text" class="o-input" @keyup="isOrderCustomerEmailValid=true"
+                                        :class="[{'animate-shake': isCustomerEmailInputEmpty || !isOrderCustomerEmailValid},{'o-input--error': !isOrderCustomerEmailValid}]"
+                                        placeholder="Indtast kundens email" v-model="orderCustomerEmail"
+                                        ref="order_customer_email_input">
+                                    <button class="o-btn o-btn--primary" @click="submitOrder"
+                                        :class="{'o-btn--loading': isSubmitOrderLoading}">Bekræft ordren
+                                    </button>
+                                </div>
+                                <p class="o-input-error__explainer" v-if="!isOrderCustomerEmailValid">Ugyldig
+                                    emailadresse </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </transition>
+        <transition name="modalFadeIn">
+            <div class="o-modal--alwaysactive vue-modal vue-modal__order" v-if="theActivePrevOrder" v-cloak>
+                <div class="o-modal__header">
+                    <h4>ONID:{{theActivePrevOrder.id}}// SSID:{{theActivePrevOrder.ssid}}</h4>
+                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay">
+                    </div>
+                </div>
+                <div class="o-modal__body">
+                    <div class="o-cart">
+                        <ul class="o-cart__items">
+                            <li class="o-cart__items__item">
+                                <div class="o-cart__items__item__left">Status</div>
+                                <div class="o-cart__items__item__right">
+                                    <div v-if="theActivePrevOrder.status==='PENDING'"
+                                        class="o-pill o-pill--small o-pill--yellow">Afventer
+                                    </div>
+                                    <div v-if="theActivePrevOrder.status==='APPROVED'"
+                                        class="o-pill o-pill--small o-pill--green">Godkendt
+                                    </div>
+                                    <div v-if="theActivePrevOrder.status==='DECLINED'"
+                                        class="o-pill o-pill--small o-pill--red">Afvist af kunde
+                                    </div>
+                                    <div v-if="theActivePrevOrder.status==='CANCELLED'"
+                                        class="o-pill o-pill--small o-pill--red">Annulleret
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="o-cart__items__item">
+                                <div class="o-cart__items__item__left">Dato</div>
+                                <div class="o-cart__items__item__right">{{theActivePrevOrder.created_time}}
+                                </div>
+                            </li>
+                            <li class="o-cart__items__item">
+                                <div class="o-cart__items__item__left">SSID</div>
+                                <div class="o-cart__items__item__right">{{theActivePrevOrder.ssid}}</div>
+                            </li>
+                            <li class="o-cart__items__item">
+                                <div class="o-cart__items__item__left">Kundens email</div>
+                                <div class="o-cart__items__item__right">{{theActivePrevOrder.customer_email}}
+                                </div>
+                            </li>
+                            <li class="o-cart__items__item">
+                                <div class="o-cart__items__item__left">Oprettet af</div>
+                                <div class="o-cart__items__item__right">{{theActivePrevOrder.created_by}}</div>
+                            </li>
+                            <li class="o-cart__items__item" v-if="theActivePrevOrder.can_cancel">
+                                <div class="o-cart__items__item__left"></div>
+                                <div class="o-cart__items__item__right">
+                                    <button class="o-btn o-btn--small o-btn--small__delete"
+                                        @click="setCancelOrderConfirmation(true)"><i class="tio">delete</i>Slet
+                                        ordren
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="o-cart__summary marg-1-top">
+                            <h4>Ordreoversigt</h4>
+                            <ul>
+                                <li class="o-cart__summary__item" v-for="orderItem in theActivePrevOrder.order_items">
+                                    <div class="o-cart__summary__item__left">
+                                        <p>{{orderItem.LABEL}}<span class="o-cart__summary__item__labels"
+                                                v-if="orderItem.TYPE !== '002'">,
+                                                {{orderItem.QUANTITY}}stk.</span>
+                                        <p>
+                                        <p class="o-cart__summary__item__labels" v-if="orderItem.TYPE !== '002'">
+                                            {{orderItem.PRICE}}kr. pr. stk. </p>
+                                    </div>
+                                    <p class="o-cart__summary__item__price">{{orderItem.QUANTITY *
+                                        orderItem.PRICE}}kr. </p>
+                                </li>
+                                <li class="o-cart__summary__item o-cart__summary__item__sum">
+                                    <h4>Samlet pris</h4>
+                                    <div>
+                                        <h4 class="o-cart__summary__item__price">
+                                            {{theActivePrevOrder.order_sum}}kr.
+                                        </h4>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </transition>
+        <!-- Toast Notification -->
+        <transition name="fade">
+            <div v-if="toast.visible" class="toast">
+                {{ toast.message }}
+            </div>
+        </transition>
+        <transition name="modalFadeIn">
+            <div class="o-modal--alwaysactive vue-modal vue-modal--small" v-if="isCancelOrderConfirmation" v-cloak>
+                <div class="o-modal__body">
+                    <h4>Er du sikker på, at du vil annullere ordren?</h4>
+                    <div class="o-modal__body__actions">
+                        <button class="o-btn js-click-modal-small-cancel" @click="setCancelOrderConfirmation(false)">
+                            Annuller
+                        </button>
+                        <button class="o-btn o-btn--danger" :class="{'o-btn--loading': isDeletingOrder}"
+                            @click="submitCancelOrder">Slet ordren
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </transition>
+        <transition name="modalFadeIn">
+            <div class="o-modal--alwaysactive vue-modal" v-if="theActiveUser" v-cloak>
+                <div class="o-modal__header">
+                    <h4><span v-if="!isProfileClick">Redigér for{{theActiveUser.display_name}}</span><span v-else>Din
+                            profil</span></h4>
+                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="closeVueModalOverlay">
+                    </div>
+                </div>
+                <div class="o-modal__body">
+                    <div class="o-modal__create-case__body">
+                        <div class="o-form__container" v-if="isEditUser">
+                            <div class="o-form">
+                                <div class="o-group"><label>Navn</label> <input type="text" v-model="userform.name"
+                                        @keyup="removeErrors('name')" :class="{'o-input--error': formErrors['name']}" />
+                                    <p class="o-input-error__explainer" v-if="formErrors['name']">
+                                        {{formErrors['name']}}</p>
+                                </div>
+                                <div class="o-group"><label>Navn(Visning)</label> <input type="text"
+                                        v-model="userform.display_name" @keyup="removeErrors('display_name')"
+                                        :class="{'o-input--error': formErrors['display_name']}" />
+                                    <p class="o-input-error__explainer" v-if="formErrors['display_name']">
+                                        {{formErrors['display_name']}}</p>
+                                </div>
+                                <div class="o-group"><label>Brugernavn</label> <input class="js_userform_init"
+                                        type="text" v-model="userform.user_init" @keyup="onkeyup_user_init('user_init')"
+                                        :class="{'o-input--error': formErrors['user_init']}" />
+                                    <p class="o-input-error__explainer" v-if="formErrors['user_init']">
+                                        {{formErrors['user_init']}}</p>
+                                </div>
+                                <div class="o-group"><label>Email</label> <input type="text" v-model="userform.email"
+                                        @keyup="removeErrors('email')"
+                                        :class="{'o-input--error': formErrors['email']}" />
+                                    <p class="o-input-error__explainer" v-if="formErrors['email']">
+                                        {{formErrors['email']}}</p>
+                                </div>
+                                <div class="o-group"><label>Telefonnummer</label> <input type="text"
+                                        v-model="userform.sms_no" @keyup="removeErrors('sms_no')"
+                                        :class="{'o-input--error': formErrors['sms_no']}" />
+                                    <p class="o-input-error__explainer" v-if="formErrors['sms_no']">
+                                        {{formErrors['sms_no']}}</p>
+                                </div>
+                                <div class="o-group"><label>Skift kodeord</label>
+                                    <div v-if="isTheActiveUserTheUser"><input type="password"
+                                            v-model="userform.new_password" class="marg-1-bottom"
+                                            placeholder="Indtast nyt kodeord"
+                                            :class="{'o-input--error': formErrors['new_password_confirmed']}"
+                                            @keyup="removeErrors('new_password_confirmed')" />
+                                        <input type="password" v-model="userform.new_password_confirmed"
+                                            placeholder="Gentag nyt kodeord"
+                                            @keyup="removeErrors('new_password_confirmed')"
+                                            :class="{'o-input--error': formErrors['new_password_confirmed']}" />
+                                        <p class="o-input-error__explainer" v-if="formErrors['new_password_confirmed']">
+                                            {{formErrors['new_password_confirmed']}}</p>
+                                    </div>
+                                    <transition name="text-fade" mode="out-in">
+                                        <p v-if="isSendingEmail" style="font-size:14px;" class="text-explainer"
+                                            key="sendingText">Der sendes nu et nyt
+                                            kodeord til bruger</p>
+                                        <p class="text-link" v-if="!isTheActiveUserTheUser && !isSendingEmail"
+                                            key="notSendingText" @click.prevent="resetPasswordForUser(theActiveUser)">
+                                            Send SMS med ny adgangskode
+                                        <p>
+                                    </transition>
+                                </div>
+                                <div class="o-group o-group__submit">
+                                    <p class="o-input-error__explainer" v-if="Object.keys(formErrors).length > 0">
+                                        {{Object.keys(formErrors).length}}fejl i formularen </p>
+                                    <button class="o-btn" @click="closeVueModalOverlay">Annullér</button>
+                                    <button v-if="!isTheActiveUserTheUser" class="o-btn o-btn--primary delete_user_btn"
+                                        @click="submitDeleteUserForm">Slet bruger
+                                    </button>
+                                    <button class="o-btn o-btn--primary" @click="submitEditUserForm">Gem</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="o-card" v-if="isUserOpennetOrSP">
+                            <div class="o-toggle-group" @click.stop="setIsCreateGhostUser">
+                                <label class="o-label">Opret "Ghost" profil</label>
+                                <div class="o-toggle" :class="{'o-toggle--activated': isCreateGhostUser }">
+                                </div>
+                            </div>
+                            <template v-if="isCreateGhostUser">
+                                <div class="o-spinner-container" v-if="isLoadingGhostUserList">
+                                    <div class="o-spinner"></div>
+                                </div>
+                                <div class="o-card__ghost-form" v-else>
+                                    <select class="o-select__options"
+                                        @change="onTheGhostUserSelectedPartner($event.target.value)">
+                                        <option selected disabled hidden>Vælg..</option>
+                                        <option v-for="partner in theGhostUserListPartners" :value="partner">
+                                            {{ partner }}
+                                        </option>
+                                    </select>
+                                    <select class="o-select__options"
+                                        @change="onTheGhostUserSelectedPartnerUser($event.target.value)"
+                                        v-if="theGhostUserSelectedPartnerUsers.length > 0">
+                                        <option selected disabled hidden>Vælg..</option>
+                                        <option v-for="user in theGhostUserSelectedPartnerUsers" :value="user.id">
+                                            {{ user.display_name }}
+                                        </option>
+                                    </select>
+                                    <button class="o-btn o-btn--small o-btn--primary o-btn--primary--loading"
+                                        :class="{'o-btn--loading': isGhostUserCreating}" @click="createGhostUser"
+                                        v-if="theGhostUserSelectedPartnerUser && theGhostUserSelectedPartner">Opret
+                                        ”Ghost” profil</button>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="list-of-roles-in-groups o-card" v-if="isEditUserRoles || isProfileClick">
+                            <ul>
+                                <li v-for="group in rolesInView(theActiveUser.role_array)" :key="group.group">
+                                    <table :class="{'o-table--tbody-closed': getIsInTheToggleRolesAcc(group.group)}">
+                                        <thead>
+                                            <tr class="pos-relative o-table__tr-acc"
+                                                @click="toggleRolesAcc(group.group)">
+                                                <th class="o-list-of-roles__headline">
+                                                    <div v-if="!isProfileClick" class="o-toggle"
+                                                        :class="{'o-toggle--activated': getIsGroupCategoryActive(theActiveUser, group.group)}"
+                                                        @click.stop="onActiveGroupChange(theActiveUser, group.group, getIsGroupCategoryActive(theActiveUser, group.group))">
+                                                    </div>
+                                                    {{group.group}}
+                                                    <div class="o-list-of-roles__acc-chevron"><i
+                                                            class="tio">chevron_down</i></div>
+                                                </th>
+                                                <th v-if="!isProfileClick">Er aktiveret</th>
+                                                <th>Modtag nofikationer</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="role in group.roles" :key="role.group_id">
+                                                <td>{{role.group_name}}</td>
+                                                <td v-if="!isProfileClick">
+                                                    <div class="o-toggle"
+                                                        :class="{'o-toggle--activated': role.active_role=='true'}"
+                                                        @click="onActiveRoleChange(theActiveUser, role.group_id, role.active_role)">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="o-toggle"
+                                                        v-if="role.active_role=='true' && role.group_id_noti.length > 1"
+                                                        :class="{'o-toggle--activated': role.active_role_noti=='true'}"
+                                                        @click="onActiveRoleNotificationsChange(theActiveUser, role.group_id_noti, role.active_role_noti)">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                <li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </transition>
+    </div>
+    <div class="o-footer">
+        <div class="copyright"><span>© 2023<a href="#">OpenNet A/S</a>All Right Reseved</span></div>
+    </div>
+    <div class="vue-modal__overlay" v-if="isVueModalOverlay" @click="closeVueModalOverlay" v-cloak></div>
+    <div class="vue-modal__overlay" style="z-index:31" v-if="isVueModalOverlayExtra" v-cloak></div>
+</div>
+<div class="progress_indicator arrow_large_upward">
+    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"
+            style="transition: stroke-dashoffset 10ms linear 0s; stroke-dasharray: 307.919, 307.919; stroke-dashoffset: 165.132;">
+        </path>
+    </svg>
+</div>
+<div class="o-modal o-modal__create-case js-o-modal__create-case o-create-case">
+    <div class="o-modal__header">
+        <h3 class="js-modal-create-title">Opret sag</h3>
+        <div style="font-size: 2rem;" class="tio clear bg-icon-hover js-close-o-create-case"></div>
+    </div>
+    <div class="o-modal__body">
+        <div class="o-modal__create-case__body js-form-create-case"></div>
+    </div>
+</div>
+<div class="o-modal o-modal--small js-o-modal--small__assign-case">
+    <div class="o-modal__header">
+        <h4 class="js-small-modal-title">Tildel sag</h4>
+        <div class="tio clear bg-icon-hover js-close-modal-small"></div>
+    </div>
+    <div class="o-modal__body js-o-modal-small__inner" style="display: none">
+        <div class="o-select">
+            <div class="o-select__container">
+                <div class="o-select__input__lookalike js-o-select-input-lookalike">
+                    <div class="tio clear_circle js-o-select-search-clear"></div>
+                    <span class="o-select__input__lookalike__selected-item js-o-select-selected-item-name"></span>
+                    <input type="search" class="o-select__input o-search-input" placeholder="Søg efter person">
+                    <div class="tio expand_all"></div>
+                    <input type="text" class="js-o-select-selected-item-id" hidden>
+                </div>
+            </div>
+            <div class="o-select__dropdown">
+                <ul class="o-items js-o-select-items"></ul>
+            </div>
+        </div>
+        <div class="o-modal__case__commentary"><textarea class="o-modal__case__commentary__textarea"
+                placeholder="Skriv kommentar..."></textarea>
+            <div class="o-modal__case__commentary__actions">
+                <div></div>
+                <div>
+                    <button class="o-btn js-click-modal-small-cancel">Annuller</button>
+                    <button class="o-btn o-btn--primary js-case-assign-case-save">Gem</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- START 17-12-23 -->
+<script type="text/x-template" id="o-multi-select-template">
+    <div class="o-multi-select tags-selector">
+        <div class="tags-selector__selected" :class="[{'tags-selector__selected--has-selection ': selected_items.length > 0}, {'tags-selector__selected--active': isOpen}]" @click="setIsOpen(true)">
+            <p>{{ selectTitle }}</p>
+            <i class="tio">chevron_down</i>
+        </div>
+        <div class="tags-selector__bg" @click="onMultiSelectBGClick" v-if="isOpen"></div>
+        <div class="tags-selector__container" v-if="isOpen">
+        <div>
+            <div class="tags-selector__search" :class="{'tags-selector__search--filled': query.length > 0}">
+                <input type="search" placeholder="Søg.." id="o-multi-select_search_input" ref="query_input" v-model="query">
+                <div class="o-search-group__clear" @click="clearQuery" style=""><i class="tio">clear_circle</i></div>
+            </div>
+                <ul class="tags-selector__dropdown">
+                    <li v-for="(item, index) in filteredItems" 
+                    :key="item.value" 
+                    class="tags-selector__tag-item" :class="[{'tags-selector__tag-item--selected': item.v_selected}, {'tags-selector__tag-item__no-tags': item.value === 'v_no_selected'}]"
+                    @click="toggleItem(item)">
+                    <div class="tags-selector__tag-item__icon">
+                    <i class="tio" v-if="item.v_sort">lock</i>
+                    {{ item.label ? item.label : item.value }}
+                    </div>
+                        <div class="tags-selector__tag-item__right">
+                            <i class="tio" v-if="item.v_selected">checkmark_circle_outlined</i>
+                        </div>
+                    </li>
+                    <li class="tag-item__no-match" v-if="filteredItems.length < 1">
+                        Ingen matchende resultater...
+                    </li>
+                </ul>
+        </div>
+    </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="tags-selector-template">
+    <div class="tags-selector" v-cloak>
+        <transition name="modalFadeIn">
+            <div class="o-modal--alwaysactive vue-modal vue-modal--small" v-if="isForgotToSave" >
+                <div class="o-modal__body">
+                    <h4>Vil du gemme dine ændringer?</h4>
+                    <div class="tags-selector__modal__close" @click="isForgotToSave = false">
+                        <div class="tio clear bg-icon-hover"></div>
+                    </div>
+                    <div class="bg_icon">
+                    <div class="o-modal__body__actions">
+                        <button class="o-btn o-btn--small" @click="closeWithoutSaving">
+                            Gem ikke
+                        </button>
+                        <button class="o-btn o-btn--primary o-btn--small" :class="{'o-btn--loading': is_loading_tag_button}"
+                            @click="saveTags">Gem ændringerne
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </transition>
+        <div class="tags-selector__bg" :class="{'tags-selector__bg--dark': isForgotToSave}" @click="onTagsBGClick"></div>
+        <div class="tags-selector__container" id="popperTagsDropdown">
+            <div class="tags-selector__container__header" v-if="selectedTags.length > 0 && theTagsSelectorView === 1">
+                <p @click="removeAllTags" class="tags-selector__container__header__remove-all">Fjern alle valgte</p>
+            </div>
+        <div v-if="theTagsSelectorView === 1">
+            <div class="tags-selector__search">
+            <input type="search" placeholder="Søg.." id="tag_selector_search_input" v-model="tagsSearch">
+            </div>
+            <ul class="tags-selector__dropdown">
+                <li v-for="(tag, index) in filteredTags" 
+                :key="tag.value" 
+                class="tags-selector__tag-item" :class="[{'tags-selector__tag-item--selected': tag.v_selected}, { 'tags-selector__tag-item--highlighted': index === highlightedIndex }]"
+                @click="onSelectTag(tag)">
+                <div class="tags-selector__tag-item__icon">
+                    <i class="tio" v-if="tag.v_sort">lock</i>
+                    <span class="item-tag" :style="{'backgroundColor': tag.color ? tag.color : '#0a37aa'}">{{ tag.value }}</span>
+                    </div>
+                    <div class="tags-selector__tag-item__right">
+                        <i class="tio" v-if="tag.v_selected">checkmark_circle_outlined</i>
+                        <div class="tags-selector__tag-item__edit-bttn" v-if="tag.v_selected" @click.stop="removeTag(tag)"><i class="tio">clear</i></div>
+                        <div class="tags-selector__tag-item__edit-bttn" @click.stop="setTheEditTag(tag)"><i class="tio">edit</i></div>
+                    </div>
+                
+                </li>
+                <li class="tag-item__no-match" v-if="filteredTags.length < 1">
+                    Ingen matchende resultater...
+                </li>
+            </ul>
+            <ul class="tags-selector__dropdow__create">
+                <li class="tags-selector__tag-item" @click="setCreateNewTag">+ Opret nyt</li>
+                <li class="tags-selector__dropdow__create__submit" v-if="isEdited">
+                    <button class="o-btn o-btn--small" @click="onCancelClick">Annuller</button>
+                    <button class="o-btn o-btn--small o-btn--primary" @click="saveTags" :class="{'o-btn--loading': is_loading_tag_button && !isForgotToSave}">Gem</button>
+                </li>
+            </ul>
+        </div>
+        <div class="tags-selector__form" v-else>
+            <div class="tags-selector__form__header">
+                <h4><template v-if="active_tag_type === 'tag'">Nyt tag</template><template v-else>Ny gruppe</template></h4>
+            </div>
+            <div class="tags-selector__form__body">
+                <div class="o-form">
+                    <div class="o-group">
+                        <label>Navn</label>
+                        <input type="text" ref="create_new_tag_input" :class="{'o-input--error': isInputError}" id="create_new_tag_input" @keyup="isInputError = false" v-model="tagFormName"/>
+                        <p class="tag-input-error-text" v-if="isInputError">Eksisterer allerede</p>
+                    </div>
+                    <div class="o-group">
+                        <label>Farve</label>
+                        <ul class="tags-selector__form__colors">
+                            <li 
+                            v-for="color in tagColors" 
+                            class="tags-selector__form__colors__color"
+                            :class="{'tags-selector__form__colors__color--selected': tagFormColor === color}" 
+                            :style="{'backgroundColor': color}"
+                            @click="tagFormColor = color">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="tags-selector__form__footer">
+                <button class="o-btn o-btn--small" @click="setTheTagsSelectorView(1)">Tilbage</button>
+                <div class="tags-selector__form__footer__buttons">
+                    <button class="o-btn o-btn--small o-btn--primary" :class="{'o-btn--loading': is_loading_tag_button}" @click="createAndAddNewTag()">Fortsæt</button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+  </script>
+<!-- END 17-12-23 -->
+
+<!-- SMALL MODAL: CASE CHANGE CATEGORY <div class="o-modal o-modal--small js-o-modal--small__change-category"> <div class="o-modal__header"> <h4 class="js-small-modal-title">Ændre kategori</h4> <div class="tio clear bg-icon-hover js-close-modal-small"></div></div><div class="o-modal__body js-o-modal-small__inner" style="display: none"> <div class="js-o-modal-small__o-case-change-category"> <div class="o-select"> <div class="o-select__container"> <div class="o-select__input__lookalike js-o-select-input-lookalike"> <div class="tio clear_circle js-o-select-search-clear"></div><span class="o-select__input__lookalike__selected-item js-o-select-selected-item-name"></span> <input type="search" class="o-select__input o-search-input" placeholder="Vælg.."> <div class="tio expand_all"></div><input type="text" class="js-o-select-selected-item-id" hidden> </div></div><div class="o-select__dropdown"> <ul class="o-items js-o-select-items"></ul> </div></div><div class="o-modal__case__commentary"> <textarea class="o-modal__case__commentary__textarea" placeholder="Skriv kommentar..."></textarea> <div class="o-modal__case__commentary__actions"> <div></div><div> <button class="o-btn js-click-modal-small-cancel">Annuller</button> <button class="o-btn o-btn--primary js-case-change-category-save">Gem</button> </div></div></div></div></div></div>-->
+<div class="o-modal o-modal--small js-o-modal--small__edit-ref">
+    <div class="o-modal__header">
+        <h4 class="js-small-modal-title">Rediger Intern ref</h4>
+        <div class="tio clear bg-icon-hover js-close-modal-small"></div>
+    </div>
+    <div class="o-modal__body js-o-modal-small__inner" style="display: none">
+        <div class="js-o-modal-small__o-case-edit-ref">
+            <!-- <div class="o-datepicker"> <input class="datetimepicker" type="text"> <input type="datetime-local" class="datetimepicker"> </div>-->
+            <div class="o-modal__case__commentary"><input type="text" class="o-modal__case__commentary__textarea"
+                    placeholder="Skriv intern reference..."></input>
+                <div class="o-modal__case__commentary__actions">
+                    <div></div>
+                    <div>
+                        <button class="o-btn js-click-modal-small-cancel">Annuller</button>
+                        <button class="o-btn o-btn--primary js-case-edit-ref">Gem</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="o-modal o-modal--small js-o-modal--small__create-note">
+    <div class="o-modal__header">
+        <h4 class="js-small-modal-title">Intern note</h4>
+        <div class="tio clear bg-icon-hover js-close-modal-small"></div>
+    </div>
+    <div class="o-modal__body js-o-modal-small__inner" style="display: none">
+        <div class="js-o-modal-small__o-case-create-note">
+            <!-- <div class="o-datepicker"> <input class="datetimepicker" type="text"> <input type="datetime-local" class="datetimepicker"> </div>-->
+            <div class="o-modal__case__commentary"><textarea class="o-modal__case__commentary__textarea"
+                    placeholder="Skriv kommentar..."></textarea>
+                <div class="o-modal__case__commentary__actions">
+                    <div></div>
+                    <div>
+                        <button class="o-btn js-click-modal-small-cancel">Annuller</button>
+                        <button class="o-btn o-btn--primary js-case-create-note">Gem</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="o-modal o-modal--small js-o-modal--small__follow-up">
+    <div class="o-modal__header">
+        <h4 class="js-small-modal-title">Opfølgning</h4>
+        <div class="tio clear bg-icon-hover js-close-modal-small"></div>
+    </div>
+    <div class="o-modal__body js-o-modal-small__inner" style="display: none">
+        <div class="js-o-modal-small__o-case-follow-up">
+            <div class="o-datepicker"><input class="datetimepicker" type="text"></div>
+            <div class="o-modal__case__commentary"><textarea class="o-modal__case__commentary__textarea"
+                    placeholder="Skriv kommentar..."></textarea>
+                <div class="o-modal__case__commentary__actions">
+                    <div></div>
+                    <div>
+                        <button class="o-btn js-click-modal-small-cancel">Annuller</button>
+                        <button class="o-btn o-btn--primary js-case-save-follow-up">Gem</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="o-modal o-modal__case js-modal__single-case">
+    <div class="o-modal__header">
+        <h4 class="js-modal__single-case__title"></h4>
+        <div class="tio clear bg-icon-hover js-close-modal"></div>
+    </div>
+    <div class="o-modal__body o-modal__body--loading">
+        <div class="js-case-insert o-wrapper"></div>
+        <div class="o-modal__case o-modal__case__spinner o-wrapper">
+            <div class="o-spinner"></div>
+        </div>
+        <div class="o-modal__case o-wrapper">
+            <ul class="o-modal__case__actions js-o-modal__case__actions">
+                <li class="o-btn js-case-save-close"><i class="tio">archive</i> Luk sag</li>
+                <li class="o-btn js-case-save-reopen display_none"><i class="tio">restore</i> Genåben</li>
+                <li class="o-btn js-case-click-assign-case"><i class="tio">user_add</i> Tildel sag</li>
+                <li class="o-btn js-click-case-follow-up"><i class="tio">appointment</i> Opfølgning</li>
+                <li class="o-btn js-click-case-create-note"><i class="tio">edit</i> Intern note</li>
+                <li class="o-btn js-click-case-edit-ref hidden_field"><i class="tio">edit</i> Rediger Intern ref
+                </li>
+                <li class="o-btn js-follow-case"><i class="tio js-follow-case__follow">notifications_off</i> <i
+                        class="tio js-follow-case__following">notifications</i> <span
+                        class="js-follow-case__follow">Følger ikke</span>
+                    <span class="js-follow-case__following">Følger</span>
+                </li>
+            </ul>
+            <div class="o-modal__case__commentary js-o-modal__case__commentary">
+                <div class="textarea-container js-case-drop-files">
+                    <div class="textarea-container__upload-area"><i class="tio">upload_on_cloud</i>
+                        <h4>Drop filer her
+                            for at uploade</h4>
+                    </div>
+                    <textarea class="o-modal__case__commentary__textarea comment_field"
+                        placeholder="Skriv kommentar..."></textarea>
+                </div>
+                <div class="js-case__comment-files-listed"></div>
+                <div class="o-modal__case__commentary__actions">
+                    <button class="o-btn o-btn--small js-case-click-add-file">Vedhæft fil</button>
+                    <button class="o-btn o-btn--primary js-case__save-commentary">Gem kommentar</button>
+                </div>
+            </div>
+            <div class="o-modal__case__timeline__header">
+                <h4>Historik</h4>
+                <div class="toggle-timeline-read-msg hidden_field"><label
+                        for="js-checkbox__toogle-timeline_read_msg">Vis
+                        åbningshistorik</label> <input type="checkbox" id="js-checkbox__toogle-timeline_read_msg" />
+                </div>
+            </div>
+            <div class="o-modal__case__timeline">
+                <div class="js-o-modal__case__timeline"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="o-bg-overlay js-click-on-overlay"></div>
+<div class="o-bg-small-modal-overlay js-click-small-modal-overlay"></div>
+</div>
+<div class="temp_field hidden_field">
+    <div class="v_list_of_cases"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
