@@ -2427,17 +2427,33 @@ $(document).one("trigger::vue_loaded", function () {
 						console.log('Inspari_iframeChanged event received', event.data);
 						// Handling Inspari_iframeChanged event to adjust iframe size
 					        var iframe = document.querySelector('.o-iframe-container');
-					        iframe.style.height = event.data.iframeHeight+10 + 'px';
-					        iframe.style.width = 100 + 'vw'
-
+						if (current_iframeHeight !=  event.data.iframeHeight)
+							{
+							iframe.style.height = event.data.iframeHeight+10 + 'px';
+							console.log('New iframe height',event.data.iframeHeight);
+							}
+						if (current_iframeWidth !=  event.data.iframeWidth)
+							{
+							iframe.style.width = event.data.iframeWidth + 'px';
+							console.log('New iframe width',event.data.iframeWidth);
+							}						
 						
 					}
+
 					if (event.data.event === 'Inspari_iframeLoaded') {
 						self.isLoadingTheOpenAnalyticsIframe = false
 						console.log('Inspari_iframeLoaded event received', event.data);
 						var iframe = document.querySelector('.o-iframe-container');
-					        iframe.style.height = event.data.iframeHeight+10 + 'px';
-					        iframe.style.width = 100 + 'vw'
+						if (current_iframeHeight !=  event.data.iframeHeight)
+							{
+							iframe.style.height = event.data.iframeHeight+10 + 'px';
+							console.log('New iframe height',event.data.iframeHeight);
+							}
+						if (current_iframeWidth !=  event.data.iframeWidth)
+							{
+							iframe.style.width = event.data.iframeWidth + 'px';
+							console.log('New iframe width',event.data.iframeWidth);
+							}	
 					}
 				};
 
@@ -3786,6 +3802,8 @@ var $form = $(".js-case-drop-files");
 var droppedFiles = !1;
 var Set_UM_USER_INIT = !0;
 var openAnalyticsSecret = 'your_secret_value_here_global';
+var current_iframeHeight = 10;
+var current_iframeWidth = 10;	
 console.log(openAnalyticsSecret)
 // Variables - START //
 
