@@ -644,13 +644,12 @@
                             </div>
                         </template>
                     </div>
-                    <div v-if="activeCategory === 'OpenAnalytics'">
-                        <div v-if="theActiveFilter === '' || theActiveFilter === 'OpenAnalytics_tab0'" class="OpenAnalytics_tab0">
-                            <h1>Velkommen til OpenAnalytics</h1>
-                            <h4>Vælg et filter i toppen</h4>
-                            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-                        </div>
-                        <template v-if="theActiveFilter === 'OpenAnalytics_tab1' || theActiveFilter === 'OpenAnalytics_tab2'">
+                    <div v-if="activeCategory === 'OpenAnalytics' && (theActiveFilter === '' || theActiveFilter === 'OpenAnalytics_tab0')" class="OpenAnalytics_tab_content">
+                        <h1>Velkommen til OpenAnalytics</h1>
+                        <h4>Vælg et filter i toppen</h4>
+                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                    </div>
+                    <div v-if="activeCategory === 'OpenAnalytics' && (theActiveFilter === 'OpenAnalytics_tab1' || theActiveFilter === 'OpenAnalytics_tab2')" class="OpenAnalytics_tab_content OpenAnalytics_tab_iframe ">
                             <div class="o-iframe-container"
                                  v-if="theActiveFilter === 'OpenAnalytics_tab1' || theActiveFilter === 'OpenAnalytics_tab2'">
                                 <transition name="fadeOut">
@@ -660,8 +659,8 @@
                                 </transition>
                                 <iframe ref="openAnalyticsIframe" :src="theOpenAnalyticsIframeUrl"></iframe>
                             </div>
-                    </template>
-                </div>
+                        
+                    </div>
                     <h4 class=" text-explainer"
                         v-if="activeCategory !=='OpenAnalytics' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && !isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter !=='dynamic'"
                         v-cloak> Ingen dokumenter matcher din søgning (1) {{ activeCategory }}
