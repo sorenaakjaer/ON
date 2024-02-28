@@ -10346,6 +10346,8 @@ ul.tags-selector__dropdow__create {
     right: 0;
     background: #eee;
     z-index: 123;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
 .o-iframe-container iframe {
