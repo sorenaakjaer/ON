@@ -2425,10 +2425,19 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 					if (event.data.event === 'Inspari_iframeChanged') {
 						console.log('Inspari_iframeChanged event received', event.data);
+						// Handling Inspari_iframeChanged event to adjust iframe size
+					        var iframe = document.querySelector('.o-iframe-container');
+					        iframe.style.height = data.iframeHeight + 'px';
+					        iframe.style.width = data.iframeWidth + 'px';
+
+						
 					}
 					if (event.data.event === 'Inspari_iframeLoaded') {
 						self.isLoadingTheOpenAnalyticsIframe = false
 						console.log('Inspari_iframeLoaded event received', event.data);
+						var iframe = document.querySelector('.o-iframe-container');
+					        iframe.style.height = data.iframeHeight + 'px';
+					        iframe.style.width = data.iframeWidth + 'px';
 					}
 				};
 
