@@ -2435,14 +2435,6 @@ $(document).one("trigger::vue_loaded", function () {
 							console.log('New iframe height',event.data.iframeHeight);
 							current_iframeHeight = event.data.iframeHeight;								
 							}
-						if (current_iframeWidth !=  event.data.iframeWidth)
-							{
-							console.log('Current iframe width',current_iframeHeight);
-							iframe.style.width = event.data.iframeWidth + 'px';
-							console.log('New iframe width',event.data.iframeWidth);
-							current_iframeWidth = event.data.iframeWidth;
-							}						
-						
 					}
 
 					if (event.data.event === 'Inspari_iframeLoaded') {
@@ -2456,13 +2448,6 @@ $(document).one("trigger::vue_loaded", function () {
 							console.log('New iframe height',event.data.iframeHeight);
 							current_iframeHeight = event.data.iframeHeight;								
 							}
-						if (current_iframeWidth !=  event.data.iframeWidth)
-							{
-							console.log('Current iframe height',current_iframeHeight);
-							iframe.style.width = event.data.iframeWidth + 'px';
-							console.log('New iframe width',event.data.iframeWidth);
-							current_iframeWidth = event.data.iframeWidth;
-							}	
 					}
 				};
 
