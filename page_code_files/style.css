@@ -10339,7 +10339,7 @@ ul.tags-selector__dropdow__create {
 }
 
 .o-iframe-container {
-    position: absolute;
+    /*position: absolute;*/
     top: 0;
     bottom: 0;
     left: 0;
