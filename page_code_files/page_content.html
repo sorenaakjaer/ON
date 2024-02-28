@@ -363,7 +363,7 @@
                                     @toggle_item="toggleFilterStatus" select_title="Vælg status"
                                     :i18n="statusI18N"></o-multi-select>
                             </div>
-                            <div class="o-body__list-of-cases__right" v-if="activeCategory !=='OpenAnalytics">
+                            <div class="o-body__list-of-cases__right" v-if="activeCategory !=='OpenAnalytics'">
                                 <div class="o-sort-setting o-dropdown vue-dropdown hint--left vue2-remove-all-filter-icon"
                                     aria-label="Fjern alle filtre" @click.prevent="removeAllFilters"
                                     v-if="isAnyFiltersActive">
