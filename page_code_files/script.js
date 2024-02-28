@@ -2427,15 +2427,20 @@ $(document).one("trigger::vue_loaded", function () {
 						console.log('Inspari_iframeChanged event received', event.data);
 						// Handling Inspari_iframeChanged event to adjust iframe size
 					        var iframe = document.querySelector('.o-iframe-container');
+						
 						if (current_iframeHeight !=  event.data.iframeHeight)
 							{
-							iframe.style.height = event.data.iframeHeight+10 + 'px';
+							console.log('Current iframe height',current_iframeHeight);
+								iframe.style.height = event.data.iframeHeight + 'px';
 							console.log('New iframe height',event.data.iframeHeight);
+							current_iframeHeight = event.data.iframeHeight;								
 							}
 						if (current_iframeWidth !=  event.data.iframeWidth)
 							{
+							console.log('Current iframe height',current_iframeHeight);
 							iframe.style.width = event.data.iframeWidth + 'px';
 							console.log('New iframe width',event.data.iframeWidth);
+							current_iframeWidth = event.data.iframeWidth;
 							}						
 						
 					}
@@ -2446,13 +2451,17 @@ $(document).one("trigger::vue_loaded", function () {
 						var iframe = document.querySelector('.o-iframe-container');
 						if (current_iframeHeight !=  event.data.iframeHeight)
 							{
-							iframe.style.height = event.data.iframeHeight+10 + 'px';
+							console.log('Current iframe height',current_iframeHeight);
+								iframe.style.height = event.data.iframeHeight + 'px';
 							console.log('New iframe height',event.data.iframeHeight);
+							current_iframeHeight = event.data.iframeHeight;								
 							}
 						if (current_iframeWidth !=  event.data.iframeWidth)
 							{
+							console.log('Current iframe height',current_iframeHeight);
 							iframe.style.width = event.data.iframeWidth + 'px';
 							console.log('New iframe width',event.data.iframeWidth);
+							current_iframeWidth = event.data.iframeWidth;
 							}	
 					}
 				};
