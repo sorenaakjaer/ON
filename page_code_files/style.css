@@ -10339,15 +10339,14 @@ ul.tags-selector__dropdow__create {
 }
 
 .o-iframe-container {
-    /*position: absolute;*/
+    position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
     background: #eee;
     z-index: 123;
-    padding-left: 30px;
-    padding-right: 30px;
+
 }
 
 .o-iframe-container iframe {
