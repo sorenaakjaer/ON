@@ -5865,3 +5865,7 @@ ul.tags-selector__dropdow__create {
         border-width: 1px;
     }
 }
+
+p {
+    word-break: normal !important;
+}
