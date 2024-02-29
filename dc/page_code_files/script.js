@@ -89,7 +89,7 @@ $(document).one("trigger::vue_loaded", function () {
 		computed: {
 			ticketsVProps() {
 				const valuesToShow = ['creationDate',
-					'lastUpdated',
+					'address',					
 					'source',
 					'classification',
 					'severity',
@@ -113,7 +113,6 @@ $(document).one("trigger::vue_loaded", function () {
 					'description',
 					'serviceSubscriptionId',
 					'serviceStatus',
-					'address',
 					'last_dc_note'
 				];
 				return this.tickets.map(ticket => {
