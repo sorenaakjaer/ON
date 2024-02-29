@@ -733,8 +733,8 @@ $(document).one("trigger::vue_loaded", function () {
 
 				const myHeaders = new Headers();
 				myHeaders.append("Accept", "application/json");
-				myHeaders.append("PP_USER_KEY", this.userKey);
-
+				//myHeaders.append("PP_USER_KEY", this.userKey);
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
 				const requestOptions = {
 					method: "GET",
 					headers: myHeaders,
