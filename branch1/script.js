@@ -740,7 +740,7 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: "follow"
 				};
-
+				console.log('requestOptions',requestOptions);
 				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg?area=OperationsStatus", requestOptions)
 					.then(response => {
 						if (!response.ok) {
