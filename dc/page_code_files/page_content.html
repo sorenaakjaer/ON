@@ -340,8 +340,8 @@
                         <div class="o-page__search">
                             <div v-if="!isLoadingTickets && savedSearchQuery">
                                 <label class="o-label marg-05-bottom">{{ tickets.length }}
-                                    relatede
-                                    sager til '{{
+                                    relaterede 
+                                    sager til søgning på: '{{
                                     savedSearchQuery }}'</label>
                                 <o-tickets :tickets="tickets" :saving_states="savingStates" :i18n="i18n"
                                     @save_note="saveNote"></o-tickets>
@@ -405,7 +405,7 @@
             v-for="ticket in filteredTickets">
             <div class="o-card__header">
                 <h4>Trouble ticket id: {{ ticket.ticketId }} </h4>
-                <label class="o-label">Senest opdateret: {{ ticket.v_lastUpdated }}</label>
+                <label class="o-label">Senest opdateret i kildesystem: {{ ticket.v_lastUpdated }}</label>
             </div>
             <table class="o-table" v-if="tickets.length > 0">
                 <tbody>
