@@ -24,7 +24,6 @@ $(document).one("TRIGGER_AFTER_LOGIN", function () {
 	}
 
 
-
 })
 // TRIGGER TRIGGER_AFTER_LOGIN - END //
 
@@ -1284,10 +1283,10 @@ $(document).one("trigger::vue_loaded", function () {
 
 				// Filter reports by the active category
 				let filteredReports = this.PBIReportsData.filter(report => report.area === this.activeCategory);
-				console.log('filteredReports',filteredReports);
+				console.log('filteredReports', filteredReports);
 				// Find the index of the report with the display name "Vælg"
 				let indexOfValg = filteredReports.findIndex(report => report && report.reportDisplayName === "Vælg");
-				console.log('indexOfValg',indexOfValg);
+				console.log('indexOfValg', indexOfValg);
 				// If there are reports and "Vælg" is not found, add a placeholder to the beginning
 				if (filteredReports.length > 0 && indexOfValg < 0) {
 					console.log('run_unshift');
@@ -1296,7 +1295,7 @@ $(document).one("trigger::vue_loaded", function () {
 						reportId: "placeholderDropdown"
 					});
 				}
-				console.log('filteredReports',filteredReports)
+				console.log('filteredReports', filteredReports)
 				return filteredReports;
 			},
 			theSortSetting() {
@@ -2260,13 +2259,12 @@ $(document).one("trigger::vue_loaded", function () {
 					window.scroll(0, 0)
 
 					if (e == "OpenAnalytics") {
-					$(".o-wrapper").addClass("OpenAnalytics_full_width")
+						$(".o-wrapper").addClass("OpenAnalytics_full_width")
 					}
-					else
-					{
-					$(".o-wrapper").removeClass("OpenAnalytics_full_width")						
+					else {
+						$(".o-wrapper").removeClass("OpenAnalytics_full_width")
 					}
-					
+
 					$('ul.o-menu__items__inner > li[class^="js-"]').each(function () {
 						$(this).removeClass("li--active")
 					})
@@ -2366,7 +2364,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.theActiveFilter = event;
 				this.clearSearchQuery();
 				this.theUnreadSelected = "Alle";
-				
+
 				// Set the active type to null
 				this.activeType = null;
 				$(".vue-filter-2").each(function () {
@@ -2379,7 +2377,7 @@ $(document).one("trigger::vue_loaded", function () {
 				//	this.theUnreadSelected = "Vælg";
 				//}
 				if (this.activeCategory !== 'OpenAnalytics') {
-					
+
 					return
 				}
 				// For OpenAnalytics
@@ -2426,28 +2424,26 @@ $(document).one("trigger::vue_loaded", function () {
 					if (event.data.event === 'Inspari_iframeChanged') {
 						console.log('Inspari_iframeChanged event received', event.data);
 						// Handling Inspari_iframeChanged event to adjust iframe size
-					        var iframe = document.querySelector('.o-iframe-container');
-						
-						if (current_iframeHeight !=  event.data.iframeHeight)
-							{
-							console.log('Current iframe height',current_iframeHeight);
-								iframe.style.height = event.data.iframeHeight + 'px';
-							console.log('New iframe height',event.data.iframeHeight);
-							current_iframeHeight = event.data.iframeHeight;								
-							}
+						var iframe = document.querySelector('.o-iframe-container');
+
+						if (current_iframeHeight != event.data.iframeHeight) {
+							console.log('Current iframe height', current_iframeHeight);
+							iframe.style.height = event.data.iframeHeight + 'px';
+							console.log('New iframe height', event.data.iframeHeight);
+							current_iframeHeight = event.data.iframeHeight;
+						}
 					}
 
 					if (event.data.event === 'Inspari_iframeLoaded') {
 						self.isLoadingTheOpenAnalyticsIframe = false
 						console.log('Inspari_iframeLoaded event received', event.data);
 						var iframe = document.querySelector('.o-iframe-container');
-						if (current_iframeHeight !=  event.data.iframeHeight)
-							{
-							console.log('Current iframe height',current_iframeHeight);
-								iframe.style.height = event.data.iframeHeight + 'px';
-							console.log('New iframe height',event.data.iframeHeight);
-							current_iframeHeight = event.data.iframeHeight;								
-							}
+						if (current_iframeHeight != event.data.iframeHeight) {
+							console.log('Current iframe height', current_iframeHeight);
+							iframe.style.height = event.data.iframeHeight + 'px';
+							console.log('New iframe height', event.data.iframeHeight);
+							current_iframeHeight = event.data.iframeHeight;
+						}
 					}
 				};
 
@@ -3620,10 +3616,10 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 					if (urlParams.tab === 'hentfiler') {
 						this.setTheActiveFilter('OpenAnalytics_tab1')
-					}					
+					}
 
 
-					
+
 				}
 				$(document).trigger("trigger::vue_mounted")
 				const el = $('.updTagOrGroup_Output_mvp_groups > div')
@@ -3797,7 +3793,7 @@ var droppedFiles = !1;
 var Set_UM_USER_INIT = !0;
 var openAnalyticsSecret = 'your_secret_value_here_global';
 var current_iframeHeight = 10;
-var current_iframeWidth = 10;	
+var current_iframeWidth = 10;
 console.log(openAnalyticsSecret)
 // Variables - START //
 
