@@ -729,30 +729,33 @@ $(document).one("trigger::vue_loaded", function () {
 				}, 600)
 			},
 			getAnnouncements() {
-				this.isLoadingAnnouncements = true
+				this.isLoadingAnnouncements = true;
+
 				const myHeaders = new Headers();
 				myHeaders.append("Accept", "application/json");
+				myHeaders.append("PP_USER_KEY", this.userKey);
 
 				const requestOptions = {
 					method: "GET",
 					headers: myHeaders,
 					redirect: "follow"
 				};
-				fetch("https://test-portal.opennet.dk/ppServices/api/extMsg?area=OperationsStatus", requestOptions)
+
+				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg?area=OperationsStatus", requestOptions)
 					.then(response => {
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
-						return response.json(); // Assuming the server responds with JSON
+						return response.json(); // Assuming the response is JSON formatted
 					})
 					.then(result => {
-						this.announcements = result; // Update 'announcements' with the fetched data
+						this.announcements = result; // Assign the fetched data to the component's data property
 					})
 					.catch(error => {
 						console.error('Error:', error);
 					})
 					.finally(() => {
-						this.isLoadingAnnouncements = false; // Ensure isLoadingAnnouncements is set to false in both success and failure cases
+						this.isLoadingAnnouncements = false; // Ensure loading state is managed correctly
 					});
 			},
 			setIsCreateAnnouncementModal(bool) {
@@ -928,7 +931,7 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: 'follow'
 				};
-				fetch("https://test-portal.opennet.dk/ppServices/api/extMsg/mastertemplate", requestOptions)
+				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate", requestOptions)
 					.then(response => {
 						console.log({ response })
 						if (!response.ok) {
