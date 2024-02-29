@@ -485,6 +485,17 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: 'follow'
 				};
+				
+				// Function to convert dd-mm-yyyy hh24:mi to a Date object
+				function parseDateString(dateString) {
+				    const parts = dateString.split(' ');
+				    const dateParts = parts[0].split('-');
+				    const timeParts = parts[1].split(':');
+				
+				    // Note: month is 0-based, hence -1
+				    return new Date(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0], timeParts[1]);
+				}
+								
 				//console.log('Fetching ticket details from API for days-filter:', this.theSelectedFilter, 'with user key:', this.userKey);
 				fetch('https://dev-portal.opennet.dk/ppServices/api/dc/getticketsbasedonnotes/' + this.theSelectedFilter, requestOptions)
 					.then(response => {
@@ -500,8 +511,8 @@ $(document).one("trigger::vue_loaded", function () {
 					        // Assuming result is the array of tickets and each ticket has a last_dc_note property
 					        const sortedTickets = result.sort((a, b) => {
 					            // Convert last_dc_note to Date objects for comparison
-					            const dateA = new Date(a.last_dc_note);
-					            const dateB = new Date(b.last_dc_note);
+					             const dateA = parseDateString(a.last_dc_note);
+            					     const dateB = parseDateString(b.last_dc_note);
 					            return dateB - dateA; // Sort in descending order
 					        });
 					        this.earlierTickets = sortedTickets;
