@@ -140,7 +140,7 @@ $(document).one("trigger::vue_loaded", function () {
 							.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)) // Sort notes by timestamp, newest first
 							.map(note => ({
 								...note,
-								v_timestamp: note.timestamp)
+								v_timestamp: note.timestamp
 							})) : []
 					};
 				});
