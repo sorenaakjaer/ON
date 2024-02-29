@@ -754,42 +754,41 @@ $(document).one("trigger::vue_loaded", function () {
 					.finally(() => {
 						this.isLoadingAnnouncements = false; // Ensure isLoadingAnnouncements is set to false in both success and failure cases
 					});
+			},
+			setIsCreateAnnouncementModal(bool) {
+				if (bool) {
+					this.isCreateAnnouncementModal = true
+					addPurifyFromCDN()
+				} else {
+					this.isCreateAnnouncementModal = false
+				}
+			},
+			setIsCreateNewMaster(bool) {
+				if (bool) {
+					this.isNewMasterModal = true
+				} else {
+					this.isNewMasterModal = false
+				}
 			}
 		},
-		setIsCreateAnnouncementModal(bool) {
-			if (bool) {
-				this.isCreateAnnouncementModal = true
-				addPurifyFromCDN()
-			} else {
-				this.isCreateAnnouncementModal = false
-			}
-		},
-		setIsCreateNewMaster(bool) {
-			if (bool) {
-				this.isNewMasterModal = true
-			} else {
-				this.isNewMasterModal = false
-			}
-		}
-	},
 		mounted() {
-		this.getAnnouncements()
-	}
-	})
-Vue.component('o-announcements-modal', {
-	template: '#o-announcements-modal-form-template',
-	props: {
-		formType: {
-			default: 'announcement' // 'master', 'announcement'
-		},
-		formTitle: {
-			default: 'Create announcement'
+			this.getAnnouncements()
 		}
-	},
-	data() {
-		return {
-			newMasterHTML:
-				`<!DOCTYPE html>
+	})
+	Vue.component('o-announcements-modal', {
+		template: '#o-announcements-modal-form-template',
+		props: {
+			formType: {
+				default: 'announcement' // 'master', 'announcement'
+			},
+			formTitle: {
+				default: 'Create announcement'
+			}
+		},
+		data() {
+			return {
+				newMasterHTML:
+					`<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
@@ -843,3164 +842,3209 @@ Vue.component('o-announcements-modal', {
 	</table>
 	</body>
 	</html>`,
-			newMasterTitle: '',
-			newMasterArea: 'operations',
-			isSubmitting: false,
-			isGetUpdateNotifikation: false,
-			isServiceWindow: false,
-			selectedFiles: [],
-			isAttachFiles: false,
-			isSendNotifications: false,
-			theSelectedStatus: 1,
-			theEmailDateStart: new Date().toISOString().slice(0, 10),
-			theEmailSubject: '',
-			theFrom: '',
-			theSelectedTypeId: 'Incident Prod',
-			theSelectedMasterTemplateId: null,
-			masterTemplates: [],
-			types: [{ id: 'Incident Prod', title: 'Incident Prod' }, { id: 2, title: 'Type 2' }],
-			statuses: [
-				{ id: 'new', title: 'New' },
-				{ id: 'Under Investigation ', title: 'Under Investigation' },
-				{ id: 'Work-a-round implemented ', title: 'Work-a-round implemented ' },
-				{ id: 'Pending release', title: 'Pending release' },
-				{ id: 'Resolved', title: 'Resolved' },
-				{ id: 'Rejected', title: 'Rejected' },
-				{ id: 'Closed', title: 'Closed' }
-			],
-			updateIntervals: [
-				{ id: '15min', title: '15min' },
-				{ id: '30min', title: '30min' },
-				{ id: '1time', title: '1 time' },
-				{ id: '3time', title: '3 time' },
-				{ id: '6time', title: '6 time' },
-				{ id: '12time', title: '12 time' },
-				{ id: '24time', title: '24 time' },
-				{ id: '3dage', title: '3 dage' },
-				{ id: '7dage', title: '7 dage' },
-				{ id: '30dage', title: '30 dage' },
-				{ id: '90dage', title: '90 dage' }
-			],
-			receivers: [
-				{ id: 'SP01', name: 'SP01' },
-				{ id: 'SP02', name: 'SP02' },
-				{ id: 'SP03', name: 'SP03' },
-				{ id: 'IO01', name: 'IO01' },
-				{ id: 'IO02', name: 'IO02' },
-				{ id: 'IO03', name: 'IO03' }
-			],
-			selectedReceivers: {}
-		}
-	},
-	computed: {
-		isAllReceiversSelected() {
-			return this.receivers.every(receiver => this.selectedReceivers[receiver.id]);
-		},
-		oPlaceholders() {
-			return [{ id: 1, title: 'Placeholder Y1' }, { id: 2, title: 'Placeholder Y2' }]
-		},
-		formTypeIsMaster() {
-			return this.formType === 'master'
-		},
-		newMasterHTMLSanitized() {
-			return window.DOMPurify.sanitize(this.newMasterHTML)
-		},
-		iframeContent() {
-			const combinedContent = `${this.newMasterHTMLSanitized}`;
-			return combinedContent
-		},
-		userKey() {
-			return eTrayWebportal && eTrayWebportal.User.Key ? eTrayWebportal.User.Key : null
-		}
-	},
-	methods: {
-		fetchMasterTemplates() {
-			if (typeof ISLOCALHOST !== 'undefined') {
-				this.masterTemplates = MASTERTEMPLATES
-				console.log({ MASTERTEMPLATES })
-				return
+				newMasterTitle: '',
+				newMasterArea: 'operations',
+				isSubmitting: false,
+				isGetUpdateNotifikation: false,
+				isServiceWindow: false,
+				selectedFiles: [],
+				isAttachFiles: false,
+				isSendNotifications: false,
+				theSelectedStatus: 1,
+				theEmailDateStart: new Date().toISOString().slice(0, 10),
+				theEmailSubject: '',
+				theFrom: '',
+				theSelectedTypeId: 'Incident Prod',
+				theSelectedMasterTemplateId: null,
+				masterTemplates: [],
+				types: [{ id: 'Incident Prod', title: 'Incident Prod' }, { id: 2, title: 'Type 2' }],
+				statuses: [
+					{ id: 'new', title: 'New' },
+					{ id: 'Under Investigation ', title: 'Under Investigation' },
+					{ id: 'Work-a-round implemented ', title: 'Work-a-round implemented ' },
+					{ id: 'Pending release', title: 'Pending release' },
+					{ id: 'Resolved', title: 'Resolved' },
+					{ id: 'Rejected', title: 'Rejected' },
+					{ id: 'Closed', title: 'Closed' }
+				],
+				updateIntervals: [
+					{ id: '15min', title: '15min' },
+					{ id: '30min', title: '30min' },
+					{ id: '1time', title: '1 time' },
+					{ id: '3time', title: '3 time' },
+					{ id: '6time', title: '6 time' },
+					{ id: '12time', title: '12 time' },
+					{ id: '24time', title: '24 time' },
+					{ id: '3dage', title: '3 dage' },
+					{ id: '7dage', title: '7 dage' },
+					{ id: '30dage', title: '30 dage' },
+					{ id: '90dage', title: '90 dage' }
+				],
+				receivers: [
+					{ id: 'SP01', name: 'SP01' },
+					{ id: 'SP02', name: 'SP02' },
+					{ id: 'SP03', name: 'SP03' },
+					{ id: 'IO01', name: 'IO01' },
+					{ id: 'IO02', name: 'IO02' },
+					{ id: 'IO03', name: 'IO03' }
+				],
+				selectedReceivers: {}
 			}
-			var myHeaders = new Headers();
-			myHeaders.append("PP_USER_KEY", this.userKey);
-			myHeaders.append("Accept", "application/json");
+		},
+		computed: {
+			isAllReceiversSelected() {
+				return this.receivers.every(receiver => this.selectedReceivers[receiver.id]);
+			},
+			oPlaceholders() {
+				return [{ id: 1, title: 'Placeholder Y1' }, { id: 2, title: 'Placeholder Y2' }]
+			},
+			formTypeIsMaster() {
+				return this.formType === 'master'
+			},
+			newMasterHTMLSanitized() {
+				return window.DOMPurify.sanitize(this.newMasterHTML)
+			},
+			iframeContent() {
+				const combinedContent = `${this.newMasterHTMLSanitized}`;
+				return combinedContent
+			},
+			userKey() {
+				return eTrayWebportal && eTrayWebportal.User.Key ? eTrayWebportal.User.Key : null
+			}
+		},
+		methods: {
+			fetchMasterTemplates() {
+				if (typeof ISLOCALHOST !== 'undefined') {
+					this.masterTemplates = MASTERTEMPLATES
+					console.log({ MASTERTEMPLATES })
+					return
+				}
+				var myHeaders = new Headers();
+				myHeaders.append("PP_USER_KEY", this.userKey);
+				myHeaders.append("Accept", "application/json");
 
-			var requestOptions = {
-				method: 'GET',
-				headers: myHeaders,
-				redirect: 'follow'
-			};
-			fetch("https://test-portal.opennet.dk/ppServices/api/extMsg/mastertemplate", requestOptions)
-				.then(response => {
-					console.log({ response })
-					if (!response.ok) {
-						throw new Error('Network response was not ok');
+				var requestOptions = {
+					method: 'GET',
+					headers: myHeaders,
+					redirect: 'follow'
+				};
+				fetch("https://test-portal.opennet.dk/ppServices/api/extMsg/mastertemplate", requestOptions)
+					.then(response => {
+						console.log({ response })
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(result => {
+						this.MASTERTEMPLATES = result;
+					})
+					.catch(error => {
+						console.error('Error fetching master templates data:', error);
+					})
+					.finally(() => {
+						this.isLoadingI18N = false;
+					});
+			},
+			onSubmit() {
+				this.isSubmitting = true
+				if (this.formTypeIsMaster) {
+					const obj = {
+						name: this.newMasterTitle,
+						company_display: this.theFrom,
+						subject: this.theEmailSubject,
+						area: this.newMasterArea,
+						type: this.theSelectedTypeId,
+						receivers: Object.keys(this.selectedReceivers).map(key => key),
+						send_notifications: this.isSendNotifications,
+						attachments: null,
+						html: this.newMasterHTMLSanitized
 					}
-					return response.json();
-				})
-				.then(result => {
-					this.MASTERTEMPLATES = result;
-				})
-				.catch(error => {
-					console.error('Error fetching master templates data:', error);
-				})
-				.finally(() => {
-					this.isLoadingI18N = false;
-				});
-		},
-		onSubmit() {
-			this.isSubmitting = true
-			if (this.formTypeIsMaster) {
-				const obj = {
-					name: this.newMasterTitle,
-					company_display: this.theFrom,
-					subject: this.theEmailSubject,
-					area: this.newMasterArea,
-					type: this.theSelectedTypeId,
-					receivers: Object.keys(this.selectedReceivers).map(key => key),
-					send_notifications: this.isSendNotifications,
-					attachments: null,
-					html: this.newMasterHTMLSanitized
+					console.log('newMasterObj', obj)
 				}
-				console.log('newMasterObj', obj)
-			}
-			setTimeout(_ => {
-				this.isSubmitting = false
-				this.setIsCreateModal(false)
-			}, 1500)
-		},
-		toggleAllReceivers() {
-			const allSelected = this.isAllReceiversSelected;
-
-			this.receivers.forEach(receiver => {
-				this.$set(this.selectedReceivers, receiver.id, !allSelected)
-			});
-		},
-		setSelectedReceiver(receiverId) {
-			if (this.selectedReceivers[receiverId]) {
-				this.$delete(this.selectedReceivers, receiverId)
-			} else {
-				this.$set(this.selectedReceivers, receiverId, true)
-			}
-		},
-		getIsReceiverSelected(receiverId) {
-			return this.selectedReceivers[receiverId]
-		},
-		handleFileUpload(event) {
-			this.selectedFiles = event.target.files;
-		},
-		setMasterTempalte(masterTemplateId) {
-			console.log('on:setMasterTempalte')
-		},
-		setTheSelectedType() {
-			console.log('on:setTheSelectedType')
-		},
-		setIsCreateNewMaster(bool) {
-			this.$emit('openNewMasterModal')
-		},
-		setIsCreateModal(bool) {
-			if (!bool) {
-				this.$emit('close')
-			}
-		}
-	},
-	mounted() {
-		if (!this.formTypeIsMaster) {
-			this.fetchMasterTemplates()
-		}
-		if (this.formTypeIsMaster) {
-			this.$nextTick(_ => {
-				this.$refs.new_template_title_input.focus()
-			})
-		}
-	}
-})
-/* START 17-12-23 */
-Vue.component('o-multi-select', {
-	template: '#o-multi-select-template',
-	props: {
-		select_title: {
-			type: String,
-			default: 'Vælg..'
-		},
-		items: {
-			type: Array,
-			default: () => []
-		},
-		selected_items: {
-			type: Array,
-			default: () => []
-		},
-		i18n: {
-			type: Object,
-			default: () => null
-		}
-	},
-	data() {
-		return {
-			query: '',
-			isOpen: false,
-		}
-	},
-	computed: {
-		selectTitle() {
-			if (this.selected_items.length === 0) {
-				return this.select_title
-			}
-			if (this.selected_items.length === 1) {
-				const selectedItem = this.selected_items[0]
-				const labelIdx = this.items.findIndex(tagItem => tagItem['label'] && tagItem['value'] == this.selected_items[0])
-				if (labelIdx > -1) {
-					return this.items[labelIdx]['label']
-				}
-				if (this.i18n) {
-					return this.i18n[selectedItem] ? this.i18n[selectedItem] : selectedItem
-				}
-				return selectedItem
-			}
-			if (this.selected_items.length > 1) {
-				return this.selected_items.length + ' valgt'
-			}
-		},
-		itemsWithProps() {
-			const combinedItems = [...this.items];
-
-			this.selected_items.forEach(selectedItem => {
-				if (!combinedItems.some(item => item.value === selectedItem)) {
-					combinedItems.push({ value: selectedItem });
-				}
-			});
-			return combinedItems.map(item => {
-				const isSelected = this.selected_items.includes(item.value);
-				return {
-					...item,
-					v_selected: isSelected
-				};
-			});
-		},
-		itemsSorted() {
-			return this.itemsWithProps.slice().sort((a, b) => {
-				// Prioritize items with value 'v_no_selected'
-				if (a.value === 'v_no_selected') return -1;
-				if (b.value === 'v_no_selected') return 1;
-
-				// Prioritize items with 'v_sort' property next
-				const aHasVSort = 'v_sort' in a;
-				const bHasVSort = 'v_sort' in b;
-
-				if (aHasVSort && !bHasVSort) return -1;
-				if (!aHasVSort && bHasVSort) return 1;
-
-				// For items with 'v_sort', sort them alphabetically
-				if (aHasVSort && bHasVSort) {
-					return a.value.localeCompare(b.value);
-				}
-
-				// Standard alphabetical sorting for other cases
-				return a.value.localeCompare(b.value);
-			});
-		},
-		filteredItems() {
-			const lowerCaseQuery = this.query.toLowerCase();
-
-			return this.itemsSorted.filter(item => {
-				let itemTitle = item.label ? item.label.toLowerCase() : item.value.toLowerCase()
-
-				// Check if a localized version of the item title exists
-				if (this.i18n && this.i18n[item.value]) {
-					itemTitle = this.i18n[item.value].toLowerCase()
-				}
-
-				return itemTitle.includes(lowerCaseQuery)
-			})
-		}
-	},
-	methods: {
-		setIsOpen(bool) {
-			this.isOpen = bool
-			if (bool) {
-				this.$nextTick(_ => {
-					this.$refs.query_input.focus()
-				})
-			}
-			if (!bool) {
-				this.query = ''
-			}
-		},
-		toggleItem(item) {
-			this.$emit('toggle_item', item)
-		},
-		onMultiSelectBGClick() {
-			this.setIsOpen(false)
-			this.$emit('close')
-		},
-		clearQuery() {
-			this.query = ''
-			this.$refs.query_input.focus()
-		},
-	}
-})
-
-Vue.component('tags-selector', {
-	template: '#tags-selector-template',
-	props: {
-		is_loading_tag_button: {
-			type: Boolean,
-			default: false
-		},
-		tags: {
-			type: Array,
-			default: () => []
-		},
-		groups: {
-			type: Array,
-			default: () => []
-		},
-		active_case: {
-			type: Object,
-			default: null
-		},
-		active_tag_type: {
-			type: String
-		}
-	},
-	data() {
-		return {
-			theTagsSelectorView: 1,
-			highlightedIndex: -1,
-			tagsSearch: '',
-			tagColors: [
-				"#F87171",
-				"#FB923C",
-				"#FBBF24",
-				"#4ADE80",
-				"#34D399",
-				"#2DD4BF",
-				"#22D3EE",
-				"#38BDF8",
-				"#60A5FA",
-				"#A78BFA",
-				"#C084FC",
-				"#F472B6",
-				"#FB7185",
-				"#A8A29E",
-				"#A1A1AA"
-			],
-			tagFormName: '',
-			tagFormColor: '#F87171',
-			theEditingExisting: null,
-			isInputError: false,
-			isEdited: false,
-			selectedTags: [],
-			newTags: [],
-			isForgotToSave: false
-		};
-	},
-	computed: {
-		oldAndNewTags() {
-			if (this.active_tag_type === 'tag') {
-				return this.tags.concat(this.newTags)
-			} else {
-				return this.groups.concat(this.newTags)
-			}
-		},
-		tagsWithProps() {
-			return this.oldAndNewTags.filter(tag => tag.value !== 'v_no_selected').map(tag => {
-				// Check if the current tag exists in this.selectedTags
-				const isSelected = this.selectedTags.findIndex(selectedTag => selectedTag.value === tag.value) > -1
-				// Return a new object for the tag with the v_selected property
-				return {
-					...tag,
-					v_selected: isSelected
-				};
-			});
-		},
-		tagsWithPropsSorted() {
-			return this.tagsWithProps.slice().sort((a, b) => {
-				// Prioritize items with value 'v_no_selected'
-				if (a.value === 'v_no_selected') return -1;
-				if (b.value === 'v_no_selected') return 1;
-
-				// Prioritize items with 'v_sort' property next
-				const aHasVSort = 'v_sort' in a;
-				const bHasVSort = 'v_sort' in b;
-
-				if (aHasVSort && !bHasVSort) return -1;
-				if (!aHasVSort && bHasVSort) return 1;
-
-				// For items with 'v_sort', sort them alphabetically
-				if (aHasVSort && bHasVSort) {
-					return a.value.localeCompare(b.value);
-				}
-
-				// Standard alphabetical sorting for other cases
-				return a.value.localeCompare(b.value);
-			});
-		},
-		filteredTags() {
-			return this.tagsWithPropsSorted.filter(tag => tag.value.toLowerCase().includes(this.tagsSearch.toLowerCase()));
-		}
-	},
-	methods: {
-		createAndAddNewTag() {
-			// Validation
-			if (this.tagFormName.length < 1) {
-				const el = document.querySelector('#create_new_tag_input')
-				el.focus()
-				el.classList.remove('animate-shake')
 				setTimeout(_ => {
-					el.classList.add('animate-shake')
-				}, 100)
-				return
-			}
-			const idxOfCurrent = this.oldAndNewTags.findIndex(tag => tag.value === this.tagFormName)
-			if (idxOfCurrent > -1) {
-				this.isInputError = true
-				return
-			}
-			const newTagObj = {
-				value: this.tagFormName,
-				color: this.tagFormColor,
-			}
-			this.newTags.push(newTagObj)
-			this.selectedTags.push(newTagObj)
-			this.tagFormName = ''
-			this.tagsSearch = ''
-			this.tagFormColor = this.tagColors[0]
-			this.setTheTagsSelectorView(1)
-			this.isEdited = true
-		},
-		onTagsBGClick() {
-			if (this.is_loading_tag_button) {
-				return
-			}
-			if (this.isEdited) {
-				this.isForgotToSave = true
-			} else {
-				this.$emit('close')
-			}
-		},
-		closeWithoutSaving() {
-			if (this.is_loading_tag_button) {
-				return
-			}
-			this.$emit('close')
-		},
-		onCancelClick() {
-			this.$emit('close')
-		},
-		setTheTagsSelectorView(num) {
-			this.theTagsSelectorView = num
-			this.$nextTick(_ => {
-				if (num === 1) {
-					document.querySelector('#tag_selector_search_input').focus()
-				} else {
-					if (this.tagsSearch.length > 0) {
-						this.tagFormName = JSON.parse(JSON.stringify(this.tagsSearch))
-					}
-					this.$refs.create_new_tag_input.focus()
-				}
-			})
-		},
-		setTheEditTag(tag) {
-			this.tagFormName = tag.value
-			this.tagFormColor = tag.color ? tag.color : this.tagColors[0]
-			this.theEditingExisting = tag
-			this.setTheTagsSelectorView(2)
-		},
-		removeTag(tag) {
-			this.isEdited = true
-			const idx = this.selectedTags.findIndex(selectedTag => selectedTag.value === tag.value)
-			this.selectedTags.splice(idx, 1)
-		},
-		removeAllTags() {
-			this.selectedTags = []
-			this.isEdited = true
-		},
-		onSelectTag(tag) {
-			if (tag.v_selected) {
-				return
-			} else {
-				this.isEdited = true
-				this.selectedTags.push(tag)
-			}
-		},
-		saveTags() {
-			this.$emit('save_tags', this.selectedTags)
-		},
-		setCreateNewTag() {
-			this.resetForm()
-			this.setTheTagsSelectorView(2)
-		},
-		resetForm() {
-			this.tagFormName = ''
-			this.tagFormColor = this.tagColors[0]
-			this.theEditingExisting = null
-		}
-	},
-	mounted() {
-		if (this.active_tag_type === 'tag') {
-			this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_tags))
-		} else {
-			this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_groups))
-		}
-	}
-})
-/* END 17-12-23 */
-new Vue({
-	el: "#o-app",
-	data: {
-		isShowNewOperationStatus: true,
-		toast: {
-			message: '',
-			visible: false
-		},
-		isCreateGhostUser: false,
-		isLoadingGhostUserList: false,
-		theGhostUserList: [],
-		theGhostUserSelectedPartner: null,
-		theGhostUserSelectedPartnerUser: null,
-		isGhostUserCreating: false,
-		/* START 17-12-23 */
-		PBIReportsData: [],
-		isLoadingTheOpenAnalyticsIframe: false,
-		theOpenAnalyticsIframeUrl: 'https://opn-iframes-dev.azurewebsites.net/',
-		statusI18N: {
-			New_msg: 'Ny besked',
-			New: 'Ny',
-			Åben: 'Åben',
-			Pending: 'Åben',
-			On_Hold: 'Opfølgning',
-			Follow_up: 'Opfølgning udløbet',
-			Closed: 'Afsluttet'
-		},
-		theActiveFilterCategories: [],
-		theActiveFilterStatus: [],
-		thePredefinedGroups: [],
-		theActiveFilterTags: [],
-		theActiveFilterGroups: [],
-		theActiveLoggedInCompany: null,
-		isLoadingTagButton: false,
-		theActiveCaseForTag: null,
-		theShowTagDropdown: null, /* END 17-12-23 */
-		isVueModalOverlay: !1,
-		items: [],
-		isOpenDocsLoading: !0,
-		isClosedDocsLoading: !0,
-		isNewUserLoading: !1,
-		isNewAnnouncementLoading: !1,
-		isUpdatedAnnouncementLoading: !1,
-		searchQuery: "",
-		debounce: null,
-		debounce_user_init: null,
-		theActiveFilter: "active",
-		activeCategory: "my_cases",
-		activeType: null,
-		isVueDropdown: !1,
-		theUnreadSelected: "Alle",
-		theActiveItem: null,
-		theUser: null,
-		theUserType: "",
-		observeAllUsersDiv: null,
-		users: [],
-		usersIsLoading_1_75: !0,
-		usersIsLoading_76_150: !0,
-		usersIsLoading_151_225: !0,
-		usersIsLoading_226_300: !0,
-		usersIsLoading_301_375: !0,
-		usersIsLoading_376_450: !0,
-		usersIsLoading_451_525: !0,
-		theToggleRolesAcc: [],
-		theActiveUser: null,
-		isEditUser: !1,
-		isEditUserRoles: !1,
-		isProfileClick: !1,
-		userform: {
-			name: "",
-			display_name_: "",
-			email: "",
-			sms_no: "",
-			new_password: "",
-			new_password_confirmed: ""
-		},
-		formErrors: {},
-		isSendingEmail: !1,
-		isViewRoles: !1,
-		theOSelect: null,
-		oSelectQuery: "",
-		theActiveRoleForFilter: "399",
-		toggle_group_ids: [],
-		observeLatestDocsDiv: null,
-		cases: [],
-		casesIsLoading: !0,
-		activeCasesFilters: [],
-		theActiveCaseCategory: "Alle kategorier",
-		casesQuery: "",
-		infiniteScrollNumber: 50,
-		isClosedCasesLoading: !0,
-		startLength: 1,
-		endLength: 500,
-		addLength: 500,
-		open_startLength: 1,
-		open_endLength: 500,
-		open_addLength: 500,
-		observeClosedCases: null,
-		observeOpenCasesV2: null,
-		observeLatestCasesDiv: null,
-		isNewCaseLoading: !1,
-		isCaseUpdating: !1,
-		theCaseUpdatingId: null,
-		isSortDropdown: !1,
-		theSortSettingCases: {
-			title: "Oprettelse (Nyeste f\xf8rste)",
-			value: "CREATED_ASC"
-		},
-		theSortSettingDocs: {
-			title: "Aktiv (Nyeste f\xf8rste)",
-			value: "ACTIVE_DATE_ASC"
-		},
-		isSearchingOldCases: !1,
-		isSearchingPartnerCases: !1,
-		updateCasesTimer: null,
-		updateDocsTimer: null,
-		theOrignalActiveCase: null,
-		theActiveCaseUpdatedParams: {},
-		isEncodedHappenedBeforeUser: !1,
-		onpProductList: [],
-		isLoadingOnpProductList: !1,
-		theActiveOnpProductListFilter: "Fra alle",
-		isCreateOnpModal: !1,
-		onpForm: [{
-			id: "REC_ID",
-			hide: true,
-			label: "REC_ID",
-			value: "",
-			validated: !0,
-			formErrorDesc: "Skal udfyldes"
-		}, {
-			id: "TO_COMPANY",
-			label: "Din virksomhed",
-			hide: true,
-			value: $(".FROM_COMPANY > input").val(),
-			validated: !0,
-			formErrorDesc: "Skal udfyldes"
-		}, {
-			id: "FROM_COMPANY",
-			label: "Partner",
-			value: "",
-			validated: !0,
-			formErrorDesc: "Skal udfyldes",
-			isDropdown: !0,
-			options: []
-		}, {
-			id: "TYPE",
-			label: "Type",
-			hide: true,
-			value: "",
-			validated: !0,
-			formErrorDesc: "Skal udf{yldes",
-			isDropdown: !0,
-			optionsWithValues: true,
-			options: []
-		}, {
-			id: "TRANSACTION_CODE",
-			hide: true,
-			label: "Teknisk Produktnavn",
-			value: "",
-			validated: !0,
-			formErrorDesc: "Skal udfyldes",
-			isDropdown: !0,
-			options: []
-		}, {
-			id: "LABEL",
-			hide: true,
-			label: "Produktnavn",
-			value: "",
-			validated: !0,
-			formErrorDesc: "Skal udfyldes"
-		}, {
-			id: "TEXT_DESC",
-			hide: true,
-			label: "Beskrivelse",
-			value: "",
-			validated: !0,
-			isTextArea: !0
-		}, {
-			id: "PRICE",
-			hide: true,
-			label: "Pris pr. enhed (inkl. moms)",
-			value: "",
-			validated: !0
-		}, {
-			id: "UNIT_LABEL",
-			hide: true,
-			label: "Enhed (stk., meter, etc... fest)",
-			value: "",
-			validated: !0,
-			disabled: true
-		}, {
-			id: "UNIT_DEFAULT_VALUE",
-			hide: true,
-			label: "Pr\xe6udfyldt v\xe6rdi",
-			value: "",
-			validated: !0
-		}
-		],
-		onpFormData: [],
-		isUpdatingOnpProductList: !1,
-		infiniteScrollNumberONP: 50,
-		isLoadingOnpPendingOrders: !0,
-		onpPendingOrders: [],
-		ssid: '',
-		isSSIDLoading: !1,
-		isSSIDValid: !0,
-		OnpSSIDDetails: [],
-		isNewOrderModal: !1,
-		orderCustomerEmail: "",
-		isCustomerEmailInputEmpty: !1,
-		isSubmitOrderLoading: !1,
-		isOrderCustomerEmailValid: !0,
-		theActivePrevOrder: null,
-		isCancelOrderConfirmation: !1,
-		isVueModalOverlayExtra: !1,
-		isDeletingOrder: !1,
-		theActiveDescExpanded: null,
-		theReadMoreOnp: null,
-		infiniteScrollNumberONPOrders: 50,
-		PBIReportData: [],
-		theInvoiceBIExplainer: "",
-		theReportBIExplainer: "",
-		isLoadingBIReport: !1,
-		theActiveOrderType: '001',
-		theNewOrderCreatedDate: new Date().toISOString().substring(0, 10),
-		theNewOrderSkaderItems: [],
-		isEndCustomerEmailConfigModal: false,
-		isUpdatingEndCustomerEmailConfigForm: false,
-		theEndCustomerEmailConfigForm: [
-			{
-				id: 'firmanavn',
-				label: 'Firmanavn',
-				type: 'text',
-				value: '',
-				validated: true
+					this.isSubmitting = false
+					this.setIsCreateModal(false)
+				}, 1500)
 			},
-			{
-				id: 'logo',
-				label: 'Logo (url)',
-				placeholder: 'Eks. https://opennet.dk/assets/img/logo-clean.png',
-				type: 'text',
-				value: '',
-				validated: true
-			},
-			{
-				id: 'emne_til_email',
-				label: 'Emnefelt til email',
-				type: 'text',
-				value: '',
-				validated: true,
-				configType: 'email'
-			},
-			{
-				id: 'tekst_til_email',
-				label: 'Brødtekst til email (Før link)',
-				type: 'textarea',
-				value: '',
-				validated: true,
-				configType: 'email'
-			},
-			{
-				id: 'link_i_email',
-				label: 'Tekst på knap (link) ',
-				type: 'text',
-				value: '',
-				validated: true,
-				configType: 'email'
-			},
-			{
-				id: 'afslutning_af_email',
-				label: 'Afslutning af email (Efter link) ',
-				type: 'textarea',
-				value: '',
-				validated: true,
-				configType: 'email'
-			},
+			toggleAllReceivers() {
+				const allSelected = this.isAllReceiversSelected;
 
-			{
-				id: 'title_til_hjemmeside',
-				label: 'Titel på hjemmeside',
-				type: 'textarea',
-				value: '',
-				validated: true,
-				configType: 'web'
-			},
-			{
-				id: 'tekst_til_hjemmeside',
-				label: 'Brødtekst på hjemmeside',
-				type: 'textarea',
-				value: '',
-				validated: true,
-				configType: 'web'
-			},
-			{
-				id: 'afslutning_af_hjemmeside',
-				label: 'Afslutning af hjemmeside',
-				type: 'textarea',
-				value: '',
-				validated: true,
-				configType: 'web'
-			},
-			{
-				id: 'css',
-				label: 'Ekstern CSS (url)',
-				placeholder: 'Eks. https://opennet.dk/assets/css/main.css',
-				type: 'text',
-				value: '',
-				validated: true,
-				configType: 'web'
-			}
-		],
-		standardOnpItems: [
-			{ value: '001', title: 'Installationsydelse' },
-			{ value: '002', title: 'Skader / Reparation' },
-			{ value: '003', title: 'Uberettiget fejlretning' }
-		],
-		isLoadingEndCustomerEmailConfigFormData: false,
-		theEndCustomerEmailConfigFormActiveType: 'web',
-		theFilteredSelectedTags: []
-	},
-	computed: {
-		isViewNewsOrOperationStatus() {
-			return this.activeCategory == 'operation_status' || this.activeCategory == 'news'
-		},
-		theGhostUserListPartners() {
-			return this.theGhostUserList.map(company => company.company)
-		},
-		theGhostUserSelectedPartnerUsers() {
-			const company = this.theGhostUserList.find(c => c.company === this.theGhostUserSelectedPartner);
-			return company ? company.users : [];
-		},
-		/* START 17-12-23 */
-		isAnyFiltersActive() {
-			return this.theActiveFilterTags.length > 0 || this.theActiveFilterGroups.length > 0 || this.theActiveFilterStatus.length > 0 || this.theActiveFilterCategories.length > 0 || this.activeType
-		},
-		isUserOpennetOrSP() {
-			const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet']
-			return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
-		},
-		isNewDesignActive() {
-			const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet', 'SP Dev Company', 'IO Dev Company']
-			return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
-		},
-		allCaseCategories() {
-			const uniqueArr = [{ value: 'v_no_selected', label: 'Uden kategori', v_sort: true }]
-			this.casesFiltered2.forEach(caseItem => {
-				const dbValue = caseItem['filter_category']
-				if (dbValue) {
-					const idx = uniqueArr.findIndex(allTag => allTag.value === dbValue)
-					if (idx < 0) {
-						const obj = { value: dbValue }
-						uniqueArr.push(obj)
-					}
-				}
-			})
-			return uniqueArr
-		},
-		allCaseStatus() {
-			const uniqueArr = [{ value: 'v_no_selected', label: 'Uden status', v_sort: true }]
-			this.casesFiltered2.forEach(caseItem => {
-				const dbValue = caseItem['v_status']
-				if (dbValue) {
-					const idx = uniqueArr.findIndex(allTag => allTag.value === dbValue)
-					if (idx < 0) {
-						const obj = { value: dbValue, label: this.statusI18N[dbValue] }
-						uniqueArr.push(obj)
-					}
-				}
-			})
-			return uniqueArr
-		},
-		allCaseGroups() {
-			const uniqueTags = [{ value: 'v_no_selected', label: 'Uden gruppe', v_sort: true }]
-			this.casesFiltered2.forEach(caseItem => {
-				if (caseItem['v_groups']) {
-					caseItem['v_groups'].forEach(tag => {
-						const idx = uniqueTags.findIndex(allTag => allTag.value === tag.value)
-						const idxInPredefined = this.thePredefinedGroups.findIndex(predefinedTag => predefinedTag.value === tag.value)
-						if (idx < 0 && idxInPredefined < 0) {
-							uniqueTags.push(tag)
-						}
-					})
-				}
-			})
-			return uniqueTags.concat(this.thePredefinedGroups)
-		},
-		allCaseTags() {
-			const uniqueTags = [{ value: 'v_no_selected', label: 'Uden tags', v_sort: true }]
-			this.casesFiltered2.forEach(caseItem => {
-				if (caseItem['v_tags']) {
-					caseItem['v_tags'].forEach(tag => {
-						const idx = uniqueTags.findIndex(allTag => allTag.value === tag.value)
-						if (idx < 0) {
-							uniqueTags.push(tag)
-						}
-					})
-				}
-			})
-
-			return uniqueTags;
-		},
-		/* END 17-12-23 */
-		onpSSIDDetailsGrouped() {
-			let obj = {}
-			const itemsSorted = this.OnpSSIDDetails.sort((a, b) => a.LABEL !== b.LABEL ? a.LABEL < b.LABEL ? -1 : 1 : 0);
-			itemsSorted.forEach(item => {
-				if (obj[item.TYPE]) {
-					obj[item.TYPE].push(item)
-				} else {
-					obj[item.TYPE] = [item]
-				}
-			})
-			return obj
-		},
-		pbiReports() {
-			if (!this.PBIReportsData || this.PBIReportsData.length < 1) {
-				return [];
-			}
-
-			// Filter reports by the active category
-			let filteredReports = this.PBIReportsData.filter(report => report.area === this.activeCategory);
-			console.log('filteredReports', filteredReports);
-			// Find the index of the report with the display name "Vælg"
-			let indexOfValg = filteredReports.findIndex(report => report && report.reportDisplayName === "Vælg");
-			console.log('indexOfValg', indexOfValg);
-			// If there are reports and "Vælg" is not found, add a placeholder to the beginning
-			if (filteredReports.length > 0 && indexOfValg < 0) {
-				console.log('run_unshift');
-				filteredReports.unshift({
-					reportDisplayName: "Vælg",
-					reportId: "placeholderDropdown"
+				this.receivers.forEach(receiver => {
+					this.$set(this.selectedReceivers, receiver.id, !allSelected)
 				});
+			},
+			setSelectedReceiver(receiverId) {
+				if (this.selectedReceivers[receiverId]) {
+					this.$delete(this.selectedReceivers, receiverId)
+				} else {
+					this.$set(this.selectedReceivers, receiverId, true)
+				}
+			},
+			getIsReceiverSelected(receiverId) {
+				return this.selectedReceivers[receiverId]
+			},
+			handleFileUpload(event) {
+				this.selectedFiles = event.target.files;
+			},
+			setMasterTempalte(masterTemplateId) {
+				console.log('on:setMasterTempalte')
+			},
+			setTheSelectedType() {
+				console.log('on:setTheSelectedType')
+			},
+			setIsCreateNewMaster(bool) {
+				this.$emit('openNewMasterModal')
+			},
+			setIsCreateModal(bool) {
+				if (!bool) {
+					this.$emit('close')
+				}
 			}
-			console.log('filteredReports', filteredReports)
-			return filteredReports;
 		},
-		theSortSetting() {
-			return this.isCases ? this.theSortSettingCases : this.theSortSettingDocs
+		mounted() {
+			if (!this.formTypeIsMaster) {
+				this.fetchMasterTemplates()
+			}
+			if (this.formTypeIsMaster) {
+				this.$nextTick(_ => {
+					this.$refs.new_template_title_input.focus()
+				})
+			}
+		}
+	})
+	/* START 17-12-23 */
+	Vue.component('o-multi-select', {
+		template: '#o-multi-select-template',
+		props: {
+			select_title: {
+				type: String,
+				default: 'Vælg..'
+			},
+			items: {
+				type: Array,
+				default: () => []
+			},
+			selected_items: {
+				type: Array,
+				default: () => []
+			},
+			i18n: {
+				type: Object,
+				default: () => null
+			}
 		},
-		allSortSettings() {
-			return this.isCases ? [{
+		data() {
+			return {
+				query: '',
+				isOpen: false,
+			}
+		},
+		computed: {
+			selectTitle() {
+				if (this.selected_items.length === 0) {
+					return this.select_title
+				}
+				if (this.selected_items.length === 1) {
+					const selectedItem = this.selected_items[0]
+					const labelIdx = this.items.findIndex(tagItem => tagItem['label'] && tagItem['value'] == this.selected_items[0])
+					if (labelIdx > -1) {
+						return this.items[labelIdx]['label']
+					}
+					if (this.i18n) {
+						return this.i18n[selectedItem] ? this.i18n[selectedItem] : selectedItem
+					}
+					return selectedItem
+				}
+				if (this.selected_items.length > 1) {
+					return this.selected_items.length + ' valgt'
+				}
+			},
+			itemsWithProps() {
+				const combinedItems = [...this.items];
+
+				this.selected_items.forEach(selectedItem => {
+					if (!combinedItems.some(item => item.value === selectedItem)) {
+						combinedItems.push({ value: selectedItem });
+					}
+				});
+				return combinedItems.map(item => {
+					const isSelected = this.selected_items.includes(item.value);
+					return {
+						...item,
+						v_selected: isSelected
+					};
+				});
+			},
+			itemsSorted() {
+				return this.itemsWithProps.slice().sort((a, b) => {
+					// Prioritize items with value 'v_no_selected'
+					if (a.value === 'v_no_selected') return -1;
+					if (b.value === 'v_no_selected') return 1;
+
+					// Prioritize items with 'v_sort' property next
+					const aHasVSort = 'v_sort' in a;
+					const bHasVSort = 'v_sort' in b;
+
+					if (aHasVSort && !bHasVSort) return -1;
+					if (!aHasVSort && bHasVSort) return 1;
+
+					// For items with 'v_sort', sort them alphabetically
+					if (aHasVSort && bHasVSort) {
+						return a.value.localeCompare(b.value);
+					}
+
+					// Standard alphabetical sorting for other cases
+					return a.value.localeCompare(b.value);
+				});
+			},
+			filteredItems() {
+				const lowerCaseQuery = this.query.toLowerCase();
+
+				return this.itemsSorted.filter(item => {
+					let itemTitle = item.label ? item.label.toLowerCase() : item.value.toLowerCase()
+
+					// Check if a localized version of the item title exists
+					if (this.i18n && this.i18n[item.value]) {
+						itemTitle = this.i18n[item.value].toLowerCase()
+					}
+
+					return itemTitle.includes(lowerCaseQuery)
+				})
+			}
+		},
+		methods: {
+			setIsOpen(bool) {
+				this.isOpen = bool
+				if (bool) {
+					this.$nextTick(_ => {
+						this.$refs.query_input.focus()
+					})
+				}
+				if (!bool) {
+					this.query = ''
+				}
+			},
+			toggleItem(item) {
+				this.$emit('toggle_item', item)
+			},
+			onMultiSelectBGClick() {
+				this.setIsOpen(false)
+				this.$emit('close')
+			},
+			clearQuery() {
+				this.query = ''
+				this.$refs.query_input.focus()
+			},
+		}
+	})
+
+	Vue.component('tags-selector', {
+		template: '#tags-selector-template',
+		props: {
+			is_loading_tag_button: {
+				type: Boolean,
+				default: false
+			},
+			tags: {
+				type: Array,
+				default: () => []
+			},
+			groups: {
+				type: Array,
+				default: () => []
+			},
+			active_case: {
+				type: Object,
+				default: null
+			},
+			active_tag_type: {
+				type: String
+			}
+		},
+		data() {
+			return {
+				theTagsSelectorView: 1,
+				highlightedIndex: -1,
+				tagsSearch: '',
+				tagColors: [
+					"#F87171",
+					"#FB923C",
+					"#FBBF24",
+					"#4ADE80",
+					"#34D399",
+					"#2DD4BF",
+					"#22D3EE",
+					"#38BDF8",
+					"#60A5FA",
+					"#A78BFA",
+					"#C084FC",
+					"#F472B6",
+					"#FB7185",
+					"#A8A29E",
+					"#A1A1AA"
+				],
+				tagFormName: '',
+				tagFormColor: '#F87171',
+				theEditingExisting: null,
+				isInputError: false,
+				isEdited: false,
+				selectedTags: [],
+				newTags: [],
+				isForgotToSave: false
+			};
+		},
+		computed: {
+			oldAndNewTags() {
+				if (this.active_tag_type === 'tag') {
+					return this.tags.concat(this.newTags)
+				} else {
+					return this.groups.concat(this.newTags)
+				}
+			},
+			tagsWithProps() {
+				return this.oldAndNewTags.filter(tag => tag.value !== 'v_no_selected').map(tag => {
+					// Check if the current tag exists in this.selectedTags
+					const isSelected = this.selectedTags.findIndex(selectedTag => selectedTag.value === tag.value) > -1
+					// Return a new object for the tag with the v_selected property
+					return {
+						...tag,
+						v_selected: isSelected
+					};
+				});
+			},
+			tagsWithPropsSorted() {
+				return this.tagsWithProps.slice().sort((a, b) => {
+					// Prioritize items with value 'v_no_selected'
+					if (a.value === 'v_no_selected') return -1;
+					if (b.value === 'v_no_selected') return 1;
+
+					// Prioritize items with 'v_sort' property next
+					const aHasVSort = 'v_sort' in a;
+					const bHasVSort = 'v_sort' in b;
+
+					if (aHasVSort && !bHasVSort) return -1;
+					if (!aHasVSort && bHasVSort) return 1;
+
+					// For items with 'v_sort', sort them alphabetically
+					if (aHasVSort && bHasVSort) {
+						return a.value.localeCompare(b.value);
+					}
+
+					// Standard alphabetical sorting for other cases
+					return a.value.localeCompare(b.value);
+				});
+			},
+			filteredTags() {
+				return this.tagsWithPropsSorted.filter(tag => tag.value.toLowerCase().includes(this.tagsSearch.toLowerCase()));
+			}
+		},
+		methods: {
+			createAndAddNewTag() {
+				// Validation
+				if (this.tagFormName.length < 1) {
+					const el = document.querySelector('#create_new_tag_input')
+					el.focus()
+					el.classList.remove('animate-shake')
+					setTimeout(_ => {
+						el.classList.add('animate-shake')
+					}, 100)
+					return
+				}
+				const idxOfCurrent = this.oldAndNewTags.findIndex(tag => tag.value === this.tagFormName)
+				if (idxOfCurrent > -1) {
+					this.isInputError = true
+					return
+				}
+				const newTagObj = {
+					value: this.tagFormName,
+					color: this.tagFormColor,
+				}
+				this.newTags.push(newTagObj)
+				this.selectedTags.push(newTagObj)
+				this.tagFormName = ''
+				this.tagsSearch = ''
+				this.tagFormColor = this.tagColors[0]
+				this.setTheTagsSelectorView(1)
+				this.isEdited = true
+			},
+			onTagsBGClick() {
+				if (this.is_loading_tag_button) {
+					return
+				}
+				if (this.isEdited) {
+					this.isForgotToSave = true
+				} else {
+					this.$emit('close')
+				}
+			},
+			closeWithoutSaving() {
+				if (this.is_loading_tag_button) {
+					return
+				}
+				this.$emit('close')
+			},
+			onCancelClick() {
+				this.$emit('close')
+			},
+			setTheTagsSelectorView(num) {
+				this.theTagsSelectorView = num
+				this.$nextTick(_ => {
+					if (num === 1) {
+						document.querySelector('#tag_selector_search_input').focus()
+					} else {
+						if (this.tagsSearch.length > 0) {
+							this.tagFormName = JSON.parse(JSON.stringify(this.tagsSearch))
+						}
+						this.$refs.create_new_tag_input.focus()
+					}
+				})
+			},
+			setTheEditTag(tag) {
+				this.tagFormName = tag.value
+				this.tagFormColor = tag.color ? tag.color : this.tagColors[0]
+				this.theEditingExisting = tag
+				this.setTheTagsSelectorView(2)
+			},
+			removeTag(tag) {
+				this.isEdited = true
+				const idx = this.selectedTags.findIndex(selectedTag => selectedTag.value === tag.value)
+				this.selectedTags.splice(idx, 1)
+			},
+			removeAllTags() {
+				this.selectedTags = []
+				this.isEdited = true
+			},
+			onSelectTag(tag) {
+				if (tag.v_selected) {
+					return
+				} else {
+					this.isEdited = true
+					this.selectedTags.push(tag)
+				}
+			},
+			saveTags() {
+				this.$emit('save_tags', this.selectedTags)
+			},
+			setCreateNewTag() {
+				this.resetForm()
+				this.setTheTagsSelectorView(2)
+			},
+			resetForm() {
+				this.tagFormName = ''
+				this.tagFormColor = this.tagColors[0]
+				this.theEditingExisting = null
+			}
+		},
+		mounted() {
+			if (this.active_tag_type === 'tag') {
+				this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_tags))
+			} else {
+				this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_groups))
+			}
+		}
+	})
+	/* END 17-12-23 */
+	new Vue({
+		el: "#o-app",
+		data: {
+			isShowNewOperationStatus: true,
+			toast: {
+				message: '',
+				visible: false
+			},
+			isCreateGhostUser: false,
+			isLoadingGhostUserList: false,
+			theGhostUserList: [],
+			theGhostUserSelectedPartner: null,
+			theGhostUserSelectedPartnerUser: null,
+			isGhostUserCreating: false,
+			/* START 17-12-23 */
+			PBIReportsData: [],
+			isLoadingTheOpenAnalyticsIframe: false,
+			theOpenAnalyticsIframeUrl: 'https://opn-iframes-dev.azurewebsites.net/',
+			statusI18N: {
+				New_msg: 'Ny besked',
+				New: 'Ny',
+				Åben: 'Åben',
+				Pending: 'Åben',
+				On_Hold: 'Opfølgning',
+				Follow_up: 'Opfølgning udløbet',
+				Closed: 'Afsluttet'
+			},
+			theActiveFilterCategories: [],
+			theActiveFilterStatus: [],
+			thePredefinedGroups: [],
+			theActiveFilterTags: [],
+			theActiveFilterGroups: [],
+			theActiveLoggedInCompany: null,
+			isLoadingTagButton: false,
+			theActiveCaseForTag: null,
+			theShowTagDropdown: null, /* END 17-12-23 */
+			isVueModalOverlay: !1,
+			items: [],
+			isOpenDocsLoading: !0,
+			isClosedDocsLoading: !0,
+			isNewUserLoading: !1,
+			isNewAnnouncementLoading: !1,
+			isUpdatedAnnouncementLoading: !1,
+			searchQuery: "",
+			debounce: null,
+			debounce_user_init: null,
+			theActiveFilter: "active",
+			activeCategory: "my_cases",
+			activeType: null,
+			isVueDropdown: !1,
+			theUnreadSelected: "Alle",
+			theActiveItem: null,
+			theUser: null,
+			theUserType: "",
+			observeAllUsersDiv: null,
+			users: [],
+			usersIsLoading_1_75: !0,
+			usersIsLoading_76_150: !0,
+			usersIsLoading_151_225: !0,
+			usersIsLoading_226_300: !0,
+			usersIsLoading_301_375: !0,
+			usersIsLoading_376_450: !0,
+			usersIsLoading_451_525: !0,
+			theToggleRolesAcc: [],
+			theActiveUser: null,
+			isEditUser: !1,
+			isEditUserRoles: !1,
+			isProfileClick: !1,
+			userform: {
+				name: "",
+				display_name_: "",
+				email: "",
+				sms_no: "",
+				new_password: "",
+				new_password_confirmed: ""
+			},
+			formErrors: {},
+			isSendingEmail: !1,
+			isViewRoles: !1,
+			theOSelect: null,
+			oSelectQuery: "",
+			theActiveRoleForFilter: "399",
+			toggle_group_ids: [],
+			observeLatestDocsDiv: null,
+			cases: [],
+			casesIsLoading: !0,
+			activeCasesFilters: [],
+			theActiveCaseCategory: "Alle kategorier",
+			casesQuery: "",
+			infiniteScrollNumber: 50,
+			isClosedCasesLoading: !0,
+			startLength: 1,
+			endLength: 500,
+			addLength: 500,
+			open_startLength: 1,
+			open_endLength: 500,
+			open_addLength: 500,
+			observeClosedCases: null,
+			observeOpenCasesV2: null,
+			observeLatestCasesDiv: null,
+			isNewCaseLoading: !1,
+			isCaseUpdating: !1,
+			theCaseUpdatingId: null,
+			isSortDropdown: !1,
+			theSortSettingCases: {
 				title: "Oprettelse (Nyeste f\xf8rste)",
 				value: "CREATED_ASC"
-			}, {
-				title: "Oprettelse (\xc6ldste f\xf8rste)",
-				value: "CREATED_DESC"
-			}, {
-				title: "SLA (Nyeste f\xf8rste)",
-				value: "SLA_ASC"
-			}, {
-				title: "SLA (\xc6ldste f\xf8rste)",
-				value: "SLA_DESC"
-			}, {
-				title: "Opdateret (Nyeste f\xf8rste)",
-				value: "UPDATED_ASC"
-			}, {
-				title: "Opdateret (\xc6ldste f\xf8rste)",
-				value: "UPDATED_DESC"
-			}] : [{
+			},
+			theSortSettingDocs: {
 				title: "Aktiv (Nyeste f\xf8rste)",
 				value: "ACTIVE_DATE_ASC"
+			},
+			isSearchingOldCases: !1,
+			isSearchingPartnerCases: !1,
+			updateCasesTimer: null,
+			updateDocsTimer: null,
+			theOrignalActiveCase: null,
+			theActiveCaseUpdatedParams: {},
+			isEncodedHappenedBeforeUser: !1,
+			onpProductList: [],
+			isLoadingOnpProductList: !1,
+			theActiveOnpProductListFilter: "Fra alle",
+			isCreateOnpModal: !1,
+			onpForm: [{
+				id: "REC_ID",
+				hide: true,
+				label: "REC_ID",
+				value: "",
+				validated: !0,
+				formErrorDesc: "Skal udfyldes"
 			}, {
-				title: "Aktiv (\xc6ldste f\xf8rste)",
-				value: "ACTIVE_DATE_DESC"
+				id: "TO_COMPANY",
+				label: "Din virksomhed",
+				hide: true,
+				value: $(".FROM_COMPANY > input").val(),
+				validated: !0,
+				formErrorDesc: "Skal udfyldes"
 			}, {
-				title: "Udl\xf8b (Nyeste f\xf8rste)",
-				value: "EXPIRE_DATE_ASC"
+				id: "FROM_COMPANY",
+				label: "Partner",
+				value: "",
+				validated: !0,
+				formErrorDesc: "Skal udfyldes",
+				isDropdown: !0,
+				options: []
 			}, {
-				title: "Udl\xf8b (\xc6ldste f\xf8rste)",
-				value: "EXPIRE_DATE_DESC"
-			}]
-		},
-		casesFiltered() {
-			return "my_cases" == this.activeCategory ? this.cases.filter(e => "true" == e.filter_my_cases) : this.cases
-		},
-		casesOpen() {
-			return this.casesFiltered.filter(e => "open" == e.filter_open_closed)
-		},
-		casesClosed() {
-			return this.casesFiltered.filter(e => "closed" == e.filter_open_closed)
-		},
-		partnerCases() {
-			return this.casesFiltered.filter(e => "partnerCases" == e.filter_open_closed)
-		},
-		casesFiltered2() {
-			if (this.theActiveFilter === "active") {
-				return this.casesOpen
-			} else {
-				return this.casesClosed
+				id: "TYPE",
+				label: "Type",
+				hide: true,
+				value: "",
+				validated: !0,
+				formErrorDesc: "Skal udf{yldes",
+				isDropdown: !0,
+				optionsWithValues: true,
+				options: []
+			}, {
+				id: "TRANSACTION_CODE",
+				hide: true,
+				label: "Teknisk Produktnavn",
+				value: "",
+				validated: !0,
+				formErrorDesc: "Skal udfyldes",
+				isDropdown: !0,
+				options: []
+			}, {
+				id: "LABEL",
+				hide: true,
+				label: "Produktnavn",
+				value: "",
+				validated: !0,
+				formErrorDesc: "Skal udfyldes"
+			}, {
+				id: "TEXT_DESC",
+				hide: true,
+				label: "Beskrivelse",
+				value: "",
+				validated: !0,
+				isTextArea: !0
+			}, {
+				id: "PRICE",
+				hide: true,
+				label: "Pris pr. enhed (inkl. moms)",
+				value: "",
+				validated: !0
+			}, {
+				id: "UNIT_LABEL",
+				hide: true,
+				label: "Enhed (stk., meter, etc... fest)",
+				value: "",
+				validated: !0,
+				disabled: true
+			}, {
+				id: "UNIT_DEFAULT_VALUE",
+				hide: true,
+				label: "Pr\xe6udfyldt v\xe6rdi",
+				value: "",
+				validated: !0
 			}
-		},
-		caseFilteredWithGroups() {
-			if (this.theActiveFilterGroups.length < 1) {
-				return this.casesFiltered2;
-			} else {
-				return this.casesFiltered2.filter(itemCase => {
-					const hasNoSelectedGroup = this.theActiveFilterGroups.includes('v_no_selected');
-					if (hasNoSelectedGroup && (!itemCase.v_groups || itemCase.v_groups.length === 0)) {
-						return true;
-					}
-					return itemCase.v_groups && itemCase.v_groups.some(vGroup =>
-						this.theActiveFilterGroups.includes(vGroup.value));
-				})
-			}
-		},
-		caseFilteredWithStatus() {
-			if (this.theActiveFilterStatus.length < 1) {
-				return this.caseFilteredWithGroups;
-			} else {
-				return this.caseFilteredWithGroups.filter(itemCase => {
-					// Check if 'v_no_selected' is one of the active filter statuses
-					const hasNoSelectedStatus = this.theActiveFilterStatus.includes('v_no_selected');
-
-					// If 'v_no_selected' is present and the item has an empty status, include it in the filter
-					if (hasNoSelectedStatus && (!itemCase.v_status || itemCase.v_status === '')) {
-						return true;
-					}
-
-					// If item has a status, check if it matches any of the active filter statuses
-					return this.theActiveFilterStatus.includes(itemCase.v_status);
-				})
-			}
-		},
-		caseFilteredWithCategories() {
-			if (this.theActiveFilterCategories.length < 1) {
-				return this.caseFilteredWithStatus;
-			} else {
-				return this.caseFilteredWithStatus.filter(itemCase => {
-					// Check if 'v_no_selected' is one of the active filter statuses
-					const hasNoSelectedStatus = this.theActiveFilterCategories.includes('v_no_selected');
-
-					// If 'v_no_selected' is present and the item has an empty status, include it in the filter
-					if (hasNoSelectedStatus && (!itemCase.filter_category || itemCase.filter_category === '')) {
-						return true;
-					}
-					return this.theActiveFilterCategories.includes(itemCase.filter_category);
-				})
-			}
-		},
-		caseFilteredWithTags() {
-			if (this.theActiveFilterTags.length < 1) {
-				return this.caseFilteredWithCategories;
-			} else {
-				return this.caseFilteredWithCategories.filter(itemCase => {
-					const hasNoSelectedTag = this.theActiveFilterTags.includes('v_no_selected');
-					if (hasNoSelectedTag && (!itemCase.v_tags || itemCase.v_tags.length === 0)) {
-						return true;
-					}
-					return itemCase.v_tags && itemCase.v_tags.some(vTag =>
-						this.theActiveFilterTags.includes(vTag.value));
-				});
-			}
-		},
-		casesFiltered3() {
-			let e = this.activeType;
-			return "not_assigned" == e ? this.caseFilteredWithTags.filter(e => e.assign_to.length < 1) : "filter_not_follow_up" == e ? this.caseFilteredWithTags.filter(e => !this.activeType || "true" != e.filter_follow_up) : this.caseFilteredWithTags.filter(t => !this.activeType || "true" == t[e])
-		},
-		caseFiltered4() {
-			// Check if the active case category is not 'Alle kategorier'
-			if (this.theActiveCaseCategory !== "Alle kategorier") {
-				// If it's a specific category, filter the cases
-				return this.casesFiltered3.filter(caseItem =>
-					caseItem.filter_category === this.theActiveCaseCategory);
-			} else {
-				// If the active category is 'Alle kategorier', return all cases
-				return this.casesFiltered3;
-			}
-		},
-		casesSorted() {
-			switch (this.theSortSettingCases.value) {
-				case "CREATED_ASC":
-					return this.caseFiltered4.sort((e, t) => this.formatDateForJs(t.created_time) - this.formatDateForJs(e.created_time));
-				case "CREATED_DESC":
-					return this.caseFiltered4.sort((e, t) => this.formatDateForJs(e.created_time) - this.formatDateForJs(t.created_time));
-				case "SLA_ASC":
-					return this.caseFiltered4.sort((e, t) => this.formatDateForJs(t.sla_deadline_date, t) - this.formatDateForJs(e.sla_deadline_date, e));
-				case "SLA_DESC":
-					return this.caseFiltered4.sort((e, t) => this.formatDateForJs(e.sla_deadline_date, e) - this.formatDateForJs(t.sla_deadline_date, t));
-				case "UPDATED_ASC":
-					return this.caseFiltered4.sort((e, t) => this.formatDateForJs(t.last_updated_time) - this.formatDateForJs(e.last_updated_time));
-				case "UPDATED_DESC":
-					return this.caseFiltered4.sort((e, t) => this.formatDateForJs(e.last_updated_time) - this.formatDateForJs(t.last_updated_time))
-			}
-		},
-		searchedCases() {
-			return this.isCases ? this.searchQuery.length < 1 ? this.casesSorted : this.searchFunc(this.casesSorted) : []
-		},
-		lengthOfCases() {
-			var e = {
-				filter_created_by_me: 0,
-				filter_assigned_me: 0,
-				filter_followed_by_me: 0,
-				filter_sla_expired: 0,
-				filter_new: 0,
-				not_assigned: 0,
-				filter_follow_up: 0,
-				filter_not_follow_up: 0
-			};
-			return this.casesFiltered2.forEach(t => {
-				"true" == t.filter_created_by_me && e.filter_created_by_me++, "true" == t.filter_assigned_me && e.filter_assigned_me++, "true" == t.filter_followed_by_me && e.filter_followed_by_me++, "true" == t.filter_sla_expired && e.filter_sla_expired++, "true" == t.filter_new && e.filter_new++, t.assign_to.length < 1 && e.not_assigned++, "true" == t.filter_follow_up && e.filter_follow_up++, "false" == t.filter_follow_up && e.filter_not_follow_up++
-			}), e
-		},
-		allCategoriesFromCases() {
-			let e = [];
-			return ("active" === this.theActiveFilter ? this.itemsActiveFromCategory : this.itemsExpiredFromCategory).forEach((t, s) => {
-				if (t.type && t.type.length > 0) {
-					let a = e.findIndex(e => e.title === t.type);
-					a < 0 ? e.push({
-						title: t.type,
-						onIds: [t.onid]
-					}) : e[a].onIds.push(t.onid)
-				}
-			}), e
-		},
-		allCasesCategories() {
-			var e = [];
-			this.casesFiltered2.forEach(t => {
-				let s = unescape(t.filter_category);
-				0 > e.findIndex(e => e === s) && e.push(s)
-			});
-			let t = e.sort((e, t) => e.localeCompare(t));
-			return t.unshift("Alle kategorier"), t
-		},
-		isDocs() {
-			return "" !== this.activeCategory && "roles" !== this.activeCategory && "all_cases" !== this.activeCategory && "my_cases" !== this.activeCategory && "end_customer_pricing_config" !== this.activeCategory && "end_customer_orders" !== this.activeCategory
-		},
-		isCases() {
-			return "all_cases" == this.activeCategory || "my_cases" == this.activeCategory
-		},
-		allCategories() {
-			let e = [];
-			return this.items.forEach((t, s) => {
-				0 > e.indexOf(t.category) && e.push(t.category)
-			}), e
-		},
-		allTypesFromCategory() {
-			let e = [];
-			return (items = "active" === this.theActiveFilter ? this.itemsActiveFromCategory : "future" === this.theActiveFilter ? this.itemsFutureFromCategory : this.itemsExpiredFromCategory).forEach((t, s) => {
-				if (t.type && t.type.length > 0) {
-					let a = e.findIndex(e => e.title === t.type);
-					a < 0 ? e.push({
-						title: t.type,
-						onIds: [t.onid]
-					}) : e[a].onIds.push(t.onid)
-				}
-			}), e
-		},
-		filteredItemsWithActiveDateAfterToday() {
-			return this.items.filter(e => !this.dateIsAfterToday(this.formatDateForJs(e.active_date)))
-		},
-		itemsSorted() {
-			let e = this.filteredItemsWithActiveDateAfterToday;
-			switch (this.theSortSettingDocs.value) {
-				case "ACTIVE_DATE_ASC":
-					return e.sort((e, t) => this.formatDateForJs(t.active_date) - this.formatDateForJs(e.active_date));
-				case "ACTIVE_DATE_DESC":
-					return e.sort((e, t) => this.formatDateForJs(e.active_date) - this.formatDateForJs(t.active_date));
-				case "EXPIRE_DATE_ASC":
-					return e.sort((e, t) => this.formatDateForJs(t.expire_date, t) - this.formatDateForJs(e.expire_date, e));
-				case "EXPIRE_DATE_DESC":
-					return e.sort((e, t) => this.formatDateForJs(e.expire_date, e) - this.formatDateForJs(t.expire_date, t))
-			}
-		},
-		filteredItemsWithCategory() {
-			return this.itemsSorted.filter(e => e.category === this.activeCategory)
-		},
-		itemsActiveFromCategory() {
-			let e = new Date;
-			return this.filteredItemsWithCategory.filter(t => {
-				let s = t.expire_date ? this.formatDateForJs(t.expire_date) : e.setDate(e.getDate() + 1);
-				return this.dateIsAfterToday(s)
-			})
-		},
-		itemsExpiredFromCategory() {
-			let e = new Date;
-			return this.filteredItemsWithCategory.filter(t => {
-				let s = t.expire_date ? this.formatDateForJs(t.expire_date) : e.setDate(e.getDate() + 1);
-				return !this.dateIsAfterToday(s)
-			})
-		},
-		itemsFutureFromCategory() {
-			let e = this.items.filter(e => e.category === this.activeCategory && this.dateIsAfterToday(this.formatDateForJs(e.active_date)));
-			switch (this.theSortSettingDocs.value) {
-				case "ACTIVE_DATE_ASC":
-					return e.sort((e, t) => this.formatDateForJs(t.active_date) - this.formatDateForJs(e.active_date));
-				case "ACTIVE_DATE_DESC":
-					return e.sort((e, t) => this.formatDateForJs(e.active_date) - this.formatDateForJs(t.active_date));
-				case "EXPIRE_DATE_ASC":
-					return e.sort((e, t) => this.formatDateForJs(t.expire_date, t) - this.formatDateForJs(e.expire_date, e));
-				case "EXPIRE_DATE_DESC":
-					return e.sort((e, t) => this.formatDateForJs(e.expire_date, e) - this.formatDateForJs(t.expire_date, t))
-			}
-		},
-		filteredItemsWithType() {
-			return (items = "active" === this.theActiveFilter ? this.itemsActiveFromCategory : "future" === this.theActiveFilter ? this.itemsFutureFromCategory : this.itemsExpiredFromCategory).filter(e => !this.activeType || e.type === this.activeType)
-		},
-		filteredItemsOnUnread() {
-			return this.filteredItemsWithType.filter(e => "Alle" === this.theUnreadSelected ? e : "Ul\xe6st" === this.theUnreadSelected ? "Yes" === e.show_unread_icon : "L\xe6st" === this.theUnreadSelected ? "No" === e.show_unread_icon : void 0)
-		},
-		searchedItems() {
-			return this.isDocs ? this.searchFunc(this.filteredItemsOnUnread) : []
-		},
-		allRoles() {
-			return this.users[0] && this.users[0].role_array ? this.users[0].role_array : []
-		},
-		searchedUsers() {
-			return "roles" !== this.activeCategory ? [] : this.searchFunc(this.users)
-		},
-		isTheActiveUserTheUser() {
-			return this.theActiveUser.id == this.theUser.id
-		},
-		oSelectUsers() {
-			return this.users.filter(e => null !== e.name ? e.name.match(RegExp(this.oSelectQuery, "i")) : "")
-		},
-		usersWithoutActiveRole(e) {
-			var e = this.theActiveRoleForFilter;
-			return this.oSelectUsers.filter(t => t.role_array.findIndex(t => t.group_id == e && "false" == t.active_role) > -1)
-		},
-		usersIsLoading() {
-			return this.usersIsLoading_1_75 || this.usersIsLoading_76_150 || this.usersIsLoading_151_225 || this.usersIsLoading_226_300 || this.usersIsLoading_301_375 || this.usersIsLoading_376_450 || this.usersIsLoading_451_525
-		},
-		onpProductListVProps() {
-			const valueTitleMap = this.standardOnpItems.reduce((obj, item) => (obj[item.value] = item.title, obj), {})
-			return this.onpProductList.map(item => {
-				this.$set(item, 'v_type', valueTitleMap[item.TYPE])
-				return item
-			})
-		},
-		onpProductListFilters() {
-			var e = [];
-			return this.onpProductListVProps.forEach(t => {
-				0 > e.indexOf(t.FROM_COMPANY) && e.push(t.FROM_COMPANY)
-			}), e.sort().unshift("Fra alle"), e
-		},
-		onpProductListFiltered() {
-			return ("Fra alle" != this.theActiveOnpProductListFilter ? this.onpProductList.filter(e => e.FROM_COMPANY === this.theActiveOnpProductListFilter) : this.onpProductList).sort(function (e, t) {
-				return e.REC_ID - t.REC_ID
-			})
-		},
-		onpProductListSearched() {
-			return this.searchFunc(this.onpProductListFiltered)
-		},
-		onpPendingOrdersVProps() {
-			const valueTitleMap = this.standardOnpItems.reduce((obj, item) => (obj[item.value] = item.title, obj), {})
-			return this.onpPendingOrders.map(item => {
-				this.$set(item, 'v_type', valueTitleMap[item.TYPE])
-				return item
-			})
-		},
-		onpPendingOrdersSorted() {
-			return this.onpPendingOrders.sort((e, t) => this.formatDateForJs2TypsOfDates(t.created_time) - this.formatDateForJs2TypsOfDates(e.created_time))
-		},
-		onpPendingOrdersSearched() {
-			return this.searchFunc(this.onpPendingOrdersSorted)
-		},
-		order() {
-			if (this.theActiveOrderType !== '002') {
-				return this.OnpSSIDDetails.filter(e => e.v_count > 0)
-			}
-			if (this.theActiveOrderType === '002') {
-				return this.theNewOrderSkaderItems
-			}
-		},
-		orderSum() {
-			var e = 0;
-			return this.order.forEach(t => {
-				e += t.PRICE * t.v_count
-			}), e
-		},
-		dbOrder() {
-			var orderStatus = this.theActiveOrderType === '001' ? "PENDING" : "APPROVED"
-			return {
-				id: "",
-				created_time: this.theNewOrderCreatedDate,
-				created_by: "",
-				order_items: this.order.map(e => ({
-					TRANSACTION_CODE: e.TRANSACTION_CODE,
-					LABEL: e.LABEL,
-					PRICE: e.PRICE,
-					QUANTITY: e.v_count,
-					UNIT_LABEL: e.UNIT_LABEL,
-					SSID: e.ssid
-				})),
-				order_sum: this.orderSum,
-				status: orderStatus,
-				can_cancel: !0,
-				customer_email: this.orderCustomerEmail,
-				ssid: this.ssid
-			}
-		},
-		theEndCustomerEmailConfigFormWithoutFilter() {
-			return this.theEndCustomerEmailConfigForm.filter(formItem => !formItem.configType)
-		},
-		theEndCustomerEmailConfigFormFiltered() {
-			return this.theEndCustomerEmailConfigForm.filter(formItem => formItem.configType && formItem.configType === this.theEndCustomerEmailConfigFormActiveType)
-		},
-		theEndCustomerEmailConfigFormHash() {
-			return this.theEndCustomerEmailConfigForm.reduce((obj, item) => (obj[item.id] = item, obj), {})
-		}
-	},
-	watch: {
-		theUser(e) {
-			this.isEncodedHappenedBeforeUser && this.cases.forEach((e, t) => {
-				e.created_by_id && e.created_by_id == this.theUser.id && (Vue.set(e, "filter_created_by_me", "true"), Vue.set(e, "filter_my_cases", "true")), e.assign_to_id && e.assign_to_id == this.theUser.id && (Vue.set(e, "filter_assigned_me", "true"), Vue.set(e, "filter_my_cases", "true")), e.followed_by_list && e.followed_by_list.split(";").indexOf(this.theUser.id) > -1 && (Vue.set(e, "filter_followed_by_me", "true"), Vue.set(e, "filter_my_cases", "true"))
-			})
-		}
-	},
-	methods: {
-		showToast(message) {
-			this.toast.message = message;
-			this.toast.visible = true;
-			setTimeout(() => {
-				this.toast.visible = false;
-			}, 3000); // Hide after 3 seconds
-		},
-		createGhostUser() {
-			this.isGhostUserCreating = true
-			$('.UM_EVENT_TYPE > input').val('GHOST')
-			$('.UM_USER_ID > input').val(this.theGhostUserSelectedPartnerUser)
-			$('.BTN_UserManagement > a').click()
-			setTimeout(_ => {
-				this.closeVueModalOverlay()
-				this.showToast('“ghost profile” er oprettet og detaljer kommer pr email')
-			}, 1000)
-		},
-		onTheGhostUserSelectedPartner(val) {
-			this.theGhostUserSelectedPartner = val
-			this.theGhostUserSelectedPartnerUser = null
-		},
-		onTheGhostUserSelectedPartnerUser(val) {
-			this.theGhostUserSelectedPartnerUser = val
-		},
-		setIsCreateGhostUser() {
-			if (!this.isCreateGhostUser) {
-				this.isCreateGhostUser = true
-				this.isLoadingGhostUserList = true
-				this.observeChanges('.getUserFullList_Output > div', data => {
-					this.theGhostUserList = data.length > 0 ? JSON.parse(data) : []
-					this.isLoadingGhostUserList = false
-					$('.getUserFullList_Output > div').html('')
-				})
-				$('.getUserFullList_BTN > a').click()
-			} else {
-				this.isCreateGhostUser = false
-			}
-		},
-		/* START 17-12-23 */
-		getAllLocalStorageFilter() {
-			if (!this.isNewDesignActive) {
-				return
-			}
-			this.theActiveFilterTags = []
-			this.theActiveFilterGroups = []
-			this.theActiveFilterStatus = []
-			this.theActiveFilterCategories = []
-			this.activeType = null
-			this.getLocalStorageFilter('theActiveFilterTags')
-			this.getLocalStorageFilter('theActiveFilterGroups')
-			this.getLocalStorageFilter('theActiveFilterStatus')
-			this.getLocalStorageFilter('theActiveFilterCategories')
-			this.getLocalStorageFilter('activeType')
-		},
-		removeAllFilters() {
-			this.theActiveFilterTags = []
-			this.setLocalStorageFilter('theActiveFilterTags', this.theActiveFilterTags)
-			this.theActiveFilterGroups = []
-			this.setLocalStorageFilter('theActiveFilterGroups', this.theActiveFilterGroups)
-			this.theActiveFilterStatus = []
-			this.setLocalStorageFilter('theActiveFilterStatus', this.theActiveFilterStatus)
-			this.theActiveFilterCategories = []
-			this.setLocalStorageFilter('theActiveFilterCategories', this.theActiveFilterCategories)
-			this.activeType = null;
-			this.setLocalStorageFilter('activeType', null)
-			this.infiniteScrollNumber = 50;
-			this.clearSearchQuery();
-		},
-		setLocalStorageFilter(filterType, filterArr) {
-			const localTitle = this.activeCategory + '_' + this.theActiveFilter + '_' + filterType
-			if (!filterArr || filterArr.length === 0) {
-				localStorage.removeItem(localTitle)
-			} else {
-				localStorage.setItem(localTitle, JSON.stringify(filterArr))
-			}
-		},
-		getLocalStorageFilter(filterType, filterArr) {
-			const localTitle = this.activeCategory + '_' + this.theActiveFilter + '_' + filterType
-			if (localStorage.getItem(localTitle)) {
-				this[filterType] = JSON.parse(localStorage.getItem(localTitle));
-			}
-		},
-		toggleFilterCategory(item) {
-			const idx = this.theActiveFilterCategories.indexOf(item.value)
-			if (idx < 0) {
-				this.theActiveFilterCategories.push(item.value)
-			} else {
-				this.theActiveFilterCategories.splice(idx, 1)
-			}
-			this.setLocalStorageFilter('theActiveFilterCategories', this.theActiveFilterCategories)
-		},
-		toggleFilterStatus(item) {
-			const idx = this.theActiveFilterStatus.indexOf(item.value)
-			if (idx < 0) {
-				this.theActiveFilterStatus.push(item.value)
-			} else {
-				this.theActiveFilterStatus.splice(idx, 1)
-			}
-			this.setLocalStorageFilter('theActiveFilterStatus', this.theActiveFilterStatus)
-		},
-		toggleFilterTag(item) {
-			const idx = this.theActiveFilterTags.indexOf(item.value)
-			if (idx < 0) {
-				this.theActiveFilterTags.push(item.value)
-			} else {
-				this.theActiveFilterTags.splice(idx, 1)
-			}
-			this.setLocalStorageFilter('theActiveFilterTags', this.theActiveFilterTags)
-		},
-		toggleFilterGroup(item) {
-			const idx = this.theActiveFilterGroups.indexOf(item.value)
-			if (idx < 0) {
-				this.theActiveFilterGroups.push(item.value)
-			} else {
-				this.theActiveFilterGroups.splice(idx, 1)
-			}
-			this.setLocalStorageFilter('theActiveFilterGroups', this.theActiveFilterGroups)
-		},
-		updateItemTags(tagsArr) {
-			const caseOnId = this.theActiveCaseForTag.onid
-			const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
-			const tagsArrDb = tagsArr.map(tag => {
-				return {
-					value: tag.value,
-					color: tag.color
-				}
-			})
-			$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArrDb));
-			$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
-			$('.updTagOrGroup_Input_caseid > input').val(caseOnId)
-			this.isLoadingTagButton = true
-			this.observeChanges('.updTagOrGroup_Output > div', data => {
-				this.isLoadingTagButton = false
-				if (this.theShowTagDropdown === 'tag') {
-					this.cases[caseIdx].v_tags = tagsArr
-				} else {
-					this.cases[caseIdx].v_groups = tagsArr
-				}
-				// If modal is open then we need to update the jquery part tags and timeline
-				if ($('#js-case-element__inserted').length > 0) {
-					// Update tags/groups
-					const tagType = `data-tag-type="${this.theShowTagDropdown}"`;
-					var container = $('#js-case-element__inserted .o-cases__case_element__header__row__tags__container[' + tagType + ']');
-					var self = this
-					updateTagsHTML()
-
-					function updateTagsHTML() {
-						container.empty();
-						let htmlArr = [];
-						tagsArr.forEach(tag => {
-							var tagDiv = `<div class="item-tag" style="background-color: ${tag.color};">${tag.value}</div>`;
-							htmlArr.push(tagDiv);
-						});
-						const typei18n = self.theShowTagDropdown === 'group' ? 'gruppe' : 'tag'
-						if (htmlArr.length === 0) {
-							container.html('<div class="itemcase-tags__add">Tilføj ' + typei18n + '</div>')
-						} else {
-							container.html(htmlArr.join(''));
-						}
-					}
-					// Update timeline
-					const newHtml = $('.updTagOrGroup_Output > div').html()
-					var timelineContent = '<div class="timeline_body">' +
-						$(".updTagOrGroup_Output > div > .ETRAY_CASE_TIMELINE").text() +
-						"</div>";
-
-					// Update the ETRAY_CASE_TIMELINE with the new content
-					$(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").html(timelineContent);
-
-					// Set the new timeline content to the modal
-					$(".js-o-modal__case__timeline").html($(".ETRAY_CASE_TIMELINE_PARRENT > div").html());
-
-
-				}
-				this.setTheActiveTagDropdown(null)
-			})
-			$('.updTagOrGroup_BTN > a').click()
-		},
-		observeChanges(selector, callback) {
-			const el = $(selector)
-			if (!el || el.length === 0) {
-				//console.warn(`No element found with selector ${selector}`);
-				return;
-			}
-			el.html('loading')
-			let cInterval = setInterval(_ => {
-				const val = el.html()
-				if (val !== 'loading') {
-					clearInterval(cInterval)
-					callback(val);
-				} else {
-					// console.log('observer::empty', { selector }, el.html())
-				}
-			}, 1000)
-		},
-		createPopper(parent) {
-			const child = document.getElementById('popperTagsDropdown')
-			Popper.createPopper(
-				parent,
-				child,
+			],
+			onpFormData: [],
+			isUpdatingOnpProductList: !1,
+			infiniteScrollNumberONP: 50,
+			isLoadingOnpPendingOrders: !0,
+			onpPendingOrders: [],
+			ssid: '',
+			isSSIDLoading: !1,
+			isSSIDValid: !0,
+			OnpSSIDDetails: [],
+			isNewOrderModal: !1,
+			orderCustomerEmail: "",
+			isCustomerEmailInputEmpty: !1,
+			isSubmitOrderLoading: !1,
+			isOrderCustomerEmailValid: !0,
+			theActivePrevOrder: null,
+			isCancelOrderConfirmation: !1,
+			isVueModalOverlayExtra: !1,
+			isDeletingOrder: !1,
+			theActiveDescExpanded: null,
+			theReadMoreOnp: null,
+			infiniteScrollNumberONPOrders: 50,
+			PBIReportData: [],
+			theInvoiceBIExplainer: "",
+			theReportBIExplainer: "",
+			isLoadingBIReport: !1,
+			theActiveOrderType: '001',
+			theNewOrderCreatedDate: new Date().toISOString().substring(0, 10),
+			theNewOrderSkaderItems: [],
+			isEndCustomerEmailConfigModal: false,
+			isUpdatingEndCustomerEmailConfigForm: false,
+			theEndCustomerEmailConfigForm: [
 				{
-					// Popper options
-					placement: 'bottom-start',
-					modifiers: [
-						{
-							name: 'offset',
-							options: {
-								offset: [0, 10], // x-axis: 0, y-axis: -10
-							},
-						},
-					],
+					id: 'firmanavn',
+					label: 'Firmanavn',
+					type: 'text',
+					value: '',
+					validated: true
+				},
+				{
+					id: 'logo',
+					label: 'Logo (url)',
+					placeholder: 'Eks. https://opennet.dk/assets/img/logo-clean.png',
+					type: 'text',
+					value: '',
+					validated: true
+				},
+				{
+					id: 'emne_til_email',
+					label: 'Emnefelt til email',
+					type: 'text',
+					value: '',
+					validated: true,
+					configType: 'email'
+				},
+				{
+					id: 'tekst_til_email',
+					label: 'Brødtekst til email (Før link)',
+					type: 'textarea',
+					value: '',
+					validated: true,
+					configType: 'email'
+				},
+				{
+					id: 'link_i_email',
+					label: 'Tekst på knap (link) ',
+					type: 'text',
+					value: '',
+					validated: true,
+					configType: 'email'
+				},
+				{
+					id: 'afslutning_af_email',
+					label: 'Afslutning af email (Efter link) ',
+					type: 'textarea',
+					value: '',
+					validated: true,
+					configType: 'email'
+				},
+
+				{
+					id: 'title_til_hjemmeside',
+					label: 'Titel på hjemmeside',
+					type: 'textarea',
+					value: '',
+					validated: true,
+					configType: 'web'
+				},
+				{
+					id: 'tekst_til_hjemmeside',
+					label: 'Brødtekst på hjemmeside',
+					type: 'textarea',
+					value: '',
+					validated: true,
+					configType: 'web'
+				},
+				{
+					id: 'afslutning_af_hjemmeside',
+					label: 'Afslutning af hjemmeside',
+					type: 'textarea',
+					value: '',
+					validated: true,
+					configType: 'web'
+				},
+				{
+					id: 'css',
+					label: 'Ekstern CSS (url)',
+					placeholder: 'Eks. https://opennet.dk/assets/css/main.css',
+					type: 'text',
+					value: '',
+					validated: true,
+					configType: 'web'
 				}
-			);
-			this.$nextTick(_ => {
-				document.getElementById('tag_selector_search_input').focus()
-			})
-		},
-		setTheActiveTagDropdown(tagType, itemCase, evt) {
-			if (!tagType) {
-				this.theShowTagDropdown = null
-				this.theActiveCaseForTag = null
-				return
-			}
-			console.log('event::setTheActiveTagDropdown', { itemCase })
-			this.theActiveCaseForTag = itemCase
-			this.theShowTagDropdown = tagType
-			this.$nextTick(_ => {
-				this.createPopper(evt.target)
-			})
-		},
-		/* END 17-12-23 */
-		setTheEndCustomerEmailConfigFormActiveType(type) {
-			//console.log(this.theEndCustomerEmailConfigFormActiveType)
-			this.theEndCustomerEmailConfigFormActiveType = type
-		},
-		setTheActiveOrderType(typeCode) {
-			this.theActiveOrderType = typeCode
-			if (typeCode !== '001') {
-				this.setNewOrderSkaderItems()
-				this.$nextTick(_ => {
-					const el = document.querySelector('.o-cart__items__item--form > input[type="text"]')
-					if (el) {
-						el.focus()
-					}
-				})
-			}
-		},
-		setTypeOptionsInOnpForm(items, standardFormProp, formProp) {
-			let values = [];
-			const standardItems = [
+			],
+			standardOnpItems: [
 				{ value: '001', title: 'Installationsydelse' },
 				{ value: '002', title: 'Skader / Reparation' },
 				{ value: '003', title: 'Uberettiget fejlretning' }
-			]
-			items.forEach(product => {
-				let value = product[standardFormProp];
-				if (values.indexOf(value) < 0) {
-					values.push(value);
-				}
-			});
-			const index = this.onpForm.findIndex(item => item.id === formProp);
-			let valuesWithTitle = []
-			values.sort().forEach(val => {
-				const idxOfStandard = standardItems.findIndex(standardItem => standardItem['value'] === val)
-				if (idxOfStandard > -1) {
-					valuesWithTitle.push(standardItems[idxOfStandard])
-				} else {
-					valuesWithTitle.push({ value: val, title: val })
-				}
-			})
-			this.onpForm[index].options = valuesWithTitle
-			if (valuesWithTitle.length === 1) {
-				this.onpForm[index].value = valuesWithTitle[0].value
-				this.setFormItemValidated(this.onpForm[index])
-			}
-			this.onpForm[index].hide = false
+			],
+			isLoadingEndCustomerEmailConfigFormData: false,
+			theEndCustomerEmailConfigFormActiveType: 'web',
+			theFilteredSelectedTags: []
 		},
-		setOptionsInOnpForm(items, standardFormProp, formProp) {
-			let values = [];
-			items.forEach(product => {
-				let value = product[standardFormProp];
-				if (values.indexOf(value) < 0) {
-					values.push(value);
-				}
-			});
-			const index = this.onpForm.findIndex(item => item.id === formProp);
-			this.onpForm[index].options = values.sort()
-			if (values.length === 1) {
-				this.onpForm[index].value = values[0]
-				this.setFormItemValidated(this.onpForm[index])
-			}
-			this.onpForm[index].hide = false
-		},
-		setFormItemValidated(formItem) {
-			const val = formItem.value
-			formItem.validated = true
-			if (formItem.id === 'FROM_COMPANY') {
-				this.onpForm.forEach(onpFormItem => {
-					if (onpFormItem.id !== 'FROM_COMPANY' && onpFormItem.id !== 'REC_ID') {
-						onpFormItem.hide = true
-						onpFormItem.value = ''
-						onpFormItem.validated = true
+		computed: {
+			isViewNewsOrOperationStatus() {
+				return this.activeCategory == 'operation_status' || this.activeCategory == 'news'
+			},
+			theGhostUserListPartners() {
+				return this.theGhostUserList.map(company => company.company)
+			},
+			theGhostUserSelectedPartnerUsers() {
+				const company = this.theGhostUserList.find(c => c.company === this.theGhostUserSelectedPartner);
+				return company ? company.users : [];
+			},
+			/* START 17-12-23 */
+			isAnyFiltersActive() {
+				return this.theActiveFilterTags.length > 0 || this.theActiveFilterGroups.length > 0 || this.theActiveFilterStatus.length > 0 || this.theActiveFilterCategories.length > 0 || this.activeType
+			},
+			isUserOpennetOrSP() {
+				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet']
+				return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
+			},
+			isNewDesignActive() {
+				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet', 'SP Dev Company', 'IO Dev Company']
+				return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
+			},
+			allCaseCategories() {
+				const uniqueArr = [{ value: 'v_no_selected', label: 'Uden kategori', v_sort: true }]
+				this.casesFiltered2.forEach(caseItem => {
+					const dbValue = caseItem['filter_category']
+					if (dbValue) {
+						const idx = uniqueArr.findIndex(allTag => allTag.value === dbValue)
+						if (idx < 0) {
+							const obj = { value: dbValue }
+							uniqueArr.push(obj)
+						}
 					}
 				})
-				let activeStandardItems = this.onpFormData.filter(standardFormItem => standardFormItem['from_company'] === val)
-				this.setTypeOptionsInOnpForm(activeStandardItems, 'transaction_type', 'TYPE')
-				return
-			}
-			const partnerVal = this.onpForm.filter(onpFormItem => onpFormItem.id === 'FROM_COMPANY')[0].value
-			if (formItem.id === 'TYPE') {
-				this.onpForm.forEach(onpFormItem => {
-					if (onpFormItem.id !== 'FROM_COMPANY' && onpFormItem.id !== 'TYPE' && onpFormItem.id !== 'REC_ID') {
-						onpFormItem.hide = true
-						onpFormItem.value = ''
-						onpFormItem.validated = true
+				return uniqueArr
+			},
+			allCaseStatus() {
+				const uniqueArr = [{ value: 'v_no_selected', label: 'Uden status', v_sort: true }]
+				this.casesFiltered2.forEach(caseItem => {
+					const dbValue = caseItem['v_status']
+					if (dbValue) {
+						const idx = uniqueArr.findIndex(allTag => allTag.value === dbValue)
+						if (idx < 0) {
+							const obj = { value: dbValue, label: this.statusI18N[dbValue] }
+							uniqueArr.push(obj)
+						}
 					}
 				})
-				let activeStandardItems = this.onpFormData.filter(standardFormItem => standardFormItem['from_company'] === partnerVal && standardFormItem['transaction_type'] === val)
-				if (activeStandardItems.length < 1) {
-					return
-				} else {
-					this.setOptionsInOnpForm(activeStandardItems, 'transaction_code', 'TRANSACTION_CODE')
-				}
-				return
-			}
-			const typeVal = this.onpForm.filter(onpFormItem => onpFormItem.id === 'TYPE')[0].value
-			if (formItem.id === 'TRANSACTION_CODE') {
-				const transactionCodeVal = val
-				this.onpForm.forEach(onpFormItem => {
-					if (onpFormItem.id !== 'FROM_COMPANY' && onpFormItem.id !== 'TYPE' && formItem.id !== 'TRANSACTION_CODE') {
-						onpFormItem.hide = true
-						onpFormItem.value = ''
-						onpFormItem.validated = true
-					}
-				})
-				if (transactionCodeVal) {
-					const activeStandardItems = this.onpFormData.filter(standardFormItem => standardFormItem['from_company'] === partnerVal && standardFormItem['transaction_type'] === typeVal && standardFormItem['transaction_code'] === transactionCodeVal)
-					const unitLabelValue = activeStandardItems[0]['unit_label']
-					const idx = this.onpForm.findIndex(item => item.id === 'UNIT_LABEL')
-					this.onpForm[idx].value = unitLabelValue
-					const idsToChange = ['LABEL', 'PRICE', 'UNIT_LABEL', 'UNIT_DEFAULT_VALUE']
-					if (val.length > 0 && typeVal !== '002') {
-						this.onpForm.forEach(onpFormItem => {
-							if (idsToChange.indexOf(onpFormItem.id) > -1) {
-								onpFormItem.hide = false
+				return uniqueArr
+			},
+			allCaseGroups() {
+				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden gruppe', v_sort: true }]
+				this.casesFiltered2.forEach(caseItem => {
+					if (caseItem['v_groups']) {
+						caseItem['v_groups'].forEach(tag => {
+							const idx = uniqueTags.findIndex(allTag => allTag.value === tag.value)
+							const idxInPredefined = this.thePredefinedGroups.findIndex(predefinedTag => predefinedTag.value === tag.value)
+							if (idx < 0 && idxInPredefined < 0) {
+								uniqueTags.push(tag)
 							}
 						})
 					}
-				}
-			}
-		},
-		setIsSortDropdown(e) {
-			this.isSortDropdown = !this.isSortDropdown
-		},
-		setTheReadMoreOnp(e) {
-			this.theReadMoreOnp === e.REC_ID ? this.theReadMoreOnp = null : this.theReadMoreOnp = e.REC_ID
-		},
-		closeSortDropdown() {
-			this.isSortDropdown && (this.isSortDropdown = !1)
-		},
-		setTheSortSetting(e) {
-			setTimeout(t => {
-				this.isCases ? (this.theSortSettingCases = e, "undefined" != typeof Storage && window.localStorage.setItem("sortSettingCases", JSON.stringify(e))) : (this.theSortSettingDocs = e, "undefined" != typeof Storage && window.localStorage.setItem("sortSettingDocs", JSON.stringify(e)))
-			}, 0)
-		},
-		clearSearchQuery() {
-			this.$refs.v_search_query && (this.$refs.v_search_query.value = ""), this.searchQuery = ""
-		},
-		debounceSearch(e) {
-			this.searchQuery = "", clearTimeout(this.debounce), this.debounce = setTimeout(() => {
-				this.searchQuery = e.target.value
-			}, 600)
-		},
-		loadMoreCases() {
-			if (this.isCases) {
-				if (this.searchedCases.length < 50) {
-					this.infiniteScrollNumber = 50;
-					return
-				} !(this.infiniteScrollNumber > this.searchedCases.length) && (this.infiniteScrollNumber += 50)
-			}
-		},
-		onCaseClicked(caseInfo, token) {
-			// Disable auto-update
-			run_autoupdate = false;
-
-			// Find the index of the clicked case
-			let caseIndex = this.cases.findIndex(c => c.onid === caseInfo.onid);
-
-			// If the case is found, set it as the original active case
-			if (caseIndex > -1) {
-				this.theOrignalActiveCase = this.cases[caseIndex];
-			}
-
-			// Set case information
-			let caseId = caseInfo.onid;
-			let caseToken = caseInfo.onid_token;
-
-			// Add mutation observer to the single case
-			addMutationOberserverToSingleCase();
-
-			// Add loading class to modal body
-			let modalBody = $(".js-modal__single-case .o-modal__body");
-			if (!modalBody.hasClass("o-modal__body--loading")) {
-				modalBody.addClass("o-modal__body--loading");
-			}
-
-			// Add classes to overlay and modal
-			$(".o-bg-overlay").addClass("o-bg-overlay--active");
-			$(".o-modal__case").addClass("o-modal--active");
-
-			// Disable body scrolling
-			$("body").css("overflow", "hidden");
-
-			// Clone and insert case element into modal
-			let caseElement = $(".case_element[data-onid=" + caseId + "][data-onid_token=" + caseToken + "]");
-			$(caseElement).clone().attr("id", "js-case-element__inserted").appendTo(".js-case-insert");
-
-			// Set data attributes on modal
-			$(".o-modal__case").attr("data-case-id", caseId);
-			$(".o-modal__case").attr("data-case-id-token", caseToken);
-
-			// Set values for input fields
-			$(".ETRAY_READ_CASE_TOKEN_ID > input").val(caseToken);
-			$(".ETRAY_READ_CASE_ID > input").val(caseId);
-			$(".ETRAY_READ_MESSAGE_TYPE > input").val("VIEW_CASE");
-			$(".ETRAY_VIEW_CASE > a").click();
-
-			// Change select option and update UI based on user type
-			subCatChangeSelect("List of Cases");
-
-			if (this.theUserType === "ON") {
-				if (caseInfo.to_company.concat(caseInfo.from_company).indexOf("OpenNet") < 0) {
-					$(".js-o-modal__case__actions, .js-o-modal__case__commentary").addClass("hidden_field");
-				} else {
-					$(".js-o-modal__case__actions, .js-o-modal__case__commentary").removeClass("hidden_field");
-				}
-			}
-
-			// Set modal title
-			let modalTitle = caseId + " - " + caseInfo.filter_inquiry_type;
-			$(".js-modal__single-case__title").text(modalTitle);
-
-			// Read case and handle single case loaded event
-			readEtrayCase(caseToken, caseId);
-
-			$(document).one("etray::single-case-loaded", function () {
-				$(".o-modal__body").removeClass("o-modal__body--loading");
-			});
-
-			// Set date and time picker
-			setDateTimePicker();
-			// START ADDED 26-11-23 For openByOtherEmp
-			isSeeCaseOpenByOthers = true
-			this.seeCaseOpenByOthers();
-			this.setCheckCaseByOtherInInterval();
-			// END ADDED 26-11-23 For openByOtherEmp
-			// START 17-12-23
-			this.$nextTick(_ => {
-				$('#js-case-element__inserted .o-cases__case_element__header__row__tags__container').on('click', (evt) => {
-					const tagType = evt.target.dataset.tagType
-					const caseItem = this.cases[caseIndex]
-					this.setTheActiveTagDropdown(tagType, caseItem, evt)
 				})
-			})
-		},
-		// START ADDED 26-11-23 For openByOtherEmp
-		seeCaseOpenByOthers() {
-			if (!isSeeCaseOpenByOthers) {
-				return
-			}
-			$('.updCaseIdSession_Type > input').val('KEEP_ALIVE');
-			$('.updCaseIdSession_Output > div').html('');
-			$('.updCaseIdSession_BTN > a').click();
+				return uniqueTags.concat(this.thePredefinedGroups)
+			},
+			allCaseTags() {
+				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden tags', v_sort: true }]
+				this.casesFiltered2.forEach(caseItem => {
+					if (caseItem['v_tags']) {
+						caseItem['v_tags'].forEach(tag => {
+							const idx = uniqueTags.findIndex(allTag => allTag.value === tag.value)
+							if (idx < 0) {
+								uniqueTags.push(tag)
+							}
+						})
+					}
+				})
 
-			const observeCaseOpenChanges = (selector, callback) => {
+				return uniqueTags;
+			},
+			/* END 17-12-23 */
+			onpSSIDDetailsGrouped() {
+				let obj = {}
+				const itemsSorted = this.OnpSSIDDetails.sort((a, b) => a.LABEL !== b.LABEL ? a.LABEL < b.LABEL ? -1 : 1 : 0);
+				itemsSorted.forEach(item => {
+					if (obj[item.TYPE]) {
+						obj[item.TYPE].push(item)
+					} else {
+						obj[item.TYPE] = [item]
+					}
+				})
+				return obj
+			},
+			pbiReports() {
+				if (!this.PBIReportsData || this.PBIReportsData.length < 1) {
+					return [];
+				}
+
+				// Filter reports by the active category
+				let filteredReports = this.PBIReportsData.filter(report => report.area === this.activeCategory);
+				console.log('filteredReports', filteredReports);
+				// Find the index of the report with the display name "Vælg"
+				let indexOfValg = filteredReports.findIndex(report => report && report.reportDisplayName === "Vælg");
+				console.log('indexOfValg', indexOfValg);
+				// If there are reports and "Vælg" is not found, add a placeholder to the beginning
+				if (filteredReports.length > 0 && indexOfValg < 0) {
+					console.log('run_unshift');
+					filteredReports.unshift({
+						reportDisplayName: "Vælg",
+						reportId: "placeholderDropdown"
+					});
+				}
+				console.log('filteredReports', filteredReports)
+				return filteredReports;
+			},
+			theSortSetting() {
+				return this.isCases ? this.theSortSettingCases : this.theSortSettingDocs
+			},
+			allSortSettings() {
+				return this.isCases ? [{
+					title: "Oprettelse (Nyeste f\xf8rste)",
+					value: "CREATED_ASC"
+				}, {
+					title: "Oprettelse (\xc6ldste f\xf8rste)",
+					value: "CREATED_DESC"
+				}, {
+					title: "SLA (Nyeste f\xf8rste)",
+					value: "SLA_ASC"
+				}, {
+					title: "SLA (\xc6ldste f\xf8rste)",
+					value: "SLA_DESC"
+				}, {
+					title: "Opdateret (Nyeste f\xf8rste)",
+					value: "UPDATED_ASC"
+				}, {
+					title: "Opdateret (\xc6ldste f\xf8rste)",
+					value: "UPDATED_DESC"
+				}] : [{
+					title: "Aktiv (Nyeste f\xf8rste)",
+					value: "ACTIVE_DATE_ASC"
+				}, {
+					title: "Aktiv (\xc6ldste f\xf8rste)",
+					value: "ACTIVE_DATE_DESC"
+				}, {
+					title: "Udl\xf8b (Nyeste f\xf8rste)",
+					value: "EXPIRE_DATE_ASC"
+				}, {
+					title: "Udl\xf8b (\xc6ldste f\xf8rste)",
+					value: "EXPIRE_DATE_DESC"
+				}]
+			},
+			casesFiltered() {
+				return "my_cases" == this.activeCategory ? this.cases.filter(e => "true" == e.filter_my_cases) : this.cases
+			},
+			casesOpen() {
+				return this.casesFiltered.filter(e => "open" == e.filter_open_closed)
+			},
+			casesClosed() {
+				return this.casesFiltered.filter(e => "closed" == e.filter_open_closed)
+			},
+			partnerCases() {
+				return this.casesFiltered.filter(e => "partnerCases" == e.filter_open_closed)
+			},
+			casesFiltered2() {
+				if (this.theActiveFilter === "active") {
+					return this.casesOpen
+				} else {
+					return this.casesClosed
+				}
+			},
+			caseFilteredWithGroups() {
+				if (this.theActiveFilterGroups.length < 1) {
+					return this.casesFiltered2;
+				} else {
+					return this.casesFiltered2.filter(itemCase => {
+						const hasNoSelectedGroup = this.theActiveFilterGroups.includes('v_no_selected');
+						if (hasNoSelectedGroup && (!itemCase.v_groups || itemCase.v_groups.length === 0)) {
+							return true;
+						}
+						return itemCase.v_groups && itemCase.v_groups.some(vGroup =>
+							this.theActiveFilterGroups.includes(vGroup.value));
+					})
+				}
+			},
+			caseFilteredWithStatus() {
+				if (this.theActiveFilterStatus.length < 1) {
+					return this.caseFilteredWithGroups;
+				} else {
+					return this.caseFilteredWithGroups.filter(itemCase => {
+						// Check if 'v_no_selected' is one of the active filter statuses
+						const hasNoSelectedStatus = this.theActiveFilterStatus.includes('v_no_selected');
+
+						// If 'v_no_selected' is present and the item has an empty status, include it in the filter
+						if (hasNoSelectedStatus && (!itemCase.v_status || itemCase.v_status === '')) {
+							return true;
+						}
+
+						// If item has a status, check if it matches any of the active filter statuses
+						return this.theActiveFilterStatus.includes(itemCase.v_status);
+					})
+				}
+			},
+			caseFilteredWithCategories() {
+				if (this.theActiveFilterCategories.length < 1) {
+					return this.caseFilteredWithStatus;
+				} else {
+					return this.caseFilteredWithStatus.filter(itemCase => {
+						// Check if 'v_no_selected' is one of the active filter statuses
+						const hasNoSelectedStatus = this.theActiveFilterCategories.includes('v_no_selected');
+
+						// If 'v_no_selected' is present and the item has an empty status, include it in the filter
+						if (hasNoSelectedStatus && (!itemCase.filter_category || itemCase.filter_category === '')) {
+							return true;
+						}
+						return this.theActiveFilterCategories.includes(itemCase.filter_category);
+					})
+				}
+			},
+			caseFilteredWithTags() {
+				if (this.theActiveFilterTags.length < 1) {
+					return this.caseFilteredWithCategories;
+				} else {
+					return this.caseFilteredWithCategories.filter(itemCase => {
+						const hasNoSelectedTag = this.theActiveFilterTags.includes('v_no_selected');
+						if (hasNoSelectedTag && (!itemCase.v_tags || itemCase.v_tags.length === 0)) {
+							return true;
+						}
+						return itemCase.v_tags && itemCase.v_tags.some(vTag =>
+							this.theActiveFilterTags.includes(vTag.value));
+					});
+				}
+			},
+			casesFiltered3() {
+				let e = this.activeType;
+				return "not_assigned" == e ? this.caseFilteredWithTags.filter(e => e.assign_to.length < 1) : "filter_not_follow_up" == e ? this.caseFilteredWithTags.filter(e => !this.activeType || "true" != e.filter_follow_up) : this.caseFilteredWithTags.filter(t => !this.activeType || "true" == t[e])
+			},
+			caseFiltered4() {
+				// Check if the active case category is not 'Alle kategorier'
+				if (this.theActiveCaseCategory !== "Alle kategorier") {
+					// If it's a specific category, filter the cases
+					return this.casesFiltered3.filter(caseItem =>
+						caseItem.filter_category === this.theActiveCaseCategory);
+				} else {
+					// If the active category is 'Alle kategorier', return all cases
+					return this.casesFiltered3;
+				}
+			},
+			casesSorted() {
+				switch (this.theSortSettingCases.value) {
+					case "CREATED_ASC":
+						return this.caseFiltered4.sort((e, t) => this.formatDateForJs(t.created_time) - this.formatDateForJs(e.created_time));
+					case "CREATED_DESC":
+						return this.caseFiltered4.sort((e, t) => this.formatDateForJs(e.created_time) - this.formatDateForJs(t.created_time));
+					case "SLA_ASC":
+						return this.caseFiltered4.sort((e, t) => this.formatDateForJs(t.sla_deadline_date, t) - this.formatDateForJs(e.sla_deadline_date, e));
+					case "SLA_DESC":
+						return this.caseFiltered4.sort((e, t) => this.formatDateForJs(e.sla_deadline_date, e) - this.formatDateForJs(t.sla_deadline_date, t));
+					case "UPDATED_ASC":
+						return this.caseFiltered4.sort((e, t) => this.formatDateForJs(t.last_updated_time) - this.formatDateForJs(e.last_updated_time));
+					case "UPDATED_DESC":
+						return this.caseFiltered4.sort((e, t) => this.formatDateForJs(e.last_updated_time) - this.formatDateForJs(t.last_updated_time))
+				}
+			},
+			searchedCases() {
+				return this.isCases ? this.searchQuery.length < 1 ? this.casesSorted : this.searchFunc(this.casesSorted) : []
+			},
+			lengthOfCases() {
+				var e = {
+					filter_created_by_me: 0,
+					filter_assigned_me: 0,
+					filter_followed_by_me: 0,
+					filter_sla_expired: 0,
+					filter_new: 0,
+					not_assigned: 0,
+					filter_follow_up: 0,
+					filter_not_follow_up: 0
+				};
+				return this.casesFiltered2.forEach(t => {
+					"true" == t.filter_created_by_me && e.filter_created_by_me++, "true" == t.filter_assigned_me && e.filter_assigned_me++, "true" == t.filter_followed_by_me && e.filter_followed_by_me++, "true" == t.filter_sla_expired && e.filter_sla_expired++, "true" == t.filter_new && e.filter_new++, t.assign_to.length < 1 && e.not_assigned++, "true" == t.filter_follow_up && e.filter_follow_up++, "false" == t.filter_follow_up && e.filter_not_follow_up++
+				}), e
+			},
+			allCategoriesFromCases() {
+				let e = [];
+				return ("active" === this.theActiveFilter ? this.itemsActiveFromCategory : this.itemsExpiredFromCategory).forEach((t, s) => {
+					if (t.type && t.type.length > 0) {
+						let a = e.findIndex(e => e.title === t.type);
+						a < 0 ? e.push({
+							title: t.type,
+							onIds: [t.onid]
+						}) : e[a].onIds.push(t.onid)
+					}
+				}), e
+			},
+			allCasesCategories() {
+				var e = [];
+				this.casesFiltered2.forEach(t => {
+					let s = unescape(t.filter_category);
+					0 > e.findIndex(e => e === s) && e.push(s)
+				});
+				let t = e.sort((e, t) => e.localeCompare(t));
+				return t.unshift("Alle kategorier"), t
+			},
+			isDocs() {
+				return "" !== this.activeCategory && "roles" !== this.activeCategory && "all_cases" !== this.activeCategory && "my_cases" !== this.activeCategory && "end_customer_pricing_config" !== this.activeCategory && "end_customer_orders" !== this.activeCategory
+			},
+			isCases() {
+				return "all_cases" == this.activeCategory || "my_cases" == this.activeCategory
+			},
+			allCategories() {
+				let e = [];
+				return this.items.forEach((t, s) => {
+					0 > e.indexOf(t.category) && e.push(t.category)
+				}), e
+			},
+			allTypesFromCategory() {
+				let e = [];
+				return (items = "active" === this.theActiveFilter ? this.itemsActiveFromCategory : "future" === this.theActiveFilter ? this.itemsFutureFromCategory : this.itemsExpiredFromCategory).forEach((t, s) => {
+					if (t.type && t.type.length > 0) {
+						let a = e.findIndex(e => e.title === t.type);
+						a < 0 ? e.push({
+							title: t.type,
+							onIds: [t.onid]
+						}) : e[a].onIds.push(t.onid)
+					}
+				}), e
+			},
+			filteredItemsWithActiveDateAfterToday() {
+				return this.items.filter(e => !this.dateIsAfterToday(this.formatDateForJs(e.active_date)))
+			},
+			itemsSorted() {
+				let e = this.filteredItemsWithActiveDateAfterToday;
+				switch (this.theSortSettingDocs.value) {
+					case "ACTIVE_DATE_ASC":
+						return e.sort((e, t) => this.formatDateForJs(t.active_date) - this.formatDateForJs(e.active_date));
+					case "ACTIVE_DATE_DESC":
+						return e.sort((e, t) => this.formatDateForJs(e.active_date) - this.formatDateForJs(t.active_date));
+					case "EXPIRE_DATE_ASC":
+						return e.sort((e, t) => this.formatDateForJs(t.expire_date, t) - this.formatDateForJs(e.expire_date, e));
+					case "EXPIRE_DATE_DESC":
+						return e.sort((e, t) => this.formatDateForJs(e.expire_date, e) - this.formatDateForJs(t.expire_date, t))
+				}
+			},
+			filteredItemsWithCategory() {
+				return this.itemsSorted.filter(e => e.category === this.activeCategory)
+			},
+			itemsActiveFromCategory() {
+				let e = new Date;
+				return this.filteredItemsWithCategory.filter(t => {
+					let s = t.expire_date ? this.formatDateForJs(t.expire_date) : e.setDate(e.getDate() + 1);
+					return this.dateIsAfterToday(s)
+				})
+			},
+			itemsExpiredFromCategory() {
+				let e = new Date;
+				return this.filteredItemsWithCategory.filter(t => {
+					let s = t.expire_date ? this.formatDateForJs(t.expire_date) : e.setDate(e.getDate() + 1);
+					return !this.dateIsAfterToday(s)
+				})
+			},
+			itemsFutureFromCategory() {
+				let e = this.items.filter(e => e.category === this.activeCategory && this.dateIsAfterToday(this.formatDateForJs(e.active_date)));
+				switch (this.theSortSettingDocs.value) {
+					case "ACTIVE_DATE_ASC":
+						return e.sort((e, t) => this.formatDateForJs(t.active_date) - this.formatDateForJs(e.active_date));
+					case "ACTIVE_DATE_DESC":
+						return e.sort((e, t) => this.formatDateForJs(e.active_date) - this.formatDateForJs(t.active_date));
+					case "EXPIRE_DATE_ASC":
+						return e.sort((e, t) => this.formatDateForJs(t.expire_date, t) - this.formatDateForJs(e.expire_date, e));
+					case "EXPIRE_DATE_DESC":
+						return e.sort((e, t) => this.formatDateForJs(e.expire_date, e) - this.formatDateForJs(t.expire_date, t))
+				}
+			},
+			filteredItemsWithType() {
+				return (items = "active" === this.theActiveFilter ? this.itemsActiveFromCategory : "future" === this.theActiveFilter ? this.itemsFutureFromCategory : this.itemsExpiredFromCategory).filter(e => !this.activeType || e.type === this.activeType)
+			},
+			filteredItemsOnUnread() {
+				return this.filteredItemsWithType.filter(e => "Alle" === this.theUnreadSelected ? e : "Ul\xe6st" === this.theUnreadSelected ? "Yes" === e.show_unread_icon : "L\xe6st" === this.theUnreadSelected ? "No" === e.show_unread_icon : void 0)
+			},
+			searchedItems() {
+				return this.isDocs ? this.searchFunc(this.filteredItemsOnUnread) : []
+			},
+			allRoles() {
+				return this.users[0] && this.users[0].role_array ? this.users[0].role_array : []
+			},
+			searchedUsers() {
+				return "roles" !== this.activeCategory ? [] : this.searchFunc(this.users)
+			},
+			isTheActiveUserTheUser() {
+				return this.theActiveUser.id == this.theUser.id
+			},
+			oSelectUsers() {
+				return this.users.filter(e => null !== e.name ? e.name.match(RegExp(this.oSelectQuery, "i")) : "")
+			},
+			usersWithoutActiveRole(e) {
+				var e = this.theActiveRoleForFilter;
+				return this.oSelectUsers.filter(t => t.role_array.findIndex(t => t.group_id == e && "false" == t.active_role) > -1)
+			},
+			usersIsLoading() {
+				return this.usersIsLoading_1_75 || this.usersIsLoading_76_150 || this.usersIsLoading_151_225 || this.usersIsLoading_226_300 || this.usersIsLoading_301_375 || this.usersIsLoading_376_450 || this.usersIsLoading_451_525
+			},
+			onpProductListVProps() {
+				const valueTitleMap = this.standardOnpItems.reduce((obj, item) => (obj[item.value] = item.title, obj), {})
+				return this.onpProductList.map(item => {
+					this.$set(item, 'v_type', valueTitleMap[item.TYPE])
+					return item
+				})
+			},
+			onpProductListFilters() {
+				var e = [];
+				return this.onpProductListVProps.forEach(t => {
+					0 > e.indexOf(t.FROM_COMPANY) && e.push(t.FROM_COMPANY)
+				}), e.sort().unshift("Fra alle"), e
+			},
+			onpProductListFiltered() {
+				return ("Fra alle" != this.theActiveOnpProductListFilter ? this.onpProductList.filter(e => e.FROM_COMPANY === this.theActiveOnpProductListFilter) : this.onpProductList).sort(function (e, t) {
+					return e.REC_ID - t.REC_ID
+				})
+			},
+			onpProductListSearched() {
+				return this.searchFunc(this.onpProductListFiltered)
+			},
+			onpPendingOrdersVProps() {
+				const valueTitleMap = this.standardOnpItems.reduce((obj, item) => (obj[item.value] = item.title, obj), {})
+				return this.onpPendingOrders.map(item => {
+					this.$set(item, 'v_type', valueTitleMap[item.TYPE])
+					return item
+				})
+			},
+			onpPendingOrdersSorted() {
+				return this.onpPendingOrders.sort((e, t) => this.formatDateForJs2TypsOfDates(t.created_time) - this.formatDateForJs2TypsOfDates(e.created_time))
+			},
+			onpPendingOrdersSearched() {
+				return this.searchFunc(this.onpPendingOrdersSorted)
+			},
+			order() {
+				if (this.theActiveOrderType !== '002') {
+					return this.OnpSSIDDetails.filter(e => e.v_count > 0)
+				}
+				if (this.theActiveOrderType === '002') {
+					return this.theNewOrderSkaderItems
+				}
+			},
+			orderSum() {
+				var e = 0;
+				return this.order.forEach(t => {
+					e += t.PRICE * t.v_count
+				}), e
+			},
+			dbOrder() {
+				var orderStatus = this.theActiveOrderType === '001' ? "PENDING" : "APPROVED"
+				return {
+					id: "",
+					created_time: this.theNewOrderCreatedDate,
+					created_by: "",
+					order_items: this.order.map(e => ({
+						TRANSACTION_CODE: e.TRANSACTION_CODE,
+						LABEL: e.LABEL,
+						PRICE: e.PRICE,
+						QUANTITY: e.v_count,
+						UNIT_LABEL: e.UNIT_LABEL,
+						SSID: e.ssid
+					})),
+					order_sum: this.orderSum,
+					status: orderStatus,
+					can_cancel: !0,
+					customer_email: this.orderCustomerEmail,
+					ssid: this.ssid
+				}
+			},
+			theEndCustomerEmailConfigFormWithoutFilter() {
+				return this.theEndCustomerEmailConfigForm.filter(formItem => !formItem.configType)
+			},
+			theEndCustomerEmailConfigFormFiltered() {
+				return this.theEndCustomerEmailConfigForm.filter(formItem => formItem.configType && formItem.configType === this.theEndCustomerEmailConfigFormActiveType)
+			},
+			theEndCustomerEmailConfigFormHash() {
+				return this.theEndCustomerEmailConfigForm.reduce((obj, item) => (obj[item.id] = item, obj), {})
+			}
+		},
+		watch: {
+			theUser(e) {
+				this.isEncodedHappenedBeforeUser && this.cases.forEach((e, t) => {
+					e.created_by_id && e.created_by_id == this.theUser.id && (Vue.set(e, "filter_created_by_me", "true"), Vue.set(e, "filter_my_cases", "true")), e.assign_to_id && e.assign_to_id == this.theUser.id && (Vue.set(e, "filter_assigned_me", "true"), Vue.set(e, "filter_my_cases", "true")), e.followed_by_list && e.followed_by_list.split(";").indexOf(this.theUser.id) > -1 && (Vue.set(e, "filter_followed_by_me", "true"), Vue.set(e, "filter_my_cases", "true"))
+				})
+			}
+		},
+		methods: {
+			showToast(message) {
+				this.toast.message = message;
+				this.toast.visible = true;
+				setTimeout(() => {
+					this.toast.visible = false;
+				}, 3000); // Hide after 3 seconds
+			},
+			createGhostUser() {
+				this.isGhostUserCreating = true
+				$('.UM_EVENT_TYPE > input').val('GHOST')
+				$('.UM_USER_ID > input').val(this.theGhostUserSelectedPartnerUser)
+				$('.BTN_UserManagement > a').click()
+				setTimeout(_ => {
+					this.closeVueModalOverlay()
+					this.showToast('“ghost profile” er oprettet og detaljer kommer pr email')
+				}, 1000)
+			},
+			onTheGhostUserSelectedPartner(val) {
+				this.theGhostUserSelectedPartner = val
+				this.theGhostUserSelectedPartnerUser = null
+			},
+			onTheGhostUserSelectedPartnerUser(val) {
+				this.theGhostUserSelectedPartnerUser = val
+			},
+			setIsCreateGhostUser() {
+				if (!this.isCreateGhostUser) {
+					this.isCreateGhostUser = true
+					this.isLoadingGhostUserList = true
+					this.observeChanges('.getUserFullList_Output > div', data => {
+						this.theGhostUserList = data.length > 0 ? JSON.parse(data) : []
+						this.isLoadingGhostUserList = false
+						$('.getUserFullList_Output > div').html('')
+					})
+					$('.getUserFullList_BTN > a').click()
+				} else {
+					this.isCreateGhostUser = false
+				}
+			},
+			/* START 17-12-23 */
+			getAllLocalStorageFilter() {
+				if (!this.isNewDesignActive) {
+					return
+				}
+				this.theActiveFilterTags = []
+				this.theActiveFilterGroups = []
+				this.theActiveFilterStatus = []
+				this.theActiveFilterCategories = []
+				this.activeType = null
+				this.getLocalStorageFilter('theActiveFilterTags')
+				this.getLocalStorageFilter('theActiveFilterGroups')
+				this.getLocalStorageFilter('theActiveFilterStatus')
+				this.getLocalStorageFilter('theActiveFilterCategories')
+				this.getLocalStorageFilter('activeType')
+			},
+			removeAllFilters() {
+				this.theActiveFilterTags = []
+				this.setLocalStorageFilter('theActiveFilterTags', this.theActiveFilterTags)
+				this.theActiveFilterGroups = []
+				this.setLocalStorageFilter('theActiveFilterGroups', this.theActiveFilterGroups)
+				this.theActiveFilterStatus = []
+				this.setLocalStorageFilter('theActiveFilterStatus', this.theActiveFilterStatus)
+				this.theActiveFilterCategories = []
+				this.setLocalStorageFilter('theActiveFilterCategories', this.theActiveFilterCategories)
+				this.activeType = null;
+				this.setLocalStorageFilter('activeType', null)
+				this.infiniteScrollNumber = 50;
+				this.clearSearchQuery();
+			},
+			setLocalStorageFilter(filterType, filterArr) {
+				const localTitle = this.activeCategory + '_' + this.theActiveFilter + '_' + filterType
+				if (!filterArr || filterArr.length === 0) {
+					localStorage.removeItem(localTitle)
+				} else {
+					localStorage.setItem(localTitle, JSON.stringify(filterArr))
+				}
+			},
+			getLocalStorageFilter(filterType, filterArr) {
+				const localTitle = this.activeCategory + '_' + this.theActiveFilter + '_' + filterType
+				if (localStorage.getItem(localTitle)) {
+					this[filterType] = JSON.parse(localStorage.getItem(localTitle));
+				}
+			},
+			toggleFilterCategory(item) {
+				const idx = this.theActiveFilterCategories.indexOf(item.value)
+				if (idx < 0) {
+					this.theActiveFilterCategories.push(item.value)
+				} else {
+					this.theActiveFilterCategories.splice(idx, 1)
+				}
+				this.setLocalStorageFilter('theActiveFilterCategories', this.theActiveFilterCategories)
+			},
+			toggleFilterStatus(item) {
+				const idx = this.theActiveFilterStatus.indexOf(item.value)
+				if (idx < 0) {
+					this.theActiveFilterStatus.push(item.value)
+				} else {
+					this.theActiveFilterStatus.splice(idx, 1)
+				}
+				this.setLocalStorageFilter('theActiveFilterStatus', this.theActiveFilterStatus)
+			},
+			toggleFilterTag(item) {
+				const idx = this.theActiveFilterTags.indexOf(item.value)
+				if (idx < 0) {
+					this.theActiveFilterTags.push(item.value)
+				} else {
+					this.theActiveFilterTags.splice(idx, 1)
+				}
+				this.setLocalStorageFilter('theActiveFilterTags', this.theActiveFilterTags)
+			},
+			toggleFilterGroup(item) {
+				const idx = this.theActiveFilterGroups.indexOf(item.value)
+				if (idx < 0) {
+					this.theActiveFilterGroups.push(item.value)
+				} else {
+					this.theActiveFilterGroups.splice(idx, 1)
+				}
+				this.setLocalStorageFilter('theActiveFilterGroups', this.theActiveFilterGroups)
+			},
+			updateItemTags(tagsArr) {
+				const caseOnId = this.theActiveCaseForTag.onid
+				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
+				const tagsArrDb = tagsArr.map(tag => {
+					return {
+						value: tag.value,
+						color: tag.color
+					}
+				})
+				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArrDb));
+				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
+				$('.updTagOrGroup_Input_caseid > input').val(caseOnId)
+				this.isLoadingTagButton = true
+				this.observeChanges('.updTagOrGroup_Output > div', data => {
+					this.isLoadingTagButton = false
+					if (this.theShowTagDropdown === 'tag') {
+						this.cases[caseIdx].v_tags = tagsArr
+					} else {
+						this.cases[caseIdx].v_groups = tagsArr
+					}
+					// If modal is open then we need to update the jquery part tags and timeline
+					if ($('#js-case-element__inserted').length > 0) {
+						// Update tags/groups
+						const tagType = `data-tag-type="${this.theShowTagDropdown}"`;
+						var container = $('#js-case-element__inserted .o-cases__case_element__header__row__tags__container[' + tagType + ']');
+						var self = this
+						updateTagsHTML()
+
+						function updateTagsHTML() {
+							container.empty();
+							let htmlArr = [];
+							tagsArr.forEach(tag => {
+								var tagDiv = `<div class="item-tag" style="background-color: ${tag.color};">${tag.value}</div>`;
+								htmlArr.push(tagDiv);
+							});
+							const typei18n = self.theShowTagDropdown === 'group' ? 'gruppe' : 'tag'
+							if (htmlArr.length === 0) {
+								container.html('<div class="itemcase-tags__add">Tilføj ' + typei18n + '</div>')
+							} else {
+								container.html(htmlArr.join(''));
+							}
+						}
+						// Update timeline
+						const newHtml = $('.updTagOrGroup_Output > div').html()
+						var timelineContent = '<div class="timeline_body">' +
+							$(".updTagOrGroup_Output > div > .ETRAY_CASE_TIMELINE").text() +
+							"</div>";
+
+						// Update the ETRAY_CASE_TIMELINE with the new content
+						$(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").html(timelineContent);
+
+						// Set the new timeline content to the modal
+						$(".js-o-modal__case__timeline").html($(".ETRAY_CASE_TIMELINE_PARRENT > div").html());
+
+
+					}
+					this.setTheActiveTagDropdown(null)
+				})
+				$('.updTagOrGroup_BTN > a').click()
+			},
+			observeChanges(selector, callback) {
 				const el = $(selector)
 				if (!el || el.length === 0) {
-					console.warn(`No element found with selector ${selector}`)
+					//console.warn(`No element found with selector ${selector}`);
 					return;
 				}
-				el.html('loading');
-				intervalObserveCaseOpenChanges = setInterval(() => {
+				el.html('loading')
+				let cInterval = setInterval(_ => {
 					const val = el.html()
-
 					if (val !== 'loading') {
-						clearInterval(intervalObserveCaseOpenChanges)
-						callback(val)
+						clearInterval(cInterval)
+						callback(val);
+					} else {
+						// console.log('observer::empty', { selector }, el.html())
 					}
 				}, 1000)
-			}
-
-			observeCaseOpenChanges('.updCaseIdSession_Output > div', (OK) => {
-				const whoHasItOpen = $('.openByOtherEmp > input').val()
-				const whoHasItOpenToJSON = whoHasItOpen.length > 1 ? JSON.parse(whoHasItOpen) : []
-				const caseId = this.theOrignalActiveCase.onid;
-				const caseToken = this.theOrignalActiveCase.onid_token;
-				const caseIndex = this.cases.findIndex(c => c.onid === this.theOrignalActiveCase.onid);
-				if (caseIndex > -1) {
-					this.cases[caseIndex]['openByOtherEmp'] = whoHasItOpenToJSON;
-					// Update case element in modal with Jquery
-					let htmlArr = []
-					whoHasItOpenToJSON.forEach((name, key) => {
-						const initials = name.split(' ').map(word => word.charAt(0)).join('')
-						const htmlEl = '<li class="o-case-active-users__user hint--bottom" aria-label="' + name + '">' + initials + '</li>'
-						htmlArr.push(htmlEl)
-					})
-					$(".js-case-insert .o-case-active-users").html(htmlArr.join(''));
-				}
-			})
-		},
-		setCheckCaseByOtherInInterval() {
-			intervalSeeCaseOpenByOthersTimer = setInterval(() => {
-				this.seeCaseOpenByOthers()
-			}, 1000 * 30)
-		},
-		// END ADDED 26-11-23 For openByOtherEmp
-		CreateExtDocument(e) {
-			run_autoupdate = !1;
-			var t, s = new Date,
-				a = String(s.getDate()).padStart(2, "0");
-			s = a + "-" + String(s.getMonth() + 1).padStart(2, "0") + "-" + s.getFullYear(), $(".EXT_DOCS_TIME_START > input").val(s), $(".EXT_DOCS_TIME_END > input").val(), "Announcement" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_ANNOUNCEMENT > input").val()), $(".js-modal-create-title").text("Opret udmelding")), "Report" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_REPORT > input").val()), $(".js-modal-create-title").text("Opret rapport")), "Documentation" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_DOCUMENTATION > input").val()), $(".js-modal-create-title").text("Opret dokumentation")), "Invoices" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_INVOICE > input").val()), $(".js-modal-create-title").text("Opret faktura")), "Contract" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_CONTRACT > input").val()), $(".js-modal-create-title").text("Opret kontrakt")), window.scroll(0, 0), subCatChangeSelect("Create ext docs"), $(".EXT_DOCS_ORDER_TYPE > input").val(e), $(".EXT_DOCS_EVENT_TYPE > input").val("NEW"), $(".EXT_DOCS_PAGE_IDS > input").val(""), $(".EXT_DOCS_HEADLINE > input").val(""), $(".EXT_DOCS_MESSAGE > input").val(""), $(".EXT_DOCS_MESSAGE > textarea").val(""), window.matchMedia("(max-width: 600px)").matches && closeBurgerMenu(), $(".o-bg-overlay").addClass("o-bg-overlay--active"), $(".js-o-modal__create-case").addClass("o-create-case--active"), $("body").css("overflow", "hidden");
-			var i = $(".EXT_RECIEVERS_JSON_NEW > div").html();
-			createTogglerForReceivers(i, document.querySelector(".EXT_DOCS_RECIEVERS_DISPLAY_NEW > div"))
-		},
-		editExtDocumentDirect(e, t) {
-			$(".EXT_DOCS_CASE_ID > input").val(item.onid), editExtDocument(e)
-		},
-		editExtDocument(e) {
-			window.scroll(0, 0), "Announcement" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_ANNOUNCEMENT > input").val()), $(".js-modal-create-title").text("Rediger udmelding")), "Report" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_REPORT > input").val()), $(".js-modal-create-title").text("Rediger rapport")), "Documentation" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_DOCUMENTATION > input").val()), $(".js-modal-create-title").text("Rediger dokumentation")), "Invoices" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_INVOICE > input").val()), $(".js-modal-create-title").text("Rediger faktura")), "Contract" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_CONTRACT > input").val()), $(".js-modal-create-title").text("Rediger kontrakt")), $.TRIGGER_AFTER_EXT_DOC_RENDERRING = !1, $(".EXT_DOCS_FETCHED > input").val("N"), $(".EXT_DOCS_FETCHED > input").change(), $(".UPDATE_EXT_FIELDS").hasClass("hidden_field") || $(".UPDATE_EXT_FIELDS").addClass("hidden_field"), $(".EXT_DOCS_LOADING").hasClass("hidden_field") && $(".EXT_DOCS_LOADING").removeClass("hidden_field"), subCatChangeSelect("Edit ext docs"), $(".EXT_DOCS_ORDER_TYPE > input").val(e), $(".EXT_DOCS_PAGE_IDS > input").val(""), $(".BTN_GetExtDocsCaseInfo > a").click(), window.matchMedia("(max-width: 600px)").matches && closeBurgerMenu(), $(".o-bg-overlay").addClass("o-bg-overlay--active"), $(".js-o-modal__create-case").addClass("o-create-case--active"), $("body").css("overflow", "hidden"), this.closeVueModalOverlay()
-		},
-		dateIsAfterToday: e => new Date(e).valueOf() > new Date().valueOf(),
-		formatDateForJs(e, t) {
-			if (19 === e.length || 16 === e.length || 10 === e.length) {
-				var s = e.split(/(?:-| )+/),
-					a = s[3] ? s[3] : "00:00";
-				return new Date(s[2] + "-" + s[1] + "-" + s[0] + " " + a)
-			}
-			if (!t) return new Date(null);
-			var s = (t.created_time ? t.created_time : t.active_date).split(/(?:-| )+/),
-				a = s[3] ? s[3] : "00:00",
-				i = 1 * s[2] - 10;
-			return new Date(i + "-" + s[1] + "-" + s[0] + " " + a)
-		},
-		formatDateForJs2TypsOfDates(dateString, fallback) {
-			const dateFormat1 = /^\d{2}-\d{2}-\d{4} \d{2}:\d{2}$/;
-			const dateFormat2 = /^\d{4}-\d{2}-\d{2}$/;
-
-			let date;
-			if (dateFormat1.test(dateString)) {
-				date = new Date(dateString.replace(/(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2})/, '$3-$2-$1T$4:$5:00'));
-			} else if (dateFormat2.test(dateString)) {
-				date = new Date(dateString);
-			} else if (fallback) {
-				const dateStringFallback = fallback.created_time || fallback.active_date;
-				if (dateFormat1.test(dateStringFallback)) {
-					date = new Date(dateStringFallback.replace(/(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2})/, '$3-$2-$1T$4:$5:00'));
-				} else if (dateFormat2.test(dateStringFallback)) {
-					date = new Date(dateStringFallback);
-				}
-			}
-
-			return date || new Date(null);
-		},
-		onItemClicked(e) {
-			if (run_autoupdate = !1, $(".EXT_DOCS_CASE_ID > input").val(e.onid), $(".ETRAY_READ_CASE_TOKEN_ID > input").val(e.tid), $(".ETRAY_READ_CASE_ID > input").val(e.onid), $(".ETRAY_READ_MESSAGE_TYPE > input").val("VIEW_CASE"), $(".ETRAY_VIEW_CASE > a").click(), this.theActiveItem = e, this.isVueModalOverlay = !0, $("body").css("overflow", "hidden"), "Yes" == e.show_unread_icon) {
-				let t = this.items.findIndex(t => t.onid === e.onid);
-				this.theActiveItem.show_unread_icon, Vue.set(this.items[t], "show_unread_icon", "No")
-			}
-		},
-		downloadItem(e) {
-			if ($(".EXT_DOCS_CASE_ID > input").val(e.onid), $(".BTN_ViewExtCase > a").click(), "Yes" == e.show_unread_icon) {
-				let t = this.items.findIndex(t => t.onid === e.onid);
-				Vue.set(this.items[t], "show_unread_icon", "No")
-			}
-		},
-		closeVueDropdown() {
-			this.isVueDropdown && (this.isVueDropdown = !this.isVueDropdown)
-		},
-		setIsVueDropdown() {
-			this.isVueDropdown = !this.isVueDropdown
-		},
-		setTheUnreadSelected(e) {
-			this.theUnreadSelected = e
-		},
-		setActivecCategory(e, t) {
-			if (e !== this.activeCategory) {
-				window.scroll(0, 0)
-
-				if (e == "OpenAnalytics") {
-					$(".o-wrapper").addClass("OpenAnalytics_full_width")
-				}
-				else {
-					$(".o-wrapper").removeClass("OpenAnalytics_full_width")
-				}
-
-				$('ul.o-menu__items__inner > li[class^="js-"]').each(function () {
-					$(this).removeClass("li--active")
-				})
-				$(".js-o-cases__container").removeClass("o-cases__container--loading"), $(".o-page").removeClass("o-page--all-cases"), $(".o-page").hasClass("o-page--docs") || $(".o-page").addClass("o-page--docs");
-				var s = "";
-				switch (e) {
-					case "my_cases":
-						s = "Hjem / Mine sager";
-						break;
-					case "all_cases":
-						s = "Alle sager";
-						break;
-					case "Announcement":
-						s = "Udmeldinger";
-						break;
-					case "Contract":
-						s = "Kontrakter";
-						break;
-					//< !--START OpenNet OpenAnalytics-- >
-					case "OpenAnalytics":
-						s = "OpenAnalytics";
-						break;
-					//< !--END  OpenNet OpenAnalytics-- >
-					case "Invoice":
-						s = "Fakturaer";
-						break;
-					case "Documentation":
-						s = "Dokumenter";
-						break;
-					case "Report":
-						s = "Rapporter";
-						break;
-					case "roles":
-						s = "Brugeradministration";
-						break;
-					case "end_customer_pricing_config":
-						s = "Slutkundepriser – Konfiguration";
-						break;
-					case "end_customer_orders":
-						s = "Slutkundeordre"
-						break
-					case "operation_status":
-						s = "Operation status"
-						break
-					case "news":
-						s = "Nyheder"
-						break
-				}
-				if ("Report" === e || "Invoice" === e || "OpenAnalytics" === e) {
-					// Retrieve HTML content from the specified element
-					var PBIListOfReportsHTML = $(".PBI_ListOfReports > div").html();
-					console.log('$(".PBI_ListOfReports > div").html()', $(".PBI_ListOfReports > div").html());
-
-					if (PBIListOfReportsHTML.length > 3) {
-						this.PBIReportsData = JSON.parse(PBIListOfReportsHTML);
+			},
+			createPopper(parent) {
+				const child = document.getElementById('popperTagsDropdown')
+				Popper.createPopper(
+					parent,
+					child,
+					{
+						// Popper options
+						placement: 'bottom-start',
+						modifiers: [
+							{
+								name: 'offset',
+								options: {
+									offset: [0, 10], // x-axis: 0, y-axis: -10
+								},
+							},
+						],
 					}
-
-					this.theInvoiceBIExplainer = $(".PBI_Intro_Invoice > div").html()
-					this.theReportBIExplainer = $(".PBI_Intro_Report > div").html()
-				}
-				switch (e) {
-					case "end_customer_orders":
-						this.readEndCustomerOrders()
-							;
-						break;
-					case "end_customer_pricing_config":
-						this.readEndCustomerConfigs();
-						break;
-					case "roles":
-						this.readUsers();
-						break;
-					default:
-						break;
-				}
-				$(".js-page-title").text(s);
-
-				this.activeCategory = e;
-				if (this.isNewDesignActive && (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases')) {
-					this.getAllLocalStorageFilter()
+				);
+				this.$nextTick(_ => {
+					document.getElementById('tag_selector_search_input').focus()
+				})
+			},
+			setTheActiveTagDropdown(tagType, itemCase, evt) {
+				if (!tagType) {
+					this.theShowTagDropdown = null
+					this.theActiveCaseForTag = null
 					return
 				}
-				this.resetFilters();
-				if (e === 'OpenAnalytics') {
-					this.setTheActiveFilter('')
-				}
-			}
-		},
-		resetFilters() {
-			this.infiniteScrollNumber = 50;
-			this.clearSearchQuery();
-			this.activeType = null;
-			$(".vue-filter-2").each(function () {
-				$(this).removeClass("o-btn__filter---active");
-			});
-			this.theUnreadSelected = "Alle";
-			this.theActiveFilter = "active";
-			this.theActiveCaseCategory = "Alle kategorier";
-			this.theActiveOnpProductListFilter = "Fra alle";
-		},
-		setActiveCaseCategory(e) {
-			this.theActiveCaseCategory = e
-		},
-		setTheActiveFilter(event) {
-			this.theActiveFilter = event;
-			this.clearSearchQuery();
-			this.theUnreadSelected = "Alle";
-
-			// Set the active type to null
-			this.activeType = null;
-			$(".vue-filter-2").each(function () {
-				$(this).removeClass("o-btn__filter---active");
-			})
-			if (this.isNewDesignActive && (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases')) {
-				this.getAllLocalStorageFilter()
-			}
-			//if (event == 'dynamic') {
-			//	this.theUnreadSelected = "Vælg";
-			//}
-			if (this.activeCategory !== 'OpenAnalytics') {
-
-				return
-			}
-			// For OpenAnalytics
-			this.setIframeForOpenAnalytics()
-		},
-		setIframeForOpenAnalytics() {
-			openAnalyticsSecret = JSON.parse($('.PBI_sharedSecretJSON > input').val()).sharedSecret;
-			console.log('openAnalyticsSecret', openAnalyticsSecret);
-			this.isLoadingTheOpenAnalyticsIframe = true
-			function constructURLWithSecret(baseURL, secretValue) {
-				const queryParams = new URLSearchParams(window.location.search);
-				queryParams.set('secret', secretValue);
-				const newURL = `${baseURL}?${queryParams.toString()}`;
-				return newURL;
-			}
-			if (this.theActiveFilter === 'OpenAnalytics_tab1') {
-				const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/1';
-				this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
-				// For demonstration purpose
-				const openAnalyticsIframeURL = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret);
-				console.log(openAnalyticsIframeURL);
-			}
-			if (this.theActiveFilter === 'OpenAnalytics_tab2') {
-				const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/2';
-				this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
-			}
-			// Wait for Vue's next tick to ensure the DOM updates
-			this.$nextTick(() => {
-				const iframe = this.$refs.openAnalyticsIframe;
-				if (iframe) {
-					iframe.onload = () => {
-						this.addIframeEventListeners(iframe);
-					};
-				}
-			})
-		},
-		addIframeEventListeners(iframe) {
-			const self = this
-			const handleMessage = (event) => {
-				console.log('message!', event)
-				if (event.origin !== 'https://opn-iframes-dev.azurewebsites.net') {
-					return; // Ensure the message is from a trusted origin
-				}
-				if (event.data.event === 'Inspari_iframeChanged') {
-					console.log('Inspari_iframeChanged event received', event.data);
-					// Handling Inspari_iframeChanged event to adjust iframe size
-					var iframe = document.querySelector('.o-iframe-container');
-
-					if (current_iframeHeight != event.data.iframeHeight) {
-						console.log('Current iframe height', current_iframeHeight);
-						iframe.style.height = event.data.iframeHeight + 'px';
-						console.log('New iframe height', event.data.iframeHeight);
-						current_iframeHeight = event.data.iframeHeight;
-					}
-				}
-
-				if (event.data.event === 'Inspari_iframeLoaded') {
-					self.isLoadingTheOpenAnalyticsIframe = false
-					console.log('Inspari_iframeLoaded event received', event.data);
-					var iframe = document.querySelector('.o-iframe-container');
-					if (current_iframeHeight != event.data.iframeHeight) {
-						console.log('Current iframe height', current_iframeHeight);
-						iframe.style.height = event.data.iframeHeight + 'px';
-						console.log('New iframe height', event.data.iframeHeight);
-						current_iframeHeight = event.data.iframeHeight;
-					}
-				}
-			};
-
-			window.addEventListener('message', handleMessage);
-
-			this.$once('hook:beforeDestroy', () => {
-				window.removeEventListener('message', handleMessage);
-			});
-		},
-		setActiveType(event, target) {
-			// Reset the infinite scroll number
-			this.infiniteScrollNumber = 50;
-			$(".vue-filter-2").removeClass("o-btn__filter---active");
-
-			// Toggle the active type
-			if (this.activeType === event) {
-				this.activeType = null;
-			} else {
-				this.activeType = event;
-				$(target.currentTarget).addClass("o-btn__filter---active");
-			}
-
-			// Added 17-12-23
-			if (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases') {
-				this.setLocalStorageFilter('activeType', this.activeType)
-				return
-			}
-		},
-		createUserModal() {
-			window.scroll(0, 0), subCatChangeSelect("Create User"), Set_UM_USER_INIT = !0, $(".UM_DISPLAY_NAME > input").val(""), $(".UM_COPY_OF > select").val(""), $(".UM_USER_ID > input").val(""), $(".UM_USER_INIT > input").val(""), $(".UM_USER_INIT > .Web_Error").html(""), $(".UM_USER_INIT > .Web_Error").hide(), $(".UM_USER_NAME > input").val(""), $(".UM_EMAIL > input").val(""), $(".UM_GROUP_ID > input").val(""), $(".UM_MOBILE_NO > input").val(""), $(".UM_PASSWORD > input").val(""), $(".UM_EVENT_TYPE > input").val(""), $(".o-bg-overlay").addClass("o-bg-overlay--active"), $(".js-o-modal__create-case").addClass("o-create-case--active"), $("body").css("overflow", "hidden"), $(".js-modal-create-title").text("Opret bruger")
-		},
-		searchFunc(e) {
-			function matchObjects(obj1, obj2) {
-				var key;
-				for (key in obj1) {
-					if (obj1[key] !== obj2[key]) {
-						return false;
-					}
-				}
-				for (key in obj2) {
-					if (obj1[key] !== obj2[key]) {
-						return false;
-					}
-				}
-				return true;
-			}
-
-			function matchArray(arr, obj) {
-				var i;
-				for (i = 0; i < arr.length; i++) {
-					if (matchObjects(arr[i], obj)) {
-						return true;
-					}
-				}
-				return false;
-			}
-
-			var results = [],
-				searchQuery = function (value) {
-					var start = 0,
-						end = value.length - 1;
-					while (start < value.length && value[start] === ' ') {
-						start++;
-					}
-					while (end > start && value[end] === ' ') {
-						end--;
-					}
-					return value.substring(start, end + 1);
-				}(this.searchQuery.toLowerCase()),
-				i,
-				j,
-				item,
-				propertyValue;
-			for (i = 0; i < e.length; i++) {
-				for (j in e[i]) {
-					if (e[i].hasOwnProperty(j)) {
-						item = e[i][j];
-						if (typeof item === 'string') {
-							item = item.toLowerCase();
-						} else if (typeof item === 'number') {
-							item = item.toString();
+				console.log('event::setTheActiveTagDropdown', { itemCase })
+				this.theActiveCaseForTag = itemCase
+				this.theShowTagDropdown = tagType
+				this.$nextTick(_ => {
+					this.createPopper(evt.target)
+				})
+			},
+			/* END 17-12-23 */
+			setTheEndCustomerEmailConfigFormActiveType(type) {
+				//console.log(this.theEndCustomerEmailConfigFormActiveType)
+				this.theEndCustomerEmailConfigFormActiveType = type
+			},
+			setTheActiveOrderType(typeCode) {
+				this.theActiveOrderType = typeCode
+				if (typeCode !== '001') {
+					this.setNewOrderSkaderItems()
+					this.$nextTick(_ => {
+						const el = document.querySelector('.o-cart__items__item--form > input[type="text"]')
+						if (el) {
+							el.focus()
 						}
-						if (typeof item === 'string' && item.indexOf(searchQuery) !== -1 && !matchArray(results, e[i])) {
-							results.push(e[i]);
-							break;
-						}
+					})
+				}
+			},
+			setTypeOptionsInOnpForm(items, standardFormProp, formProp) {
+				let values = [];
+				const standardItems = [
+					{ value: '001', title: 'Installationsydelse' },
+					{ value: '002', title: 'Skader / Reparation' },
+					{ value: '003', title: 'Uberettiget fejlretning' }
+				]
+				items.forEach(product => {
+					let value = product[standardFormProp];
+					if (values.indexOf(value) < 0) {
+						values.push(value);
 					}
-				}
-			}
-			return results;
-		},
-		setTheActiveUser(e) {
-			this.theActiveUser = e
-		},
-		closeActiveUserModal() {
-			this.theActiveUser = null
-		},
-		rolesInView(e) {
-			var t = e;
-			this.isProfileClick && (t = e.filter(e => "true" == e.active_role));
-			var s = [];
-			return t.forEach(e => {
-				var t = s.findIndex(t => t.group === e.group_category);
-				t < 0 ? s.push({
-					group: e.group_category,
-					roles: [e]
-				}) : s[t].roles.push(e)
-			}), s
-		},
-		onActiveGroupChange(e, t, s) {
-			var a = e.role_array.filter(e => e.group_category == t),
-				i = s ? "true" : "false";
-			this.toggle_group_ids = [], a.forEach((t, s) => {
-				var r = a.length - 1 == s;
-				this.onActiveRoleChange(e, t.group_id, i, !0, r)
-			})
-		},
-		getIsGroupCategoryActive: (e, t) => e.role_array.filter(e => e.group_category == t).filter(e => "true" == e.active_role).length > 0,
-		onActiveRoleChange(e, t, s, a, i) {
-			var r = this.users.findIndex(e => e.id == this.theActiveUser.id),
-				o = this.theActiveUser.role_array.findIndex(e => e.group_id == t),
-				n = "false" == s ? "true" : "false";
-			if (this.theActiveUser.role_array[o].active_role = n, this.users[r].role_array[o].active_role = n, a) {
-				if (this.toggle_group_ids.push(t), i) {
-					var l = this.toggle_group_ids.join(";");
-					"true" == n && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(l), $(".BTN_UserManagement > a").click()), "false" == n && ($(".UM_EVENT_TYPE > input").val("REMOVE_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(l), $(".BTN_UserManagement > a").click())
-				}
-			} else "true" == n && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click()), "false" == n && ($(".UM_EVENT_TYPE > input").val("REMOVE_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click())
-		},
-		onActiveRoleNotificationsChange(e, t, s) {
-			var a = this.users.findIndex(e => e.id == this.theActiveUser.id),
-				i = this.theActiveUser.role_array.findIndex(e => e.group_id_noti == t),
-				r = "false" == s ? "true" : "false";
-			this.theActiveUser.role_array[i].active_role_noti = r, this.users[a].role_array[i].active_role_noti = r, "true" == r && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click()), "false" == r && ($(".UM_EVENT_TYPE > input").val("REMOVE_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click())
-		},
-		setTheActiveUserRoleChangeModal(e) {
-			this.theActiveUser = e, this.isEditUserRoles = !0, this.isVueModalOverlay = !0, $("body").css("overflow", "")
-		},
-		setTheEditUserModal(e, t) {
-			t ? this.isProfileClick = !0 : this.isProfileClick = !1, this.theActiveUser = e, this.isEditUser = !0, this.userform.name = e.name, this.userform.display_name = e.display_name, this.userform.user_init = e.user_init, this.userform.email = e.email, this.userform.sms_no = e.sms_no, this.isVueModalOverlay = !0, $("body").css("overflow", "")
-		},
-		resetEditUserForm() {
-			this.userform.name = "", this.userform.display_name = "", this.userform.email = "", this.userform.user_init = "", this.userform.sms_no = "", this.userform.new_password = "", this.userform.new_password_confirmed = ""
-		},
-		toggleRolesAcc(e) {
-			var t = this.theToggleRolesAcc.indexOf(e);
-			this.theToggleRolesAcc.indexOf(e) > -1 ? this.theToggleRolesAcc.splice(t, 1) : this.theToggleRolesAcc.push(e)
-		},
-		getIsInTheToggleRolesAcc(e) {
-			return this.theToggleRolesAcc.indexOf(e) > -1
-		},
-		closeVueModalOverlay() {
-			run_autoupdate = true;
-			this.run_autoupdate_func();
-			this.isVueModalOverlay = false;
-			this.theActiveUser = null;
-			this.isEditUserRoles = false;
-			this.isEditUser = false;
-			this.isProfileClick = false;
-			this.theActiveItem = null;
-			this.isCreateOnpModal = false;
-			this.resetEditUserForm();
-			$("body").css("overflow", "");
-			$("body").removeClass("no-scroll")
-			this.isSendingEmail = false;
-			this.formErrors = {};
-
-			this.onpForm.forEach((element, index) => {
-				element.value = "";
-				element.validated = true;
-			});
-
-			this.isNewOrderModal = false;
-			this.isOrderCustomerEmailValid = true;
-			this.orderCustomerEmail = "";
-			this.OnpSSIDDetails = [];
-			this.ssid = "";
-			this.theActiveDescExpanded = null;
-			this.isSSIDValid = true;
-			this.theActivePrevOrder = null;
-			this.theNewOrderSkaderItems = []
-			this.theActiveOrderType = '001'
-			this.isEndCustomerEmailConfigModal = false
-			this.isUpdatingEndCustomerEmailConfigForm = false
-			this.theEndCustomerEmailConfigForm.forEach(item => {
-				item.value = ''
-			})
-			this.isGhostUserCreating = false
-			this.isCreateGhostUser = false
-			this.theGhostUserSelectedPartner = null
-			this.theGhostUserSelectedPartnerUser = null
-		},
-		formValidation() {
-			this.userform.name.length < 1 ? Vue.set(this.formErrors, "name", "Skal mindst 1 tegn") : this.removeErrors("name"), this.userform.display_name.length < 1 ? Vue.set(this.formErrors, "display_name", "Skal mindst 1 tegn") : this.removeErrors("display_name"), this.userform.user_init.length < 1 ? Vue.set(this.formErrors, "user_init", "Skal mindst 1 tegn") : this.removeErrors("user_init"), this.validateEmail(this.userform.email) ? this.removeErrors("email") : Vue.set(this.formErrors, "email", "Skal v\xe6re en gyldig emailaddresse"), this.userform.sms_no.length < 8 ? Vue.set(this.formErrors, "sms_no", "Skal v\xe6re et gyldigt telefonnummer") : this.removeErrors("sms_no"), this.userform.sms_no.length < 8 ? Vue.set(this.formErrors, "sms_no", "Skal v\xe6re et gyldigt telefonnummer") : this.removeErrors("sms_no"), this.userform.new_password != this.userform.new_password_confirmed ? Vue.set(this.formErrors, "new_password_confirmed", "Kodeordene skal v\xe6re det ens") : this.removeErrors("new_password_confirmed")
-		},
-		validateEmail: e => /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(String(e).toLowerCase()),
-		removeErrors(e) {
-			this.$delete(this.formErrors, e)
-		},
-		onkeyup_user_init(e) {
-			this.$delete(this.formErrors, e), clearTimeout(this.debounce_user_init), this.debounce_user_init = setTimeout(() => {
-				$(".UM_USER_INIT > input").val(this.userform.user_init), Set_UM_USER_INIT = !1, $(".BTN_GetUserValidation > a").click(), $(".BTN_GetUserValidation_Result > input").val("N"), WAIT_FOR_UM_USERNAME_VALIDATION_ANSWER_VUE()
-			}, 600)
-		},
-		submitEditUserForm() {
-			if (!(Object.keys(this.formErrors).length > 0)) this.formValidation(), !(Object.keys(this.formErrors).length > 0) && ($(".UM_EVENT_TYPE > input").val("UPDATE_USER_DETAILS"), $(".UM_USER_ID > input").val(this.theActiveUser.id), $(".UM_USER_NAME > input").val(this.userform.name), $(".UM_DISPLAY_NAME > input").val(this.userform.display_name), $(".UM_MOBILE_NO > input").val(this.userform.sms_no), $(".UM_EMAIL > input").val(this.userform.email), $(".UM_USER_INIT > input").val(this.userform.user_init), this.userform.new_password.length > 0 && $(".UM_PASSWORD > input").val(this.userform.new_password), $(".UM_RESULT > div").html(""), $(document).trigger("vue::new_user"), $(".BTN_UserManagement > a").click(), this.closeVueModalOverlay())
-		},
-		submitDeleteUserForm() {
-			$(".UM_EVENT_TYPE > input").val("DELETE_USER"), $(".UM_USER_ID > input").val(this.theActiveUser.id), $(".UM_USER_NAME > input").val(this.userform.name), $(".UM_DISPLAY_NAME > input").val(this.userform.display_name), $(".UM_MOBILE_NO > input").val(this.userform.sms_no), $(".UM_EMAIL > input").val(this.userform.email), $(".UM_USER_INIT > input").val(this.userform.user_init), this.userform.new_password.length > 0 && $(".UM_PASSWORD > input").val(this.userform.new_password), $(".UM_RESULT > div").html(""), $(".BTN_UserManagement > a").click();
-			var e = this.users.findIndex(e => e.id == this.theActiveUser.id);
-			this.users.splice(e, 1), this.closeVueModalOverlay()
-		},
-		resetPasswordForUser(e) {
-			this.isSendingEmail = !0, $(".UM_EVENT_TYPE > input").val("RESET_PASSWORD"), $(".UM_USER_ID > input").val(this.theActiveUser.id), $(".BTN_UserManagement > a").click()
-		},
-		setIsViewRoles(e) {
-			this.theActiveRoleForFilter = this.allRoles[0] ? this.allRoles[0].group_id : "", this.isViewRoles = e
-		},
-		setTheActiveRoleForFilter(e) {
-			this.theActiveRoleForFilter = e
-		},
-		numberOfUsersWithRole(e) {
-			return this.users.filter(t => t.role_array.findIndex(t => t.group_id == e && "true" == t.active_role) > -1)
-		},
-		usersWithRole(e) {
-			return this.users.filter(t => t.role_array.findIndex(t => t.group_id == e && "true" == t.active_role) > -1)
-		},
-		setTheOSelect(e) {
-			setTimeout(t => {
-				this.theOSelect = e
-			}, 0)
-		},
-		onClickOutside(e) {
-			this.theOSelect && (this.theOSelect = null, this.oSelectQuery = "")
-		},
-		getIsTheOSelect(e) {
-			return this.theOSelect == e
-		},
-		selectUserForRole(e) {
-			var t = this.users.findIndex(t => t.id == e.id),
-				s = e.role_array.findIndex(e => e.group_id == this.theActiveRoleForFilter),
-				a = "true";
-			this.users[t].role_array[s].active_role = a, this.setTheOSelect(null), "true" == a && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(this.theActiveRoleForFilter), $(".BTN_UserManagement > a").click()), this.oSelectQuery = ""
-		},
-		readLatestUpdatedDocs() {
-			this.observeLatestDocsDiv && this.observeLatestDocsDiv.disconnect(), this.updateDocsTimer && clearTimeout(this.updateDocsTimer), this.funcObserveLatestDocs(), $(".BTN_GetListOfExtDocs_Last30Min > a").click()
-		},
-		readLatestUpdatedDocsByOthers() {
-			this.funcObserveLatestDocsByOthers(), $(".BTN_GetListOfExtDocs_LatestOther > a").click()
-		},
-		funcObserveLatestDocsByOthers() {
-			var e = this,
-				t = new MutationObserver(function (s) {
-					var a = $(".ETRAY_EXT_DOCS_RAW_JSON_LATEST_OTHER  > div").html();
-					e.setLatestDocs(a), t.disconnect()
 				});
-			t.observe(document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_LATEST_OTHER  > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		funcObserveLatestDocs() {
-			var e = this,
-				t = $(".ETRAY_EXT_DOCS_RAW_JSON_LAST30MIN > div").html();
-			this.observeLatestDocsDiv = new MutationObserver(function (s) {
-				var a = $(".ETRAY_EXT_DOCS_RAW_JSON_LAST30MIN > div").html();
-				t != a ? (e.setLatestDocs(a), e.isNewAnnouncementLoading = !1, e.isUpdatedAnnouncementLoading = !1) : (e.isNewAnnouncementLoading || e.isUpdatedAnnouncementLoading) && (e.updateDocsTimer = setTimeout(function () {
-					e.readLatestUpdatedDocs()
-				}, 2500)), e.observeLatestDocsDiv.disconnect()
-			}), this.observeLatestDocsDiv.observe(document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_LAST30MIN > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		setLatestDocs(e) {
-			e.length > 2 && JSON.parse(e).forEach((e, t) => {
-				var s = this.items.findIndex(t => t.onid == e.onid);
-				s < 0 ? this.items.push(e) : Vue.set(this.items, s, e)
-			})
-		},
-		decode(e) {
-			var t = document.createElement("textarea");
-			return t.innerHTML = e, t.value
-		},
-		setLatestUser() {
-			var e = $(".UM_RESULT > div").html();
-			e.length > 2 && JSON.parse(this.decode(this.decode(e))).forEach((e, t) => {
-				var s = this.users.findIndex(t => t.id == e.id);
-				s < 0 ? this.users.push(e) : Vue.set(this.users, s, e)
-			})
-		},
-		funcObserveLatestUser() {
-			let e = this;
-			var t = new MutationObserver(function (s) {
-				e.setLatestUser(), e.isNewUserLoading = !1, t.disconnect()
-			});
-			t.observe(document.querySelector(".UM_RESULT > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		funcObserveOpenCases() {
-			var e = this,
-				t = new MutationObserver(function (s) {
-					e.setOpenCases(), e.casesIsLoading = !1, t.disconnect(), e.readClosedCases(e.startLength, e.endLength)
+				const index = this.onpForm.findIndex(item => item.id === formProp);
+				let valuesWithTitle = []
+				values.sort().forEach(val => {
+					const idxOfStandard = standardItems.findIndex(standardItem => standardItem['value'] === val)
+					if (idxOfStandard > -1) {
+						valuesWithTitle.push(standardItems[idxOfStandard])
+					} else {
+						valuesWithTitle.push({ value: val, title: val })
+					}
+				})
+				this.onpForm[index].options = valuesWithTitle
+				if (valuesWithTitle.length === 1) {
+					this.onpForm[index].value = valuesWithTitle[0].value
+					this.setFormItemValidated(this.onpForm[index])
+				}
+				this.onpForm[index].hide = false
+			},
+			setOptionsInOnpForm(items, standardFormProp, formProp) {
+				let values = [];
+				items.forEach(product => {
+					let value = product[standardFormProp];
+					if (values.indexOf(value) < 0) {
+						values.push(value);
+					}
 				});
-			t.observe(document.querySelector(".ETRAY_JSON_LIST_OF_OPEN_CASES > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		setOpenCases() {
-			var openCasesHtml = $(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html();
-			//console.log('openCasesHtml',openCasesHtml)	
-			$(".js-o-cases__container").removeClass("o-cases__container--loading");
-			$(".o-page").removeClass("o-page--is-loading");
-
-			if (openCasesHtml.length >= 3) {
-				this.encodeCases(openCasesHtml);
-				// $(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html("");
-			}
-		},
-		readOpenCasesV2(e, t) {
-			$(".ETRAY_JSON_LIST_OF_OPEN_CASES_ROW_START > input").val(e), $(".ETRAY_JSON_LIST_OF_OPEN_CASES_ROW_END > input").val(t), this.observeOpenCasesV2 && this.observeOpenCasesV2.disconnect(), $(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div").html(""), this.funcObserveOpenCasesV2(), $(".BTN_GetListOfOpenCasesJSON_V2 > a").click()
-		},
-		funcObserveOpenCasesV2() {
-			var self = this;
-
-			self.observeOpenCasesV2 = new MutationObserver(function () {
-				// Disconnect the observer
-				self.observeOpenCasesV2.disconnect();
-
-				var openCasesHtml = $(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div").html();
-				//console.log('openCasesHtml')
-				var caseLength = 0;
-
-				// Check if openCasesHtml length is greater than 3
-				if (openCasesHtml.length > 3) {
-					caseLength = JSON.parse(openCasesHtml).length + 1;
-					self.encodeCases(openCasesHtml);
+				const index = this.onpForm.findIndex(item => item.id === formProp);
+				this.onpForm[index].options = values.sort()
+				if (values.length === 1) {
+					this.onpForm[index].value = values[0]
+					this.setFormItemValidated(this.onpForm[index])
 				}
-
-				// Check if caseLength is greater or equal to open_addLength
-				if (caseLength >= self.open_addLength) {
-					self.open_startLength = self.open_endLength + 1;
-					self.open_endLength = self.open_endLength + self.open_addLength;
-
-					self.readOpenCasesV2(self.open_startLength, self.open_endLength);
-				} else {
-					self.casesIsLoading = false;
-
-					$(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div").html("");
-					self.readClosedCases(self.startLength, self.endLength);
-
-					// Remove loading status from the cases container and the page
-					$(".js-o-cases__container").removeClass("o-cases__container--loading");
-					$(".o-page").removeClass("o-page--is-loading");
+				this.onpForm[index].hide = false
+			},
+			setFormItemValidated(formItem) {
+				const val = formItem.value
+				formItem.validated = true
+				if (formItem.id === 'FROM_COMPANY') {
+					this.onpForm.forEach(onpFormItem => {
+						if (onpFormItem.id !== 'FROM_COMPANY' && onpFormItem.id !== 'REC_ID') {
+							onpFormItem.hide = true
+							onpFormItem.value = ''
+							onpFormItem.validated = true
+						}
+					})
+					let activeStandardItems = this.onpFormData.filter(standardFormItem => standardFormItem['from_company'] === val)
+					this.setTypeOptionsInOnpForm(activeStandardItems, 'transaction_type', 'TYPE')
+					return
 				}
-			});
-
-			// Start observing the target node for configured mutations
-			self.observeOpenCasesV2.observe(document.querySelector(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div"), {
-				characterData: true,
-				childList: true
-			});
-		}
-		,
-		readClosedCases(start, end) {
-			// Set input values
-			$(".ETRAY_JSON_LIST_OF_CLOSED_CASES_ROW_START > input").val(start);
-			$(".ETRAY_JSON_LIST_OF_CLOSED_CASES_ROW_END > input").val(end);
-
-			// Disconnect previous observer and clear the HTML
-			if (this.observeClosedCases) {
-				this.observeClosedCases.disconnect();
-			}
-			$(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html("");
-
-			// Start observing closed cases and trigger the click event
-			this.funcObserveClosedCases();
-			$(".BTN_GetListOfClosedCasesJSON > a").click();
-		},
-
-		funcObserveClosedCases() {
-			var self = this;
-			self.observeClosedCases = new MutationObserver(function (mutations) {
-				self.observeClosedCases.disconnect();
-
-				var html = $(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html();
-				var count = 0;
-
-				if (html.length > 3) {
-					count = JSON.parse(html).length + 1;
-					self.pushClosedCases();
+				const partnerVal = this.onpForm.filter(onpFormItem => onpFormItem.id === 'FROM_COMPANY')[0].value
+				if (formItem.id === 'TYPE') {
+					this.onpForm.forEach(onpFormItem => {
+						if (onpFormItem.id !== 'FROM_COMPANY' && onpFormItem.id !== 'TYPE' && onpFormItem.id !== 'REC_ID') {
+							onpFormItem.hide = true
+							onpFormItem.value = ''
+							onpFormItem.validated = true
+						}
+					})
+					let activeStandardItems = this.onpFormData.filter(standardFormItem => standardFormItem['from_company'] === partnerVal && standardFormItem['transaction_type'] === val)
+					if (activeStandardItems.length < 1) {
+						return
+					} else {
+						this.setOptionsInOnpForm(activeStandardItems, 'transaction_code', 'TRANSACTION_CODE')
+					}
+					return
 				}
-
-				if (count >= self.addLength) {
-					self.startLength = self.endLength + 1;
-					self.endLength = self.endLength + self.addLength;
-					self.readClosedCases(self.startLength, self.endLength);
-				} else {
-					self.isClosedCasesLoading = false;
-					run_autoupdate = true;
-					$(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html("");
-				}
-			});
-
-			self.observeClosedCases.observe(document.querySelector(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div"), {
-				characterData: true,
-				childList: true
-			});
-		},
-
-		pushClosedCases() {
-			var html = $(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html();
-			this.encodeCases(html);
-		},
-
-		encodeCases(html) {
-			const self = this
-			if (html.length >= 3) {
-				var cases = JSON.parse(html);
-
-				cases.forEach((caseItem, index) => {
-					Object.keys(caseItem).forEach(function (key, i) {
-						// START ADDED 26-11-23 For openByOtherEmp
-						if (key === 'openByOtherEmp' && $(".FROM_COMPANY > input").val() == "OpenNet") {
-							const openByOtherEmp_arr = caseItem['openByOtherEmp'].length > 0 ? caseItem['openByOtherEmp'] : []
-							const vOpenByOtherObj = openByOtherEmp_arr.map(name => {
-								const initials = name.split(' ').map(word => word.charAt(0)).join('');
-								return {
-									initials: initials,
-									name
+				const typeVal = this.onpForm.filter(onpFormItem => onpFormItem.id === 'TYPE')[0].value
+				if (formItem.id === 'TRANSACTION_CODE') {
+					const transactionCodeVal = val
+					this.onpForm.forEach(onpFormItem => {
+						if (onpFormItem.id !== 'FROM_COMPANY' && onpFormItem.id !== 'TYPE' && formItem.id !== 'TRANSACTION_CODE') {
+							onpFormItem.hide = true
+							onpFormItem.value = ''
+							onpFormItem.validated = true
+						}
+					})
+					if (transactionCodeVal) {
+						const activeStandardItems = this.onpFormData.filter(standardFormItem => standardFormItem['from_company'] === partnerVal && standardFormItem['transaction_type'] === typeVal && standardFormItem['transaction_code'] === transactionCodeVal)
+						const unitLabelValue = activeStandardItems[0]['unit_label']
+						const idx = this.onpForm.findIndex(item => item.id === 'UNIT_LABEL')
+						this.onpForm[idx].value = unitLabelValue
+						const idsToChange = ['LABEL', 'PRICE', 'UNIT_LABEL', 'UNIT_DEFAULT_VALUE']
+						if (val.length > 0 && typeVal !== '002') {
+							this.onpForm.forEach(onpFormItem => {
+								if (idsToChange.indexOf(onpFormItem.id) > -1) {
+									onpFormItem.hide = false
 								}
 							})
-							Vue.set(caseItem, 'v_openByOtherEmp', vOpenByOtherObj)
-							// START ADDED 17-12-23
-						} else if (key === 'tags') {
-							const tags = caseItem['tags'].length > 0 ? caseItem['tags'] : [];
-							const filteredTags = tags.filter(item => item && typeof item === 'object' && item['value']);
-							Vue.set(caseItem, 'v_tags', filteredTags);
-						} else if (key === 'groups') {
-							const groups = caseItem['groups'].length > 0 ? caseItem['groups'] : [];
-							const filteredGroups = groups.filter(item => item && typeof item === 'object' && item['value']);
-							Vue.set(caseItem, 'v_groups', filteredGroups);
-						} else if (key === 'status') {
-							const initStatus = caseItem['status'].length > 0 ? caseItem['status'] : '';
-							const statusI18N = self.statusI18N[initStatus] ? self.statusI18N[initStatus] : ''
-							Vue.set(caseItem, 'v_status', statusI18N);
 						}
-						// END ADDED 17-12-23
-						else {
-							caseItem[key] = unescape(caseItem[key])
-						}
-						// END ADDED 26-11-23 For openByOtherEmp
-					});
+					}
+				}
+			},
+			setIsSortDropdown(e) {
+				this.isSortDropdown = !this.isSortDropdown
+			},
+			setTheReadMoreOnp(e) {
+				this.theReadMoreOnp === e.REC_ID ? this.theReadMoreOnp = null : this.theReadMoreOnp = e.REC_ID
+			},
+			closeSortDropdown() {
+				this.isSortDropdown && (this.isSortDropdown = !1)
+			},
+			setTheSortSetting(e) {
+				setTimeout(t => {
+					this.isCases ? (this.theSortSettingCases = e, "undefined" != typeof Storage && window.localStorage.setItem("sortSettingCases", JSON.stringify(e))) : (this.theSortSettingDocs = e, "undefined" != typeof Storage && window.localStorage.setItem("sortSettingDocs", JSON.stringify(e)))
+				}, 0)
+			},
+			clearSearchQuery() {
+				this.$refs.v_search_query && (this.$refs.v_search_query.value = ""), this.searchQuery = ""
+			},
+			debounceSearch(e) {
+				this.searchQuery = "", clearTimeout(this.debounce), this.debounce = setTimeout(() => {
+					this.searchQuery = e.target.value
+				}, 600)
+			},
+			loadMoreCases() {
+				if (this.isCases) {
+					if (this.searchedCases.length < 50) {
+						this.infiniteScrollNumber = 50;
+						return
+					} !(this.infiniteScrollNumber > this.searchedCases.length) && (this.infiniteScrollNumber += 50)
+				}
+			},
+			onCaseClicked(caseInfo, token) {
+				// Disable auto-update
+				run_autoupdate = false;
 
-					if (this.theUser) {
-						if (caseItem.created_by_id && caseItem.created_by_id == this.theUser.id) {
-							Vue.set(caseItem, "filter_created_by_me", "true");
-							Vue.set(caseItem, "filter_my_cases", "true");
-						}
+				// Find the index of the clicked case
+				let caseIndex = this.cases.findIndex(c => c.onid === caseInfo.onid);
 
-						if (caseItem.assign_to_id && caseItem.assign_to_id == this.theUser.id) {
-							Vue.set(caseItem, "filter_assigned_me", "true");
-							Vue.set(caseItem, "filter_my_cases", "true");
-						}
+				// If the case is found, set it as the original active case
+				if (caseIndex > -1) {
+					this.theOrignalActiveCase = this.cases[caseIndex];
+				}
 
-						if (caseItem.followed_by_list && caseItem.followed_by_list.split(";").indexOf(this.theUser.id) > -1) {
-							Vue.set(caseItem, "filter_followed_by_me", "true");
-							Vue.set(caseItem, "filter_my_cases", "true");
-						}
+				// Set case information
+				let caseId = caseInfo.onid;
+				let caseToken = caseInfo.onid_token;
+
+				// Add mutation observer to the single case
+				addMutationOberserverToSingleCase();
+
+				// Add loading class to modal body
+				let modalBody = $(".js-modal__single-case .o-modal__body");
+				if (!modalBody.hasClass("o-modal__body--loading")) {
+					modalBody.addClass("o-modal__body--loading");
+				}
+
+				// Add classes to overlay and modal
+				$(".o-bg-overlay").addClass("o-bg-overlay--active");
+				$(".o-modal__case").addClass("o-modal--active");
+
+				// Disable body scrolling
+				$("body").css("overflow", "hidden");
+
+				// Clone and insert case element into modal
+				let caseElement = $(".case_element[data-onid=" + caseId + "][data-onid_token=" + caseToken + "]");
+				$(caseElement).clone().attr("id", "js-case-element__inserted").appendTo(".js-case-insert");
+
+				// Set data attributes on modal
+				$(".o-modal__case").attr("data-case-id", caseId);
+				$(".o-modal__case").attr("data-case-id-token", caseToken);
+
+				// Set values for input fields
+				$(".ETRAY_READ_CASE_TOKEN_ID > input").val(caseToken);
+				$(".ETRAY_READ_CASE_ID > input").val(caseId);
+				$(".ETRAY_READ_MESSAGE_TYPE > input").val("VIEW_CASE");
+				$(".ETRAY_VIEW_CASE > a").click();
+
+				// Change select option and update UI based on user type
+				subCatChangeSelect("List of Cases");
+
+				if (this.theUserType === "ON") {
+					if (caseInfo.to_company.concat(caseInfo.from_company).indexOf("OpenNet") < 0) {
+						$(".js-o-modal__case__actions, .js-o-modal__case__commentary").addClass("hidden_field");
 					} else {
-						this.isEncodedHappenedBeforeUser = true;
-					}
-
-					var existingIndex = this.cases.findIndex(item => item.onid == caseItem.onid);
-
-					if (existingIndex < 0) {
-						this.cases.push(caseItem);
-					} else {
-						Vue.set(this.cases, existingIndex, caseItem);
-					}
-				});
-			}
-		},
-		readNewCase() {
-			this.funcObserveLatestCases(), $(".BTN_GetListOfUpdatedCasesJSON > a").click()
-		},
-		readLatestUpdatedCases() {
-			this.updateCasesTimer && clearTimeout(this.updateCasesTimer), this.funcObserveLatestCases(), $(".BTN_GetListOfUpdatedCasesJSON > a").click()
-		},
-		getDoesOnIdExist(e) {
-			if (!(e.length < 3)) {
-				var t = JSON.parse(e),
-					s = !1;
-				return t.forEach(e => {
-					Object.keys(e).forEach(function (t, s) {
-						e[t] = unescape(e[t])
-					}), 0 > this.cases.findIndex(t => t.onid == e.onid) && "true" == e.filter_created_by_me && (s = !0)
-				}), s
-			}
-		},
-		shallowEqual(e, t) {
-			let s = Object.keys(e),
-				a = Object.keys(t);
-			if (s.length !== a.length) return !1;
-			for (let i of s)
-				if ("last_updated_time" != i && e[i] !== t[i]) return !1;
-			return !0
-		},
-		getIsCaseWithIdUpdated(e) {
-			let t = this;
-			if (!(e.length < 3)) {
-				var s = JSON.parse(e),
-					a = !1;
-				return s.forEach(e => {
-					if (Object.keys(e).forEach(function (t, s) {
-						e[t] = unescape(e[t])
-					}), e.onid == t.theCaseUpdatingId) {
-						var s = this.cases.findIndex(t => t.onid == e.onid);
-						s > -1 && (a = !t.shallowEqual(this.cases[s], e))
-					}
-				}), a
-			}
-		},
-		funcObserveLatestCases() {
-			$(".ETRAY_JSON_LIST_OF_UPDATED_CASES > div").html("");
-			var e = this;
-			this.observeLatestCasesDiv = new MutationObserver(function (t) {
-				var s = $(".ETRAY_JSON_LIST_OF_UPDATED_CASES > div").html();
-				e.isNewCaseLoading ? e.getDoesOnIdExist(s) ? (e.setLatestCases(), e.isNewCaseLoading = !1) : e.isNewCaseLoading && (e.updateCasesTimer = setTimeout(function () {
-					e.readLatestUpdatedCases()
-				}, 2500)) : e.isCaseUpdating ? e.getIsCaseWithIdUpdated(s) ? (e.setLatestCases(), e.isCaseUpdating = !1, e.theCaseUpdatingId = null) : e.isCaseUpdating && (e.updateCasesTimer = setTimeout(function () {
-					e.readLatestUpdatedCases()
-				}, 2500)) : e.setLatestCases(), e.observeLatestCasesDiv.disconnect()
-			}), this.observeLatestCasesDiv.observe(document.querySelector(".ETRAY_JSON_LIST_OF_UPDATED_CASES > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		setLatestCases() {
-			var e = document.querySelector(".ETRAY_JSON_LIST_OF_UPDATED_CASES > div").innerHTML;
-			this.encodeCases(e)
-		},
-		funcObserveThisUser() {
-			let e = this;
-			var t = new MutationObserver(function (s) {
-				e.setThisUser(), t.disconnect()
-			});
-			t.observe(document.querySelector(".ETRAY_USER_PROFILE_USER_RAW_JSON > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		setThisUser() {
-			var e = $(".ETRAY_USER_PROFILE_USER_RAW_JSON > div").html();
-			if (!(e.length < 1)) {
-				var t = JSON.parse(e);
-				this.theUser = t[0], this.setUsers(e), $(".ETRAY_USER_PROFILE_USER_RAW_JSON > div").html("")
-			}
-		},
-		readUsers() {
-			this.usersIsLoading_1_75 = !0, this.funcObserveAllUsers_1_75(), $(".BTN_GetListOfUserProfiles_1_75 > a").click()
-		},
-		funcObserveAllUsers_1_75() {
-			$(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div").html("");
-			let e = this;
-			var t = new MutationObserver(function (s) {
-				var a = $(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div").html();
-				e.setUsers_1_75(a), e.usersIsLoading_1_75 = !1, t.disconnect(), e.usersIsLoading_76_150 = !0, e.funcObserveAllUsers_76_150(), $(".BTN_GetListOfUserProfiles_76_150 > a").click()
-			});
-			t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		funcObserveAllUsers_76_150() {
-			$(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div").html("");
-			let e = this;
-			var t = new MutationObserver(function (s) {
-				var a = $(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div").html();
-				e.setUsers_76_150(a), e.usersIsLoading_76_150 = !1, t.disconnect(), e.usersIsLoading_151_225 = !0, e.funcObserveAllUsers_151_225(), $(".BTN_GetListOfUserProfiles_151_225 > a").click()
-			});
-			t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		funcObserveAllUsers_151_225() {
-			$(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div").html("");
-			let e = this;
-			var t = new MutationObserver(function (s) {
-				var a = $(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div").html();
-				e.setUsers_151_225(a), e.usersIsLoading_151_225 = !1, t.disconnect(), e.usersIsLoading_226_300 = !0, e.funcObserveAllUsers_226_300(), $(".BTN_GetListOfUserProfiles_226_300 > a").click()
-			});
-			t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		funcObserveAllUsers_226_300() {
-			$(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div").html("");
-			let e = this;
-			var t = new MutationObserver(function (s) {
-				var a = $(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div").html();
-				e.setUsers_226_300(a), e.usersIsLoading_226_300 = !1, t.disconnect(), e.usersIsLoading_301_375 = !0, e.funcObserveAllUsers_301_375(), $(".BTN_GetListOfUserProfiles_301_375 > a").click()
-			});
-			t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		funcObserveAllUsers_301_375() {
-			$(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div").html("");
-			let e = this;
-			var t = new MutationObserver(function (s) {
-				var a = $(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div").html();
-				e.setUsers_301_375(a), e.usersIsLoading_301_375 = !1, t.disconnect(), e.usersIsLoading_376_450 = !0, e.funcObserveAllUsers_376_450(), $(".BTN_GetListOfUserProfiles_376_450 > a").click()
-			});
-			t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		funcObserveAllUsers_376_450() {
-			$(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div").html("");
-			let e = this;
-			var t = new MutationObserver(function (s) {
-				var a = $(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div").html();
-				e.setUsers_376_450(a), e.usersIsLoading_376_450 = !1, t.disconnect(), e.usersIsLoading_451_525 = !0, e.funcObserveAllUsers_451_525(), $(".BTN_GetListOfUserProfiles_451_525 > a").click()
-			});
-			t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		funcObserveAllUsers_451_525() {
-			$(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div").html("");
-			let e = this;
-			var t = new MutationObserver(function (s) {
-				var a = $(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div").html();
-				e.setUsers_451_525(a), e.usersIsLoading_451_525 = !1, t.disconnect()
-			});
-			t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		run_autoupdate_func() {
-			this.isNewCaseLoading || this.isCaseUpdating || (clearJSONfields(), this.readLatestUpdatedCases()), this.isNewAnnouncementLoading || this.isUpdatedAnnouncementLoading || (clearJSONfields(), this.readLatestUpdatedDocsByOthers())
-		},
-		setUsers(e) {
-			function t(e) {
-				var t = document.createElement("textarea");
-				return t.innerHTML = e, t.value
-			}
-			e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-				0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-			})
-		},
-		setUsers_1_75(e) {
-			function t(e) {
-				var t = document.createElement("textarea");
-				return t.innerHTML = e, t.value
-			}
-			$(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-				0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-			})
-		},
-		setUsers_76_150(e) {
-			function t(e) {
-				var t = document.createElement("textarea");
-				return t.innerHTML = e, t.value
-			}
-			$(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-				0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-			})
-		},
-		setUsers_151_225(e) {
-			function t(e) {
-				var t = document.createElement("textarea");
-				return t.innerHTML = e, t.value
-			}
-			$(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-				0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-			})
-		},
-		setUsers_226_300(e) {
-			function t(e) {
-				var t = document.createElement("textarea");
-				return t.innerHTML = e, t.value
-			}
-			$(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-				0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-			})
-		},
-		setUsers_301_375(e) {
-			function t(e) {
-				var t = document.createElement("textarea");
-				return t.innerHTML = e, t.value
-			}
-			$(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-				0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-			})
-		},
-		setUsers_376_450(e) {
-			function t(e) {
-				var t = document.createElement("textarea");
-				return t.innerHTML = e, t.value
-			}
-			$(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-				0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-			})
-		},
-		setUsers_451_525(e) {
-			function t(e) {
-				var t = document.createElement("textarea");
-				return t.innerHTML = e, t.value
-			}
-			$(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-				0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-			})
-		},
-		readOpenDocs() {
-			this.isOpenDocsLoading = !0, this.funcObserveDocsOpen(), $(".BTN_GetListOfExtDocs_Open > a").click()
-		},
-		readClosedDocs() {
-			this.isClosedDocsLoading = !0, this.funcObserveDocsClosed(), $(".BTN_GetListOfExtDocs_Closed > a").click()
-		},
-		funcObserveDocsOpen() {
-			$(".ETRAY_EXT_DOCS_RAW_JSON_OPEN > div").html("");
-			let e = this;
-			var t = new MutationObserver(function (s) {
-				var a = document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_OPEN > div").innerHTML;
-				e.setDocs(a), e.isOpenDocsLoading = !1, t.disconnect(), e.readClosedDocs()
-			});
-			t.observe(document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_OPEN > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		funcObserveDocsClosed() {
-			$(".ETRAY_EXT_DOCS_RAW_JSON_CLOSED > div").html("");
-			let self = this;
-			var observer = new MutationObserver(function (mutations) {
-				var html = document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_CLOSED > div").innerHTML;
-				self.setDocs(html);
-				self.isClosedDocsLoading = false;
-				observer.disconnect();
-			});
-			observer.observe(document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_CLOSED > div"), {
-				characterData: true,
-				childList: true
-			});
-		},
-
-		setDocs(html) {
-			setDocPagePostIDs();
-			if (html.length > 2) {
-				var docs = JSON.parse(html);
-				docs.forEach((doc, index) => {
-					if (this.items.findIndex(item => item.onid == doc.onid) < 0) {
-						this.items.push(doc);
-					}
-				});
-			}
-		},
-		setSearchInOldCases() {
-			this.isSearchingOldCases = !0, $(".ETRAY_JSON_LIST_OF_OLD_CASES > div").html(""), $(".SEARCH_FIELD > input").val(this.searchQuery), this.funcObserveSearchedServerCases(), $(".BTN_GetListOfOldCasesJSON > a").click()
-		},
-		funcObserveSearchedServerCases() {
-			var e = this,
-				t = new MutationObserver(function (s) {
-					e.setServerCases(), e.isSearchingOldCases = !1, t.disconnect()
-				});
-			t.observe(document.querySelector(".ETRAY_JSON_LIST_OF_OLD_CASES > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		setServerCases() {
-			var e = $(".ETRAY_JSON_LIST_OF_OLD_CASES > div").html();
-			!(e.length < 3) && (this.encodeCases(e), $(".ETRAY_JSON_LIST_OF_OLD_CASES > div").html(""))
-		},
-		setSearchInParnerCases() {
-			this.isSearchingPartnerCases = !0, $(".ETRAY_JSON_LIST_OF_OTHER_P_CASES > div").html(""), $(".SEARCH_FIELD > input").val(this.searchQuery), this.funcObservePartnerCases(), $(".BTN_GetListOfOtherPCasesJSON > a").click()
-		},
-		funcObservePartnerCases() {
-			var e = this,
-				t = new MutationObserver(function (s) {
-					e.setPartnerCases(), e.isSearchingPartnerCases = !1, t.disconnect()
-				});
-			t.observe(document.querySelector(".ETRAY_JSON_LIST_OF_OTHER_P_CASES > div"), {
-				characterData: !0,
-				childList: !0
-			})
-		},
-		setPartnerCases() {
-			var e = $(".ETRAY_JSON_LIST_OF_OTHER_P_CASES > div").html();
-			!(e.length < 3) && (this.encodeCases(e), $(".ETRAY_JSON_LIST_OF_OTHER_P_CASES > div").html(""))
-		},
-		readEndCustomerConfigs() {
-			this.listenForDataChangesForONPKonfiguration("ONP_PENDING_PRODUCT_LIST")
-			this.listenForDataChangesForONPKonfigurationForm('ONP_TRANSACTION_LIST')
-			$(".ONP_BTN_GetInitialConfigData > a").click()
-		},
-		listenForDataChangesForONPKonfigurationForm(e, t, s) {
-			$("." + e + " > div").html("data__loading");
-			let interval = setInterval(() => {
-				let s = $("." + e + " > div").html();
-				if (s !== "data__loading") {
-					clearInterval(interval);
-					if (s.length > 1) {
-						this.onpFormData = JSON.parse(s)
-						this.setIsCreateOnpModalForm()
+						$(".js-o-modal__case__actions, .js-o-modal__case__commentary").removeClass("hidden_field");
 					}
 				}
-			}, 1500);
-		},
-		listenForDataChangesForONPKonfiguration(e, t, s) {
-			this.isLoadingOnpProductList = true;
-			$("." + e + " > div").html("data__loading");
 
-			let interval = setInterval(() => {
-				let s = $("." + e + " > div").html();
-				if (s !== "data__loading") {
-					clearInterval(interval);
-					this.setEncodeData(s);
-					this.isLoadingOnpProductList = false;
-				}
-			}, 1500);
-		},
-		setEncodeData(e) {
-			function t(e) {
-				var t = document.createElement("textarea");
-				return t.innerHTML = e, t.value
-			}
-			e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-				let t = this.onpProductList.findIndex(t => t.REC_ID == e.REC_ID);
-				t < 0 ? this.onpProductList.push(e) : this.onpProductList[t] = e
-			})
-		},
-		listenForDataUpdates(e, t, s) {
-			this.isUpdatingOnpProductList = !0, $("." + e + "> div").html("data__loading"), a && clearInterval(a);
-			var a = setInterval(t => {
-				var s = $("." + e + "> div").html();
-				"data__loading" != s && (clearInterval(a), this.setEncodeData(s), this.isUpdatingOnpProductList = !1, this.closeVueModalOverlay())
-			}, 1500)
-		},
-		setActiveOnpProductListFilter(e) {
-			this.theActiveOnpProductListFilter = e
-		},
-		setIsCreateOnpModal(editItem) {
-			this.setIsCreateOnpModalForm(editItem)
-			this.isCreateOnpModal = true;
-			this.isVueModalOverlay = true;
-			$("body").css("overflow", "hidden");
-		},
-		setIsCreateOnpModalForm(editItem) {
-			const values = [];
-			this.onpFormData.forEach(standardFormItem => {
-				let value = standardFormItem['from_company'];
-				if (values.indexOf(value) < 0) {
-					values.push(value);
-				}
-			});
-			this.onpForm.forEach(formItem => {
-				if (formItem.id === 'FROM_COMPANY') {
-					formItem.options = values.sort();
-				} else {
-					this.$set(formItem, 'hide', true)
-				}
-			})
-			if (editItem && editItem.REC_ID) {
-				this.onpForm.forEach((formItem, s) => {
-					formItem.value = editItem[formItem.id]
-					this.setFormItemValidated(formItem)
+				// Set modal title
+				let modalTitle = caseId + " - " + caseInfo.filter_inquiry_type;
+				$(".js-modal__single-case__title").text(modalTitle);
+
+				// Read case and handle single case loaded event
+				readEtrayCase(caseToken, caseId);
+
+				$(document).one("etray::single-case-loaded", function () {
+					$(".o-modal__body").removeClass("o-modal__body--loading");
+				});
+
+				// Set date and time picker
+				setDateTimePicker();
+				// START ADDED 26-11-23 For openByOtherEmp
+				isSeeCaseOpenByOthers = true
+				this.seeCaseOpenByOthers();
+				this.setCheckCaseByOtherInInterval();
+				// END ADDED 26-11-23 For openByOtherEmp
+				// START 17-12-23
+				this.$nextTick(_ => {
+					$('#js-case-element__inserted .o-cases__case_element__header__row__tags__container').on('click', (evt) => {
+						const tagType = evt.target.dataset.tagType
+						const caseItem = this.cases[caseIndex]
+						this.setTheActiveTagDropdown(tagType, caseItem, evt)
+					})
 				})
-			}
-		},
-		submitOnpForm() {
-			let hasError = false;
-
-			this.onpForm.forEach((input, index) => {
-				if (!input.hide && input.value.length < 1) {
-					hasError = true;
-					input.validated = false;
+			},
+			// START ADDED 26-11-23 For openByOtherEmp
+			seeCaseOpenByOthers() {
+				if (!isSeeCaseOpenByOthers) {
+					return
 				}
-			});
+				$('.updCaseIdSession_Type > input').val('KEEP_ALIVE');
+				$('.updCaseIdSession_Output > div').html('');
+				$('.updCaseIdSession_BTN > a').click();
 
-			if (!hasError) {
-				let formData = {};
+				const observeCaseOpenChanges = (selector, callback) => {
+					const el = $(selector)
+					if (!el || el.length === 0) {
+						console.warn(`No element found with selector ${selector}`)
+						return;
+					}
+					el.html('loading');
+					intervalObserveCaseOpenChanges = setInterval(() => {
+						const val = el.html()
+
+						if (val !== 'loading') {
+							clearInterval(intervalObserveCaseOpenChanges)
+							callback(val)
+						}
+					}, 1000)
+				}
+
+				observeCaseOpenChanges('.updCaseIdSession_Output > div', (OK) => {
+					const whoHasItOpen = $('.openByOtherEmp > input').val()
+					const whoHasItOpenToJSON = whoHasItOpen.length > 1 ? JSON.parse(whoHasItOpen) : []
+					const caseId = this.theOrignalActiveCase.onid;
+					const caseToken = this.theOrignalActiveCase.onid_token;
+					const caseIndex = this.cases.findIndex(c => c.onid === this.theOrignalActiveCase.onid);
+					if (caseIndex > -1) {
+						this.cases[caseIndex]['openByOtherEmp'] = whoHasItOpenToJSON;
+						// Update case element in modal with Jquery
+						let htmlArr = []
+						whoHasItOpenToJSON.forEach((name, key) => {
+							const initials = name.split(' ').map(word => word.charAt(0)).join('')
+							const htmlEl = '<li class="o-case-active-users__user hint--bottom" aria-label="' + name + '">' + initials + '</li>'
+							htmlArr.push(htmlEl)
+						})
+						$(".js-case-insert .o-case-active-users").html(htmlArr.join(''));
+					}
+				})
+			},
+			setCheckCaseByOtherInInterval() {
+				intervalSeeCaseOpenByOthersTimer = setInterval(() => {
+					this.seeCaseOpenByOthers()
+				}, 1000 * 30)
+			},
+			// END ADDED 26-11-23 For openByOtherEmp
+			CreateExtDocument(e) {
+				run_autoupdate = !1;
+				var t, s = new Date,
+					a = String(s.getDate()).padStart(2, "0");
+				s = a + "-" + String(s.getMonth() + 1).padStart(2, "0") + "-" + s.getFullYear(), $(".EXT_DOCS_TIME_START > input").val(s), $(".EXT_DOCS_TIME_END > input").val(), "Announcement" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_ANNOUNCEMENT > input").val()), $(".js-modal-create-title").text("Opret udmelding")), "Report" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_REPORT > input").val()), $(".js-modal-create-title").text("Opret rapport")), "Documentation" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_DOCUMENTATION > input").val()), $(".js-modal-create-title").text("Opret dokumentation")), "Invoices" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_INVOICE > input").val()), $(".js-modal-create-title").text("Opret faktura")), "Contract" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_CONTRACT > input").val()), $(".js-modal-create-title").text("Opret kontrakt")), window.scroll(0, 0), subCatChangeSelect("Create ext docs"), $(".EXT_DOCS_ORDER_TYPE > input").val(e), $(".EXT_DOCS_EVENT_TYPE > input").val("NEW"), $(".EXT_DOCS_PAGE_IDS > input").val(""), $(".EXT_DOCS_HEADLINE > input").val(""), $(".EXT_DOCS_MESSAGE > input").val(""), $(".EXT_DOCS_MESSAGE > textarea").val(""), window.matchMedia("(max-width: 600px)").matches && closeBurgerMenu(), $(".o-bg-overlay").addClass("o-bg-overlay--active"), $(".js-o-modal__create-case").addClass("o-create-case--active"), $("body").css("overflow", "hidden");
+				var i = $(".EXT_RECIEVERS_JSON_NEW > div").html();
+				createTogglerForReceivers(i, document.querySelector(".EXT_DOCS_RECIEVERS_DISPLAY_NEW > div"))
+			},
+			editExtDocumentDirect(e, t) {
+				$(".EXT_DOCS_CASE_ID > input").val(item.onid), editExtDocument(e)
+			},
+			editExtDocument(e) {
+				window.scroll(0, 0), "Announcement" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_ANNOUNCEMENT > input").val()), $(".js-modal-create-title").text("Rediger udmelding")), "Report" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_REPORT > input").val()), $(".js-modal-create-title").text("Rediger rapport")), "Documentation" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_DOCUMENTATION > input").val()), $(".js-modal-create-title").text("Rediger dokumentation")), "Invoices" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_INVOICE > input").val()), $(".js-modal-create-title").text("Rediger faktura")), "Contract" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_CONTRACT > input").val()), $(".js-modal-create-title").text("Rediger kontrakt")), $.TRIGGER_AFTER_EXT_DOC_RENDERRING = !1, $(".EXT_DOCS_FETCHED > input").val("N"), $(".EXT_DOCS_FETCHED > input").change(), $(".UPDATE_EXT_FIELDS").hasClass("hidden_field") || $(".UPDATE_EXT_FIELDS").addClass("hidden_field"), $(".EXT_DOCS_LOADING").hasClass("hidden_field") && $(".EXT_DOCS_LOADING").removeClass("hidden_field"), subCatChangeSelect("Edit ext docs"), $(".EXT_DOCS_ORDER_TYPE > input").val(e), $(".EXT_DOCS_PAGE_IDS > input").val(""), $(".BTN_GetExtDocsCaseInfo > a").click(), window.matchMedia("(max-width: 600px)").matches && closeBurgerMenu(), $(".o-bg-overlay").addClass("o-bg-overlay--active"), $(".js-o-modal__create-case").addClass("o-create-case--active"), $("body").css("overflow", "hidden"), this.closeVueModalOverlay()
+			},
+			dateIsAfterToday: e => new Date(e).valueOf() > new Date().valueOf(),
+			formatDateForJs(e, t) {
+				if (19 === e.length || 16 === e.length || 10 === e.length) {
+					var s = e.split(/(?:-| )+/),
+						a = s[3] ? s[3] : "00:00";
+					return new Date(s[2] + "-" + s[1] + "-" + s[0] + " " + a)
+				}
+				if (!t) return new Date(null);
+				var s = (t.created_time ? t.created_time : t.active_date).split(/(?:-| )+/),
+					a = s[3] ? s[3] : "00:00",
+					i = 1 * s[2] - 10;
+				return new Date(i + "-" + s[1] + "-" + s[0] + " " + a)
+			},
+			formatDateForJs2TypsOfDates(dateString, fallback) {
+				const dateFormat1 = /^\d{2}-\d{2}-\d{4} \d{2}:\d{2}$/;
+				const dateFormat2 = /^\d{4}-\d{2}-\d{2}$/;
+
+				let date;
+				if (dateFormat1.test(dateString)) {
+					date = new Date(dateString.replace(/(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2})/, '$3-$2-$1T$4:$5:00'));
+				} else if (dateFormat2.test(dateString)) {
+					date = new Date(dateString);
+				} else if (fallback) {
+					const dateStringFallback = fallback.created_time || fallback.active_date;
+					if (dateFormat1.test(dateStringFallback)) {
+						date = new Date(dateStringFallback.replace(/(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2})/, '$3-$2-$1T$4:$5:00'));
+					} else if (dateFormat2.test(dateStringFallback)) {
+						date = new Date(dateStringFallback);
+					}
+				}
+
+				return date || new Date(null);
+			},
+			onItemClicked(e) {
+				if (run_autoupdate = !1, $(".EXT_DOCS_CASE_ID > input").val(e.onid), $(".ETRAY_READ_CASE_TOKEN_ID > input").val(e.tid), $(".ETRAY_READ_CASE_ID > input").val(e.onid), $(".ETRAY_READ_MESSAGE_TYPE > input").val("VIEW_CASE"), $(".ETRAY_VIEW_CASE > a").click(), this.theActiveItem = e, this.isVueModalOverlay = !0, $("body").css("overflow", "hidden"), "Yes" == e.show_unread_icon) {
+					let t = this.items.findIndex(t => t.onid === e.onid);
+					this.theActiveItem.show_unread_icon, Vue.set(this.items[t], "show_unread_icon", "No")
+				}
+			},
+			downloadItem(e) {
+				if ($(".EXT_DOCS_CASE_ID > input").val(e.onid), $(".BTN_ViewExtCase > a").click(), "Yes" == e.show_unread_icon) {
+					let t = this.items.findIndex(t => t.onid === e.onid);
+					Vue.set(this.items[t], "show_unread_icon", "No")
+				}
+			},
+			closeVueDropdown() {
+				this.isVueDropdown && (this.isVueDropdown = !this.isVueDropdown)
+			},
+			setIsVueDropdown() {
+				this.isVueDropdown = !this.isVueDropdown
+			},
+			setTheUnreadSelected(e) {
+				this.theUnreadSelected = e
+			},
+			setActivecCategory(e, t) {
+				if (e !== this.activeCategory) {
+					window.scroll(0, 0)
+
+					if (e == "OpenAnalytics") {
+						$(".o-wrapper").addClass("OpenAnalytics_full_width")
+					}
+					else {
+						$(".o-wrapper").removeClass("OpenAnalytics_full_width")
+					}
+
+					$('ul.o-menu__items__inner > li[class^="js-"]').each(function () {
+						$(this).removeClass("li--active")
+					})
+					$(".js-o-cases__container").removeClass("o-cases__container--loading"), $(".o-page").removeClass("o-page--all-cases"), $(".o-page").hasClass("o-page--docs") || $(".o-page").addClass("o-page--docs");
+					var s = "";
+					switch (e) {
+						case "my_cases":
+							s = "Hjem / Mine sager";
+							break;
+						case "all_cases":
+							s = "Alle sager";
+							break;
+						case "Announcement":
+							s = "Udmeldinger";
+							break;
+						case "Contract":
+							s = "Kontrakter";
+							break;
+						//< !--START OpenNet OpenAnalytics-- >
+						case "OpenAnalytics":
+							s = "OpenAnalytics";
+							break;
+						//< !--END  OpenNet OpenAnalytics-- >
+						case "Invoice":
+							s = "Fakturaer";
+							break;
+						case "Documentation":
+							s = "Dokumenter";
+							break;
+						case "Report":
+							s = "Rapporter";
+							break;
+						case "roles":
+							s = "Brugeradministration";
+							break;
+						case "end_customer_pricing_config":
+							s = "Slutkundepriser – Konfiguration";
+							break;
+						case "end_customer_orders":
+							s = "Slutkundeordre"
+							break
+						case "operation_status":
+							s = "Operation status"
+							break
+						case "news":
+							s = "Nyheder"
+							break
+					}
+					if ("Report" === e || "Invoice" === e || "OpenAnalytics" === e) {
+						// Retrieve HTML content from the specified element
+						var PBIListOfReportsHTML = $(".PBI_ListOfReports > div").html();
+						console.log('$(".PBI_ListOfReports > div").html()', $(".PBI_ListOfReports > div").html());
+
+						if (PBIListOfReportsHTML.length > 3) {
+							this.PBIReportsData = JSON.parse(PBIListOfReportsHTML);
+						}
+
+						this.theInvoiceBIExplainer = $(".PBI_Intro_Invoice > div").html()
+						this.theReportBIExplainer = $(".PBI_Intro_Report > div").html()
+					}
+					switch (e) {
+						case "end_customer_orders":
+							this.readEndCustomerOrders()
+								;
+							break;
+						case "end_customer_pricing_config":
+							this.readEndCustomerConfigs();
+							break;
+						case "roles":
+							this.readUsers();
+							break;
+						default:
+							break;
+					}
+					$(".js-page-title").text(s);
+
+					this.activeCategory = e;
+					if (this.isNewDesignActive && (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases')) {
+						this.getAllLocalStorageFilter()
+						return
+					}
+					this.resetFilters();
+					if (e === 'OpenAnalytics') {
+						this.setTheActiveFilter('')
+					}
+				}
+			},
+			resetFilters() {
+				this.infiniteScrollNumber = 50;
+				this.clearSearchQuery();
+				this.activeType = null;
+				$(".vue-filter-2").each(function () {
+					$(this).removeClass("o-btn__filter---active");
+				});
+				this.theUnreadSelected = "Alle";
+				this.theActiveFilter = "active";
+				this.theActiveCaseCategory = "Alle kategorier";
+				this.theActiveOnpProductListFilter = "Fra alle";
+			},
+			setActiveCaseCategory(e) {
+				this.theActiveCaseCategory = e
+			},
+			setTheActiveFilter(event) {
+				this.theActiveFilter = event;
+				this.clearSearchQuery();
+				this.theUnreadSelected = "Alle";
+
+				// Set the active type to null
+				this.activeType = null;
+				$(".vue-filter-2").each(function () {
+					$(this).removeClass("o-btn__filter---active");
+				})
+				if (this.isNewDesignActive && (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases')) {
+					this.getAllLocalStorageFilter()
+				}
+				//if (event == 'dynamic') {
+				//	this.theUnreadSelected = "Vælg";
+				//}
+				if (this.activeCategory !== 'OpenAnalytics') {
+
+					return
+				}
+				// For OpenAnalytics
+				this.setIframeForOpenAnalytics()
+			},
+			setIframeForOpenAnalytics() {
+				openAnalyticsSecret = JSON.parse($('.PBI_sharedSecretJSON > input').val()).sharedSecret;
+				console.log('openAnalyticsSecret', openAnalyticsSecret);
+				this.isLoadingTheOpenAnalyticsIframe = true
+				function constructURLWithSecret(baseURL, secretValue) {
+					const queryParams = new URLSearchParams(window.location.search);
+					queryParams.set('secret', secretValue);
+					const newURL = `${baseURL}?${queryParams.toString()}`;
+					return newURL;
+				}
+				if (this.theActiveFilter === 'OpenAnalytics_tab1') {
+					const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/1';
+					this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
+					// For demonstration purpose
+					const openAnalyticsIframeURL = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret);
+					console.log(openAnalyticsIframeURL);
+				}
+				if (this.theActiveFilter === 'OpenAnalytics_tab2') {
+					const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/2';
+					this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
+				}
+				// Wait for Vue's next tick to ensure the DOM updates
+				this.$nextTick(() => {
+					const iframe = this.$refs.openAnalyticsIframe;
+					if (iframe) {
+						iframe.onload = () => {
+							this.addIframeEventListeners(iframe);
+						};
+					}
+				})
+			},
+			addIframeEventListeners(iframe) {
+				const self = this
+				const handleMessage = (event) => {
+					console.log('message!', event)
+					if (event.origin !== 'https://opn-iframes-dev.azurewebsites.net') {
+						return; // Ensure the message is from a trusted origin
+					}
+					if (event.data.event === 'Inspari_iframeChanged') {
+						console.log('Inspari_iframeChanged event received', event.data);
+						// Handling Inspari_iframeChanged event to adjust iframe size
+						var iframe = document.querySelector('.o-iframe-container');
+
+						if (current_iframeHeight != event.data.iframeHeight) {
+							console.log('Current iframe height', current_iframeHeight);
+							iframe.style.height = event.data.iframeHeight + 'px';
+							console.log('New iframe height', event.data.iframeHeight);
+							current_iframeHeight = event.data.iframeHeight;
+						}
+					}
+
+					if (event.data.event === 'Inspari_iframeLoaded') {
+						self.isLoadingTheOpenAnalyticsIframe = false
+						console.log('Inspari_iframeLoaded event received', event.data);
+						var iframe = document.querySelector('.o-iframe-container');
+						if (current_iframeHeight != event.data.iframeHeight) {
+							console.log('Current iframe height', current_iframeHeight);
+							iframe.style.height = event.data.iframeHeight + 'px';
+							console.log('New iframe height', event.data.iframeHeight);
+							current_iframeHeight = event.data.iframeHeight;
+						}
+					}
+				};
+
+				window.addEventListener('message', handleMessage);
+
+				this.$once('hook:beforeDestroy', () => {
+					window.removeEventListener('message', handleMessage);
+				});
+			},
+			setActiveType(event, target) {
+				// Reset the infinite scroll number
+				this.infiniteScrollNumber = 50;
+				$(".vue-filter-2").removeClass("o-btn__filter---active");
+
+				// Toggle the active type
+				if (this.activeType === event) {
+					this.activeType = null;
+				} else {
+					this.activeType = event;
+					$(target.currentTarget).addClass("o-btn__filter---active");
+				}
+
+				// Added 17-12-23
+				if (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases') {
+					this.setLocalStorageFilter('activeType', this.activeType)
+					return
+				}
+			},
+			createUserModal() {
+				window.scroll(0, 0), subCatChangeSelect("Create User"), Set_UM_USER_INIT = !0, $(".UM_DISPLAY_NAME > input").val(""), $(".UM_COPY_OF > select").val(""), $(".UM_USER_ID > input").val(""), $(".UM_USER_INIT > input").val(""), $(".UM_USER_INIT > .Web_Error").html(""), $(".UM_USER_INIT > .Web_Error").hide(), $(".UM_USER_NAME > input").val(""), $(".UM_EMAIL > input").val(""), $(".UM_GROUP_ID > input").val(""), $(".UM_MOBILE_NO > input").val(""), $(".UM_PASSWORD > input").val(""), $(".UM_EVENT_TYPE > input").val(""), $(".o-bg-overlay").addClass("o-bg-overlay--active"), $(".js-o-modal__create-case").addClass("o-create-case--active"), $("body").css("overflow", "hidden"), $(".js-modal-create-title").text("Opret bruger")
+			},
+			searchFunc(e) {
+				function matchObjects(obj1, obj2) {
+					var key;
+					for (key in obj1) {
+						if (obj1[key] !== obj2[key]) {
+							return false;
+						}
+					}
+					for (key in obj2) {
+						if (obj1[key] !== obj2[key]) {
+							return false;
+						}
+					}
+					return true;
+				}
+
+				function matchArray(arr, obj) {
+					var i;
+					for (i = 0; i < arr.length; i++) {
+						if (matchObjects(arr[i], obj)) {
+							return true;
+						}
+					}
+					return false;
+				}
+
+				var results = [],
+					searchQuery = function (value) {
+						var start = 0,
+							end = value.length - 1;
+						while (start < value.length && value[start] === ' ') {
+							start++;
+						}
+						while (end > start && value[end] === ' ') {
+							end--;
+						}
+						return value.substring(start, end + 1);
+					}(this.searchQuery.toLowerCase()),
+					i,
+					j,
+					item,
+					propertyValue;
+				for (i = 0; i < e.length; i++) {
+					for (j in e[i]) {
+						if (e[i].hasOwnProperty(j)) {
+							item = e[i][j];
+							if (typeof item === 'string') {
+								item = item.toLowerCase();
+							} else if (typeof item === 'number') {
+								item = item.toString();
+							}
+							if (typeof item === 'string' && item.indexOf(searchQuery) !== -1 && !matchArray(results, e[i])) {
+								results.push(e[i]);
+								break;
+							}
+						}
+					}
+				}
+				return results;
+			},
+			setTheActiveUser(e) {
+				this.theActiveUser = e
+			},
+			closeActiveUserModal() {
+				this.theActiveUser = null
+			},
+			rolesInView(e) {
+				var t = e;
+				this.isProfileClick && (t = e.filter(e => "true" == e.active_role));
+				var s = [];
+				return t.forEach(e => {
+					var t = s.findIndex(t => t.group === e.group_category);
+					t < 0 ? s.push({
+						group: e.group_category,
+						roles: [e]
+					}) : s[t].roles.push(e)
+				}), s
+			},
+			onActiveGroupChange(e, t, s) {
+				var a = e.role_array.filter(e => e.group_category == t),
+					i = s ? "true" : "false";
+				this.toggle_group_ids = [], a.forEach((t, s) => {
+					var r = a.length - 1 == s;
+					this.onActiveRoleChange(e, t.group_id, i, !0, r)
+				})
+			},
+			getIsGroupCategoryActive: (e, t) => e.role_array.filter(e => e.group_category == t).filter(e => "true" == e.active_role).length > 0,
+			onActiveRoleChange(e, t, s, a, i) {
+				var r = this.users.findIndex(e => e.id == this.theActiveUser.id),
+					o = this.theActiveUser.role_array.findIndex(e => e.group_id == t),
+					n = "false" == s ? "true" : "false";
+				if (this.theActiveUser.role_array[o].active_role = n, this.users[r].role_array[o].active_role = n, a) {
+					if (this.toggle_group_ids.push(t), i) {
+						var l = this.toggle_group_ids.join(";");
+						"true" == n && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(l), $(".BTN_UserManagement > a").click()), "false" == n && ($(".UM_EVENT_TYPE > input").val("REMOVE_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(l), $(".BTN_UserManagement > a").click())
+					}
+				} else "true" == n && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click()), "false" == n && ($(".UM_EVENT_TYPE > input").val("REMOVE_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click())
+			},
+			onActiveRoleNotificationsChange(e, t, s) {
+				var a = this.users.findIndex(e => e.id == this.theActiveUser.id),
+					i = this.theActiveUser.role_array.findIndex(e => e.group_id_noti == t),
+					r = "false" == s ? "true" : "false";
+				this.theActiveUser.role_array[i].active_role_noti = r, this.users[a].role_array[i].active_role_noti = r, "true" == r && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click()), "false" == r && ($(".UM_EVENT_TYPE > input").val("REMOVE_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click())
+			},
+			setTheActiveUserRoleChangeModal(e) {
+				this.theActiveUser = e, this.isEditUserRoles = !0, this.isVueModalOverlay = !0, $("body").css("overflow", "")
+			},
+			setTheEditUserModal(e, t) {
+				t ? this.isProfileClick = !0 : this.isProfileClick = !1, this.theActiveUser = e, this.isEditUser = !0, this.userform.name = e.name, this.userform.display_name = e.display_name, this.userform.user_init = e.user_init, this.userform.email = e.email, this.userform.sms_no = e.sms_no, this.isVueModalOverlay = !0, $("body").css("overflow", "")
+			},
+			resetEditUserForm() {
+				this.userform.name = "", this.userform.display_name = "", this.userform.email = "", this.userform.user_init = "", this.userform.sms_no = "", this.userform.new_password = "", this.userform.new_password_confirmed = ""
+			},
+			toggleRolesAcc(e) {
+				var t = this.theToggleRolesAcc.indexOf(e);
+				this.theToggleRolesAcc.indexOf(e) > -1 ? this.theToggleRolesAcc.splice(t, 1) : this.theToggleRolesAcc.push(e)
+			},
+			getIsInTheToggleRolesAcc(e) {
+				return this.theToggleRolesAcc.indexOf(e) > -1
+			},
+			closeVueModalOverlay() {
+				run_autoupdate = true;
+				this.run_autoupdate_func();
+				this.isVueModalOverlay = false;
+				this.theActiveUser = null;
+				this.isEditUserRoles = false;
+				this.isEditUser = false;
+				this.isProfileClick = false;
+				this.theActiveItem = null;
+				this.isCreateOnpModal = false;
+				this.resetEditUserForm();
+				$("body").css("overflow", "");
+				$("body").removeClass("no-scroll")
+				this.isSendingEmail = false;
+				this.formErrors = {};
+
+				this.onpForm.forEach((element, index) => {
+					element.value = "";
+					element.validated = true;
+				});
+
+				this.isNewOrderModal = false;
+				this.isOrderCustomerEmailValid = true;
+				this.orderCustomerEmail = "";
+				this.OnpSSIDDetails = [];
+				this.ssid = "";
+				this.theActiveDescExpanded = null;
+				this.isSSIDValid = true;
+				this.theActivePrevOrder = null;
+				this.theNewOrderSkaderItems = []
+				this.theActiveOrderType = '001'
+				this.isEndCustomerEmailConfigModal = false
+				this.isUpdatingEndCustomerEmailConfigForm = false
+				this.theEndCustomerEmailConfigForm.forEach(item => {
+					item.value = ''
+				})
+				this.isGhostUserCreating = false
+				this.isCreateGhostUser = false
+				this.theGhostUserSelectedPartner = null
+				this.theGhostUserSelectedPartnerUser = null
+			},
+			formValidation() {
+				this.userform.name.length < 1 ? Vue.set(this.formErrors, "name", "Skal mindst 1 tegn") : this.removeErrors("name"), this.userform.display_name.length < 1 ? Vue.set(this.formErrors, "display_name", "Skal mindst 1 tegn") : this.removeErrors("display_name"), this.userform.user_init.length < 1 ? Vue.set(this.formErrors, "user_init", "Skal mindst 1 tegn") : this.removeErrors("user_init"), this.validateEmail(this.userform.email) ? this.removeErrors("email") : Vue.set(this.formErrors, "email", "Skal v\xe6re en gyldig emailaddresse"), this.userform.sms_no.length < 8 ? Vue.set(this.formErrors, "sms_no", "Skal v\xe6re et gyldigt telefonnummer") : this.removeErrors("sms_no"), this.userform.sms_no.length < 8 ? Vue.set(this.formErrors, "sms_no", "Skal v\xe6re et gyldigt telefonnummer") : this.removeErrors("sms_no"), this.userform.new_password != this.userform.new_password_confirmed ? Vue.set(this.formErrors, "new_password_confirmed", "Kodeordene skal v\xe6re det ens") : this.removeErrors("new_password_confirmed")
+			},
+			validateEmail: e => /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(String(e).toLowerCase()),
+			removeErrors(e) {
+				this.$delete(this.formErrors, e)
+			},
+			onkeyup_user_init(e) {
+				this.$delete(this.formErrors, e), clearTimeout(this.debounce_user_init), this.debounce_user_init = setTimeout(() => {
+					$(".UM_USER_INIT > input").val(this.userform.user_init), Set_UM_USER_INIT = !1, $(".BTN_GetUserValidation > a").click(), $(".BTN_GetUserValidation_Result > input").val("N"), WAIT_FOR_UM_USERNAME_VALIDATION_ANSWER_VUE()
+				}, 600)
+			},
+			submitEditUserForm() {
+				if (!(Object.keys(this.formErrors).length > 0)) this.formValidation(), !(Object.keys(this.formErrors).length > 0) && ($(".UM_EVENT_TYPE > input").val("UPDATE_USER_DETAILS"), $(".UM_USER_ID > input").val(this.theActiveUser.id), $(".UM_USER_NAME > input").val(this.userform.name), $(".UM_DISPLAY_NAME > input").val(this.userform.display_name), $(".UM_MOBILE_NO > input").val(this.userform.sms_no), $(".UM_EMAIL > input").val(this.userform.email), $(".UM_USER_INIT > input").val(this.userform.user_init), this.userform.new_password.length > 0 && $(".UM_PASSWORD > input").val(this.userform.new_password), $(".UM_RESULT > div").html(""), $(document).trigger("vue::new_user"), $(".BTN_UserManagement > a").click(), this.closeVueModalOverlay())
+			},
+			submitDeleteUserForm() {
+				$(".UM_EVENT_TYPE > input").val("DELETE_USER"), $(".UM_USER_ID > input").val(this.theActiveUser.id), $(".UM_USER_NAME > input").val(this.userform.name), $(".UM_DISPLAY_NAME > input").val(this.userform.display_name), $(".UM_MOBILE_NO > input").val(this.userform.sms_no), $(".UM_EMAIL > input").val(this.userform.email), $(".UM_USER_INIT > input").val(this.userform.user_init), this.userform.new_password.length > 0 && $(".UM_PASSWORD > input").val(this.userform.new_password), $(".UM_RESULT > div").html(""), $(".BTN_UserManagement > a").click();
+				var e = this.users.findIndex(e => e.id == this.theActiveUser.id);
+				this.users.splice(e, 1), this.closeVueModalOverlay()
+			},
+			resetPasswordForUser(e) {
+				this.isSendingEmail = !0, $(".UM_EVENT_TYPE > input").val("RESET_PASSWORD"), $(".UM_USER_ID > input").val(this.theActiveUser.id), $(".BTN_UserManagement > a").click()
+			},
+			setIsViewRoles(e) {
+				this.theActiveRoleForFilter = this.allRoles[0] ? this.allRoles[0].group_id : "", this.isViewRoles = e
+			},
+			setTheActiveRoleForFilter(e) {
+				this.theActiveRoleForFilter = e
+			},
+			numberOfUsersWithRole(e) {
+				return this.users.filter(t => t.role_array.findIndex(t => t.group_id == e && "true" == t.active_role) > -1)
+			},
+			usersWithRole(e) {
+				return this.users.filter(t => t.role_array.findIndex(t => t.group_id == e && "true" == t.active_role) > -1)
+			},
+			setTheOSelect(e) {
+				setTimeout(t => {
+					this.theOSelect = e
+				}, 0)
+			},
+			onClickOutside(e) {
+				this.theOSelect && (this.theOSelect = null, this.oSelectQuery = "")
+			},
+			getIsTheOSelect(e) {
+				return this.theOSelect == e
+			},
+			selectUserForRole(e) {
+				var t = this.users.findIndex(t => t.id == e.id),
+					s = e.role_array.findIndex(e => e.group_id == this.theActiveRoleForFilter),
+					a = "true";
+				this.users[t].role_array[s].active_role = a, this.setTheOSelect(null), "true" == a && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(this.theActiveRoleForFilter), $(".BTN_UserManagement > a").click()), this.oSelectQuery = ""
+			},
+			readLatestUpdatedDocs() {
+				this.observeLatestDocsDiv && this.observeLatestDocsDiv.disconnect(), this.updateDocsTimer && clearTimeout(this.updateDocsTimer), this.funcObserveLatestDocs(), $(".BTN_GetListOfExtDocs_Last30Min > a").click()
+			},
+			readLatestUpdatedDocsByOthers() {
+				this.funcObserveLatestDocsByOthers(), $(".BTN_GetListOfExtDocs_LatestOther > a").click()
+			},
+			funcObserveLatestDocsByOthers() {
+				var e = this,
+					t = new MutationObserver(function (s) {
+						var a = $(".ETRAY_EXT_DOCS_RAW_JSON_LATEST_OTHER  > div").html();
+						e.setLatestDocs(a), t.disconnect()
+					});
+				t.observe(document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_LATEST_OTHER  > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			funcObserveLatestDocs() {
+				var e = this,
+					t = $(".ETRAY_EXT_DOCS_RAW_JSON_LAST30MIN > div").html();
+				this.observeLatestDocsDiv = new MutationObserver(function (s) {
+					var a = $(".ETRAY_EXT_DOCS_RAW_JSON_LAST30MIN > div").html();
+					t != a ? (e.setLatestDocs(a), e.isNewAnnouncementLoading = !1, e.isUpdatedAnnouncementLoading = !1) : (e.isNewAnnouncementLoading || e.isUpdatedAnnouncementLoading) && (e.updateDocsTimer = setTimeout(function () {
+						e.readLatestUpdatedDocs()
+					}, 2500)), e.observeLatestDocsDiv.disconnect()
+				}), this.observeLatestDocsDiv.observe(document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_LAST30MIN > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			setLatestDocs(e) {
+				e.length > 2 && JSON.parse(e).forEach((e, t) => {
+					var s = this.items.findIndex(t => t.onid == e.onid);
+					s < 0 ? this.items.push(e) : Vue.set(this.items, s, e)
+				})
+			},
+			decode(e) {
+				var t = document.createElement("textarea");
+				return t.innerHTML = e, t.value
+			},
+			setLatestUser() {
+				var e = $(".UM_RESULT > div").html();
+				e.length > 2 && JSON.parse(this.decode(this.decode(e))).forEach((e, t) => {
+					var s = this.users.findIndex(t => t.id == e.id);
+					s < 0 ? this.users.push(e) : Vue.set(this.users, s, e)
+				})
+			},
+			funcObserveLatestUser() {
+				let e = this;
+				var t = new MutationObserver(function (s) {
+					e.setLatestUser(), e.isNewUserLoading = !1, t.disconnect()
+				});
+				t.observe(document.querySelector(".UM_RESULT > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			funcObserveOpenCases() {
+				var e = this,
+					t = new MutationObserver(function (s) {
+						e.setOpenCases(), e.casesIsLoading = !1, t.disconnect(), e.readClosedCases(e.startLength, e.endLength)
+					});
+				t.observe(document.querySelector(".ETRAY_JSON_LIST_OF_OPEN_CASES > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			setOpenCases() {
+				var openCasesHtml = $(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html();
+				//console.log('openCasesHtml',openCasesHtml)	
+				$(".js-o-cases__container").removeClass("o-cases__container--loading");
+				$(".o-page").removeClass("o-page--is-loading");
+
+				if (openCasesHtml.length >= 3) {
+					this.encodeCases(openCasesHtml);
+					// $(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html("");
+				}
+			},
+			readOpenCasesV2(e, t) {
+				$(".ETRAY_JSON_LIST_OF_OPEN_CASES_ROW_START > input").val(e), $(".ETRAY_JSON_LIST_OF_OPEN_CASES_ROW_END > input").val(t), this.observeOpenCasesV2 && this.observeOpenCasesV2.disconnect(), $(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div").html(""), this.funcObserveOpenCasesV2(), $(".BTN_GetListOfOpenCasesJSON_V2 > a").click()
+			},
+			funcObserveOpenCasesV2() {
+				var self = this;
+
+				self.observeOpenCasesV2 = new MutationObserver(function () {
+					// Disconnect the observer
+					self.observeOpenCasesV2.disconnect();
+
+					var openCasesHtml = $(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div").html();
+					//console.log('openCasesHtml')
+					var caseLength = 0;
+
+					// Check if openCasesHtml length is greater than 3
+					if (openCasesHtml.length > 3) {
+						caseLength = JSON.parse(openCasesHtml).length + 1;
+						self.encodeCases(openCasesHtml);
+					}
+
+					// Check if caseLength is greater or equal to open_addLength
+					if (caseLength >= self.open_addLength) {
+						self.open_startLength = self.open_endLength + 1;
+						self.open_endLength = self.open_endLength + self.open_addLength;
+
+						self.readOpenCasesV2(self.open_startLength, self.open_endLength);
+					} else {
+						self.casesIsLoading = false;
+
+						$(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div").html("");
+						self.readClosedCases(self.startLength, self.endLength);
+
+						// Remove loading status from the cases container and the page
+						$(".js-o-cases__container").removeClass("o-cases__container--loading");
+						$(".o-page").removeClass("o-page--is-loading");
+					}
+				});
+
+				// Start observing the target node for configured mutations
+				self.observeOpenCasesV2.observe(document.querySelector(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div"), {
+					characterData: true,
+					childList: true
+				});
+			}
+			,
+			readClosedCases(start, end) {
+				// Set input values
+				$(".ETRAY_JSON_LIST_OF_CLOSED_CASES_ROW_START > input").val(start);
+				$(".ETRAY_JSON_LIST_OF_CLOSED_CASES_ROW_END > input").val(end);
+
+				// Disconnect previous observer and clear the HTML
+				if (this.observeClosedCases) {
+					this.observeClosedCases.disconnect();
+				}
+				$(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html("");
+
+				// Start observing closed cases and trigger the click event
+				this.funcObserveClosedCases();
+				$(".BTN_GetListOfClosedCasesJSON > a").click();
+			},
+
+			funcObserveClosedCases() {
+				var self = this;
+				self.observeClosedCases = new MutationObserver(function (mutations) {
+					self.observeClosedCases.disconnect();
+
+					var html = $(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html();
+					var count = 0;
+
+					if (html.length > 3) {
+						count = JSON.parse(html).length + 1;
+						self.pushClosedCases();
+					}
+
+					if (count >= self.addLength) {
+						self.startLength = self.endLength + 1;
+						self.endLength = self.endLength + self.addLength;
+						self.readClosedCases(self.startLength, self.endLength);
+					} else {
+						self.isClosedCasesLoading = false;
+						run_autoupdate = true;
+						$(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html("");
+					}
+				});
+
+				self.observeClosedCases.observe(document.querySelector(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div"), {
+					characterData: true,
+					childList: true
+				});
+			},
+
+			pushClosedCases() {
+				var html = $(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html();
+				this.encodeCases(html);
+			},
+
+			encodeCases(html) {
+				const self = this
+				if (html.length >= 3) {
+					var cases = JSON.parse(html);
+
+					cases.forEach((caseItem, index) => {
+						Object.keys(caseItem).forEach(function (key, i) {
+							// START ADDED 26-11-23 For openByOtherEmp
+							if (key === 'openByOtherEmp' && $(".FROM_COMPANY > input").val() == "OpenNet") {
+								const openByOtherEmp_arr = caseItem['openByOtherEmp'].length > 0 ? caseItem['openByOtherEmp'] : []
+								const vOpenByOtherObj = openByOtherEmp_arr.map(name => {
+									const initials = name.split(' ').map(word => word.charAt(0)).join('');
+									return {
+										initials: initials,
+										name
+									}
+								})
+								Vue.set(caseItem, 'v_openByOtherEmp', vOpenByOtherObj)
+								// START ADDED 17-12-23
+							} else if (key === 'tags') {
+								const tags = caseItem['tags'].length > 0 ? caseItem['tags'] : [];
+								const filteredTags = tags.filter(item => item && typeof item === 'object' && item['value']);
+								Vue.set(caseItem, 'v_tags', filteredTags);
+							} else if (key === 'groups') {
+								const groups = caseItem['groups'].length > 0 ? caseItem['groups'] : [];
+								const filteredGroups = groups.filter(item => item && typeof item === 'object' && item['value']);
+								Vue.set(caseItem, 'v_groups', filteredGroups);
+							} else if (key === 'status') {
+								const initStatus = caseItem['status'].length > 0 ? caseItem['status'] : '';
+								const statusI18N = self.statusI18N[initStatus] ? self.statusI18N[initStatus] : ''
+								Vue.set(caseItem, 'v_status', statusI18N);
+							}
+							// END ADDED 17-12-23
+							else {
+								caseItem[key] = unescape(caseItem[key])
+							}
+							// END ADDED 26-11-23 For openByOtherEmp
+						});
+
+						if (this.theUser) {
+							if (caseItem.created_by_id && caseItem.created_by_id == this.theUser.id) {
+								Vue.set(caseItem, "filter_created_by_me", "true");
+								Vue.set(caseItem, "filter_my_cases", "true");
+							}
+
+							if (caseItem.assign_to_id && caseItem.assign_to_id == this.theUser.id) {
+								Vue.set(caseItem, "filter_assigned_me", "true");
+								Vue.set(caseItem, "filter_my_cases", "true");
+							}
+
+							if (caseItem.followed_by_list && caseItem.followed_by_list.split(";").indexOf(this.theUser.id) > -1) {
+								Vue.set(caseItem, "filter_followed_by_me", "true");
+								Vue.set(caseItem, "filter_my_cases", "true");
+							}
+						} else {
+							this.isEncodedHappenedBeforeUser = true;
+						}
+
+						var existingIndex = this.cases.findIndex(item => item.onid == caseItem.onid);
+
+						if (existingIndex < 0) {
+							this.cases.push(caseItem);
+						} else {
+							Vue.set(this.cases, existingIndex, caseItem);
+						}
+					});
+				}
+			},
+			readNewCase() {
+				this.funcObserveLatestCases(), $(".BTN_GetListOfUpdatedCasesJSON > a").click()
+			},
+			readLatestUpdatedCases() {
+				this.updateCasesTimer && clearTimeout(this.updateCasesTimer), this.funcObserveLatestCases(), $(".BTN_GetListOfUpdatedCasesJSON > a").click()
+			},
+			getDoesOnIdExist(e) {
+				if (!(e.length < 3)) {
+					var t = JSON.parse(e),
+						s = !1;
+					return t.forEach(e => {
+						Object.keys(e).forEach(function (t, s) {
+							e[t] = unescape(e[t])
+						}), 0 > this.cases.findIndex(t => t.onid == e.onid) && "true" == e.filter_created_by_me && (s = !0)
+					}), s
+				}
+			},
+			shallowEqual(e, t) {
+				let s = Object.keys(e),
+					a = Object.keys(t);
+				if (s.length !== a.length) return !1;
+				for (let i of s)
+					if ("last_updated_time" != i && e[i] !== t[i]) return !1;
+				return !0
+			},
+			getIsCaseWithIdUpdated(e) {
+				let t = this;
+				if (!(e.length < 3)) {
+					var s = JSON.parse(e),
+						a = !1;
+					return s.forEach(e => {
+						if (Object.keys(e).forEach(function (t, s) {
+							e[t] = unescape(e[t])
+						}), e.onid == t.theCaseUpdatingId) {
+							var s = this.cases.findIndex(t => t.onid == e.onid);
+							s > -1 && (a = !t.shallowEqual(this.cases[s], e))
+						}
+					}), a
+				}
+			},
+			funcObserveLatestCases() {
+				$(".ETRAY_JSON_LIST_OF_UPDATED_CASES > div").html("");
+				var e = this;
+				this.observeLatestCasesDiv = new MutationObserver(function (t) {
+					var s = $(".ETRAY_JSON_LIST_OF_UPDATED_CASES > div").html();
+					e.isNewCaseLoading ? e.getDoesOnIdExist(s) ? (e.setLatestCases(), e.isNewCaseLoading = !1) : e.isNewCaseLoading && (e.updateCasesTimer = setTimeout(function () {
+						e.readLatestUpdatedCases()
+					}, 2500)) : e.isCaseUpdating ? e.getIsCaseWithIdUpdated(s) ? (e.setLatestCases(), e.isCaseUpdating = !1, e.theCaseUpdatingId = null) : e.isCaseUpdating && (e.updateCasesTimer = setTimeout(function () {
+						e.readLatestUpdatedCases()
+					}, 2500)) : e.setLatestCases(), e.observeLatestCasesDiv.disconnect()
+				}), this.observeLatestCasesDiv.observe(document.querySelector(".ETRAY_JSON_LIST_OF_UPDATED_CASES > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			setLatestCases() {
+				var e = document.querySelector(".ETRAY_JSON_LIST_OF_UPDATED_CASES > div").innerHTML;
+				this.encodeCases(e)
+			},
+			funcObserveThisUser() {
+				let e = this;
+				var t = new MutationObserver(function (s) {
+					e.setThisUser(), t.disconnect()
+				});
+				t.observe(document.querySelector(".ETRAY_USER_PROFILE_USER_RAW_JSON > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			setThisUser() {
+				var e = $(".ETRAY_USER_PROFILE_USER_RAW_JSON > div").html();
+				if (!(e.length < 1)) {
+					var t = JSON.parse(e);
+					this.theUser = t[0], this.setUsers(e), $(".ETRAY_USER_PROFILE_USER_RAW_JSON > div").html("")
+				}
+			},
+			readUsers() {
+				this.usersIsLoading_1_75 = !0, this.funcObserveAllUsers_1_75(), $(".BTN_GetListOfUserProfiles_1_75 > a").click()
+			},
+			funcObserveAllUsers_1_75() {
+				$(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div").html("");
+				let e = this;
+				var t = new MutationObserver(function (s) {
+					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div").html();
+					e.setUsers_1_75(a), e.usersIsLoading_1_75 = !1, t.disconnect(), e.usersIsLoading_76_150 = !0, e.funcObserveAllUsers_76_150(), $(".BTN_GetListOfUserProfiles_76_150 > a").click()
+				});
+				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			funcObserveAllUsers_76_150() {
+				$(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div").html("");
+				let e = this;
+				var t = new MutationObserver(function (s) {
+					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div").html();
+					e.setUsers_76_150(a), e.usersIsLoading_76_150 = !1, t.disconnect(), e.usersIsLoading_151_225 = !0, e.funcObserveAllUsers_151_225(), $(".BTN_GetListOfUserProfiles_151_225 > a").click()
+				});
+				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			funcObserveAllUsers_151_225() {
+				$(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div").html("");
+				let e = this;
+				var t = new MutationObserver(function (s) {
+					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div").html();
+					e.setUsers_151_225(a), e.usersIsLoading_151_225 = !1, t.disconnect(), e.usersIsLoading_226_300 = !0, e.funcObserveAllUsers_226_300(), $(".BTN_GetListOfUserProfiles_226_300 > a").click()
+				});
+				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			funcObserveAllUsers_226_300() {
+				$(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div").html("");
+				let e = this;
+				var t = new MutationObserver(function (s) {
+					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div").html();
+					e.setUsers_226_300(a), e.usersIsLoading_226_300 = !1, t.disconnect(), e.usersIsLoading_301_375 = !0, e.funcObserveAllUsers_301_375(), $(".BTN_GetListOfUserProfiles_301_375 > a").click()
+				});
+				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			funcObserveAllUsers_301_375() {
+				$(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div").html("");
+				let e = this;
+				var t = new MutationObserver(function (s) {
+					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div").html();
+					e.setUsers_301_375(a), e.usersIsLoading_301_375 = !1, t.disconnect(), e.usersIsLoading_376_450 = !0, e.funcObserveAllUsers_376_450(), $(".BTN_GetListOfUserProfiles_376_450 > a").click()
+				});
+				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			funcObserveAllUsers_376_450() {
+				$(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div").html("");
+				let e = this;
+				var t = new MutationObserver(function (s) {
+					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div").html();
+					e.setUsers_376_450(a), e.usersIsLoading_376_450 = !1, t.disconnect(), e.usersIsLoading_451_525 = !0, e.funcObserveAllUsers_451_525(), $(".BTN_GetListOfUserProfiles_451_525 > a").click()
+				});
+				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			funcObserveAllUsers_451_525() {
+				$(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div").html("");
+				let e = this;
+				var t = new MutationObserver(function (s) {
+					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div").html();
+					e.setUsers_451_525(a), e.usersIsLoading_451_525 = !1, t.disconnect()
+				});
+				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			run_autoupdate_func() {
+				this.isNewCaseLoading || this.isCaseUpdating || (clearJSONfields(), this.readLatestUpdatedCases()), this.isNewAnnouncementLoading || this.isUpdatedAnnouncementLoading || (clearJSONfields(), this.readLatestUpdatedDocsByOthers())
+			},
+			setUsers(e) {
+				function t(e) {
+					var t = document.createElement("textarea");
+					return t.innerHTML = e, t.value
+				}
+				e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
+					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
+				})
+			},
+			setUsers_1_75(e) {
+				function t(e) {
+					var t = document.createElement("textarea");
+					return t.innerHTML = e, t.value
+				}
+				$(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
+					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
+				})
+			},
+			setUsers_76_150(e) {
+				function t(e) {
+					var t = document.createElement("textarea");
+					return t.innerHTML = e, t.value
+				}
+				$(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
+					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
+				})
+			},
+			setUsers_151_225(e) {
+				function t(e) {
+					var t = document.createElement("textarea");
+					return t.innerHTML = e, t.value
+				}
+				$(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
+					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
+				})
+			},
+			setUsers_226_300(e) {
+				function t(e) {
+					var t = document.createElement("textarea");
+					return t.innerHTML = e, t.value
+				}
+				$(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
+					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
+				})
+			},
+			setUsers_301_375(e) {
+				function t(e) {
+					var t = document.createElement("textarea");
+					return t.innerHTML = e, t.value
+				}
+				$(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
+					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
+				})
+			},
+			setUsers_376_450(e) {
+				function t(e) {
+					var t = document.createElement("textarea");
+					return t.innerHTML = e, t.value
+				}
+				$(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
+					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
+				})
+			},
+			setUsers_451_525(e) {
+				function t(e) {
+					var t = document.createElement("textarea");
+					return t.innerHTML = e, t.value
+				}
+				$(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
+					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
+				})
+			},
+			readOpenDocs() {
+				this.isOpenDocsLoading = !0, this.funcObserveDocsOpen(), $(".BTN_GetListOfExtDocs_Open > a").click()
+			},
+			readClosedDocs() {
+				this.isClosedDocsLoading = !0, this.funcObserveDocsClosed(), $(".BTN_GetListOfExtDocs_Closed > a").click()
+			},
+			funcObserveDocsOpen() {
+				$(".ETRAY_EXT_DOCS_RAW_JSON_OPEN > div").html("");
+				let e = this;
+				var t = new MutationObserver(function (s) {
+					var a = document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_OPEN > div").innerHTML;
+					e.setDocs(a), e.isOpenDocsLoading = !1, t.disconnect(), e.readClosedDocs()
+				});
+				t.observe(document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_OPEN > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			funcObserveDocsClosed() {
+				$(".ETRAY_EXT_DOCS_RAW_JSON_CLOSED > div").html("");
+				let self = this;
+				var observer = new MutationObserver(function (mutations) {
+					var html = document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_CLOSED > div").innerHTML;
+					self.setDocs(html);
+					self.isClosedDocsLoading = false;
+					observer.disconnect();
+				});
+				observer.observe(document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_CLOSED > div"), {
+					characterData: true,
+					childList: true
+				});
+			},
+
+			setDocs(html) {
+				setDocPagePostIDs();
+				if (html.length > 2) {
+					var docs = JSON.parse(html);
+					docs.forEach((doc, index) => {
+						if (this.items.findIndex(item => item.onid == doc.onid) < 0) {
+							this.items.push(doc);
+						}
+					});
+				}
+			},
+			setSearchInOldCases() {
+				this.isSearchingOldCases = !0, $(".ETRAY_JSON_LIST_OF_OLD_CASES > div").html(""), $(".SEARCH_FIELD > input").val(this.searchQuery), this.funcObserveSearchedServerCases(), $(".BTN_GetListOfOldCasesJSON > a").click()
+			},
+			funcObserveSearchedServerCases() {
+				var e = this,
+					t = new MutationObserver(function (s) {
+						e.setServerCases(), e.isSearchingOldCases = !1, t.disconnect()
+					});
+				t.observe(document.querySelector(".ETRAY_JSON_LIST_OF_OLD_CASES > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			setServerCases() {
+				var e = $(".ETRAY_JSON_LIST_OF_OLD_CASES > div").html();
+				!(e.length < 3) && (this.encodeCases(e), $(".ETRAY_JSON_LIST_OF_OLD_CASES > div").html(""))
+			},
+			setSearchInParnerCases() {
+				this.isSearchingPartnerCases = !0, $(".ETRAY_JSON_LIST_OF_OTHER_P_CASES > div").html(""), $(".SEARCH_FIELD > input").val(this.searchQuery), this.funcObservePartnerCases(), $(".BTN_GetListOfOtherPCasesJSON > a").click()
+			},
+			funcObservePartnerCases() {
+				var e = this,
+					t = new MutationObserver(function (s) {
+						e.setPartnerCases(), e.isSearchingPartnerCases = !1, t.disconnect()
+					});
+				t.observe(document.querySelector(".ETRAY_JSON_LIST_OF_OTHER_P_CASES > div"), {
+					characterData: !0,
+					childList: !0
+				})
+			},
+			setPartnerCases() {
+				var e = $(".ETRAY_JSON_LIST_OF_OTHER_P_CASES > div").html();
+				!(e.length < 3) && (this.encodeCases(e), $(".ETRAY_JSON_LIST_OF_OTHER_P_CASES > div").html(""))
+			},
+			readEndCustomerConfigs() {
+				this.listenForDataChangesForONPKonfiguration("ONP_PENDING_PRODUCT_LIST")
+				this.listenForDataChangesForONPKonfigurationForm('ONP_TRANSACTION_LIST')
+				$(".ONP_BTN_GetInitialConfigData > a").click()
+			},
+			listenForDataChangesForONPKonfigurationForm(e, t, s) {
+				$("." + e + " > div").html("data__loading");
+				let interval = setInterval(() => {
+					let s = $("." + e + " > div").html();
+					if (s !== "data__loading") {
+						clearInterval(interval);
+						if (s.length > 1) {
+							this.onpFormData = JSON.parse(s)
+							this.setIsCreateOnpModalForm()
+						}
+					}
+				}, 1500);
+			},
+			listenForDataChangesForONPKonfiguration(e, t, s) {
+				this.isLoadingOnpProductList = true;
+				$("." + e + " > div").html("data__loading");
+
+				let interval = setInterval(() => {
+					let s = $("." + e + " > div").html();
+					if (s !== "data__loading") {
+						clearInterval(interval);
+						this.setEncodeData(s);
+						this.isLoadingOnpProductList = false;
+					}
+				}, 1500);
+			},
+			setEncodeData(e) {
+				function t(e) {
+					var t = document.createElement("textarea");
+					return t.innerHTML = e, t.value
+				}
+				e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
+					let t = this.onpProductList.findIndex(t => t.REC_ID == e.REC_ID);
+					t < 0 ? this.onpProductList.push(e) : this.onpProductList[t] = e
+				})
+			},
+			listenForDataUpdates(e, t, s) {
+				this.isUpdatingOnpProductList = !0, $("." + e + "> div").html("data__loading"), a && clearInterval(a);
+				var a = setInterval(t => {
+					var s = $("." + e + "> div").html();
+					"data__loading" != s && (clearInterval(a), this.setEncodeData(s), this.isUpdatingOnpProductList = !1, this.closeVueModalOverlay())
+				}, 1500)
+			},
+			setActiveOnpProductListFilter(e) {
+				this.theActiveOnpProductListFilter = e
+			},
+			setIsCreateOnpModal(editItem) {
+				this.setIsCreateOnpModalForm(editItem)
+				this.isCreateOnpModal = true;
+				this.isVueModalOverlay = true;
+				$("body").css("overflow", "hidden");
+			},
+			setIsCreateOnpModalForm(editItem) {
+				const values = [];
+				this.onpFormData.forEach(standardFormItem => {
+					let value = standardFormItem['from_company'];
+					if (values.indexOf(value) < 0) {
+						values.push(value);
+					}
+				});
+				this.onpForm.forEach(formItem => {
+					if (formItem.id === 'FROM_COMPANY') {
+						formItem.options = values.sort();
+					} else {
+						this.$set(formItem, 'hide', true)
+					}
+				})
+				if (editItem && editItem.REC_ID) {
+					this.onpForm.forEach((formItem, s) => {
+						formItem.value = editItem[formItem.id]
+						this.setFormItemValidated(formItem)
+					})
+				}
+			},
+			submitOnpForm() {
+				let hasError = false;
 
 				this.onpForm.forEach((input, index) => {
-					formData[input.id] = input.value;
+					if (!input.hide && input.value.length < 1) {
+						hasError = true;
+						input.validated = false;
+					}
 				});
-				$(".ONP_INPUT_CONFIG_JSON > input").val(JSON.stringify([formData]));
-				this.listenForDataUpdates("ONP_UPDATED_PRODUCT_LIST");
-				$(".ONP_BTN_SetConfigData > a").click();
-			}
-		},
-		setTheEditOnp(editItem) {
-			console.log('setEdit', editItem)
-			this.setIsCreateOnpModal(editItem)
-		},
-		infinteScrollONPLoadMore() {
-			if ("end_customer_pricing_config" === this.activeCategory) {
-				if (this.onpProductListSearched.length < 50) {
-					this.infiniteScrollNumberONP = 50;
-					return
-				} !(this.infiniteScrollNumberONP > this.onpProductListSearched.length) && (this.infiniteScrollNumberONP += 50)
-			}
-		},
-		setTheActiveDescExpanded(e) {
-			this.theActiveDescExpanded === e ? this.theActiveDescExpanded = null : this.theActiveDescExpanded = e
-		},
-		findPrices() {
-			if (!this.validateSSID(this.ssid)) {
-				this.$refs.ssid_input.focus();
-				this.isSSIDValid = false;
-				return;
-			}
-			this.listenForDataChangesOnp("ONP_SSID_DETAILS", this.OnpSSIDDetails, "isSSIDLoading");
-			$(".ONP_INPUT_SSID > input").val(this.ssid);
-			$(".ONP_BTN_GetSSIDDetails > a").click();
-		},
-		setNewOrderSkaderItems() {
-			if (this.theNewOrderSkaderItems.length < 1) {
-				this.addNewOrderSkadeItem()
-			}
-		},
-		addNewOrderSkadeItem() {
-			if (this.theNewOrderSkaderItems.length > 0) {
-				const lastItemIdx = this.theNewOrderSkaderItems.length - 1
-				if (this.theNewOrderSkaderItems[lastItemIdx]['LABEL'].length < 1) {
-					const el = $('.o-cart__items > li:nth-last-child(2) > .o-input[type="text"]')
-					el.removeClass('animate-shake')
-					setTimeout(_ => {
-						el.addClass('animate-shake')
-					}, 250)
-					el.focus()
-					return
+
+				if (!hasError) {
+					let formData = {};
+
+					this.onpForm.forEach((input, index) => {
+						formData[input.id] = input.value;
+					});
+					$(".ONP_INPUT_CONFIG_JSON > input").val(JSON.stringify([formData]));
+					this.listenForDataUpdates("ONP_UPDATED_PRODUCT_LIST");
+					$(".ONP_BTN_SetConfigData > a").click();
 				}
-			}
-			const obj = {
-				v_id: Date.now() + Math.random(),
-				v_count: 1,
-				TRANSACTION_CODE: '002',
-				LABEL: '',
-				PRICE: 0,
-				QUANTITY: 1,
-				UNIT_LABEL: '',
-				SSID: this.ssid
-			}
-			this.theNewOrderSkaderItems.push(obj)
-			this.$nextTick(_ => {
-				$('.o-cart__items > li:nth-last-child(2) > .o-input[type="text"]').focus()
-			})
-		},
-		deleteNewOrderSkadeItem(idx) {
-			console.log('deleteNewOrderSkadeItem', idx)
-			this.theNewOrderSkaderItems.splice(idx, 1)
-		},
-		validateSSID(e) {
-			let t = !isNaN(e);
-			return t && 10 === e.length
-		},
-		readEndCustomerOrders() {
-			this.listenForDataChangesOnp("ONP_PENDING_ORDERS", this.onpPendingOrders, "isLoadingOnpPendingOrders"), $(".ONP_BTN_GetPendingOrders > a").click()
-		},
-		setSpinner(e, t) {
-			"isLoadingOnpPendingOrders" === e && (this.isLoadingOnpPendingOrders = t), "isSSIDLoading" === e && (this.isSSIDLoading = t), "isSubmitOrderLoading" === e && (this.isSubmitOrderLoading = t), "isDeletingOrder" === e && (this.isDeletingOrder = t)
-		},
-		listenForDataChangesOnp(e, t, s) {
-			var a = this;
-			this.setSpinner(s, !0), $("." + e + "> div").html("data__loading"), i && clearInterval(i);
-			var i = setInterval(r => {
-				var o = $("." + e + "> div").html();
-				if ("data__loading" != o) {
-					if (clearInterval(i), "isDeletingOrder" === s) {
-						this.setEncodeDataPendingOrders(o, t), this.setSpinner(s, !1), a.setCancelOrderConfirmation(!1), a.closeVueModalOverlay();
+			},
+			setTheEditOnp(editItem) {
+				console.log('setEdit', editItem)
+				this.setIsCreateOnpModal(editItem)
+			},
+			infinteScrollONPLoadMore() {
+				if ("end_customer_pricing_config" === this.activeCategory) {
+					if (this.onpProductListSearched.length < 50) {
+						this.infiniteScrollNumberONP = 50;
+						return
+					} !(this.infiniteScrollNumberONP > this.onpProductListSearched.length) && (this.infiniteScrollNumberONP += 50)
+				}
+			},
+			setTheActiveDescExpanded(e) {
+				this.theActiveDescExpanded === e ? this.theActiveDescExpanded = null : this.theActiveDescExpanded = e
+			},
+			findPrices() {
+				if (!this.validateSSID(this.ssid)) {
+					this.$refs.ssid_input.focus();
+					this.isSSIDValid = false;
+					return;
+				}
+				this.listenForDataChangesOnp("ONP_SSID_DETAILS", this.OnpSSIDDetails, "isSSIDLoading");
+				$(".ONP_INPUT_SSID > input").val(this.ssid);
+				$(".ONP_BTN_GetSSIDDetails > a").click();
+			},
+			setNewOrderSkaderItems() {
+				if (this.theNewOrderSkaderItems.length < 1) {
+					this.addNewOrderSkadeItem()
+				}
+			},
+			addNewOrderSkadeItem() {
+				if (this.theNewOrderSkaderItems.length > 0) {
+					const lastItemIdx = this.theNewOrderSkaderItems.length - 1
+					if (this.theNewOrderSkaderItems[lastItemIdx]['LABEL'].length < 1) {
+						const el = $('.o-cart__items > li:nth-last-child(2) > .o-input[type="text"]')
+						el.removeClass('animate-shake')
+						setTimeout(_ => {
+							el.addClass('animate-shake')
+						}, 250)
+						el.focus()
 						return
 					}
-					if ("INVALID_SSID" == o) {
-						this.isSSIDLoading = !1, this.isSSIDValid = !1;
-						return
-					}
-					this.setEncodeDataPendingOrders(o, t), this.setSpinner(s, !1), "isSSIDLoading" === s && this.setIsNewOrderModal(!0), "isSubmitOrderLoading" === s && this.closeVueModalOverlay()
 				}
-			}, 1500)
-		},
-		setEncodeDataPendingOrders(e, t) {
-			function s(e) {
-				var t = document.createElement("textarea");
-				return t.innerHTML = e, t.value
-			}
-			e.length > 2 && JSON.parse(s(s(e))).forEach(e => {
-				if (t == this.onpPendingOrders) var s = t.findIndex(t => t.id == e.id);
-				else var s = t.findIndex(t => t.REC_ID == e.REC_ID);
-				t == this.OnpSSIDDetails && this.$set(e, "v_count", 0), s < 0 ? t.push(e) : t[s] = e
-			})
-		},
-		setIsNewOrderModal(e) {
-			e && (this.isNewOrderModal = !0, this.isVueModalOverlay = !0, $("body").addClass("no-scroll"))
-		},
-		itemCountDecrement(e) {
-			0 != e.v_count && e.v_count--
-		},
-		itemCountIncrement(e) {
-			e.v_count++
-		},
-		validateOrderItem(e) {
-			(!e.v_count || isNaN(1 * e.v_count) || e.v_count < 0) && (e.v_count = 0)
-		},
-		submitOrder() {
-			console.log(this.dbOrder)
-			const self = this;
-			if (this.orderCustomerEmail.length === 0 && this.theActiveOrderType === '001') {
-				this.$refs.order_customer_email_input.focus();
-				clearTimeout(timeoutId);
-				self.isCustomerEmailInputEmpty = true;
+				const obj = {
+					v_id: Date.now() + Math.random(),
+					v_count: 1,
+					TRANSACTION_CODE: '002',
+					LABEL: '',
+					PRICE: 0,
+					QUANTITY: 1,
+					UNIT_LABEL: '',
+					SSID: this.ssid
+				}
+				this.theNewOrderSkaderItems.push(obj)
+				this.$nextTick(_ => {
+					$('.o-cart__items > li:nth-last-child(2) > .o-input[type="text"]').focus()
+				})
+			},
+			deleteNewOrderSkadeItem(idx) {
+				console.log('deleteNewOrderSkadeItem', idx)
+				this.theNewOrderSkaderItems.splice(idx, 1)
+			},
+			validateSSID(e) {
+				let t = !isNaN(e);
+				return t && 10 === e.length
+			},
+			readEndCustomerOrders() {
+				this.listenForDataChangesOnp("ONP_PENDING_ORDERS", this.onpPendingOrders, "isLoadingOnpPendingOrders"), $(".ONP_BTN_GetPendingOrders > a").click()
+			},
+			setSpinner(e, t) {
+				"isLoadingOnpPendingOrders" === e && (this.isLoadingOnpPendingOrders = t), "isSSIDLoading" === e && (this.isSSIDLoading = t), "isSubmitOrderLoading" === e && (this.isSubmitOrderLoading = t), "isDeletingOrder" === e && (this.isDeletingOrder = t)
+			},
+			listenForDataChangesOnp(e, t, s) {
+				var a = this;
+				this.setSpinner(s, !0), $("." + e + "> div").html("data__loading"), i && clearInterval(i);
+				var i = setInterval(r => {
+					var o = $("." + e + "> div").html();
+					if ("data__loading" != o) {
+						if (clearInterval(i), "isDeletingOrder" === s) {
+							this.setEncodeDataPendingOrders(o, t), this.setSpinner(s, !1), a.setCancelOrderConfirmation(!1), a.closeVueModalOverlay();
+							return
+						}
+						if ("INVALID_SSID" == o) {
+							this.isSSIDLoading = !1, this.isSSIDValid = !1;
+							return
+						}
+						this.setEncodeDataPendingOrders(o, t), this.setSpinner(s, !1), "isSSIDLoading" === s && this.setIsNewOrderModal(!0), "isSubmitOrderLoading" === s && this.closeVueModalOverlay()
+					}
+				}, 1500)
+			},
+			setEncodeDataPendingOrders(e, t) {
+				function s(e) {
+					var t = document.createElement("textarea");
+					return t.innerHTML = e, t.value
+				}
+				e.length > 2 && JSON.parse(s(s(e))).forEach(e => {
+					if (t == this.onpPendingOrders) var s = t.findIndex(t => t.id == e.id);
+					else var s = t.findIndex(t => t.REC_ID == e.REC_ID);
+					t == this.OnpSSIDDetails && this.$set(e, "v_count", 0), s < 0 ? t.push(e) : t[s] = e
+				})
+			},
+			setIsNewOrderModal(e) {
+				e && (this.isNewOrderModal = !0, this.isVueModalOverlay = !0, $("body").addClass("no-scroll"))
+			},
+			itemCountDecrement(e) {
+				0 != e.v_count && e.v_count--
+			},
+			itemCountIncrement(e) {
+				e.v_count++
+			},
+			validateOrderItem(e) {
+				(!e.v_count || isNaN(1 * e.v_count) || e.v_count < 0) && (e.v_count = 0)
+			},
+			submitOrder() {
+				console.log(this.dbOrder)
+				const self = this;
+				if (this.orderCustomerEmail.length === 0 && this.theActiveOrderType === '001') {
+					this.$refs.order_customer_email_input.focus();
+					clearTimeout(timeoutId);
+					self.isCustomerEmailInputEmpty = true;
 
-				var timeoutId = setTimeout(() => {
-					self.isCustomerEmailInputEmpty = false;
-				}, 1500);
+					var timeoutId = setTimeout(() => {
+						self.isCustomerEmailInputEmpty = false;
+					}, 1500);
 
-				return;
-			}
-			const isValidEmail = this.theActiveOrderType === '001' ? this.validateEmail(this.orderCustomerEmail) : true
-			if (isValidEmail) {
-				document.querySelector(".ONP_INPUT_SSID_DETAILS > input").value = JSON.stringify(this.dbOrder);
-				this.listenForDataChangesOnp("ONP_SSID_SubmitResult", this.onpPendingOrders, "isSubmitOrderLoading");
-				document.querySelector(".ONP_BTN_SSID_SubmitDetails > a").click();
-			} else {
-				this.isOrderCustomerEmailValid = false;
-			}
-		},
-		setActivePrevOrder(e) {
-			this.theActivePrevOrder = e, this.isVueModalOverlay = !0, $("body").addClass("no-scroll")
-		},
-		setCancelOrderConfirmation(e) {
-			e ? (this.isCancelOrderConfirmation = !0, this.isVueModalOverlayExtra = !0) : (this.isCancelOrderConfirmation = !1, this.isVueModalOverlayExtra = !1)
-		},
-		submitCancelOrder() {
-			$(".ONP_INPUT_DELETE_ORDER > input").val(this.theActivePrevOrder.id), this.listenForDataChangesOnp("ONP_DELETE_ORDER__CONFIRMATION", this.onpPendingOrders, "isDeletingOrder"), $(".ONP_BTN_DELETE_ORDER > a").click()
-		},
-		removeOrderFromOrders() {
-			var e = this.onpPendingOrders.findIndex(e => e.id == this.theActivePrevOrder.id);
-			this.onpPendingOrders.splice(e, 1)
-		},
-		infinteScrollONPOrdersLoadMore() {
-			if ("end_customer_orders" === this.activeCategory) {
-				if (this.onpPendingOrdersSearched.length < 50) {
-					this.infiniteScrollNumberONPOrders = 50;
-					return
-				} !(this.infiniteScrollNumberONPOrders > this.onpPendingOrdersSearched.length) && (this.infiniteScrollNumberONPOrders += 50)
-			}
-		},
-		setIsEndCustomerEmailConfigModal(bool) {
-			if (bool) {
-				$("body").css("overflow", "hidden");
-				//$('.OUTPUT_ONP_EndCustomerEmailConfigFORM > div').html('');
-				//$('.BUTTON_ONP_EndCustomerEmailConfigFORM > a').click();
-				this.isLoadingEndCustomerEmailConfigFormData = true
+					return;
+				}
+				const isValidEmail = this.theActiveOrderType === '001' ? this.validateEmail(this.orderCustomerEmail) : true
+				if (isValidEmail) {
+					document.querySelector(".ONP_INPUT_SSID_DETAILS > input").value = JSON.stringify(this.dbOrder);
+					this.listenForDataChangesOnp("ONP_SSID_SubmitResult", this.onpPendingOrders, "isSubmitOrderLoading");
+					document.querySelector(".ONP_BTN_SSID_SubmitDetails > a").click();
+				} else {
+					this.isOrderCustomerEmailValid = false;
+				}
+			},
+			setActivePrevOrder(e) {
+				this.theActivePrevOrder = e, this.isVueModalOverlay = !0, $("body").addClass("no-scroll")
+			},
+			setCancelOrderConfirmation(e) {
+				e ? (this.isCancelOrderConfirmation = !0, this.isVueModalOverlayExtra = !0) : (this.isCancelOrderConfirmation = !1, this.isVueModalOverlayExtra = !1)
+			},
+			submitCancelOrder() {
+				$(".ONP_INPUT_DELETE_ORDER > input").val(this.theActivePrevOrder.id), this.listenForDataChangesOnp("ONP_DELETE_ORDER__CONFIRMATION", this.onpPendingOrders, "isDeletingOrder"), $(".ONP_BTN_DELETE_ORDER > a").click()
+			},
+			removeOrderFromOrders() {
+				var e = this.onpPendingOrders.findIndex(e => e.id == this.theActivePrevOrder.id);
+				this.onpPendingOrders.splice(e, 1)
+			},
+			infinteScrollONPOrdersLoadMore() {
+				if ("end_customer_orders" === this.activeCategory) {
+					if (this.onpPendingOrdersSearched.length < 50) {
+						this.infiniteScrollNumberONPOrders = 50;
+						return
+					} !(this.infiniteScrollNumberONPOrders > this.onpPendingOrdersSearched.length) && (this.infiniteScrollNumberONPOrders += 50)
+				}
+			},
+			setIsEndCustomerEmailConfigModal(bool) {
+				if (bool) {
+					$("body").css("overflow", "hidden");
+					//$('.OUTPUT_ONP_EndCustomerEmailConfigFORM > div').html('');
+					//$('.BUTTON_ONP_EndCustomerEmailConfigFORM > a').click();
+					this.isLoadingEndCustomerEmailConfigFormData = true
+					// Clear the interval if it's already running
+					if (a) {
+						clearInterval(a);
+					}
+
+					// Poll for data loading status and encode data when it's done
+					var a = setInterval(() => {
+						var str = $('.OUTPUT_ONP_EndCustomerEmailConfigFORM > div').html()
+						if (str.length > 4) {
+							clearInterval(a);
+							if (isJsonString(str)) {
+								const formData = JSON.parse(str)
+								formData.forEach(formInput => {
+									const idx = this.theEndCustomerEmailConfigForm.findIndex(item => item.id === formInput.id)
+									if (idx > -1) {
+										this.theEndCustomerEmailConfigForm[idx].value = decodeURI(formInput.value)
+									}
+								})
+							}
+							this.isLoadingEndCustomerEmailConfigFormData = false
+						}
+					}, 1500);
+				}
+
+				function isJsonString(str) {
+					try {
+						JSON.parse(str)
+					} catch (e) {
+						return false
+					}
+					return true
+				}
+				this.isEndCustomerEmailConfigModal = bool
+				this.isVueModalOverlay = bool
+			},
+			submitEndCustomerEmailConfigForm() {
+				this.isUpdatingEndCustomerEmailConfigForm = true
+				let formValue = this.theEndCustomerEmailConfigForm.map(item => {
+					return { id: item.id, value: encodeURI(item.value) };
+				});
+
+				$('.INPUT_ONP_EndCustomerEmailConfigFORM > input').val(JSON.stringify(formValue))
+				//console.log(JSON.stringify(formValue))
+				$('.BUTTON_ONP_EndCustomerEmailConfigFORM > a').click()
+
 				// Clear the interval if it's already running
 				if (a) {
 					clearInterval(a);
@@ -4008,157 +4052,112 @@ new Vue({
 
 				// Poll for data loading status and encode data when it's done
 				var a = setInterval(() => {
-					var str = $('.OUTPUT_ONP_EndCustomerEmailConfigFORM > div').html()
-					if (str.length > 4) {
+					var s = $('.INPUT_ONP_EndCustomerEmailConfigFORM > input').val()
+					if (s === "modtaget") {
 						clearInterval(a);
-						if (isJsonString(str)) {
-							const formData = JSON.parse(str)
-							formData.forEach(formInput => {
-								const idx = this.theEndCustomerEmailConfigForm.findIndex(item => item.id === formInput.id)
-								if (idx > -1) {
-									this.theEndCustomerEmailConfigForm[idx].value = decodeURI(formInput.value)
-								}
-							})
-						}
-						this.isLoadingEndCustomerEmailConfigFormData = false
+						this.closeVueModalOverlay()
 					}
 				}, 1500);
 			}
-
-			function isJsonString(str) {
-				try {
-					JSON.parse(str)
-				} catch (e) {
-					return false
-				}
-				return true
-			}
-			this.isEndCustomerEmailConfigModal = bool
-			this.isVueModalOverlay = bool
 		},
-		submitEndCustomerEmailConfigForm() {
-			this.isUpdatingEndCustomerEmailConfigForm = true
-			let formValue = this.theEndCustomerEmailConfigForm.map(item => {
-				return { id: item.id, value: encodeURI(item.value) };
-			});
-
-			$('.INPUT_ONP_EndCustomerEmailConfigFORM > input').val(JSON.stringify(formValue))
-			//console.log(JSON.stringify(formValue))
-			$('.BUTTON_ONP_EndCustomerEmailConfigFORM > a').click()
-
-			// Clear the interval if it's already running
-			if (a) {
-				clearInterval(a);
+		beforeMount() {
+			if ("undefined" != typeof Storage) {
+				var e = window.localStorage.getItem("sortSettingCases");
+				e && (this.theSortSettingCases = JSON.parse(e));
+				var t = window.localStorage.getItem("sortSettingDocs");
+				t && (this.theSortSettingDocs = JSON.parse(t))
 			}
-
-			// Poll for data loading status and encode data when it's done
-			var a = setInterval(() => {
-				var s = $('.INPUT_ONP_EndCustomerEmailConfigFORM > input').val()
-				if (s === "modtaget") {
-					clearInterval(a);
-					this.closeVueModalOverlay()
+		},
+		mounted() {
+			var e = this
+			this.theActiveLoggedInCompany = $(".FROM_COMPANY > input").val()
+			/* START 17-12-23 */
+			this.$nextTick(_ => {
+				t = window.location.href
+				s = t.indexOf("&ID=");
+				if (0 > t.indexOf("&ID=&GUID")) {
+					var a = t.substring(s + 4, t.indexOf("&GUID="));
+					this.setActivecCategory("all_cases")
+					this.$refs.v_search_query.value = a
+					this.searchQuery = a
 				}
-			}, 1500);
-		}
-	},
-	beforeMount() {
-		if ("undefined" != typeof Storage) {
-			var e = window.localStorage.getItem("sortSettingCases");
-			e && (this.theSortSettingCases = JSON.parse(e));
-			var t = window.localStorage.getItem("sortSettingDocs");
-			t && (this.theSortSettingDocs = JSON.parse(t))
-		}
-	},
-	mounted() {
-		var e = this
-		this.theActiveLoggedInCompany = $(".FROM_COMPANY > input").val()
-		/* START 17-12-23 */
-		this.$nextTick(_ => {
-			t = window.location.href
-			s = t.indexOf("&ID=");
-			if (0 > t.indexOf("&ID=&GUID")) {
-				var a = t.substring(s + 4, t.indexOf("&GUID="));
-				this.setActivecCategory("all_cases")
-				this.$refs.v_search_query.value = a
-				this.searchQuery = a
-			}
-			const getQueryParams = (url) => {
-				const urlObj = new URL(url);
-				const params = new URLSearchParams(urlObj.search);
-				const area = params.get('area');
-				const tab = params.get('tab');
-				return { area, tab }
-			}
-			const urlParams = getQueryParams(window.location)
-			if (urlParams.area && urlParams.tab) {
-				if (urlParams.area === 'openanalytics') {
-					this.setActivecCategory('OpenAnalytics')
+				const getQueryParams = (url) => {
+					const urlObj = new URL(url);
+					const params = new URLSearchParams(urlObj.search);
+					const area = params.get('area');
+					const tab = params.get('tab');
+					return { area, tab }
 				}
-				if (urlParams.tab === 'data') {
-					this.setTheActiveFilter('OpenAnalytics_tab1')
-				}
-				if (urlParams.tab === 'datasubscriptions') {
-					this.setTheActiveFilter('OpenAnalytics_tab2')
-				}
-				if (urlParams.tab === '1') {
-					this.setTheActiveFilter('OpenAnalytics_tab1')
-				}
-				if (urlParams.tab === '2') {
-					this.setTheActiveFilter('OpenAnalytics_tab2')
-				}
-				if (urlParams.tab === 'hentfiler') {
-					this.setTheActiveFilter('OpenAnalytics_tab1')
-				}
+				const urlParams = getQueryParams(window.location)
+				if (urlParams.area && urlParams.tab) {
+					if (urlParams.area === 'openanalytics') {
+						this.setActivecCategory('OpenAnalytics')
+					}
+					if (urlParams.tab === 'data') {
+						this.setTheActiveFilter('OpenAnalytics_tab1')
+					}
+					if (urlParams.tab === 'datasubscriptions') {
+						this.setTheActiveFilter('OpenAnalytics_tab2')
+					}
+					if (urlParams.tab === '1') {
+						this.setTheActiveFilter('OpenAnalytics_tab1')
+					}
+					if (urlParams.tab === '2') {
+						this.setTheActiveFilter('OpenAnalytics_tab2')
+					}
+					if (urlParams.tab === 'hentfiler') {
+						this.setTheActiveFilter('OpenAnalytics_tab1')
+					}
 
 
 
-			}
-			$(document).trigger("trigger::vue_mounted")
-			const el = $('.updTagOrGroup_Output_mvp_groups > div')
-			if (el && el.length > 0) {
-				const arrOfPredifinedGroups = el.html() && el.html().length > 2 ? JSON.parse(el.html()) : [];
-				const modifiedArrOfPredifinedGroups = arrOfPredifinedGroups.map(group => {
-					return { ...group, v_sort: true };
-				});
-				this.thePredefinedGroups = modifiedArrOfPredifinedGroups;
-			}
-			this.getAllLocalStorageFilter()
-		})
-		/* END 17-12-23 */
-		"OpenNet" == $(".FROM_COMPANY > input").val() && $(".LOGIN_CUSTOMER_TYPE > input").val("ON"), this.theUserType = $(".LOGIN_CUSTOMER_TYPE > input").val(), "ON" == this.theUserType && $(".INQUIRY_TYPE_LEVEL0 > select").html($(".INQUIRY_TYPE_LEVEL0 > select").html().replace("SP</option>", "Til Infrastructure owner (IO)</option>").replace("IO</option>", "Til Service Provider (SP)</option>")), "ON" == this.theUserType ? ($(".js-click-case-edit-ref").removeClass("hidden_field"), $(".toggle-timeline-read-msg").removeClass("hidden_field"), readTimelineReadMsgCookie()) : ($("#js-checkbox__toogle-timeline_read_msg").prop("checked", !0), readTimelineReadMsgCookie()), document.querySelector("#o-page").addEventListener("click", function (t) {
-			e.onClickOutside(t)
-		}), e.funcObserveThisUser(), $(".BTN_GetListOfUserProfilesUser > a").click(), e.readOpenCasesV2(e.open_startLength, e.open_endLength), e.readOpenDocs(), $(document).on("vue::BILoadingTrigger", function (t, s) {
-			e.isLoadingBIReport = s
-		}), $(document).on("vue::BIChangeTrigger", function (t, s) {
-			e.theUnreadSelected = s
-		}), $(document).on("vue::new_ext_case", function () {
-			e.isNewAnnouncementLoading = !0, e.readLatestUpdatedDocs()
-		}), $(document).on("vue::update_ext_case", function () {
-			e.isUpdatedAnnouncementLoading = !0, e.readLatestUpdatedDocs()
-		}), $(document).on("vue::new_user", function () {
-			e.isNewUserLoading = !0, e.funcObserveLatestUser()
-		}), document.addEventListener("username_init_error", () => {
-			Vue.set(e.formErrors, "user_init", "Brugernavn er allerede taget")
-		}), document.addEventListener("username_init_no_error", () => {
-			e.removeErrors("user_init")
-		}), $(document).on("vue::new_case_created", function () {
-			e.isNewCaseLoading = !0, e.readLatestUpdatedCases()
-		}), $(document).on("vue::close_cases_modal", function () {
-			Object.keys(e.theActiveCaseUpdatedParams).length && (e.isCaseUpdating = !0, e.readLatestUpdatedCases(), e.theActiveCaseUpdatedParams = {}), e.run_autoupdate_func()
-		}), $(document).on("vue::update_case_prop", function (t, s, a) {
-			if (e.theCaseUpdatingId = s, a)
-				for (var i in a) e.theOrignalActiveCase[i] != a[i] ? Vue.set(e.theActiveCaseUpdatedParams, i, a[i]) : e.theActiveCaseUpdatedParams.hasOwnProperty(i) && delete e.theActiveCaseUpdatedParams[i]
-		}), this.$nextTick(t => {
-			$(window).on("scroll", function () {
-				var t = $(document).height(),
-					s = $(window).height() + $(window).scrollTop();
-				(t - 300 >= s) / t == 0 && (e.loadMoreCases(), e.infinteScrollONPLoadMore(), e.infinteScrollONPOrdersLoadMore())
+				}
+				$(document).trigger("trigger::vue_mounted")
+				const el = $('.updTagOrGroup_Output_mvp_groups > div')
+				if (el && el.length > 0) {
+					const arrOfPredifinedGroups = el.html() && el.html().length > 2 ? JSON.parse(el.html()) : [];
+					const modifiedArrOfPredifinedGroups = arrOfPredifinedGroups.map(group => {
+						return { ...group, v_sort: true };
+					});
+					this.thePredefinedGroups = modifiedArrOfPredifinedGroups;
+				}
+				this.getAllLocalStorageFilter()
 			})
-		}), setInterval(t => {
-			run_autoupdate && "roles" != this.activeCategory && e.run_autoupdate_func()
-		}, 3e4)
-	}
-})
+			/* END 17-12-23 */
+			"OpenNet" == $(".FROM_COMPANY > input").val() && $(".LOGIN_CUSTOMER_TYPE > input").val("ON"), this.theUserType = $(".LOGIN_CUSTOMER_TYPE > input").val(), "ON" == this.theUserType && $(".INQUIRY_TYPE_LEVEL0 > select").html($(".INQUIRY_TYPE_LEVEL0 > select").html().replace("SP</option>", "Til Infrastructure owner (IO)</option>").replace("IO</option>", "Til Service Provider (SP)</option>")), "ON" == this.theUserType ? ($(".js-click-case-edit-ref").removeClass("hidden_field"), $(".toggle-timeline-read-msg").removeClass("hidden_field"), readTimelineReadMsgCookie()) : ($("#js-checkbox__toogle-timeline_read_msg").prop("checked", !0), readTimelineReadMsgCookie()), document.querySelector("#o-page").addEventListener("click", function (t) {
+				e.onClickOutside(t)
+			}), e.funcObserveThisUser(), $(".BTN_GetListOfUserProfilesUser > a").click(), e.readOpenCasesV2(e.open_startLength, e.open_endLength), e.readOpenDocs(), $(document).on("vue::BILoadingTrigger", function (t, s) {
+				e.isLoadingBIReport = s
+			}), $(document).on("vue::BIChangeTrigger", function (t, s) {
+				e.theUnreadSelected = s
+			}), $(document).on("vue::new_ext_case", function () {
+				e.isNewAnnouncementLoading = !0, e.readLatestUpdatedDocs()
+			}), $(document).on("vue::update_ext_case", function () {
+				e.isUpdatedAnnouncementLoading = !0, e.readLatestUpdatedDocs()
+			}), $(document).on("vue::new_user", function () {
+				e.isNewUserLoading = !0, e.funcObserveLatestUser()
+			}), document.addEventListener("username_init_error", () => {
+				Vue.set(e.formErrors, "user_init", "Brugernavn er allerede taget")
+			}), document.addEventListener("username_init_no_error", () => {
+				e.removeErrors("user_init")
+			}), $(document).on("vue::new_case_created", function () {
+				e.isNewCaseLoading = !0, e.readLatestUpdatedCases()
+			}), $(document).on("vue::close_cases_modal", function () {
+				Object.keys(e.theActiveCaseUpdatedParams).length && (e.isCaseUpdating = !0, e.readLatestUpdatedCases(), e.theActiveCaseUpdatedParams = {}), e.run_autoupdate_func()
+			}), $(document).on("vue::update_case_prop", function (t, s, a) {
+				if (e.theCaseUpdatingId = s, a)
+					for (var i in a) e.theOrignalActiveCase[i] != a[i] ? Vue.set(e.theActiveCaseUpdatedParams, i, a[i]) : e.theActiveCaseUpdatedParams.hasOwnProperty(i) && delete e.theActiveCaseUpdatedParams[i]
+			}), this.$nextTick(t => {
+				$(window).on("scroll", function () {
+					var t = $(document).height(),
+						s = $(window).height() + $(window).scrollTop();
+					(t - 300 >= s) / t == 0 && (e.loadMoreCases(), e.infinteScrollONPLoadMore(), e.infinteScrollONPOrdersLoadMore())
+				})
+			}), setInterval(t => {
+				run_autoupdate && "roles" != this.activeCategory && e.run_autoupdate_func()
+			}, 3e4)
+		}
+	})
 }), $(window).scroll(function (e) {
 	var t = $(".o-header");
 	window.scrollY > 32 ? t.hasClass("o-header--fixed") || t.addClass("o-header--fixed") : t.removeClass("o-header--fixed")
