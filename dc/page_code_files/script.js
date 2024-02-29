@@ -493,9 +493,21 @@ $(document).one("trigger::vue_loaded", function () {
 						}
 						return response.json();
 					})
-					.then(result => {
+					//.then(result => {
 						//console.log('success', result);
-						this.earlierTickets = result;
+
+					    .then(result => {
+					        // Assuming result is the array of tickets and each ticket has a last_dc_note property
+					        const sortedTickets = result.sort((a, b) => {
+					            // Convert last_dc_note to Date objects for comparison
+					            const dateA = new Date(a.last_dc_note);
+					            const dateB = new Date(b.last_dc_note);
+					            return dateB - dateA; // Sort in descending order
+					        });
+					        this.earlierTickets = sortedTickets;
+
+						
+						//this.earlierTickets = result;
 					})
 					.catch(error => {
 						console.error('Error fetching earlierTickets details:', error);
