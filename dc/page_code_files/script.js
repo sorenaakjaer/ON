@@ -135,12 +135,12 @@ $(document).one("trigger::vue_loaded", function () {
 					return {
 						...ticket,
 						v_props: v_props,
-						v_lastUpdated: ticket.lastUpdated ? this.formatDateTime(ticket.lastUpdated) : '',
+						//v_lastUpdated: ticket.lastUpdated ? this.formatDateTime(ticket.lastUpdated) : '',
 						v_notes: ticket.notes ? ticket.notes
 							.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)) // Sort notes by timestamp, newest first
 							.map(note => ({
 								...note,
-								v_timestamp: this.formatDateTime(note.timestamp) // Assuming formatDateTime is defined and formats correctly
+								//v_timestamp: this.formatDateTime(note.timestamp) // Assuming formatDateTime is defined and formats correctly
 							})) : []
 					};
 				});
