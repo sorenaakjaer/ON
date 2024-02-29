@@ -107,8 +107,24 @@
                     </div>
                     <div class="tio chevron_right"></div>
                 </li>
-                <li @click="setActivecCategory('Announcement')" :class="{'li--active': activeCategory==='Announcement'}"
-                    class="menu_announcement">
+                <li v-if="isShowNewOperationStatus" @click="setActivecCategory('operation_status')"
+                    :class="{'li--active': activeCategory==='operation_status'}" class="menu_announcement">
+                    <div>
+                        <h4>Operation status</h4>
+                        <p>Læs aktive og tidligere udmeldinger / varslinger</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+                <li v-if="isShowNewOperationStatus" @click="setActivecCategory('news')"
+                    :class="{'li--active': activeCategory==='news'}" class="menu_announcement">
+                    <div>
+                        <h4>Nyheder</h4>
+                        <p>Læs aktive og tidligere udmeldinger / varslinger</p>
+                    </div>
+                    <div class="tio chevron_right"></div>
+                </li>
+                <li v-if="!isShowNewOperationStatus" @click="setActivecCategory('Announcement')"
+                    :class="{'li--active': activeCategory==='Announcement'}" class="menu_announcement">
                     <div>
                         <h4>Udmeldinger</h4>
                         <p>Læs aktive og tidligere udmeldinger / varslinger</p>
@@ -188,7 +204,10 @@
         <div class="o-menu__overlay js-o-menu__overlay"></div>
     </div>
     <div class="o-body" :class="{'o-body__container': isNewDesignActive}">
-        <div class="o-list-of-cases">
+        <div v-if="isViewNewsOrOperationStatus">
+            <o-announcements></o-announcements>
+        </div>
+        <div class="o-list-of-cases" v-if="!isViewNewsOrOperationStatus">
             <div class="o-body__header o-wrapper" v-if="!isNewDesignActive">
                 <h1 class="js-page-title">Hjem / Mine sager</h1>
                 <button class="o-btn o-btn--primary createAnnouncement_btn" @click="CreateExtDocument('Announcement')"
@@ -241,7 +260,7 @@
                         src="https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/opennet-systemer-processor-illu.png"
                         class="intro_img"></div>
             </div>
-            <div class="o-body__subheader">
+            <div class="o-body__subheader" v-if="!isViewNewsOrOperationStatus">
                 <div class="o-wrapper">
                     <div class="o-filters">
                         <template v-if="activeCategory==='all_cases' || activeCategory==='my_cases'" v-cloak>
@@ -348,7 +367,8 @@
             </div>
             <div class="o-cases" :class="{'o-cases--is-open-analytics': activeCategory === 'OpenAnalytics'}">
                 <div class="vue-subheader-filters o-body__list-of-cases o-wrapper"
-                    :class="{'vue-subheader-filters__flex': isNewDesignActive}" v-cloak v-if="!isViewRoles">
+                    :class="{'vue-subheader-filters__flex': isNewDesignActive}" v-cloak
+                    v-if="!isViewRoles && !isViewNewsOrOperationStatus">
                     <!-- START 17-12-23 -->
                     <template v-if="isNewDesignActive && isCases">
                         <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__space">
@@ -1868,6 +1888,345 @@
         </div>
     </div>
 </div>
+
+<script type="text/x-template" id="o-announcements-template">
+    <div class="o-ann">
+        <div class="o-wrapper">
+            <div class="o-ann__banner">
+                <div class="o-ann__dash">
+                    <h4>Incidents</h4>
+                    <div class="o-pill o-pill--red">4</div>
+                </div>
+                <div class="o-ann__dash">
+                    <h4>Planned</h4>
+                    <div class="o-pill o-pill--green">4</div>
+                </div>
+                <div class="o-ann__dash">
+                    <h4>Other</h4>
+                    <div class="o-pill">4</div>
+                </div>
+            </div>
+        </div>
+        <div class="o-body__subheader">
+                <div class="o-wrapper">
+                    <div class="o-filters">
+                            <div class="o-filters__filter vue-filter-level2"
+                                :class="{'o-filters__filter--active': true}">Operating announcements
+                            </div>
+                            <div class="o-filters__filter vue-filter-level2"
+                            :class="{'o-filters__filter--active': false}">Error reports
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="o-ann__body">
+            <div class="o-ann__body__header o-wrapper">
+                <div class="o-ann__body__header__left">
+                    <o-multi-select :items="filterStatuses" :selected_items="theActiveFilterStatuses"
+                    @toggle_item="toggleFilterStatus" select_title="Vælg status"></o-multi-select>
+                    <o-multi-select :items="filterTypes" :selected_items="theActiveFilterTypes"
+                    @toggle_item="toggleFilterTypes" select_title="Vælg Type"></o-multi-select>
+                </div>
+                <div class="o-ann__body__header__right">
+                    <div class="o-search-group">
+                        <div class="o-icon">
+                            <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
+                                <title>search</title>
+                                <path
+                                    d="M20.85,19.44l-4-4a2.44,2.44,0,0,0-.43-.35l-1-.69h0A7,7,0,1,0,10,17a7,7,0,0,0,4.37-1.53h0l.75,1a2.6,2.6,0,0,0,.3.36l4,4a.5.5,0,0,0,.71,0l.7-.7A.5.5,0,0,0,20.85,19.44ZM10,15a5,5,0,1,1,5-5A5,5,0,0,1,10,15Z">
+                                </path>
+                            </svg>
+                        </div>
+                        <input type="search" ref="v_ann_search_query" @input="debounceSearch"
+                            class="o-search-cases" placeholder="Søg.."
+                            :class="{'o-search-cases--active': searchQuery.length > 0}">
+                        <div class="o-search-group__clear" @click="clearSearchQuery"><i
+                                class="tio">clear_circle</i>
+                        </div>
+                    </div>
+                    <button class="o-btn o-btn--primary" @click="setIsCreateAnnouncementModal(true)">Create Announcement</button>
+                </div>
+            </div>
+            <h4 class="text-explainer o-center" v-if="!isLoadingAnnouncements && searchedAnnouncements.length === 0">Ingen udmeldinger matcher din søgning</h4>
+            <div class="o-spinner-container" v-if="isLoadingAnnouncements">
+                <div class="o-spinner"></div>
+            </div>
+            <div v-else>
+            <transition-group name="list-complete" tag="div" class="vue-list-of-cases o-wrapper pos-relative">
+                <div class="o-ann__element case_element--view_files_in_list case_element case_element__document vue-list-complete__element" 
+                :class="{'o-ann__element--open': getisTheActiveCase(item)}"
+                    v-for="item in searchedAnnouncements" 
+                    :key="item.v_id" 
+                    @click="setActiveItem(item)">
+                    <div class="o-cases__case_element__header">
+                        <div class="o-cases__case_element__header__row">
+                            <div>{{ item.version }}ONID:{{item.onid}}</div>
+                            <div>Created :{{item.createdTime}}</div>
+                            <div>Udløb:{{item.expire_date}}</div>
+                            <div>By:{{item.from}},{{item.company_display}}</div>
+                            <div>Type:{{item.type}}</div>
+                            <div class="etray_case_status">
+                                <span class="o-pill">{{ item.status }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="o-cases__case_element__body">
+                        <div class="o-cases__case_element__body__input">
+                            <div class="o-cases__case-group"><label>Subject:</label>
+                                <p>{{item.subject}}</p>
+                            </div>
+                            <div class="o-cases__case-group"><label>Type:</label>
+                                <p>{{item.type}}</p>
+                            </div>
+                            <div class="o-cases__case-group" v-if="item.message_short"><label>Kort
+                                    beskrivelse:</label>
+                                <p>{{item.message_short}}</p>
+                            </div>
+                        </div>
+                        <div class="o-cases__case_element__body__arrow"> 
+                            Se {{ getisTheActiveCase(item) ? 'mindre' : 'mere' }}
+                            <div class="tio chevron_right"></div>
+                        </div>
+                    </div>
+                    <div class="o-cases__case_element__body__ann" v-if="getisTheActiveCase(item)">
+                        <label>Email:</label>
+                        <div class="o-ann__email-container">
+                            <i class="tio">
+                                email_outlined
+                                </i>
+                            <div class="o-ann__email-container__html" v-html="item.html" v-if="item.html && item.html.length > 0"></div>
+                        </div>
+                    </div>
+                    <div v-if="item.vEarlierVersions.length > 0">
+                        <div class="o-cases__case_element__body__ann" v-if="getisTheActiveCase(item)">
+                            <label>Se tidligere Emails:</label>
+                            <div class="o-ann__email-container" v-for="ealierItem in item.vEarlierVersions" :key="ealierItem.v_id"  v-if="ealierItem.html && ealierItem.html.length > 0">
+                                <i class="tio">
+                                    email_outlined
+                                    </i>
+                                <div class="o-ann__email-container__html" v-html="ealierItem.html"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition-group>
+            </div>
+        </div>
+        <transition name="modalFadeIn">
+            <o-announcements-modal 
+                v-if="isCreateAnnouncementModal" 
+                @close="setIsCreateAnnouncementModal(false)"
+                @openNewMasterModal="setIsCreateNewMaster(true)">
+            </o-announcements-modal>
+        </transition>
+        <transition name="modalFadeIn">
+            <o-announcements-modal 
+                v-if="isNewMasterModal" 
+                formType="master"
+                formTitle="Create Master New Template"
+                @close="setIsCreateNewMaster(false)">
+            </o-announcements-modal>
+        </transition>
+        <!-- OVERLAY -->
+        <div class="vue-modal__overlay" v-if="isCreateAnnouncementModal" @click="setIsCreateAnnouncementModal(false)" v-cloak></div>
+    </div>
+    </script>
+
+<script type="text/x-template" id="o-announcements-modal-form-template">
+            <div class="o-modal--alwaysactive vue-modal" :class="{'o-modal--alwaysactive--second': formType === 'master'}">
+                <div class="o-modal__header">
+                    <h4>{{ formTitle }}</h4>
+                    <div style="font-size: 2rem;" class="tio clear bg-icon-hover" @click="setIsCreateModal(false)">
+                    </div>
+                </div>
+                <div class="o-modal__body">
+                    <div class="o-modal-form">
+                        <form class="o-ann-form" @submit.prevent>
+                            <div class="o-ann-form__header" v-if="!formTypeIsMaster">
+                                <div class="o-group">
+                                    <label class="o-label">Template</label>
+                                        <div class="o-group__sub">
+                                            <select class="o-select" 
+                                            v-model="theSelectedMasterTemplateId"
+                                            @change="setMasterTempalte($event.target.value)">
+                                                <option v-for="masterTemplate in masterTemplates" 
+                                                :value="masterTemplate.template_id">
+                                                {{ masterTemplate.name }}
+                                            </option>
+                                            </select>
+                                            <a @click.prevent="setIsCreateNewMaster(true)">Edit / new</a>
+                                        </div>
+                                </div>
+                                <div class="o-group">
+                                    <label class="o-label">Type</label>
+                                        <select class="o-select"
+                                        v-model="theSelectedTypeId"
+                                        @change="setTheSelectedType($event.target.value)">
+                                            <option v-for="oType in types" 
+                                            :value="oType.id">
+                                            {{ oType.title }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="o-ann__card">
+                                <div class="o-group__flex o-group__flex-2">
+                                <div class="o-group" v-if="formTypeIsMaster">
+                                    <label class="o-label">Template name</label>
+                                    <input type="text" class="o-input" ref="new_template_title_input" v-model="newMasterTitle" />
+                                </div>
+                                <div class="o-group">
+                                    <label class="o-label">Type</label>
+                                        <select class="o-select"
+                                        v-model="theSelectedTypeId"
+                                        @change="setTheSelectedType($event.target.value)">
+                                            <option v-for="oType in types" 
+                                            :value="oType.id">
+                                            {{ oType.title }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                                <div class="o-group">
+                                    <label class="o-label">From (Shown in email sender)</label>
+                                    <input type="text" v-model="theFrom" class="o-input" />
+                                </div>
+                                <div class="o-group">
+                                    <label class="o-label">Subject email</label>
+                                    <input type="text" v-model="theEmailSubject" class="o-input" />
+                                </div>
+                                <div class="o-group__flex">
+                                    <div class="o-group">
+                                        <label class="o-label">Tidspunkt (start)</label>
+                                        <input type="date" v-model="theEmailDateStart" class="o-input" />
+                                    </div>
+                                    <div class="o-group" v-if="!formTypeIsMaster">
+                                        <label class="o-label">Status</label>
+                                        <select class="o-select" v-model="theSelectedStatus">
+                                            <option v-for="status in statuses" :value="status.id">{{ status.title }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="o-group">
+                                        <div class="o-toggle-group" @click.stop="isSendNotifications = !isSendNotifications">
+                                        <label class="o-label">Send notifikationer</label>
+                                        <div class="o-toggle" :class="{'o-toggle--activated': isSendNotifications}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o-group__flex">
+                                    <div class="o-group">
+                                        <div class="o-toggle-group" @click="isAttachFiles = !isAttachFiles">
+                                        <label class="o-label">Vedhæftninger</label>
+                                        <div class="o-toggle" :class="{'o-toggle--activated': isAttachFiles}"></div>
+                                        </div>
+                                    </div>
+                                    <input type="file" v-if="isAttachFiles" @change="handleFileUpload" multiple>
+                                </div>
+                                <div class="o-group__flex" v-if="!formTypeIsMaster">
+                                    <div class="o-toggle-group" @click="isServiceWindow = !isServiceWindow">
+                                    <label class="o-label">Service window</label>
+                                    <div class="o-toggle" :class="{'o-toggle--activated': isServiceWindow}"></div>
+                                    </div>
+                                    <div class="o-group" v-show="isServiceWindow">
+                                        <label class="o-label">Start</label>
+                                        <input type="date" class="o-input" />
+                                    </div>
+                                    <div class="o-group" v-show="isServiceWindow">
+                                        <label class="o-label">End</label>
+                                        <input type="date" class="o-input" />
+                                    </div>
+                                </div>
+                                <div class="o-group__flex" v-if="!formTypeIsMaster">
+                                    <div class="o-toggle-group" @click="isGetUpdateNotifikation = !isGetUpdateNotifikation">
+                                        <label class="o-label">Get update notifikation</label>
+                                        <div class="o-toggle" :class="{'o-toggle--activated': isGetUpdateNotifikation}"></div>
+                                    </div>
+                                    <div class="o-group" v-show="isGetUpdateNotifikation">
+                                        <label class="o-label">Interval</label>
+                                        <select class="o-select">
+                                            <option v-for="interval in updateIntervals" :value="interval.id">{{ interval.title }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <h4>Modtagere</h4>
+                            <div class="o-ann__card">
+                                <div class="o-group">
+                                    <div class="o-ann-receivers__header">
+                                        <label class="o-label">Vælg modtagere</label>
+                                        <div class="o-toggle-group" @click="toggleAllReceivers">
+                                            <label class="o-label">Vælg alle</label>
+                                            <div class="o-toggle" :class="{'o-toggle--activated': isAllReceiversSelected}"></div>
+                                        </div>
+                                    </div>
+                                    <ul class="o-ann-receivers">
+                                        <li v-for="receiver in receivers"
+                                        :class="{'o-ann-receivers__receiver--selected': getIsReceiverSelected(receiver.id)}"
+                                        :key="receiver.id"
+                                        @click="setSelectedReceiver(receiver.id)">
+                                            {{ receiver.name }} 
+                                            <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected(receiver.id)}"></div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <template v-if="formTypeIsMaster">
+                                <h4>Master HTML</h4>
+                                <div class="o-ann-form__editor">
+                                    <ul class="o-ann-form__editor__tabs">
+                                        <li class="o-ann-form__editor__tabs__tab o-ann-form__editor__tabs__tab--selected">HTML</li>
+                                    </ul>
+                                    <div class="o-editor">
+                                        <textarea class="o-editor__textarea" v-model="newMasterHTML" placeholder="Enter HTML here"></textarea>
+                                    </div>
+                                </div>
+                                <h4>Preview</h4>
+                                <div class="o-card__email-preview">
+                                    <div class="o-card__email-preview__header">
+                                        <p><b>From:</b>IO</p>
+                                        <p><b>Subject:</b>Operation Announcement</p>
+                                        <p><b>Attachment(s):</b></p>
+                                    </div>
+                                </div>
+                                    <iframe id="sandbox" :srcdoc="iframeContent" style="width:100%; height:300px;"></iframe>
+                            </template>
+                            <template v-if="!formTypeIsMaster">
+                            <h4>Placeholders</h4>
+                                <div class="marg-1-bottom" v-for="oPlaceholder in oPlaceholders" :key="oPlaceholders.id">
+                                    <o-editor></o-editor>
+                                </div>
+                            </template>
+                            <div class="o-ann-form__footer">
+                                <button class="o-btn o-btn--primary" :class="{'o-btn--loading': isSubmitting}" @click="onSubmit">Gem</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    </script>
+
+<script type="text/x-template" id="o-editor-template">
+        <div class="o-ann-form__editor">
+            <ul class="o-ann-form__editor__tabs">
+                <li class="o-ann-form__editor__tabs__tab" :class="{'o-ann-form__editor__tabs__tab--selected': theActiveTab === 'editor'}" @click="setTheActiveTab('editor')">Editor</li>
+                <li class="o-ann-form__editor__tabs__tab" :class="{'o-ann-form__editor__tabs__tab--selected': theActiveTab === 'html'}" @click="setTheActiveTab('html')">HTML</li>
+            </ul>
+            <div class="o-editor" v-if="theActiveTab === 'editor'">
+                <div class="o-editor-toolbar">
+                    <button @click="applyStyle('bold')" :class="{'style--active': activeStyles['bold']}"><i class="tio">bold</i></button>
+                    <button @click="applyStyle('italic')" :class="{'style--active': activeStyles['italic']}"><i class="tio">italic</i></button>
+                    <button @click="applyStyle('underline')" :class="{'style--active': activeStyles['underline']}"><i class="tio">underline</i></button>
+                    <button @click="createLink"><i class="tio">link</i></button>
+                </div>
+                <div contenteditable="true" class="o-text-editor" ref="o_text_editor"></div>
+            </div>
+            <div class="o-editor" v-else>
+                <textarea class="o-editor__textarea" ref="o_editor_textarea" v-model="userHtml" placeholder="Enter HTML here"></textarea>
+            </div>
+        </div>
+    </script>
+
 <!-- START 17-12-23 -->
 <script type="text/x-template" id="o-multi-select-template">
     <div class="o-multi-select tags-selector">
