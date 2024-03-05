@@ -305,7 +305,7 @@
                             </div>
 
                             <div class="o-filters__filter vue-filter-level2" v-if="activeCategory=='OpenAnalytics'"
-                                 :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab0'}"
+                                 :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab0' || theActiveFilter===''}"
                                  @click="setTheActiveFilter('OpenAnalytics_tab0')">
                                 <span>Info</span>
                             </div>
