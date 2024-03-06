@@ -2441,13 +2441,12 @@ $(document).one("trigger::vue_loaded", function () {
 						self.isLoadingTheOpenAnalyticsIframe = false
 						console.log('Inspari_iframeLoaded event received', event.data);
 						var iframe = document.querySelector('.o-iframe-container');
-						if (current_iframeHeight !=  event.data.iframeHeight)
-							{
+						
 							console.log('Current iframe height',current_iframeHeight);
 								iframe.style.height = event.data.iframeHeight + 'px';
 							console.log('New iframe height',event.data.iframeHeight);
 							current_iframeHeight = event.data.iframeHeight;								
-							}
+						
 					}
 				};
 
