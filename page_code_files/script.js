@@ -2363,6 +2363,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.theActiveCaseCategory = e
 			},
 			setTheActiveFilter(event) {
+				RemoveReport()
 				this.theActiveFilter = event;
 				this.clearSearchQuery();
 				this.theUnreadSelected = "Alle";
@@ -2387,7 +2388,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			setIframeForOpenAnalytics() {
 				openAnalyticsSecret = JSON.parse($('.PBI_sharedSecretJSON > input').val()).sharedSecret;
-				console.log('openAnalyticsSecret', openAnalyticsSecret);
+				//console.log('openAnalyticsSecret', openAnalyticsSecret);
 				this.isLoadingTheOpenAnalyticsIframe = true
 				function constructURLWithSecret(baseURL, secretValue) {
 					const queryParams = new URLSearchParams(window.location.search);
@@ -4467,5 +4468,17 @@ function errorFunc() {
 function handleError(e, t) {
 	alert("Error in : " + e), alert("Exception: " + t.message)
 }
+
+function RemoveReport() {
+    console.log('RemoveReport: Removing embedded Power BI report');
+
+    // Selects the DOM element where the report was embedded
+    var embedContainer = $("#embedContainer")[0];
+
+    // Check if the Power BI service instance exists
+    if (window.powerbi) {
+        // Use the Power BI service API to reset the embed container
+        window.powerbi.reset(embedContainer);
+        console.log('Report remove')}}
 
 // PowerBI report funcs - START
