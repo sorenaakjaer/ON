@@ -4345,31 +4345,51 @@ function download_file(e) {
 	"PROD" === $(".ENV > input").val() && (e = "https://portal.prod.aws.opennet.dk/eTrayPortal/N/search/download.aspx?epath=" + e), "TEST" === $(".ENV > input").val() && (e = "https://portal.test.aws.opennet.dk/eTrayPortal/N/search/download.aspx?epath=" + e), "DEV" === $(".ENV > input").val() && (e = "https://portal.dev.aws.opennet.dk/eTrayPortal/N/search/download.aspx?epath=" + e), e += "&webform=" + $("title").html(), e += "&portalName=" + $("#webform").attr("form"), e += "&loginKey=" + eTrayWebportal.User.Key, window.open(e)
 }
 
-// PowerBI report funcs - START
-function RunReport(e, t) {
-	if ($(document).trigger("vue::BILoadingTrigger", !0), $(document).trigger("vue::BIChangeTrigger", t), report && report.off("rendered"), "V\xe6lg" === t) {
-		$(document).trigger("vue::BILoadingTrigger", !1);
-		return
-	}
-	try {
-		$.ajax({
-			type: "POST",
-			url: "https://pbiembeddedopennet.azurewebsites.net/api/PowerBIEmbeddedToken?code=US0sk5xiqoVMLU2tcl2oR1Jg0zt49Vj80ZjcM0bHCzPRAzFuAME4fg==",
-			data: JSON.stringify({
-				reportId: e
-			}),
-			contentType: "application/json; charset=utf-8",
-			dataType: "json",
-			success: successFunc,
-			error: errorFunc
-		})
-	} catch (s) {
-		console.log(s), handleError("RunReport", s)
-	}
+// Starts definition of PowerBI report functions
+// Function to run and manage a Power BI report based on a given report ID and action
+function RunReport(reportId, action) {
+	console.log('RunReport Step 1 reportId,reportId);
+	console.log('RunReport Step 1 action,action)
+    // Triggers loading and changes state in the application using custom events
+    $(document).trigger("vue::BILoadingTrigger", true); // Indicates the start of loading
+    $(document).trigger("vue::BIChangeTrigger", action); // Indicates a change based on the action
+
+    // Checks if a report is already loaded and, if so, stops listening for the 'rendered' event to prevent memory leaks or duplicate handlers
+    if (report) {
+	console.log('report.off("rendered");');
+        report.off("rendered");
+    }
+
+    // If the action is to 'select' (denoted by "Vælg"), stop the loading trigger and exit the function
+    if ("Vælg" === action) {
+	console.log('"Vælg" === action');    
+        $(document).trigger("vue::BILoadingTrigger", false); // Stops the loading indication
+        return;
+    }
+
+    try {
+	console.log('Make AJAX call);  	    
+        // Initiates an AJAX POST request to fetch a new token for embedding the report
+        $.ajax({
+            type: "POST",
+            url: "https://pbiembeddedopennet.azurewebsites.net/api/PowerBIEmbeddedToken?code=US0sk5xiqoVMLU2tcl2oR1Jg0zt49Vj80ZjcM0bHCzPRAzFuAME4fg==",
+            data: JSON.stringify({ reportId: reportId }), // Sends the reportId as data
+            contentType: "application/json; charset=utf-8", // Sets the content type of the request
+            dataType: "json", // Expects a JSON response
+            success: successFunc, // Defines a function to handle a successful response
+            error: errorFunc // Defines a function to handle any errors during the request
+        });
+    } catch (error) {
+        // Logs the error and calls a generic error handler function with context
+        console.log(error);
+        handleError("RunReport", error);
+    }
 }
+// Ends definition of PowerBI report functions
 
 // Defines a function to handle the success scenario after attempting to embed a Power BI report.
 function successFunc(response, status) {
+	console.log('successFunc');
     try {
         // Checks if the status is 'success'.
         if (status == "success") {
@@ -4435,6 +4455,7 @@ function successFunc(response, status) {
 }
 
 function errorFunc() {
+	console.log('errorFunc');
 	try {
 		alert("The report could not be embedded.  Please reload the page and try again.")
 	} catch (e) {
