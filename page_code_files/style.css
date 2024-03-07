@@ -9364,15 +9364,11 @@ input.o-modal__case__commentary__textarea {
     margin-bottom: 10px;
 }
 
-.PowerBI_Container {
-    max-width: 1200px !important;
-}
+
 
 .PowerBI_Container>iframe {
     border: none;
-    min-height: 720px !important;
-    min-width: 1280px !important;
-}
+} 
 
 .hidePowerBi {
     opacity: 0
@@ -10485,6 +10481,21 @@ padding: 0 60px
 }
 
 .o-page--menu-open  .OpenAnalytics_tab_content.OpenAnalytics_tab_iframe .o-iframe-container {
+width: calc(100vw - 350px - 60px);
+min-width: 650px;
+}
+
+div#embedContainer {
+    height: 100% !important;
+}
+
+
+.PowerBI_Container {
+    position: initial;
+    width: calc(100vw - 60px);
+}
+
+.o-page--menu-open .PowerBI_Container{
 width: calc(100vw - 350px - 60px);
 min-width: 650px;
 }
