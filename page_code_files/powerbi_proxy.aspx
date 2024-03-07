@@ -14,6 +14,8 @@
                 requestBody = reader.ReadToEnd();
             }
 
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
             var webRequest = (HttpWebRequest)WebRequest.Create("https://pbiembeddedopennet.azurewebsites.net/api/PowerBIEmbeddedToken?code=US0sk5xiqoVMLU2tcl2oR1Jg0zt49Vj80ZjcM0bHCzPRAzFuAME4fg==");
             webRequest.Method = "POST";
             webRequest.ContentType = "application/json";
@@ -28,14 +30,12 @@
                 using (var reader = new StreamReader(httpResponse.GetResponseStream()))
                 {
                     var responseText = reader.ReadToEnd();
-                    // Directly write the response to the client
                     Response.ContentType = "application/json";
                     Response.Write(responseText);
                 }
             }
             catch (WebException ex)
             {
-                // Handle error, possibly log and return an error response
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 Response.Write("Error contacting the external service.");
             }
