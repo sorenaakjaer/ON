@@ -4368,45 +4368,70 @@ function RunReport(e, t) {
 	}
 }
 
-function successFunc(e, t) {
-	try {
-		if ("success" == t) {
-			var s = e.EmbedToken,
-				a = e.EmbedUrl,
-				i = e.ReportId,
-				r = $(".PBI_sharedSecret > input").val();
-			console.log("v_sharedSecret", r);
-			var o = window["powerbi-client"].models;
-			let n = {
-				$schema: "http://powerbi.com/product/schema#basic",
-				target: {
-					table: "v_POWERBI_EMBEDDED_RLS",
-					column: "sharedSecret"
-				},
-				operator: "In",
-				values: ["RBXvFBpyVUllMTsBynhzsLVEZcpzqNFcvQqLidwVVXhJkeGhMmnWPwTqeNuwOuaRlbwvwoWTKPJdqcmmOdWFKYSZelHxXWmGzdFgScBXBwzFYFctqQBYTtrPMDsULJaJsOJIEoKQaVKjevTUBJWrQeVLhxAdmbhtLJNdtmJQmMHxpKkONOLbnvVaMKmqPrKmfYMXicloVdpFoFauMMFaXDUYTAUJeTCRkUVYnVDisBgcBwVZXrRnveKzZhgNwoGGyLdbaddEOlCYApxrslwayNQKCCljJJorMKEcaydldTMvTIqRTdnuBXQANOLknSvavHBanbcVFJVSWHbVgYeLhFraZPMOQZMZaNWHkTmYmJMXesWtnpvUXnAVWOoDBpugWrZGaOuTiriLxNTNFIioNNuxbLLlIhEJAmdFGQMWgegVBUicWXrOCodyDkrjwycjdMQEegjmnPJOicayjDzLWiHEXVoCPpFKrxafBROKnBdkRDwmnruShknBhFHtWowfMjujtoJWEcwnmEqLMjVwZsLZChYXFKpAlXULsFIsUrGUpdMuocqwgHEPRSHzzzWpAQzfKzDgabROVXTrKOTmSuPCqbKrEfiUHFzzdQaOEHLCfYGchbmRtmsqsJWPfmAihQOzouGPWeoxTWfXCwJyRbKAPWPICbxlXZBTTMrDFaPNIYOvGgOwNLiwmdHqWDBuEqRniXbIXZMZzYvWCdEPmfiKDIKqQsyKRgBqvpEeFaWMjeSpHLGJijFHzbdyQaTpGNQuOzAHDacWKAAKURzzcDSQIepLPXTLnmHyeTxLmjftkFSTtdysdlFOsGGeWUTrNjUoTyVHAfsMJkkCInDtIZagtNcBnQCATAhDDoauIqEmWqRAuKXfutXGxwpHPYHUfZQMZLwReIfeQrgnXAgiKaHQxXKSMiOoQVzvBNRYSDKKlEtUxWpZzOkdwbfluKGuefaRFyLqDqsvfAlutAsLxzSMwfhvYYSxjkcqCFLBMiVePWXqbYxrKYHaKIMdWdnb"]
-			};
-			var l = {
-				type: "report",
-				tokenType: o.TokenType.Embed,
-				accessToken: s,
-				embedUrl: a,
-				id: i,
-				permissions: o.Permissions.All,
-				filters: [n],
-				settings: {
-					filterPaneEnabled: !1,
-					navContentPaneEnabled: !1
-				}
-			},
-				d = $("#embedContainer")[0];
-			(report = powerbi.embed(d, l)).setFilters([n]), report && report.on("rendered", function (e) {
-				$(document).trigger("vue::BILoadingTrigger", !1)
-			})
-		} else alert("The report could not be embedded.  Please reload the page and try again.")
-	} catch (c) {
-		console.log(c), handleError("successFunc", c)
-	}
+// Defines a function to handle the success scenario after attempting to embed a Power BI report.
+function successFunc(response, status) {
+    try {
+        // Checks if the status is 'success'.
+        if (status == "success") {
+            // Extracts the necessary details from the response object.
+            const embedToken = response.EmbedToken;
+            const embedUrl = response.EmbedUrl;
+            const reportId = response.ReportId;
+            const sharedSecret = $(".PBI_sharedSecret > input").val(); // Gets the shared secret from an input field.
+            
+            console.log("v_sharedSecret", sharedSecret); // Logs the shared secret for debugging.
+
+            // Accesses the Power BI Client models for configuration.
+            const powerBiClientModels = window["powerbi-client"].models;
+
+            // Defines the filter to be applied to the report.
+            let filter = {
+                $schema: "http://powerbi.com/product/schema#basic",
+                target: {
+                    table: "v_POWERBI_EMBEDDED_RLS",
+                    column: "sharedSecret"
+                },
+                operator: "In",
+                values: [sharedSecret]
+            };
+
+            // Configures the settings for the Power BI report embedding.
+            var embedConfiguration = {
+                type: "report",
+                tokenType: powerBiClientModels.TokenType.Embed,
+                accessToken: embedToken,
+                embedUrl: embedUrl,
+                id: reportId,
+                permissions: powerBiClientModels.Permissions.All,
+                filters: [filter],
+                settings: {
+                    filterPaneEnabled: false, // Disables the filter pane.
+                    navContentPaneEnabled: false // Disables the navigation content pane.
+                }
+            };
+
+            // Selects the DOM element where the report will be embedded.
+            var embedContainer = $("#embedContainer")[0];
+
+            // Embeds the report and sets up filters.
+            var report = powerbi.embed(embedContainer, embedConfiguration);
+            report.setFilters([filter]);
+
+            // Adds an event listener for the 'rendered' event to perform actions after the report is successfully rendered.
+            if (report) {
+                report.on("rendered", function () {
+                    $(document).trigger("vue::BILoadingTrigger", false); // Triggers a custom event to indicate loading is finished.
+                });
+            }
+        } else {
+            // Alerts the user if the report could not be embedded.
+            alert("The report could not be embedded. Please reload the page and try again.");
+        }
+    } catch (error) {
+        // Logs any errors and calls a function to handle them.
+        console.log(error);
+        handleError("successFunc", error);
+    }
 }
 
 function errorFunc() {
