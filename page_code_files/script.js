@@ -4348,8 +4348,8 @@ function download_file(e) {
 // Starts definition of PowerBI report functions
 // Function to run and manage a Power BI report based on a given report ID and action
 function RunReport(reportId, action) {
-	console.log('RunReport Step 1 reportId,reportId);
-	console.log('RunReport Step 1 action,action)
+	console.log('RunReport Step 1 reportId',reportId);
+	console.log('RunReport Step 1 action',action)
     // Triggers loading and changes state in the application using custom events
     $(document).trigger("vue::BILoadingTrigger", true); // Indicates the start of loading
     $(document).trigger("vue::BIChangeTrigger", action); // Indicates a change based on the action
@@ -4368,7 +4368,7 @@ function RunReport(reportId, action) {
     }
 
     try {
-	console.log('Make AJAX call);  	    
+	console.log('Make AJAX call');  	    
         // Initiates an AJAX POST request to fetch a new token for embedding the report
         $.ajax({
             type: "POST",
