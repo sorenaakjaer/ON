@@ -10499,3 +10499,27 @@ div#embedContainer {
 width: calc(100vw - 350px - 60px);
 min-width: 650px;
 }
+
+.PowerBI_Container#embedContainer {
+    height: 100% !important;
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    width: calc(96vw - 2rem);
+    /* Evt. sæt en max width max-width: 2400px */
+}
+
+.o-page--menu-open .PowerBI_Container#embedContainer {
+    width: calc(96vw - 350px - 2rem);
+}
+
+.PowerBI_Container#embedContainer iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
