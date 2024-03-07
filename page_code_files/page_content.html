@@ -634,7 +634,7 @@
                         <div v-if="activeCategory==='Invoice' && theUnreadSelected==='Vælg'"
                              v-html="theInvoiceBIExplainer">
                         </div>
-                        <template v-if="theUnreadSelected !=='Vælg'">
+                        <template v-if="theUnreadSelected !=='Vælg' && theActiveFilter==='dynamic'">
                             <div class="vue-spinner__container" v-if="isLoadingBIReport" v-cloak>
                                 <div class="vue-spinner o-spinner"></div>
                                 <p class="text-explainer o-spinner__text">Indlæser dashboard..</p>
