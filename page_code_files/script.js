@@ -4370,9 +4370,10 @@ function RunReport(reportId, action) {
     try {
 	console.log('Make AJAX call');  	    
         // Initiates an AJAX POST request to fetch a new token for embedding the report
-        $.ajax({
+	    $.ajax({
             type: "POST",
-            url: "https://pbiembeddedopennet.azurewebsites.net/api/PowerBIEmbeddedToken?code=US0sk5xiqoVMLU2tcl2oR1Jg0zt49Vj80ZjcM0bHCzPRAzFuAME4fg==",
+            url: "/portal/page_code_files/powerbi_proxy.aspx", 
+	    //url: "https://pbiembeddedopennet.azurewebsites.net/api/PowerBIEmbeddedToken?code=US0sk5xiqoVMLU2tcl2oR1Jg0zt49Vj80ZjcM0bHCzPRAzFuAME4fg==",
             data: JSON.stringify({ reportId: reportId }), // Sends the reportId as data
             contentType: "application/json; charset=utf-8", // Sets the content type of the request
             dataType: "json", // Expects a JSON response
