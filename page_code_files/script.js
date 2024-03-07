@@ -4476,7 +4476,7 @@ function RemoveReport() {
     var embedContainer = $("#embedContainer")[0];
 
     // Check if the Power BI service instance exists
-    if (window.powerbi) {
+    if (window.powerbi && window.powerbi.embeds.length > 0) {
         // Use the Power BI service API to reset the embed container
         window.powerbi.reset(embedContainer);
         console.log('Report remove')}}
