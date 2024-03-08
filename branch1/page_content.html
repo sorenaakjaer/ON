@@ -2156,19 +2156,19 @@
                             <div class="o-ann__card">
                                 <div class="o-group">
                                     <div class="o-ann-receivers__header">
-                                        <label class="o-label">{{ selectedReceiversLength }} af {{ filteredReceivers.length }} modtager{{ filteredReceivers.length !== 1 ? 'e' : '' }} valgt</label>
+                                        <label class="o-label">{{ selectedReceiversLength }} modtager{{ selectedReceiversLength !== 1 ? 'e' : '' }} valgt</label>
                                         <div class="o-ann-receivers__header__right">
-                                        <div class="o-toggle-group" @click="toggleAllReceivers">
+                                        <div class="o-toggle-group" @click="setSelectedReceiver('ALL')">
                                             <label class="o-label">All</label>
-                                            <div class="o-toggle" :class="{'o-toggle--activated': isAllReceiversSelected}"></div>
+                                            <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected('ALL')}"></div>
                                         </div>
-                                        <div class="o-toggle-group" @click="toggleAllSPs">
+                                        <div class="o-toggle-group" @click="setSelectedReceiver('ALL_SPs')">
                                             <label class="o-label">All SP's</label>
-                                            <div class="o-toggle" :class="{'o-toggle--activated': isAllSPsSelected}"></div>
+                                            <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected('ALL_SPs')}"></div>
                                         </div>
-                                        <div class="o-toggle-group" @click="toggleAllIOs">
+                                        <div class="o-toggle-group" @click="setSelectedReceiver('ALL_IOs')">
                                             <label class="o-label">All IO’s</label>
-                                            <div class="o-toggle" :class="{'o-toggle--activated': isAllIOsSelected}"></div>
+                                            <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected('ALL_IOs')}"></div>
                                         </div>
                                     </div>
                                     </div>
@@ -2186,6 +2186,23 @@
                             <template v-if="formTypeIsMaster">
                                 <h4>Master HTML</h4>
                                 <div class="o-ann-form__editor">
+                                    <div class="o-popover">
+                                        <div class="o-popover-icon">
+                                            <i class="tio">help</i>
+                                        </div>
+                                        <div class="o-popover__menu">
+                                            <p><b>Indsæt en af flg. koder, og få automatisk indsat variabler fra formularen</b></p>
+                                            <ul>
+                                                <li v-pre>{{{pp_mergecode:subject}}}</li>
+                                                <li v-pre>{{{pp_mergecode:type}}}</li>
+                                                <li v-pre>{{{pp_mergecode:placeholder1}}} op til 10</li>
+                                                <li v-pre>{{{pp_mergecode:from}}}</li>
+                                                <li v-pre>{{{pp_mergecode:user_name}}}</li>
+                                                <li v-pre>{{{pp_hasdata:history_placeholder1-X}}}</li>
+                                                <li v-pre>{{{pp_mergecode:history_placeholder1-X}}}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                     <ul class="o-ann-form__editor__tabs">
                                         <li class="o-ann-form__editor__tabs__tab o-ann-form__editor__tabs__tab--selected">HTML</li>
                                     </ul>

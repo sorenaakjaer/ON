@@ -922,14 +922,14 @@ $(document).one("trigger::vue_loaded", function () {
 					<td style="padding: 20px; text-align: left;">
 					<h2 style="font-size: 22px;">{{{pp_mergecode:type}}}</h2>
 					<h3 style="font-size: 18px;">Hi Partner,</h2>
-					<p>{{{ pp_mergecode:placeholder1-X }}}</p>
-					<p>{{{ pp_hasdata:placeholder1-X }}}</p>
+					<p>{{{ pp_mergecode:placeholder1}}}</p>
 					<br>
 					<h4>Best regards</h4>
 					<p>{{{pp_mergecode:from}}}<p>
 					<p>{{{pp_mergecode:user_name}}}</p>
 					<!-- HISTORY -->
-					<table v-if="pp_hasdata:history_placeholder1-X" cellspacing="0" cellpadding="0" border="0" style="margin-top: 20px;">
+					{{ pp_hasdata:history_placeholder1-X }}
+					<table cellspacing="0" cellpadding="0" border="0" style="margin-top: 20px;">
 						<tr>
 							<td>
 								<h4>HISTORY</h4>
@@ -984,15 +984,13 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		computed: {
 			isAllReceiversSelected() {
-				return this.filteredReceivers.every(receiver => this.selectedReceivers[receiver.id]);
+				return this.getIsReceiverSelected('ALL')
 			},
 			isAllSPsSelected() {
-				const SPs = this.filteredReceivers.filter(partner => partner.type === 'SP')
-				return SPs.every(receiver => this.selectedReceivers[receiver.id]);
+				return this.getIsReceiverSelected('ALL_SPs')
 			},
 			isAllIOsSelected() {
-				const IOs = this.filteredReceivers.filter(partner => partner.type === 'IO')
-				return IOs.every(receiver => this.selectedReceivers[receiver.id]);
+				return this.getIsReceiverSelected('ALL_IOs')
 			},
 			oPlaceholders() {
 				return [{ id: 1, title: 'Placeholder Y1' }, { id: 2, title: 'Placeholder Y2' }]
@@ -1170,43 +1168,6 @@ $(document).one("trigger::vue_loaded", function () {
 					return
 				}
 				this.createAnnouncement()
-			},
-			toggleAllReceivers() {
-				const allSelected = this.isAllReceiversSelected;
-
-				this.filteredReceivers.forEach(receiver => {
-					if (!allSelected) {
-						this.$set(this.selectedReceivers, receiver.id, true);
-					} else {
-						this.$delete(this.selectedReceivers, receiver.id);
-					}
-				});
-			},
-			toggleAllSPs() {
-				const allSelected = this.isAllSPsSelected;
-
-				this.filteredReceivers.forEach(receiver => {
-					if (receiver.type === 'SP') {
-						if (!allSelected) {
-							this.$set(this.selectedReceivers, receiver.id, true);
-						} else {
-							this.$delete(this.selectedReceivers, receiver.id);
-						}
-					}
-				});
-			},
-			toggleAllIOs() {
-				const allSelected = this.isAllIOsSelected;
-
-				this.filteredReceivers.forEach(receiver => {
-					if (receiver.type === 'IO') {
-						if (!allSelected) {
-							this.$set(this.selectedReceivers, receiver.id, true);
-						} else {
-							this.$delete(this.selectedReceivers, receiver.id);
-						}
-					}
-				});
 			},
 			setSelectedReceiver(receiverId) {
 				if (this.selectedReceivers[receiverId]) {
