@@ -591,7 +591,9 @@ $(document).one("trigger::vue_loaded", function () {
 				debounce: null,
 				theActiveFilterStatuses: [],
 				theActiveFilterTypes: [],
-				theAnnActiveItem: null
+				theAnnActiveItem: null,
+				standardOptions: {},
+				isLoadingStandardOptions: false
 			}
 		},
 		computed: {
@@ -686,6 +688,14 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 				})
 				return uniqueTags;
+			},
+			filteredReceivers() {
+				const arr = this.standardOptions && this.standardOptions['extMsg_Partners'] ? this.standardOptions['extMsg_Partners'] : []
+				return arr.sort((a, b) => {
+					if (a.type < b.type) return -1;
+					if (a.type > b.type) return 1;
+					return a.name.localeCompare(b.name);
+				})
 			}
 		},
 		methods: {
@@ -729,6 +739,9 @@ $(document).one("trigger::vue_loaded", function () {
 				}, 600)
 			},
 			getAnnouncements() {
+				if (typeof ISLOCALHOST !== 'undefined') {
+					return
+				}
 				this.isLoadingAnnouncements = true;
 
 				const myHeaders = new Headers();
@@ -740,7 +753,7 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: "follow"
 				};
-				console.log('requestOptions',requestOptions);
+				console.log('requestOptions', requestOptions);
 				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg?area=OperationsStatus", requestOptions)
 					.then(response => {
 						if (!response.ok) {
@@ -772,10 +785,47 @@ $(document).one("trigger::vue_loaded", function () {
 				} else {
 					this.isNewMasterModal = false
 				}
+			},
+			fetchStandardOptions() {
+				console.log('fetchStandardOptions')
+				this.isLoadingStandardOptions = true
+				if (typeof ISLOCALHOST !== 'undefined') {
+					this.isLoadingStandardOptions = false
+					this.standardOptions = JSON.parse(JSON.stringify(STANDARDOPTIONS))
+					return
+				}
+				const myHeaders = new Headers();
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
+
+				const requestOptions = {
+					method: "GET",
+					headers: myHeaders,
+					redirect: "follow"
+				};
+
+				fetch("https://dev-portal.opennet.dk/ppServices/api/general/getFormDetails/all", requestOptions)
+					.then(response => {
+						console.log('fetchStandardOptions', { response })
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(result => {
+						console.log({ result })
+						this.standardOptions = result
+					})
+					.catch(error => {
+						console.error('Error fetching master templates data:', error);
+					})
+					.finally(() => {
+						this.isLoadingStandardOptions = false
+					});
 			}
 		},
 		mounted() {
 			this.getAnnouncements()
+			this.fetchStandardOptions()
 		}
 	})
 	Vue.component('o-announcements-modal', {
@@ -786,10 +836,17 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			formTitle: {
 				default: 'Create announcement'
+			},
+			standard_options: {
+				default: () => { }
+			},
+			filteredReceivers: {
+				default: () => []
 			}
 		},
 		data() {
 			return {
+				activeArea: 'Operations',
 				newMasterHTML:
 					`<!DOCTYPE html>
 <html lang="en">
@@ -846,7 +903,7 @@ $(document).one("trigger::vue_loaded", function () {
 	</body>
 	</html>`,
 				newMasterTitle: '',
-				newMasterArea: 'operations',
+				activeArea: 'Operations',
 				isSubmitting: false,
 				isGetUpdateNotifikation: false,
 				isServiceWindow: false,
@@ -857,19 +914,10 @@ $(document).one("trigger::vue_loaded", function () {
 				theEmailDateStart: new Date().toISOString().slice(0, 10),
 				theEmailSubject: '',
 				theFrom: '',
-				theSelectedTypeId: 'Incident Prod',
 				theSelectedMasterTemplateId: null,
 				masterTemplates: [],
-				types: [{ id: 'Incident Prod', title: 'Incident Prod' }, { id: 2, title: 'Type 2' }],
-				statuses: [
-					{ id: 'new', title: 'New' },
-					{ id: 'Under Investigation ', title: 'Under Investigation' },
-					{ id: 'Work-a-round implemented ', title: 'Work-a-round implemented ' },
-					{ id: 'Pending release', title: 'Pending release' },
-					{ id: 'Resolved', title: 'Resolved' },
-					{ id: 'Rejected', title: 'Rejected' },
-					{ id: 'Closed', title: 'Closed' }
-				],
+				isLoadingMasterTemplates: false,
+				theSelectedType: null,
 				updateIntervals: [
 					{ id: '15min', title: '15min' },
 					{ id: '30min', title: '30min' },
@@ -883,20 +931,21 @@ $(document).one("trigger::vue_loaded", function () {
 					{ id: '30dage', title: '30 dage' },
 					{ id: '90dage', title: '90 dage' }
 				],
-				receivers: [
-					{ id: 'SP01', name: 'SP01' },
-					{ id: 'SP02', name: 'SP02' },
-					{ id: 'SP03', name: 'SP03' },
-					{ id: 'IO01', name: 'IO01' },
-					{ id: 'IO02', name: 'IO02' },
-					{ id: 'IO03', name: 'IO03' }
-				],
-				selectedReceivers: {}
+				selectedReceivers: {},
+				isCreatingNewAnnouncement: false
 			}
 		},
 		computed: {
 			isAllReceiversSelected() {
-				return this.receivers.every(receiver => this.selectedReceivers[receiver.id]);
+				return this.filteredReceivers.every(receiver => this.selectedReceivers[receiver.id]);
+			},
+			isAllSPsSelected() {
+				const SPs = this.filteredReceivers.filter(partner => partner.type === 'SP')
+				return SPs.every(receiver => this.selectedReceivers[receiver.id]);
+			},
+			isAllIOsSelected() {
+				const IOs = this.filteredReceivers.filter(partner => partner.type === 'IO')
+				return IOs.every(receiver => this.selectedReceivers[receiver.id]);
 			},
 			oPlaceholders() {
 				return [{ id: 1, title: 'Placeholder Y1' }, { id: 2, title: 'Placeholder Y2' }]
@@ -913,24 +962,74 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			userKey() {
 				return eTrayWebportal && eTrayWebportal.User.Key ? eTrayWebportal.User.Key : null
+			},
+			sortedMasterTemplates() {
+				return this.masterTemplates
+					.filter(masterTemp => masterTemp.area === this.activeArea)
+					.sort((a, b) => b.template_id - a.template_id);
+			},
+			filteredTypes() {
+				const oTypes = this.standard_options && this.standard_options['extMsg_type'] ? this.standard_options['extMsg_type'] : []
+				const activeArea = this.activeArea === 'Operations' ? 'OperationsStatus' : 'News'
+				return oTypes.filter(oType => oType.area === activeArea)
+			},
+			filteredStatusses() {
+				const oStatusses = this.standard_options && this.standard_options['extMsg_status'] ? this.standard_options['extMsg_status'] : []
+				return oStatusses
+			},
+			selectedReceiversLength() {
+				return Object.keys(this.selectedReceivers).length;
+			},
+			filteredAssignUpdatesToList() {
+				const arr = this.standard_options && this.standard_options['assigntoList'] ? this.standard_options['assigntoList'] : []
+				return arr.sort((a, b) => {
+					return a.Name.localeCompare(b.Name);
+				})
 			}
 		},
 		methods: {
-			fetchMasterTemplates() {
+			createMasterTemplate() {
 				if (typeof ISLOCALHOST !== 'undefined') {
-					this.masterTemplates = MASTERTEMPLATES
-					console.log({ MASTERTEMPLATES })
+					const obj = {
+						name: this.newMasterTitle,
+						company_display: this.theFrom,
+						subject: this.theEmailSubject,
+						area: this.activeArea,
+						type: this.theSelectedType,
+						receivers: Object.keys(this.selectedReceivers).map(key => key),
+						send_notifications: this.isSendNotifications,
+						attachments: null,
+						html: this.newMasterHTMLSanitized
+					}
+					console.log('newMasterObj', obj)
 					return
+					this.isSubmitting = false
+					this.setIsCreateModal(false)
 				}
-				var myHeaders = new Headers();
-				myHeaders.append("PP_USER_KEY", this.userKey);
-				myHeaders.append("Accept", "application/json");
+				const myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
 
-				var requestOptions = {
-					method: 'GET',
+				const raw = JSON.stringify({
+					"template_id": null,
+					name: this.newMasterTitle,
+					company_display: this.theFrom,
+					subject: this.theEmailSubject,
+					area: this.activeArea,
+					type: this.theSelectedType,
+					receivers: Object.keys(this.selectedReceivers).map(key => key),
+					send_notifications: this.isSendNotifications,
+					attachments: null,
+					html: this.newMasterHTMLSanitized
+				});
+
+				const requestOptions = {
+					method: "POST",
 					headers: myHeaders,
-					redirect: 'follow'
+					body: raw,
+					redirect: "follow"
 				};
+
 				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate", requestOptions)
 					.then(response => {
 						console.log({ response })
@@ -939,42 +1038,160 @@ $(document).one("trigger::vue_loaded", function () {
 						}
 						return response.json();
 					})
+					.then(success => {
+						console.log({ success })
+					})
+					.catch(error => {
+						console.error('Error creating new announcement:', error);
+					})
+					.finally(() => {
+						this.isSubmitting = false
+						this.setIsCreateModal(false)
+					});
+			},
+			createAnnouncement() {
+				const myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
+
+				const raw = JSON.stringify({
+					"onid": null,
+					"version": null,
+					"createdTime": "2024-02-27T16:20:08",
+					"expired": "false",
+					"area": "OperationsStatus",
+					"type": "Incident (PROD)",
+					"template_id": 13,
+					"from": "SP02",
+					"company_display": "IO DEV Company",
+					"subject": "Fejl i adresseopslag",
+					"shortDesc": "...dummy text...",
+					"status": "New",
+					"serviceWindow": "true",
+					"serviceWindowStart": null,
+					"serviceWindowEnd": null,
+					"updateSubscription": "true",
+					"updateSubscriptionInterval": "3600",
+					"updateSubscriptionUserId": 57,
+					"receivers": "{\"SP02\",\"ALL_SPs\"}",
+					"attachments": null,
+					"html": "<!DOCTYPE html>\n<html>\n   <title>Fejl i adresseopslag</title>\n   <body>\n      <h1>Fejl i adresseopslag</h1>\n      <h2>Incident PROD</h2>\n      <p>Hi partner</p>\n      </br>\n      <p></p>\n      </br>\n      <p>Best regards</p>\n      </br>\n      <p><b>IO DEV Company</b></p>\n      <p><b>Peter Pan</b></p>\n      </br>\n   </body>\n</html>",
+					"placeholder_1": "Her er vores tekst v3",
+					"placeholder_2": null,
+					"placeholder_3": null,
+					"placeholder_4": null,
+					"placeholder_5": null,
+					"placeholder_6": null,
+					"placeholder_7": null,
+					"placeholder_8": null,
+					"placeholder_9": null,
+					"placeholder_10": null,
+					"placeholder_hist": "{\"placeholder1\":[{\"time\":\"2024-02-27 16:01\",\"text\":\"Her er vores tekst v3\"},{\"time\":\"2024-02-27 16:03\",\"text\":\"Her er vores tekst v3\"},{\"time\":\"2024-02-27 16:14\",\"text\":\"Her er vores tekst v3\"}],\"placeholder2\":[],\"placeholder3\":[],\"placeholder4\":[],\"placeholder5\":[],\"placeholder6\":[],\"placeholder7\":[],\"placeholder8\":[],\"placeholder9\":[],\"placeholder10\":[]}"
+				});
+
+				const requestOptions = {
+					method: "POST",
+					headers: myHeaders,
+					body: raw,
+					redirect: "follow"
+				};
+
+
+				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg", requestOptions)
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(success => {
+						console.log({ success })
+					})
+					.catch(error => {
+						console.error('Error creating new announcement:', error);
+					})
+					.finally(() => {
+						this.isSubmitting = false
+						this.setIsCreateModal(false)
+					});
+			},
+			fetchMasterTemplates() {
+				this.isLoadingMasterTemplates = true
+				if (typeof ISLOCALHOST !== 'undefined') {
+					this.masterTemplates = MASTERTEMPLATES
+					this.isLoadingMasterTemplates = false
+					console.log({ MASTERTEMPLATES })
+					return
+				}
+				const myHeaders = new Headers();
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
+				myHeaders.append("Accept", "application/json");
+
+				const requestOptions = {
+					method: 'GET',
+					headers: myHeaders,
+					redirect: 'follow'
+				};
+				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate", requestOptions)
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
 					.then(result => {
-						this.MASTERTEMPLATES = result;
+						this.masterTemplates = result;
 					})
 					.catch(error => {
 						console.error('Error fetching master templates data:', error);
 					})
 					.finally(() => {
-						this.isLoadingI18N = false;
+						this.isLoadingMasterTemplates = false;
 					});
 			},
 			onSubmit() {
 				this.isSubmitting = true
 				if (this.formTypeIsMaster) {
-					const obj = {
-						name: this.newMasterTitle,
-						company_display: this.theFrom,
-						subject: this.theEmailSubject,
-						area: this.newMasterArea,
-						type: this.theSelectedTypeId,
-						receivers: Object.keys(this.selectedReceivers).map(key => key),
-						send_notifications: this.isSendNotifications,
-						attachments: null,
-						html: this.newMasterHTMLSanitized
-					}
-					console.log('newMasterObj', obj)
+					this.createMasterTemplate()
+					return
 				}
-				setTimeout(_ => {
-					this.isSubmitting = false
-					this.setIsCreateModal(false)
-				}, 1500)
+				this.createAnnouncement()
 			},
 			toggleAllReceivers() {
 				const allSelected = this.isAllReceiversSelected;
 
-				this.receivers.forEach(receiver => {
-					this.$set(this.selectedReceivers, receiver.id, !allSelected)
+				this.filteredReceivers.forEach(receiver => {
+					if (!allSelected) {
+						this.$set(this.selectedReceivers, receiver.id, true);
+					} else {
+						this.$delete(this.selectedReceivers, receiver.id);
+					}
+				});
+			},
+			toggleAllSPs() {
+				const allSelected = this.isAllSPsSelected;
+
+				this.filteredReceivers.forEach(receiver => {
+					if (receiver.type === 'SP') {
+						if (!allSelected) {
+							this.$set(this.selectedReceivers, receiver.id, true);
+						} else {
+							this.$delete(this.selectedReceivers, receiver.id);
+						}
+					}
+				});
+			},
+			toggleAllIOs() {
+				const allSelected = this.isAllIOsSelected;
+
+				this.filteredReceivers.forEach(receiver => {
+					if (receiver.type === 'IO') {
+						if (!allSelected) {
+							this.$set(this.selectedReceivers, receiver.id, true);
+						} else {
+							this.$delete(this.selectedReceivers, receiver.id);
+						}
+					}
 				});
 			},
 			setSelectedReceiver(receiverId) {
@@ -991,10 +1208,16 @@ $(document).one("trigger::vue_loaded", function () {
 				this.selectedFiles = event.target.files;
 			},
 			setMasterTempalte(masterTemplateId) {
-				console.log('on:setMasterTempalte')
-			},
-			setTheSelectedType() {
-				console.log('on:setTheSelectedType')
+				const masterTemp = this.masterTemplates.find(temp => +temp.template_id === +masterTemplateId)
+				this.theFrom = masterTemp.company_display
+				this.theEmailSubject = masterTemp.subject
+				this.theSelectedType = masterTemp.type
+				this.isSendNotifications = masterTemp.send_notifications === "true" // Turn into boolean
+				if (masterTemp.receivers && masterTemp.receivers.length > 0) {
+					masterTemp.receivers.forEach(receiverId => {
+						this.$set(this.selectedReceivers, receiverId, true)
+					})
+				}
 			},
 			setIsCreateNewMaster(bool) {
 				this.$emit('openNewMasterModal')
@@ -1011,7 +1234,9 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 			if (this.formTypeIsMaster) {
 				this.$nextTick(_ => {
-					this.$refs.new_template_title_input.focus()
+					if (this.$refs.new_template_title_input) {
+						this.$refs.new_template_title_input.focus()
+					}
 				})
 			}
 		}

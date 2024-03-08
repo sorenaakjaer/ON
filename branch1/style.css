@@ -10855,3 +10855,18 @@ ul.tags-selector__dropdow__create {
     font-weight: bold;
     font-size: 14px;
 }
+
+.o-ann-receivers {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.o-ann-receivers__header__right {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.o-ann-receivers__header__right>.o-toggle-group {
+    max-width: 100%;
+}
