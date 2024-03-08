@@ -2018,6 +2018,7 @@
                 v-if="isCreateAnnouncementModal" 
                 :standard_options="standardOptions"
                 :filteredReceivers="filteredReceivers"
+                :masterTemplates="masterTemplates"
                 @close="setIsCreateAnnouncementModal(false)"
                 @openNewMasterModal="setIsCreateNewMaster(true)">
             </o-announcements-modal>
@@ -2029,6 +2030,7 @@
                 :filteredReceivers="filteredReceivers"
                 formType="master"
                 formTitle="Create Master New Template"
+                @addMasterTemplate="onAddMasterTemplate"
                 @close="setIsCreateNewMaster(false)">
             </o-announcements-modal>
         </transition>
@@ -2052,7 +2054,6 @@
                                     <label class="o-label">Template</label>
                                         <div class="o-group__sub">
                                             <select class="o-select" 
-                                            v-model="theSelectedMasterTemplateId"
                                             @change="setMasterTempalte($event.target.value)">
                                                 <option v-for="masterTemplate in sortedMasterTemplates" 
                                                 :value="masterTemplate.template_id">
