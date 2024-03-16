@@ -857,6 +857,7 @@ $(document).one("trigger::vue_loaded", function () {
 						return response.json();
 					})
 					.then(result => {
+						console.log({ result })
 						this.masterTemplates = result;
 					})
 					.catch(error => {
@@ -1296,9 +1297,8 @@ $(document).one("trigger::vue_loaded", function () {
 					const placeHolderKey = 'placeholder_' + placeholder.num
 					dbObj[placeHolderKey] = placeholder.text
 				})
-				console.log({ dbObj, raw })
 				const raw = JSON.stringify(dbObj)
-
+				console.log({ dbObj, raw })
 				const requestOptions = {
 					method: "POST",
 					headers: myHeaders,
