@@ -599,7 +599,9 @@ $(document).one("trigger::vue_loaded", function () {
 				standardOptions: {},
 				isLoadingStandardOptions: false,
 				masterTemplates: [],
-				isLoadingMasterTemplates: false
+				isLoadingMasterTemplates: false,
+				theEditMasterTemplate: null,
+				theNewMasterTemplateId: null
 			}
 		},
 		computed: {
@@ -851,13 +853,13 @@ $(document).one("trigger::vue_loaded", function () {
 				};
 				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate", requestOptions)
 					.then(response => {
+						console.log('fetchMasterTemplates', { response })
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
 						return response.json();
 					})
 					.then(result => {
-						console.log({ result })
 						this.masterTemplates = result;
 					})
 					.catch(error => {
@@ -868,15 +870,21 @@ $(document).one("trigger::vue_loaded", function () {
 					});
 			},
 			onAddMasterTemplate(arr) {
+				console.log('parent::onAddMasterTemplate', arr)
 				arr.forEach(newMasterTemp => {
 					const idx = this.masterTemplates.findIndex(masterTemp => masterTemp.template_id === newMasterTemp.template_id)
 					if (idx < 0) {
+						console.log('pushNewMAster', this.masterTemplates)
 						this.masterTemplates.push(newMasterTemp)
+						console.log('afterPush', this.masterTemplates)
+						this.theNewMasterTemplateId = newMasterTemp.template_id
 					} else {
 						this.masterTemplates.splice(idx, 1, newMasterTemp)
 					}
 				})
-				console.log('onAddMasterTemplate', arr)
+			},
+			onSetEditMasterTemplate(template) {
+				this.theEditMasterTemplate = template
 			}
 		},
 		mounted() {
@@ -900,8 +908,14 @@ $(document).one("trigger::vue_loaded", function () {
 			filteredReceivers: {
 				default: () => []
 			},
-			masterTemplates: {
+			master_templates: {
 				default: () => []
+			},
+			edit_master_template: {
+				default: null
+			},
+			theNewMasterTemplateId: {
+				default: null
 			},
 			the_user: {
 				default: () => { }
@@ -1013,7 +1027,9 @@ $(document).one("trigger::vue_loaded", function () {
 				shortDesc: '',
 				isServiceWindow: false,
 				serviceWindowStart: this.formatDate(new Date()),
-				serviceWindowEnd: this.formatDate(new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000)), // Adding 7 days
+				serviceWindowEnd: this.formatDate(new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000)), // Adding 7 days,
+				theEditMasterTemplate: null,
+				isDeleting: false
 			}
 		},
 		computed: {
@@ -1097,7 +1113,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return this.the_user && this.the_user['display_name'] ? this.the_user['display_name'] : ''
 			},
 			sortedMasterTemplates() {
-				return this.masterTemplates
+				return this.master_templates
 					.filter(masterTemp => masterTemp.area === this.activeArea)
 					.sort((a, b) => b.template_id - a.template_id);
 			},
@@ -1128,9 +1144,25 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 				});
 				return names.join(', ')
+			},
+			theFormTitle() {
+				if (this.formTypeIsMaster) {
+					if (!this.edit_master_template) {
+						return this.formTitle
+					} else {
+						return 'Edit master template'
+					}
+				} else {
+					return this.formTitle
+				}
 			}
 		},
 		watch: {
+			theNewMasterTemplateId(val) {
+				if (val) {
+					this.setMasterTemplate(val)
+				}
+			},
 			theEmailHTML(val) {
 				// Find number of placeholders
 				const htmlContent = this.theEmailHTML
@@ -1148,9 +1180,49 @@ $(document).one("trigger::vue_loaded", function () {
 						}
 					}
 				}
+			},
+			edit_master_template(val) {
+				console.log('child::watcH::edit_master_template', val)
 			}
 		},
 		methods: {
+			deleteMasterTemplate() {
+				this.isDeleting = true
+				const myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
+				const requestOptions = {
+					method: "DELETE",
+					headers: myHeaders,
+					redirect: "follow"
+				};
+
+				const url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate?template_id=' + this.edit_master_template
+
+				fetch(url, requestOptions)
+					.then(response => {
+						console.log('deleteMasterTemplate', { response })
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(success => {
+						console.log({ success })
+						this.$emit('deleteMasterTemplate', success)
+					})
+					.catch(error => {
+						console.error('Error creating new announcement:', error);
+					})
+					.finally(() => {
+						this.isDeleting = false
+						this.setIsCreateModal(false)
+					});
+			},
+			setEditMasterTemplate(template) {
+				this.$emit('setEditMasterTemplate', template)
+				this.setIsCreateNewMaster(true)
+			},
 			formatDate(date) {
 				// Format dates as "YYYY-MM-DD"
 				const year = date.getFullYear();
@@ -1180,29 +1252,12 @@ $(document).one("trigger::vue_loaded", function () {
 				return html
 			},
 			createMasterTemplate() {
-				if (typeof ISLOCALHOST !== 'undefined') {
-					const obj = {
-						name: this.newMasterTitle,
-						company_display: this.theEmailFromCompany,
-						subject: this.theEmailSubject,
-						area: this.activeArea,
-						type: this.theSelectedType,
-						receivers: Object.keys(this.selectedReceivers).map(key => key),
-						send_notifications: this.isSendNotifications,
-						attachments: null,
-						html: this.newMasterHTMLSanitized
-					}
-					console.log('newMasterObj', obj)
-					return
-					this.isSubmitting = false
-					this.setIsCreateModal(false)
-				}
 				const myHeaders = new Headers();
 				myHeaders.append("Content-Type", "application/json");
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
 
-				const raw = JSON.stringify({
-					"template_id": null,
+				let dbObj = {
+					template_id: null,
 					name: this.newMasterTitle,
 					company_display: this.theEmailFromCompany,
 					subject: this.theEmailSubject,
@@ -1212,18 +1267,24 @@ $(document).one("trigger::vue_loaded", function () {
 					send_notifications: this.isSendNotifications,
 					attachments: null,
 					html: this.newMasterHTMLSanitized
-				});
+				};
 
-				const requestOptions = {
+				let requestOptions = {
 					method: "POST",
 					headers: myHeaders,
 					body: raw,
 					redirect: "follow"
 				};
 
+				if (this.edit_master_template) {
+					dbObj['template_id'] = this.edit_master_template
+					requestOptions['method'] = 'PATCH'
+				}
+				const raw = JSON.stringify(dbObj)
+
 				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate", requestOptions)
 					.then(response => {
-						console.log({ response })
+						console.log('createMasterTemplate', { response })
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
@@ -1298,7 +1359,7 @@ $(document).one("trigger::vue_loaded", function () {
 					dbObj[placeHolderKey] = placeholder.text
 				})
 				const raw = JSON.stringify(dbObj)
-				console.log({ dbObj, raw })
+
 				const requestOptions = {
 					method: "POST",
 					headers: myHeaders,
@@ -1309,6 +1370,7 @@ $(document).one("trigger::vue_loaded", function () {
 
 				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg", requestOptions)
 					.then(response => {
+						console.log('createAnnouncement', { response })
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
@@ -1348,7 +1410,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			setMasterTemplate(masterTemplateId) {
 				this.activeMasterTemplateId = +masterTemplateId
-				const masterTemp = this.masterTemplates.find(temp => +temp.template_id === +masterTemplateId)
+				const masterTemp = this.master_templates.find(temp => +temp.template_id === +masterTemplateId)
 				console.log('setMasterTemplate', masterTemp)
 				this.theEmailFromCompany = masterTemp.company_display
 				this.theEmailSubject = masterTemp.subject
@@ -1368,6 +1430,8 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			setIsCreateModal(bool) {
 				if (!bool) {
+					console.log('close!')
+					this.$emit('setEditMasterTemplate', null)
 					this.$emit('close')
 				}
 			},
@@ -1380,6 +1444,24 @@ $(document).one("trigger::vue_loaded", function () {
 						this.$refs.o_preview_iframe.height = iFrameHeight + 'px'
 					}
 				}
+			},
+			setInitMasterTemplateValues(obj) {
+				this.activeArea = obj.area
+				if (obj.attachments) {
+					this.isAttachFiles = true
+					this.selectedFiles = obj.attachments
+				}
+				this.theEmailFromCompany = obj.company_display
+				this.theEmailHTML = obj.html
+				this.newMasterTitle = obj.name
+				this.selectedReceivers = obj.receivers ? obj.receivers : {}
+				this.isSendNotifications = obj.send_notifications
+				this.theEmailSubject = obj.subject
+				if (obj.type) {
+					const selectedTypeIdx = this.filteredTypes.findIndex(oType => {
+						return oType.display === obj.type
+					this.theSelectedType = selectedTypeIdx > -1 ? this.filteredTypes[selectedTypeIdx].value : null
+				}
 			}
 		},
 		beforeDestroy() {
@@ -1389,6 +1471,12 @@ $(document).one("trigger::vue_loaded", function () {
 			window.addEventListener('message', this.handleFrameMessage);
 			if (this.formTypeIsMaster) {
 				this.setActiveTab('html')
+				if (this.edit_master_template) {
+					const idx = this.master_templates.findIndex(masterTemp => +masterTemp.template_id === +this.edit_master_template)
+					if (idx > -1) {
+						this.setInitMasterTemplateValues(this.master_templates[idx])
+					}
+				}
 				this.$nextTick(_ => {
 					if (this.$refs.new_template_title_input) {
 						this.$refs.new_template_title_input.focus()

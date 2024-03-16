@@ -1891,6 +1891,7 @@
 
 <script type="text/x-template" id="o-announcements-template">
     <div class="o-ann">
+        <!--
         <div class="o-wrapper">
             <div class="o-ann__banner">
                 <div class="o-ann__dash">
@@ -1907,6 +1908,7 @@
                 </div>
             </div>
         </div>
+        -->
         <div class="o-body__subheader">
                 <div class="o-wrapper">
                     <div class="o-filters">
@@ -2018,8 +2020,11 @@
                 v-if="isCreateAnnouncementModal" 
                 :standard_options="standardOptions"
                 :filteredReceivers="filteredReceivers"
-                :masterTemplates="masterTemplates"
+                :master_templates="masterTemplates"
+                :theNewMasterTemplateId="theNewMasterTemplateId"
                 :the_user="the_user"
+                :edit_master_template="theEditMasterTemplate"
+                @setEditMasterTemplate="onSetEditMasterTemplate"
                 @close="setIsCreateAnnouncementModal(false)"
                 @openNewMasterModal="setIsCreateNewMaster(true)">
             </o-announcements-modal>
@@ -2030,6 +2035,8 @@
                 :the_user="the_user"
                 :standard_options="standardOptions"
                 :filteredReceivers="filteredReceivers"
+                :edit_master_template="theEditMasterTemplate"
+                :master_templates="masterTemplates"
                 formType="master"
                 formTitle="Create Master New Template"
                 @addMasterTemplate="onAddMasterTemplate"
@@ -2047,10 +2054,11 @@
                     <div class="o-modal__header__left">
                         <div class="tio clear bg-icon-hover vue-modal--fullscreen__close" @click="setIsCreateModal(false)"></div>
                         <div class="o-divider"></div>
-                        <h4>{{ formTitle }}</h4>
+                        <h4>{{ theFormTitle }}</h4>
                     </div>
                     <div class="o-modal__header__right">
-                        <button class="o-btn o-btn--small o-btn--primary" :class="{'o-btn--loading': isSubmitting}" @click="onSubmit">Gem</button>
+                        <button v-if="formTypeIsMaster && edit_master_template" class="o-btn o-btn--small" :class="{'o-btn--loading': isDeleting}" @click="deleteMasterTemplate">Delete</button>
+                        <button class="o-btn o-btn--small o-btn--primary" :class="{'o-btn--loading': isSubmitting}" @click="onSubmit">Save</button>
                     </div>
                 </div>
                 <div class="o-modal__body">
@@ -2063,15 +2071,16 @@
                                             <label class="o-label">Select Master Template</label>
                                                 <div class="o-group__sub">
                                                     <select class="o-select" 
-                                                    @change="setMasterTemplate($event.target.value)">
+                                                    @change="setMasterTemplate($event.target.value)" v-model="activeMasterTemplateId">
+                                                        <option disabled value="">Choose a template</option>
                                                         <option v-for="masterTemplate in sortedMasterTemplates" 
                                                         :value="masterTemplate.template_id">
                                                         {{ masterTemplate.name }}
                                                     </option>
                                                     </select>
-                                                    <a @click.prevent="setIsCreateNewMaster(true)">Edit</a>
+                                                    <a @click.prevent="setEditMasterTemplate(activeMasterTemplateId)" v-if="activeMasterTemplateId">Edit</a>
                                                 </div>
-                                                <a @click.prevent="setIsCreateNewMaster(true)" id="o_create_new_master_link">Create new master</a>
+                                                <a @click.prevent="setEditMasterTemplate(null)" id="o_create_new_master_link">Create new master</a>
                                         </div>
                                     </div>
                                 </div>
@@ -2086,9 +2095,7 @@
                                             <select class="o-select"
                                             v-model="theSelectedType">
                                                 <option v-for="oType in filteredTypes" 
-                                                :value="oType.value">
-                                                {{ oType.display }}
-                                            </option>
+                                                :value="oType.value">{{ oType.display }}</option>
                                         </select>
                                     </div>
                                     <div class="o-group" v-if="!formTypeIsMaster">
