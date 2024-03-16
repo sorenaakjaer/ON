@@ -1460,6 +1460,7 @@ $(document).one("trigger::vue_loaded", function () {
 				if (obj.type) {
 					const selectedTypeIdx = this.filteredTypes.findIndex(oType => {
 						return oType.display === obj.type
+					})
 					this.theSelectedType = selectedTypeIdx > -1 ? this.filteredTypes[selectedTypeIdx].value : null
 				}
 			}
