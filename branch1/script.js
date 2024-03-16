@@ -1269,6 +1269,11 @@ $(document).one("trigger::vue_loaded", function () {
 					html: this.newMasterHTMLSanitized
 				};
 
+				if (this.edit_master_template) {
+					dbObj['template_id'] = this.edit_master_template
+				}
+				const raw = JSON.stringify(dbObj)
+
 				let requestOptions = {
 					method: "POST",
 					headers: myHeaders,
@@ -1277,10 +1282,8 @@ $(document).one("trigger::vue_loaded", function () {
 				};
 
 				if (this.edit_master_template) {
-					dbObj['template_id'] = this.edit_master_template
 					requestOptions['method'] = 'PATCH'
 				}
-				const raw = JSON.stringify(dbObj)
 
 				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate", requestOptions)
 					.then(response => {
