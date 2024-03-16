@@ -10488,17 +10488,9 @@ ul.tags-selector__dropdow__create {
     padding: 0 60px
 }
 
-
-.o-ann__card {
-    background-color: #fff;
-    padding: 1rem;
-    border-radius: 4px;
-    margin-bottom: 1rem;
-}
-
 .o-ann-receivers {
     border: 1px solid var(--bgLigthBlue);
-    border-radius: 4px;
+    border-radius: 0 0 4px 4px;
 }
 
 .o-ann-receivers li {
@@ -10533,6 +10525,36 @@ ul.tags-selector__dropdow__create {
     background: rgb(10 55 170 / 5%);
 }
 
+.o-ann-form {
+    background: #fff;
+    overflow: hidden;
+    padding-bottom: 2rem;
+}
+
+.o-ann__card__highlighted {
+    position: relative;
+    padding: 1rem;
+    background: #f5f6f8;
+    border: 1px solid var(--borderColor);
+    border-radius: var(--radius);
+}
+
+#o_create_new_master_link {
+    position: absolute;
+    bottom: 0.5rem;
+    font-size: 12px;
+}
+
+.o-ann-form__container {
+    max-width: 700px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+}
+
 .o-ann-form .o-group {
     margin: 0 0 1rem 0;
 }
@@ -10541,12 +10563,6 @@ ul.tags-selector__dropdow__create {
     color: var(--grey);
     cursor: default;
     user-select: auto;
-}
-
-.o-ann-form__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 }
 
 .o-select,
@@ -10588,6 +10604,13 @@ ul.tags-selector__dropdow__create {
 .o-ann-form a {
     color: var(--primary);
     font-size: 14px;
+}
+
+.o-ann-form__group {
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    max-width: 600px;
+    margin: 0 auto 1rem;
 }
 
 .o-ann-form a:hover {
@@ -10647,6 +10670,10 @@ ul.tags-selector__dropdow__create {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border: 1px solid var(--bgLigthBlue);
+    border-width: 1px 1px 0 1px;
+    border-radius: 4px 4px 0 0;
+    padding: 0 0.5rem;
 }
 
 .o-ann-receivers__header .o-toggle-group {
@@ -10672,11 +10699,11 @@ ul.tags-selector__dropdow__create {
     border-width: 1px 1px 0 1px;
     border-color: var(--borderColor);
     border-style: solid;
-    background: #fff;
+    background: #f5f6f8;
 }
 
 .o-editor {
-    background: #fff;
+    background: #f5f6f8;
     position: relative;
     border: 1px solid var(--borderColor);
     padding: 1rem;
@@ -10767,14 +10794,12 @@ ul.tags-selector__dropdow__create {
 }
 
 #sandbox {
-    background: #fff;
-    position: relative;
+    width: 100%;
     border: 1px solid var(--borderColor);
 }
 
 .o-card__email-preview__header {
     width: 100%;
-    max-width: 600px;
     margin: 0 auto;
     font-size: 13px;
 }
@@ -10789,6 +10814,7 @@ ul.tags-selector__dropdow__create {
     border: 1px solid var(--borderColor);
     border-bottom: 0;
     padding: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 .o-ann__body__header {
@@ -10923,4 +10949,66 @@ ul.tags-selector__dropdow__create {
 .o-popover__menu ul {
     list-style: disc;
     padding-left: 15px;
+}
+
+.text-grey {
+    color: var(--grey);
+}
+
+.o-modal--alwaysactive.vue-modal.vue-modal--fullscreen {
+    width: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: 0;
+    max-width: 100%;
+    height: 100%;
+}
+
+.o-modal__header__left,
+.o-modal__header__right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.vue-modal--fullscreen__close {
+    font-size: 1.65rem;
+}
+
+.o-divider {
+    height: 16px;
+    width: 1px;
+    background-color: rgb(209 213 219);
+}
+
+.o-ann-modal .o-modal__body {
+    padding: 65px 0 0 0;
+    display: flex;
+    align-items: stretch;
+}
+
+.o-ann-modal .o-modal__body>.o-modal-form {
+    flex: 1;
+    background-color: #fff;
+    max-width: 50%;
+}
+
+.o-ann__preview-container {
+    max-width: 825px;
+    position: relative;
+    z-index: unset;
+    margin: unset;
+    padding: 40px;
+    flex: 1;
+    margin: 0 auto;
+}
+
+.o-ann-form input[type="datetime-local"].o-input {
+    line-height: 1.5;
+}
+
+.o-hr {
+    margin: 40px 0;
 }

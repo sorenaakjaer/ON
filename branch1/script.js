@@ -580,7 +580,11 @@ $(document).one("trigger::vue_loaded", function () {
 	})
 	Vue.component('o-announcements', {
 		template: '#o-announcements-template',
-		props: {},
+		props: {
+			the_user: {
+				default: () => { }
+			}
+		},
 		data() {
 			return {
 				isLoadingAnnouncements: false,
@@ -698,6 +702,11 @@ $(document).one("trigger::vue_loaded", function () {
 					if (a.type > b.type) return 1;
 					return a.name.localeCompare(b.name);
 				})
+			}
+		},
+		watch: {
+			the_user(val) {
+				console.log('THEUSER', val)
 			}
 		},
 		methods: {
@@ -892,14 +901,19 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			masterTemplates: {
 				default: () => []
+			},
+			the_user: {
+				default: () => { }
 			}
 		},
 		data() {
 			return {
-				activeArea: 'Operations',
-				newMasterHTML:
+				activeMasterTemplateId: null,
+				theEmailHTML: '',
+				activeArea: 'OperationsStatus',
+				initNewMasterHTML:
 					`<!DOCTYPE html>
-<html lang="en">
+<html lang="da-DK">
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -953,33 +967,52 @@ $(document).one("trigger::vue_loaded", function () {
 	</body>
 	</html>`,
 				newMasterTitle: '',
-				activeArea: 'Operations',
+				activeArea: 'OperationsStatus',
 				isSubmitting: false,
-				isGetUpdateNotifikation: false,
-				isServiceWindow: false,
+				isUpdateSubscription: false,
+				updateSubscriptionInterval: null,
+				updateSubscriptionUserId: null,
 				selectedFiles: [],
 				isAttachFiles: false,
 				isSendNotifications: false,
-				theSelectedStatus: 1,
+				theSelectedStatus: 'New',
 				theEmailDateStart: new Date().toISOString().slice(0, 10),
 				theEmailSubject: '',
-				theFrom: '',
+				theEmailFromCompany: '',
 				theSelectedType: null,
 				updateIntervals: [
-					{ id: '15min', title: '15min' },
-					{ id: '30min', title: '30min' },
-					{ id: '1time', title: '1 time' },
-					{ id: '3time', title: '3 time' },
-					{ id: '6time', title: '6 time' },
-					{ id: '12time', title: '12 time' },
-					{ id: '24time', title: '24 time' },
-					{ id: '3dage', title: '3 dage' },
-					{ id: '7dage', title: '7 dage' },
-					{ id: '30dage', title: '30 dage' },
-					{ id: '90dage', title: '90 dage' }
+					{ value: '15', display: '15min' },
+					{ value: '30', display: '30min' },
+					{ value: '60', display: '1 time' },
+					{ value: '180', display: '3 time' },
+					{ value: '360', display: '6 time' },
+					{ value: '720', display: '12 time' },
+					{ value: '1440', display: '24 time' },
+					{ value: '4320', display: '3 dage' },
+					{ value: '10080', display: '7 dage' },
+					{ value: '43200', display: '30 dage' },
+					{ value: '129600', display: '90 dage' }
 				],
 				selectedReceivers: {},
-				isCreatingNewAnnouncement: false
+				isCreatingNewAnnouncement: false,
+				placeholders: [
+					{ id: '{{{pp_mergecode:placeholder1}}}', num: 1, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder1}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder2}}}', num: 2, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder2}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder3}}}', num: 3, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder3}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder4}}}', num: 4, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder4}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder5}}}', num: 5, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder5}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder6}}}', num: 6, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder6}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder7}}}', num: 7, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder7}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder8}}}', num: 8, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder8}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder9}}}', num: 9, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder9}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder10}}}', num: 10, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder10}}}', isShow: false }
+				],
+				placeholder_hist: null,
+				activeTab: 'placeholders',
+				shortDesc: '',
+				isServiceWindow: false,
+				serviceWindowStart: this.formatDate(new Date()),
+				serviceWindowEnd: this.formatDate(new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000)), // Adding 7 days
 			}
 		},
 		computed: {
@@ -992,21 +1025,75 @@ $(document).one("trigger::vue_loaded", function () {
 			isAllIOsSelected() {
 				return this.getIsReceiverSelected('ALL_IOs')
 			},
-			oPlaceholders() {
-				return [{ id: 1, title: 'Placeholder Y1' }, { id: 2, title: 'Placeholder Y2' }]
+			activePlaceholders() {
+				return this.placeholders.filter(place => place.isShow)
 			},
 			formTypeIsMaster() {
 				return this.formType === 'master'
 			},
 			newMasterHTMLSanitized() {
-				return window.DOMPurify.sanitize(this.newMasterHTML)
+				// return window.DOMPurify.sanitize(this.newMasterHTML)
+				return this.theEmailHTML
+			},
+			contentReplacement() {
+				let replacements = {}
+
+				if (this.theSelectedType) {
+					const selectedType = this.filteredTypes.find(oType => oType.value === this.theSelectedType)
+					replacements['type'] = selectedType && selectedType.display ? selectedType.display : this.theSelectedType
+				}
+				if (this.theEmailSubject.length > 0) {
+					replacements['subject'] = this.theEmailSubject
+				}
+				if (this.theEmailFromCompany.length > 0) {
+					replacements['from'] = this.theEmailFromCompany
+				}
+				if (this.theEmailFromUser.length > 0) {
+					replacements['user_name'] = this.theEmailFromUser
+				}
+				this.activePlaceholders.forEach(place => {
+					if (place.text.length > 0) {
+						const key = 'placeholder' + place['num']
+						replacements[key] = place.text
+					}
+				})
+				return replacements
+			},
+			emailHTMLReplaced() {
+				return this.replacePlaceholders(this.newMasterHTMLSanitized, this.contentReplacement);
+			},
+			emailHTMLAllPlaceholdersReplaced() {
+				// Removes all {{{ }}}
+				return this.emailHTMLReplaced.replace(/\{\{\{[^}]+\}\}\}/g, '');
 			},
 			iframeContent() {
-				const combinedContent = `${this.newMasterHTMLSanitized}`;
-				return combinedContent
+				// Original HTML with placeholders
+				let htmlContent = this.emailHTMLReplaced
+
+				// Script to be injected
+				const script = `<script>
+					window.onload = function() {
+						const height = document.documentElement.scrollHeight;
+						window.parent.postMessage({ type: 'oiFrameHeight', frameHeight: height }, '*');
+					};
+					</script>
+					`;
+
+				// Insert the script before the closing </body> tag
+				if (htmlContent.includes('</body>')) {
+					htmlContent = htmlContent.replace('</body>', script + '</body>');
+				} else {
+					// If for some reason there's no </body> tag, append the script to the end
+					htmlContent += script;
+				}
+
+				return htmlContent;
 			},
 			userKey() {
 				return eTrayWebportal && eTrayWebportal.User.Key ? eTrayWebportal.User.Key : null
+			},
+			theEmailFromUser() {
+				return this.the_user && this.the_user['display_name'] ? this.the_user['display_name'] : ''
 			},
 			sortedMasterTemplates() {
 				return this.masterTemplates
@@ -1015,8 +1102,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			filteredTypes() {
 				const oTypes = this.standard_options && this.standard_options['extMsg_type'] ? this.standard_options['extMsg_type'] : []
-				const activeArea = this.activeArea === 'Operations' ? 'OperationsStatus' : 'News'
-				return oTypes.filter(oType => oType.area === activeArea)
+				return oTypes.filter(oType => oType.area === this.activeArea)
 			},
 			filteredStatusses() {
 				const oStatusses = this.standard_options && this.standard_options['extMsg_status'] ? this.standard_options['extMsg_status'] : []
@@ -1030,14 +1116,73 @@ $(document).one("trigger::vue_loaded", function () {
 				return arr.sort((a, b) => {
 					return a.Name.localeCompare(b.Name);
 				})
+			},
+			receiverNames() {
+				const names = [];
+				const potentialReceivers = [{ id: 'ALL', name: 'All' }, { id: 'ALL_SPs', name: 'All SPs' }, { id: 'ALL_IOs', name: 'All IOs' }].concat(this.filteredReceivers)
+				Object.keys(this.selectedReceivers).forEach(key => {
+					const idx = potentialReceivers.findIndex(user => user.id === key);
+					if (idx > -1) {
+						names.push(potentialReceivers[idx]['name']);
+					}
+				});
+				return names.join(', ')
+			}
+		},
+		watch: {
+			theEmailHTML(val) {
+				// Find number of placeholders
+				const htmlContent = this.theEmailHTML
+				const contentWithoutSpaces = htmlContent.replace(/\s+/g, '')
+				for (let i = 1; i <= 10; i++) {
+					const id = '{{{pp_mergecode:placeholder' + i + '}}}'
+					const regex = new RegExp(`\\{\\{\\{pp_mergecode:placeholder${i}\\}\\}\\}`, 'g')
+					const matches = contentWithoutSpaces.match(regex)
+					const idx = this.placeholders.findIndex(place => place.id === id)
+					if (idx > -1) {
+						if (matches) {
+							this.placeholders[idx]['isShow'] = true
+						} else {
+							this.placeholders[idx]['isShow'] = false
+						}
+					}
+				}
 			}
 		},
 		methods: {
+			formatDate(date) {
+				// Format dates as "YYYY-MM-DD"
+				const year = date.getFullYear();
+				const month = String(date.getMonth() + 1).padStart(2, '0')
+				const day = String(date.getDate()).padStart(2, '0')
+				return `${year}-${month}-${day}`;
+			},
+			setActiveTab(tabName) {
+				return this.activeTab = tabName
+			},
+			getIsActiveTab(tabName) {
+				return this.activeTab === tabName
+			},
+			replacePlaceholders(html, replacements) {
+				Object.entries(replacements).forEach(([key, value]) => {
+					const regex = new RegExp(`{{\\{\\s*pp_mergecode:${key}\\s*\\}\\}}`, 'g')
+					html = html.replace(regex, value)
+				});
+
+				Object.entries(replacements).forEach(([key, value]) => {
+					if (key.startsWith('history_placeholder')) {
+						const regex = new RegExp(`{{\\s*pp_hasdata:${key}\\s*}}`, 'g')
+						html = html.replace(regex, value);
+					}
+				})
+
+				return html
+			},
 			createMasterTemplate() {
 				if (typeof ISLOCALHOST !== 'undefined') {
 					const obj = {
 						name: this.newMasterTitle,
-						company_display: this.theFrom,
+						company_display: this.theEmailFromCompany,
 						subject: this.theEmailSubject,
 						area: this.activeArea,
 						type: this.theSelectedType,
@@ -1058,7 +1203,7 @@ $(document).one("trigger::vue_loaded", function () {
 				const raw = JSON.stringify({
 					"template_id": null,
 					name: this.newMasterTitle,
-					company_display: this.theFrom,
+					company_display: this.theEmailFromCompany,
 					subject: this.theEmailSubject,
 					area: this.activeArea,
 					type: this.theSelectedType,
@@ -1100,29 +1245,42 @@ $(document).one("trigger::vue_loaded", function () {
 				myHeaders.append("Content-Type", "application/json");
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
 
-				const raw = JSON.stringify({
+				const timestamp = getCurrentTimestamp();
+				function getCurrentTimestamp() {
+					const now = new Date();
+					const year = now.getFullYear();
+					const month = String(now.getMonth() + 1).padStart(2, '0'); // getMonth() is zero-indexed
+					const day = String(now.getDate()).padStart(2, '0');
+					const hours = String(now.getHours()).padStart(2, '0');
+					const minutes = String(now.getMinutes()).padStart(2, '0');
+					const seconds = String(now.getSeconds()).padStart(2, '0');
+
+					return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+				}
+				const selectedType = this.filteredTypes.find(oType => oType.value === this.theSelectedType)
+				let dbObj = {
 					"onid": null,
 					"version": null,
-					"createdTime": "2024-02-27T16:20:08",
+					"createdTime": timestamp,
 					"expired": "false",
-					"area": "OperationsStatus",
-					"type": "Incident (PROD)",
-					"template_id": 13,
-					"from": "SP02",
-					"company_display": "IO DEV Company",
-					"subject": "Fejl i adresseopslag",
-					"shortDesc": "...dummy text...",
-					"status": "New",
-					"serviceWindow": "true",
-					"serviceWindowStart": null,
-					"serviceWindowEnd": null,
-					"updateSubscription": "true",
-					"updateSubscriptionInterval": "3600",
-					"updateSubscriptionUserId": 57,
-					"receivers": "{\"SP02\",\"ALL_SPs\"}",
+					"area": this.activeArea,
+					"type": selectedType && selectedType.display ? selectedType.display : this.theSelectedType,
+					"template_id": this.activeMasterTemplateId,
+					"from": this.the_user && this.the_user['display_name'] ? this.the_user['display_name'] : '',
+					"company_display": this.theEmailFromCompany,
+					"subject": this.theEmailSubject,
+					"shortDesc": this.activeArea === 'News' ? this.shortDesc : null,
+					"status": this.theSelectedStatus,
+					"serviceWindow": this.isServiceWindow,
+					"serviceWindowStart": this.isServiceWindow ? this.serviceWindowStart : null,
+					"serviceWindowEnd": this.isServiceWindow ? this.serviceWindowEnd : null,
+					"updateSubscription": this.isUpdateSubscription,
+					"updateSubscriptionInterval": !this.isUpdateSubscription ? null : this.updateSubscriptionInterval,
+					"updateSubscriptionUserId": !this.isUpdateSubscription ? null : this.updateSubscriptionUserId,
+					"receivers": Object.keys(this.selectedReceivers).length > 0 ? Object.keys(this.selectedReceivers) : null,
 					"attachments": null,
-					"html": "<!DOCTYPE html>\n<html>\n   <title>Fejl i adresseopslag</title>\n   <body>\n      <h1>Fejl i adresseopslag</h1>\n      <h2>Incident PROD</h2>\n      <p>Hi partner</p>\n      </br>\n      <p></p>\n      </br>\n      <p>Best regards</p>\n      </br>\n      <p><b>IO DEV Company</b></p>\n      <p><b>Peter Pan</b></p>\n      </br>\n   </body>\n</html>",
-					"placeholder_1": "Her er vores tekst v3",
+					"html": this.emailHTMLAllPlaceholdersReplaced,
+					"placeholder_1": null,
 					"placeholder_2": null,
 					"placeholder_3": null,
 					"placeholder_4": null,
@@ -1132,8 +1290,14 @@ $(document).one("trigger::vue_loaded", function () {
 					"placeholder_8": null,
 					"placeholder_9": null,
 					"placeholder_10": null,
-					"placeholder_hist": "{\"placeholder1\":[{\"time\":\"2024-02-27 16:01\",\"text\":\"Her er vores tekst v3\"},{\"time\":\"2024-02-27 16:03\",\"text\":\"Her er vores tekst v3\"},{\"time\":\"2024-02-27 16:14\",\"text\":\"Her er vores tekst v3\"}],\"placeholder2\":[],\"placeholder3\":[],\"placeholder4\":[],\"placeholder5\":[],\"placeholder6\":[],\"placeholder7\":[],\"placeholder8\":[],\"placeholder9\":[],\"placeholder10\":[]}"
-				});
+					"placeholder_hist": null
+				};
+				this.activePlaceholders.forEach(placeholder => {
+					const placeHolderKey = 'placeholder_' + placeholder.num
+					dbObj[placeHolderKey] = placeholder.text
+				})
+				console.log({ dbObj, raw })
+				const raw = JSON.stringify(dbObj)
 
 				const requestOptions = {
 					method: "POST",
@@ -1182,13 +1346,15 @@ $(document).one("trigger::vue_loaded", function () {
 			handleFileUpload(event) {
 				this.selectedFiles = event.target.files;
 			},
-			setMasterTempalte(masterTemplateId) {
+			setMasterTemplate(masterTemplateId) {
+				this.activeMasterTemplateId = +masterTemplateId
 				const masterTemp = this.masterTemplates.find(temp => +temp.template_id === +masterTemplateId)
-				console.log('setMasterTempalte', masterTemp)
-				this.theFrom = masterTemp.company_display
+				console.log('setMasterTemplate', masterTemp)
+				this.theEmailFromCompany = masterTemp.company_display
 				this.theEmailSubject = masterTemp.subject
 				this.theSelectedType = masterTemp.type
 				this.isSendNotifications = masterTemp.send_notifications === "true" // Turn into boolean
+				this.theEmailHTML = masterTemp.html
 				/*
 				if (masterTemp.receivers && masterTemp.receivers.length > 0) {
 					masterTemp.receivers.forEach(receiverId => {
@@ -1204,15 +1370,31 @@ $(document).one("trigger::vue_loaded", function () {
 				if (!bool) {
 					this.$emit('close')
 				}
+			},
+			handleFrameMessage(event) {
+				if (event.data.type && event.data.type === 'oiFrameHeight') {
+					const iFrameHeight = event.data.frameHeight
+					if (this.formTypeIsMaster) {
+						this.$refs.o_preview_iframe_master.height = iFrameHeight + 'px'
+					} else {
+					}
+				}
 			}
 		},
+		beforeDestroy() {
+			window.removeEventListener('message', this.handleFrameMessage);
+		},
 		mounted() {
+			window.addEventListener('message', this.handleFrameMessage);
 			if (this.formTypeIsMaster) {
+				this.setActiveTab('html')
 				this.$nextTick(_ => {
 					if (this.$refs.new_template_title_input) {
 						this.$refs.new_template_title_input.focus()
 					}
 				})
+			} else {
+				this.setActiveTab('placeholders')
 			}
 		}
 	})
