@@ -1377,6 +1377,7 @@ $(document).one("trigger::vue_loaded", function () {
 					if (this.formTypeIsMaster) {
 						this.$refs.o_preview_iframe_master.height = iFrameHeight + 'px'
 					} else {
+						this.$refs.o_preview_iframe.height = iFrameHeight + 'px'
 					}
 				}
 			}
