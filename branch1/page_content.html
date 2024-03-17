@@ -205,9 +205,25 @@
     </div>
     <div class="o-body" :class="{'o-body__container': isNewDesignActive}">
         <div v-if="isViewNewsOrOperationStatus">
-            <o-announcements :the_user="theUser"></o-announcements>
+            <div class="o-body__subheader">
+                <div class="o-wrapper">
+                    <div class="o-filters">
+                        <div class="o-filters__filter vue-filter-level2"
+                            :class="{'o-filters__filter--active': !isShowOperationStatusErrorReports}"
+                            @click="setIsShowOperationStatusErrorReports(false)">
+                            Operating announcements
+                        </div>
+                        <div class="o-filters__filter vue-filter-level2"
+                            :class="{'o-filters__filter--active': isShowOperationStatusErrorReports}"
+                            @click="setIsShowOperationStatusErrorReports(true)">
+                            Error reports
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <o-announcements :the_user="theUser" v-if="!isShowOperationStatusErrorReports"></o-announcements>
         </div>
-        <div class="o-list-of-cases" v-if="!isViewNewsOrOperationStatus">
+        <div class="o-list-of-cases" v-if="!isViewNewsOrOperationStatus || isShowOperationStatusErrorReports">
             <div class="o-body__header o-wrapper" v-if="!isNewDesignActive">
                 <h1 class="js-page-title">Hjem / Mine sager</h1>
                 <button class="o-btn o-btn--primary createAnnouncement_btn" @click="CreateExtDocument('Announcement')"
@@ -368,13 +384,14 @@
             <div class="o-cases" :class="{'o-cases--is-open-analytics': activeCategory === 'OpenAnalytics'}">
                 <div class="vue-subheader-filters o-body__list-of-cases o-wrapper"
                     :class="{'vue-subheader-filters__flex': isNewDesignActive}" v-cloak
-                    v-if="!isViewRoles && !isViewNewsOrOperationStatus">
+                    v-if="!isViewRoles && (!isViewNewsOrOperationStatus || isShowOperationStatusErrorReports)">
                     <!-- START 17-12-23 -->
-                    <template v-if="isNewDesignActive && isCases">
+                    <template v-if="isNewDesignActive && (isCases || isShowOperationStatusErrorReports)">
                         <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__space">
                             <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__left">
                                 <o-multi-select :items="allCaseCategories" :selected_items="theActiveFilterCategories"
-                                    @toggle_item="toggleFilterCategory" select_title="Vælg kategorier"></o-multi-select>
+                                    @toggle_item="toggleFilterCategory" select_title="Vælg kategorier"
+                                    v-if="!isShowOperationStatusErrorReports"></o-multi-select>
                                 <o-multi-select :items="allCaseTags" :selected_items="theActiveFilterTags"
                                     @toggle_item="toggleFilterTag" select_title="Vælg tag"></o-multi-select>
                                 <o-multi-select :items="allCaseGroups" :selected_items="theActiveFilterGroups"
@@ -690,12 +707,12 @@
 
                     </div>
                     <h4 class=" text-explainer"
-                        v-if="activeCategory !=='OpenAnalytics' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && !isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter !=='dynamic'"
+                        v-if="(activeCategory == 'operation_status' && !isShowOperationStatusErrorReports) && activeCategory !=='OpenAnalytics' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && !isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter !=='dynamic'"
                         v-cloak> Ingen dokumenter matcher din søgning (1) {{ activeCategory }}
                     </h4>
                     <!-- <h4 class="text-explainer" v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1" v-cloak> Ingen dokumenter matcher din søgning</h4>-->
                     <div class="no-cases-matches"
-                        v-if="(activeCategory==='all_cases' && searchedCases.length < 1) || (activeCategory==='my_cases' && searchedCases.length < 1)"
+                        v-if="(activeCategory==='all_cases' && searchedCases.length < 1) || (activeCategory==='my_cases' && searchedCases.length < 1) || ( isShowOperationStatusErrorReports&& searchedCases.length < 1 && (!casesIsLoading && !isClosedCasesLoading))"
                         v-cloak>
                         <h4 v-if="!isSearchingOldCases && !isSearchingPartnerCases"> Ingen sager matcher din
                             søgning </h4>
@@ -726,7 +743,9 @@
                         stadig
                         afsluttede sager
                     </div>
-                    <div class="vue-spinner o-spinner" v-if="isCases && casesIsLoading" v-cloak></div>
+                    <div class="vue-spinner o-spinner"
+                        v-if="(isCases && casesIsLoading) || (isShowOperationStatusErrorReports && (casesIsLoading || isClosedCasesLoading))"
+                        v-cloak></div>
                     <div class="vue-spinner o-spinner" v-if="isNewUserLoading && activeCategory=='roles'" v-cloak></div>
                     <div class="vue-spinner o-spinner"
                         v-if="((isNewAnnouncementLoading || isUpdatedAnnouncementLoading) && activeCategory=='Announcement')">
@@ -734,6 +753,8 @@
                     <p class="text-explainer o-spinner__text" v-if="isNewUserLoading && activeCategory=='roles'"
                         v-cloak>
                         Bruger oprettes / opdateres</p>
+                    <p v-if="(isShowOperationStatusErrorReports && (casesIsLoading || isClosedCasesLoading))"
+                        class="text-explainer o-spinner__text">Henter incidents</p>
                     <p class="text-explainer o-spinner__text"
                         v-if="isNewAnnouncementLoading && activeCategory=='Announcement'" v-cloak>Ny udmelding
                         oprettes</p>
@@ -1909,18 +1930,6 @@
             </div>
         </div>
         -->
-        <div class="o-body__subheader">
-                <div class="o-wrapper">
-                    <div class="o-filters">
-                            <div class="o-filters__filter vue-filter-level2"
-                                :class="{'o-filters__filter--active': true}">Operating announcements
-                            </div>
-                            <div class="o-filters__filter vue-filter-level2"
-                            :class="{'o-filters__filter--active': false}">Error reports
-                        </div>
-                    </div>
-                </div>
-        </div>
         <div class="o-ann__body">
             <div class="o-ann__body__header o-wrapper">
                 <div class="o-ann__body__header__left">
@@ -2205,7 +2214,7 @@
                                         <label class="o-label">Vedhæft filer</label>
                                         </div>
                                     </div>
-                                    <div :id="formType+'_cloneDestination'"></div>
+                                    <div :id="formType + '_cloneDestination'"></div>
                                 </div>
                                 <div class="o-group__flex" v-if="!formTypeIsMaster">
                                     <div class="o-toggle-group" @click="isServiceWindow = !isServiceWindow">

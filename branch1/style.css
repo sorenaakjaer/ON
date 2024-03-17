@@ -11012,3 +11012,7 @@ ul.tags-selector__dropdow__create {
 .o-hr {
     margin: 40px 0;
 }
+
+.o-ann--modal__confirm .o-modal__body {
+    flex-direction: column;
+}

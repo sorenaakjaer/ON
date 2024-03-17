@@ -786,7 +786,6 @@ $(document).one("trigger::vue_loaded", function () {
 			setIsCreateAnnouncementModal(bool) {
 				if (bool) {
 					this.isCreateAnnouncementModal = true
-					addPurifyFromCDN()
 				} else {
 					this.isCreateAnnouncementModal = false
 				}
@@ -891,6 +890,7 @@ $(document).one("trigger::vue_loaded", function () {
 			this.getAnnouncements()
 			this.fetchMasterTemplates()
 			this.fetchStandardOptions()
+			addPurifyFromCDN()
 		}
 	})
 	Vue.component('o-announcements-modal', {
@@ -1051,7 +1051,6 @@ $(document).one("trigger::vue_loaded", function () {
 				return this.formType === 'master'
 			},
 			newMasterHTMLSanitized() {
-				// return window.DOMPurify.sanitize(this.newMasterHTML)
 				return this.theEmailHTML
 			},
 			contentReplacement() {
@@ -1083,18 +1082,25 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			iframeContent() {
 				let htmlContent = this.emailHTMLReplaced
-				const script = `<script>
+				const script1 = `<script>
 				window.onload = function() {
 					const height = document.documentElement.scrollHeight;
 					window.parent.postMessage({ type: 'oiFrameHeight', frameHeight: height }, '*');
 				};
 				</script>
 				`
+				const script2 = `<script>
+				window.onload = function() {
+					const height = document.documentElement.scrollHeight;
+					window.parent.postMessage({ type: 'oiFrameHeightMaster', frameHeight: height }, '*');
+				};
+				</script>
+				`
+				const script = this.formTypeIsMaster ? script2 : script1
 				// Insert the script before the closing </body> tag
 				if (htmlContent.includes('</body>')) {
 					htmlContent = htmlContent.replace('</body>', script + '</body>');
 				} else {
-					// If for some reason there's no </body> tag, append the script to the end
 					htmlContent += script;
 				}
 
@@ -1446,11 +1452,14 @@ $(document).one("trigger::vue_loaded", function () {
 			handleFrameMessage(event) {
 				if (event.data.type && event.data.type === 'oiFrameHeight') {
 					const iFrameHeight = event.data.frameHeight
+					this.$refs.o_preview_iframe.height = iFrameHeight + 'px'
+				}
+				if (event.data.type && event.data.type === 'oiFrameHeightMaster') {
+					const iFrameHeight = event.data.frameHeight
 					this.$nextTick(_ => {
-						if (this.formTypeIsMaster) {
-							this.$refs.o_preview_iframe_master.height = iFrameHeight + 'px'
-						} else {
-							this.$refs.o_preview_iframe.height = iFrameHeight + 'px'
+						const el = this.$refs.o_preview_iframe_master
+						if (el) {
+							el.height = iFrameHeight + 'px'
 						}
 					})
 				}
@@ -1492,8 +1501,8 @@ $(document).one("trigger::vue_loaded", function () {
 							links.forEach(link => {
 								link.addEventListener('click', this.handleCloneClick);
 							});
-							const id = this.formType + '_cloneDestination'
-							document.getElementById(id).appendChild(clonedNode);
+							const elId = `${this.formType}_cloneDestination`;
+							document.getElementById(elId).appendChild(clonedNode);
 						}
 					})
 				});
@@ -1895,6 +1904,7 @@ $(document).one("trigger::vue_loaded", function () {
 	new Vue({
 		el: "#o-app",
 		data: {
+			isShowOperationStatusErrorReports: true,
 			isShowNewOperationStatus: true,
 			toast: {
 				message: '',
@@ -2226,7 +2236,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			/* START 17-12-23 */
 			isAnyFiltersActive() {
-				return this.theActiveFilterTags.length > 0 || this.theActiveFilterGroups.length > 0 || this.theActiveFilterStatus.length > 0 || this.theActiveFilterCategories.length > 0 || this.activeType
+				return this.theActiveFilterTags.length > 0 || this.theActiveFilterGroups.length > 0 || this.theActiveFilterStatus.length > 0 || this.activeType || (this.theActiveFilterCategories.length > 0 && !this.isShowOperationStatusErrorReports)
 			},
 			isUserOpennetOrSP() {
 				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet']
@@ -2378,6 +2388,11 @@ $(document).one("trigger::vue_loaded", function () {
 				return this.casesFiltered.filter(e => "partnerCases" == e.filter_open_closed)
 			},
 			casesFiltered2() {
+				if (this.activeCategory == 'operation_status' && this.isShowOperationStatusErrorReports) {
+					const allIncidentCases = this.casesOpen.concat(this.casesClosed)
+					const errorIncidentFilters = ['IT Incident (Pre-Production/Test)', 'IT Incident (Production)']
+					return allIncidentCases.filter(itemCase => errorIncidentFilters.indexOf(itemCase.filter_category) > -1)
+				}
 				if (this.theActiveFilter === "active") {
 					return this.casesOpen
 				} else {
@@ -2417,6 +2432,9 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			caseFilteredWithCategories() {
+				if (this.activeCategory == 'operation_status' && this.isShowOperationStatusErrorReports) {
+					return this.caseFilteredWithStatus
+				}
 				if (this.theActiveFilterCategories.length < 1) {
 					return this.caseFilteredWithStatus;
 				} else {
@@ -2520,7 +2538,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return "" !== this.activeCategory && "roles" !== this.activeCategory && "all_cases" !== this.activeCategory && "my_cases" !== this.activeCategory && "end_customer_pricing_config" !== this.activeCategory && "end_customer_orders" !== this.activeCategory
 			},
 			isCases() {
-				return "all_cases" == this.activeCategory || "my_cases" == this.activeCategory
+				return "all_cases" == this.activeCategory || "my_cases" == this.activeCategory || (this.activeCategory == 'operation_status' && this.isShowOperationStatusErrorReports)
 			},
 			allCategories() {
 				let e = [];
@@ -2701,6 +2719,13 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			setIsShowOperationStatusErrorReports(bool) {
+				if (bool) {
+					this.isShowOperationStatusErrorReports = true
+				} else {
+					this.isShowOperationStatusErrorReports = false
+				}
+			},
 			showToast(message) {
 				this.toast.message = message;
 				this.toast.visible = true;
@@ -3301,6 +3326,7 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 					$(".js-o-cases__container").removeClass("o-cases__container--loading"), $(".o-page").removeClass("o-page--all-cases"), $(".o-page").hasClass("o-page--docs") || $(".o-page").addClass("o-page--docs");
 					var s = "";
+					this.setIsShowOperationStatusErrorReports(false)
 					switch (e) {
 						case "my_cases":
 							s = "Hjem / Mine sager";
