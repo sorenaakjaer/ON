@@ -2057,7 +2057,7 @@
                         <h4>{{ theFormTitle }}</h4>
                     </div>
                     <div class="o-modal__header__right">
-                        <button v-if="formTypeIsMaster && edit_master_template" class="o-btn o-btn--small" :class="{'o-btn--loading': isDeleting}" @click="deleteMasterTemplate">Delete</button>
+                        <button v-if="formTypeIsMaster && edit_master_template" class="o-btn o-btn--small" @click="setIsDeleteConfirmation(true)">Delete</button>
                         <button class="o-btn o-btn--small o-btn--primary" :class="{'o-btn--loading': isSubmitting}" @click="onSubmit">Save</button>
                     </div>
                 </div>
@@ -2201,12 +2201,11 @@
                                 </div>
                                 <div class="o-group__flex">
                                     <div class="o-group">
-                                        <div class="o-toggle-group" @click="isAttachFiles = !isAttachFiles">
-                                        <label class="o-label">Vedhæftninger</label>
-                                        <div class="o-toggle" :class="{'o-toggle--activated': isAttachFiles}"></div>
+                                        <div class="o-toggle-group o-toggle-group--button" @click="attachFiles">
+                                        <label class="o-label">Vedhæft filer</label>
                                         </div>
                                     </div>
-                                    <input type="file" v-if="isAttachFiles" @change="handleFileUpload" multiple>
+                                    <div id="cloneDestination"></div>
                                 </div>
                                 <div class="o-group__flex" v-if="!formTypeIsMaster">
                                     <div class="o-toggle-group" @click="isServiceWindow = !isServiceWindow">
@@ -2261,6 +2260,21 @@
                         </div>
                     </div>
                 </div>
+                <transition name="modalFadeIn">
+                    <div class="o-modal--alwaysactive vue-modal vue-modal--small o-ann--modal__confirm" v-if="isConfirmation" v-cloak>
+                        <div class="o-modal__body">
+                            <h4>Er du sikker på, at du vil slette dette master template?</h4>
+                            <div class="o-modal__body__actions">
+                                <button class="o-btn js-click-modal-small-cancel" @click="setIsDeleteConfirmation(false)">
+                                    Annuller
+                                </button>
+                                <button class="o-btn o-btn--danger" :class="{'o-btn--loading': isDeleting}"
+                                    @click="deleteMasterTemplate">Slet template
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </transition>
             </div>
     </script>
 

@@ -1029,7 +1029,9 @@ $(document).one("trigger::vue_loaded", function () {
 				serviceWindowStart: this.formatDate(new Date()),
 				serviceWindowEnd: this.formatDate(new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000)), // Adding 7 days,
 				theEditMasterTemplate: null,
-				isDeleting: false
+				isDeleting: false,
+				isConfirmation: false,
+				attachFilesObserver: null
 			}
 		},
 		computed: {
@@ -1079,23 +1081,15 @@ $(document).one("trigger::vue_loaded", function () {
 			emailHTMLReplaced() {
 				return this.replacePlaceholders(this.newMasterHTMLSanitized, this.contentReplacement);
 			},
-			emailHTMLAllPlaceholdersReplaced() {
-				// Removes all {{{ }}}
-				return this.emailHTMLReplaced.replace(/\{\{\{[^}]+\}\}\}/g, '');
-			},
 			iframeContent() {
-				// Original HTML with placeholders
 				let htmlContent = this.emailHTMLReplaced
-
-				// Script to be injected
 				const script = `<script>
-					window.onload = function() {
-						const height = document.documentElement.scrollHeight;
-						window.parent.postMessage({ type: 'oiFrameHeight', frameHeight: height }, '*');
-					};
-					</script>
-					`;
-
+				window.onload = function() {
+					const height = document.documentElement.scrollHeight;
+					window.parent.postMessage({ type: 'oiFrameHeight', frameHeight: height }, '*');
+				};
+				</script>
+				`
 				// Insert the script before the closing </body> tag
 				if (htmlContent.includes('</body>')) {
 					htmlContent = htmlContent.replace('</body>', script + '</body>');
@@ -1105,6 +1099,10 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 
 				return htmlContent;
+			},
+			emailHTMLAllPlaceholdersReplaced() {
+				// Removes all {{{ }}}
+				return this.emailHTMLReplaced.replace(/\{\{\{[^}]+\}\}\}/g, '');
 			},
 			userKey() {
 				return eTrayWebportal && eTrayWebportal.User.Key ? eTrayWebportal.User.Key : null
@@ -1186,6 +1184,9 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			setIsDeleteConfirmation(bool) {
+				this.isConfirmation = bool
+			},
 			deleteMasterTemplate() {
 				this.isDeleting = true
 				const myHeaders = new Headers();
@@ -1433,7 +1434,6 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			setIsCreateModal(bool) {
 				if (!bool) {
-					console.log('close!')
 					this.$emit('setEditMasterTemplate', null)
 					this.$emit('close')
 				}
@@ -1441,11 +1441,13 @@ $(document).one("trigger::vue_loaded", function () {
 			handleFrameMessage(event) {
 				if (event.data.type && event.data.type === 'oiFrameHeight') {
 					const iFrameHeight = event.data.frameHeight
-					if (this.formTypeIsMaster) {
-						this.$refs.o_preview_iframe_master.height = iFrameHeight + 'px'
-					} else {
-						this.$refs.o_preview_iframe.height = iFrameHeight + 'px'
-					}
+					this.$nextTick(_ => {
+						if (this.formTypeIsMaster) {
+							this.$refs.o_preview_iframe_master.height = iFrameHeight + 'px'
+						} else {
+							this.$refs.o_preview_iframe.height = iFrameHeight + 'px'
+						}
+					})
 				}
 			},
 			setInitMasterTemplateValues(obj) {
@@ -1466,10 +1468,44 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 					this.theSelectedType = selectedTypeIdx > -1 ? this.filteredTypes[selectedTypeIdx].value : null
 				}
+			},
+			attachFiles() {
+				document.querySelector('.ppUPLOAD #fileupload').click();
+
+				if (this.attachFilesObserver) {
+					this.attachFilesObserver.disconnect();
+				}
+
+				this.startObserving();
+			},
+			handleMutations(mutations) {
+				mutations.forEach(mutation => {
+					mutation.addedNodes.forEach(node => {
+						if (node.nodeType === 1) { // Element node
+							const clonedNode = node.cloneNode(true);
+							document.getElementById('cloneDestination').appendChild(clonedNode);
+						}
+					});
+				});
+			},
+			startObserving() {
+				const targetNode = document.querySelector('.ppUPLOAD #uploadedPanel');
+
+				if (targetNode) {
+					this.attachFilesObserver = new MutationObserver(this.handleMutations);
+
+					this.attachFilesObserver.observe(targetNode, {
+						childList: true,
+						subtree: true
+					});
+				}
 			}
 		},
 		beforeDestroy() {
 			window.removeEventListener('message', this.handleFrameMessage);
+			if (this.attachFilesObserver) {
+				this.attachFilesObserver.disconnect();
+			}
 		},
 		mounted() {
 			window.addEventListener('message', this.handleFrameMessage);
