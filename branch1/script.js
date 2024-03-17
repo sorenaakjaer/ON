@@ -1492,7 +1492,7 @@ $(document).one("trigger::vue_loaded", function () {
 							links.forEach(link => {
 								link.addEventListener('click', this.handleCloneClick);
 							});
-							const id = thhis.formType + '_cloneDestination'
+							const id = this.formType + '_cloneDestination'
 							document.getElementById(id).appendChild(clonedNode);
 						}
 					})
