@@ -987,8 +987,9 @@ $(document).one("trigger::vue_loaded", function () {
 				isUpdateSubscription: false,
 				updateSubscriptionInterval: null,
 				updateSubscriptionUserId: null,
-				selectedFiles: [],
 				isAttachFiles: false,
+				attachments: null,
+				attachMentToken: null,
 				isSendNotifications: false,
 				theSelectedStatus: 'New',
 				theEmailDateStart: new Date().toISOString().slice(0, 10),
@@ -1307,6 +1308,11 @@ $(document).one("trigger::vue_loaded", function () {
 					});
 			},
 			createAnnouncement() {
+				if (this.attachMentToken) {
+					clearJSONfields()
+					$(".ppUPLOAD_TOKEN > input").val(this.attachMentToken)
+					document.querySelector('.ppUPLOAD #fileupload').click();
+				}
 				const myHeaders = new Headers();
 				myHeaders.append("Content-Type", "application/json");
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
@@ -1344,7 +1350,7 @@ $(document).one("trigger::vue_loaded", function () {
 					"updateSubscriptionInterval": !this.isUpdateSubscription ? null : this.updateSubscriptionInterval,
 					"updateSubscriptionUserId": !this.isUpdateSubscription ? null : this.updateSubscriptionUserId,
 					"receivers": Object.keys(this.selectedReceivers).length > 0 ? Object.keys(this.selectedReceivers) : null,
-					"attachments": null,
+					"attachments": this.attachMentToken,
 					"html": this.emailHTMLAllPlaceholdersReplaced,
 					"placeholder_1": null,
 					"placeholder_2": null,
@@ -1409,9 +1415,6 @@ $(document).one("trigger::vue_loaded", function () {
 			getIsReceiverSelected(receiverId) {
 				return this.selectedReceivers[receiverId]
 			},
-			handleFileUpload(event) {
-				this.selectedFiles = event.target.files;
-			},
 			setMasterTemplate(masterTemplateId) {
 				this.activeMasterTemplateId = +masterTemplateId
 				const masterTemp = this.master_templates.find(temp => +temp.template_id === +masterTemplateId)
@@ -1454,7 +1457,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.activeArea = obj.area
 				if (obj.attachments) {
 					this.isAttachFiles = true
-					this.selectedFiles = obj.attachments
+					this.attachments = obj.attachments
 				}
 				this.theEmailFromCompany = obj.company_display
 				this.theEmailHTML = obj.html
@@ -1469,9 +1472,10 @@ $(document).one("trigger::vue_loaded", function () {
 					this.theSelectedType = selectedTypeIdx > -1 ? this.filteredTypes[selectedTypeIdx].value : null
 				}
 			},
-			attachFiles() {
+			onAttachFiles() {
+				this.attachMentToken = Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2)
 				document.querySelector('.ppUPLOAD #fileupload').click();
-
+				subCatChangeSelect('UPLOAD');
 				if (this.attachFilesObserver) {
 					this.attachFilesObserver.disconnect();
 				}
@@ -1480,13 +1484,40 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			handleMutations(mutations) {
 				mutations.forEach(mutation => {
+					// Handle added nodes
 					mutation.addedNodes.forEach(node => {
 						if (node.nodeType === 1) { // Element node
 							const clonedNode = node.cloneNode(true);
+							// Attach event listeners to cloned <a> tags if needed
+							const links = clonedNode.querySelectorAll('a[deleteurl]');
+							links.forEach(link => {
+								link.addEventListener('click', this.handleCloneClick);
+							});
 							document.getElementById('cloneDestination').appendChild(clonedNode);
 						}
 					});
+					// Handle removed nodes
+					mutation.removedNodes.forEach(node => {
+						if (node.nodeType === 1 && node.hasAttribute && node.hasAttribute('deleteurl')) {
+							const deleteUrl = node.getAttribute('deleteurl');
+							// Remove the corresponding cloned node
+							const clonedLinks = document.querySelectorAll(`#cloneDestination a[deleteurl="${deleteUrl}"]`);
+							clonedLinks.forEach(clonedLink => {
+								clonedLink.closest('div').remove(); // Assuming each link is within its own div
+							});
+						}
+					});
 				});
+			},
+			handleCloneClick(event) {
+				const deleteUrl = event.target.getAttribute('deleteurl');
+				if (deleteUrl) {
+					const originalLink = document.querySelector(`.ppUPLOAD #uploadedPanel a[deleteurl="${deleteUrl}"]`);
+					if (originalLink) {
+						originalLink.click();
+					}
+				}
+				event.preventDefault(); // Prevent the default action of the link
 			},
 			startObserving() {
 				const targetNode = document.querySelector('.ppUPLOAD #uploadedPanel');
