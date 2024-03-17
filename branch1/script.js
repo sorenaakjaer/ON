@@ -989,7 +989,6 @@ $(document).one("trigger::vue_loaded", function () {
 				updateSubscriptionUserId: null,
 				isAttachFiles: false,
 				attachments: null,
-				attachMentToken: null,
 				isSendNotifications: false,
 				theSelectedStatus: 'New',
 				theEmailDateStart: new Date().toISOString().slice(0, 10),
@@ -1308,10 +1307,13 @@ $(document).one("trigger::vue_loaded", function () {
 					});
 			},
 			createAnnouncement() {
-				if (this.attachMentToken) {
+				let attachmentToken = null
+				const lengthOfAttachedFiles = $('.ppUPLOAD #uploadedPanel > div') ? $('.ppUPLOAD #uploadedPanel > div').length : 0
+				if (lengthOfAttachedFiles > 0) {
 					clearJSONfields()
-					$(".ppUPLOAD_TOKEN > input").val(this.attachMentToken)
-					document.querySelector('.ppUPLOAD #fileupload').click();
+					attachmentToken = Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2)
+					$(".ppUPLOAD_TOKEN > input").val(attachmentToken)
+					$(".webformCreateMore").click()
 				}
 				const myHeaders = new Headers();
 				myHeaders.append("Content-Type", "application/json");
@@ -1350,7 +1352,7 @@ $(document).one("trigger::vue_loaded", function () {
 					"updateSubscriptionInterval": !this.isUpdateSubscription ? null : this.updateSubscriptionInterval,
 					"updateSubscriptionUserId": !this.isUpdateSubscription ? null : this.updateSubscriptionUserId,
 					"receivers": Object.keys(this.selectedReceivers).length > 0 ? Object.keys(this.selectedReceivers) : null,
-					"attachments": this.attachMentToken,
+					"attachments": attachmentToken ? [attachmentToken] : null,
 					"html": this.emailHTMLAllPlaceholdersReplaced,
 					"placeholder_1": null,
 					"placeholder_2": null,
@@ -1473,7 +1475,6 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			onAttachFiles() {
-				this.attachMentToken = Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2)
 				document.querySelector('.ppUPLOAD #fileupload').click();
 				subCatChangeSelect('UPLOAD');
 				if (this.attachFilesObserver) {
@@ -1491,7 +1492,8 @@ $(document).one("trigger::vue_loaded", function () {
 							links.forEach(link => {
 								link.addEventListener('click', this.handleCloneClick);
 							});
-							document.getElementById('cloneDestination').appendChild(clonedNode);
+							const id = thhis.formType + '_cloneDestination'
+							document.getElementById(id).appendChild(clonedNode);
 						}
 					})
 				});
@@ -1524,6 +1526,11 @@ $(document).one("trigger::vue_loaded", function () {
 						subtree: true
 					});
 				}
+			},
+			resetFilesOnClose() {
+				$('.ppUPLOAD #uploadedPanel > div > a').each(function () {
+					$(this).click()
+				})
 			}
 		},
 		beforeDestroy() {
@@ -1531,6 +1538,9 @@ $(document).one("trigger::vue_loaded", function () {
 			if (this.attachFilesObserver) {
 				this.attachFilesObserver.disconnect();
 			}
+			setTimeout(_ => {
+				this.resetFilesOnClose()
+			})
 		},
 		mounted() {
 			window.addEventListener('message', this.handleFrameMessage);
