@@ -581,6 +581,9 @@ $(document).one("trigger::vue_loaded", function () {
 	Vue.component('o-announcements', {
 		template: '#o-announcements-template',
 		props: {
+			active_area: {
+				default: 'OperationsStatus' // 'OperationsStatus' or 'News'
+			},
 			the_user: {
 				default: () => { }
 			}
@@ -605,21 +608,21 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		computed: {
+			activeAnnouncements() {
+				return this.announcements.filter(announcement => announcement.area === this.active_area)
+			},
 			announcementsInVersionsArr() {
-				const groupedByOnid = this.announcements.reduce((acc, curr) => {
+				const groupedByOnid = this.activeAnnouncements.reduce((acc, curr) => {
 					// Group announcements by 'onid'
 					(acc[curr.onid] = acc[curr.onid] || []).push(curr);
 					return acc;
 				}, {});
 
 				return Object.values(groupedByOnid).map(group => {
-					// Sort each group by version number in descending order
 					group.sort((a, b) => b.version - a.version);
 
-					const newest = group[0]; // The first item is the newest version
-					const earlierVersions = group.slice(1); // The rest are earlier versions
-
-					// Return the newest announcement with the packed earlier versions
+					const newest = group[0];
+					const earlierVersions = group.slice(1);
 					return {
 						...newest,
 						vEarlierVersions: earlierVersions
@@ -751,14 +754,16 @@ $(document).one("trigger::vue_loaded", function () {
 				}, 600)
 			},
 			getAnnouncements() {
+				this.isLoadingAnnouncements = true;
 				if (typeof ISLOCALHOST !== 'undefined') {
+					console.log({ ANNOUNCEMENTS })
+					this.announcements = ANNOUNCEMENTS
+					this.isLoadingAnnouncements = false;
 					return
 				}
-				this.isLoadingAnnouncements = true;
 
 				const myHeaders = new Headers();
 				myHeaders.append("Accept", "application/json");
-				//myHeaders.append("PP_USER_KEY", this.userKey);
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
 				const requestOptions = {
 					method: "GET",
@@ -766,7 +771,7 @@ $(document).one("trigger::vue_loaded", function () {
 					redirect: "follow"
 				};
 				console.log('requestOptions', requestOptions);
-				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg?area=OperationsStatus", requestOptions)
+				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg", requestOptions)
 					.then(response => {
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
@@ -919,13 +924,15 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			the_user: {
 				default: () => { }
+			},
+			active_area: {
+				default: 'OperationsStatus' // 'OperationsStatus' or 'News'
 			}
 		},
 		data() {
 			return {
 				activeMasterTemplateId: null,
 				theEmailHTML: '',
-				activeArea: 'OperationsStatus',
 				initNewMasterHTML:
 					`<!DOCTYPE html>
 <html lang="da-DK">
@@ -982,7 +989,6 @@ $(document).one("trigger::vue_loaded", function () {
 	</body>
 	</html>`,
 				newMasterTitle: '',
-				activeArea: 'OperationsStatus',
 				isSubmitting: false,
 				isUpdateSubscription: false,
 				updateSubscriptionInterval: null,
@@ -1024,14 +1030,14 @@ $(document).one("trigger::vue_loaded", function () {
 				],
 				placeholder_hist: null,
 				activeTab: 'placeholders',
-				shortDesc: '',
 				isServiceWindow: false,
 				serviceWindowStart: this.formatDate(new Date()),
 				serviceWindowEnd: this.formatDate(new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000)), // Adding 7 days,
 				theEditMasterTemplate: null,
 				isDeleting: false,
 				isConfirmation: false,
-				attachFilesObserver: null
+				attachFilesObserver: null,
+				theEmailTeaser: ''
 			}
 		},
 		computed: {
@@ -1068,6 +1074,9 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				if (this.theEmailFromUser.length > 0) {
 					replacements['user_name'] = this.theEmailFromUser
+				}
+				if (this.theEmailTeaser.length > 0) {
+					replacements['teaser'] = this.theEmailTeaser
 				}
 				this.activePlaceholders.forEach(place => {
 					if (place.text.length > 0) {
@@ -1118,12 +1127,12 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			sortedMasterTemplates() {
 				return this.master_templates
-					.filter(masterTemp => masterTemp.area === this.activeArea)
+					.filter(masterTemp => masterTemp.area === this.active_area)
 					.sort((a, b) => b.template_id - a.template_id);
 			},
 			filteredTypes() {
 				const oTypes = this.standard_options && this.standard_options['extMsg_type'] ? this.standard_options['extMsg_type'] : []
-				return oTypes.filter(oType => oType.area === this.activeArea)
+				return oTypes.filter(oType => oType.area === this.active_area)
 			},
 			filteredStatusses() {
 				const oStatusses = this.standard_options && this.standard_options['extMsg_status'] ? this.standard_options['extMsg_status'] : []
@@ -1150,14 +1159,14 @@ $(document).one("trigger::vue_loaded", function () {
 				return names.join(', ')
 			},
 			theFormTitle() {
-				if (this.formTypeIsMaster) {
+				if (!this.formTypeIsMaster) {
+					return this.active_area === 'News' ? 'Create news' : 'Create announcement'
+				} else {
 					if (!this.edit_master_template) {
-						return this.formTitle
+						return 'Create new master template'
 					} else {
 						return 'Edit master template'
 					}
-				} else {
-					return this.formTitle
 				}
 			}
 		},
@@ -1268,7 +1277,7 @@ $(document).one("trigger::vue_loaded", function () {
 					name: this.newMasterTitle,
 					company_display: this.theEmailFromCompany,
 					subject: this.theEmailSubject,
-					area: this.activeArea,
+					area: this.active_area,
 					type: this.theSelectedType,
 					receivers: Object.keys(this.selectedReceivers).map(key => key),
 					send_notifications: this.isSendNotifications,
@@ -1343,13 +1352,13 @@ $(document).one("trigger::vue_loaded", function () {
 					"version": null,
 					"createdTime": timestamp,
 					"expired": "false",
-					"area": this.activeArea,
+					"area": this.active_area,
 					"type": selectedType && selectedType.display ? selectedType.display : this.theSelectedType,
 					"template_id": this.activeMasterTemplateId,
 					"from": this.the_user && this.the_user['display_name'] ? this.the_user['display_name'] : '',
 					"company_display": this.theEmailFromCompany,
 					"subject": this.theEmailSubject,
-					"shortDesc": this.activeArea === 'News' ? this.shortDesc : null,
+					"shortDesc": this.active_area === 'News' && this.theEmailTeaser.length > 0 ? this.theEmailTeaser : null,
 					"status": this.theSelectedStatus,
 					"serviceWindow": this.isServiceWindow,
 					"serviceWindowStart": this.isServiceWindow ? this.serviceWindowStart : null,
@@ -1465,7 +1474,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			setInitMasterTemplateValues(obj) {
-				this.activeArea = obj.area
+				this.active_area = obj.area
 				if (obj.attachments) {
 					this.isAttachFiles = true
 					this.attachments = obj.attachments
@@ -2224,8 +2233,11 @@ $(document).one("trigger::vue_loaded", function () {
 			theFilteredSelectedTags: []
 		},
 		computed: {
+			isViewOperationStatus() {
+				return this.activeCategory == 'OperationsStatus'
+			},
 			isViewNewsOrOperationStatus() {
-				return this.activeCategory == 'operation_status' || this.activeCategory == 'news'
+				return this.activeCategory == 'OperationsStatus' || this.activeCategory == 'News'
 			},
 			theGhostUserListPartners() {
 				return this.theGhostUserList.map(company => company.company)
@@ -3363,10 +3375,10 @@ $(document).one("trigger::vue_loaded", function () {
 						case "end_customer_orders":
 							s = "Slutkundeordre"
 							break
-						case "operation_status":
+						case "OperationsStatus":
 							s = "Operation status"
 							break
-						case "news":
+						case "News":
 							s = "Nyheder"
 							break
 					}

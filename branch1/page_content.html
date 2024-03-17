@@ -107,16 +107,16 @@
                     </div>
                     <div class="tio chevron_right"></div>
                 </li>
-                <li v-if="isShowNewOperationStatus" @click="setActivecCategory('operation_status')"
-                    :class="{'li--active': activeCategory==='operation_status'}" class="menu_announcement">
+                <li v-if="isShowNewOperationStatus" @click="setActivecCategory('OperationsStatus')"
+                    :class="{'li--active': activeCategory==='OperationsStatus'}" class="menu_announcement">
                     <div>
                         <h4>Operation status</h4>
                         <p>Læs aktive og tidligere udmeldinger / varslinger</p>
                     </div>
                     <div class="tio chevron_right"></div>
                 </li>
-                <li v-if="isShowNewOperationStatus" @click="setActivecCategory('news')"
-                    :class="{'li--active': activeCategory==='news'}" class="menu_announcement">
+                <li v-if="isShowNewOperationStatus" @click="setActivecCategory('News')"
+                    :class="{'li--active': activeCategory==='News'}" class="menu_announcement">
                     <div>
                         <h4>Nyheder</h4>
                         <p>Læs aktive og tidligere udmeldinger / varslinger</p>
@@ -205,7 +205,7 @@
     </div>
     <div class="o-body" :class="{'o-body__container': isNewDesignActive}">
         <div v-if="isViewNewsOrOperationStatus">
-            <div class="o-body__subheader">
+            <div class="o-body__subheader" v-if="isViewOperationStatus">
                 <div class="o-wrapper">
                     <div class="o-filters">
                         <div class="o-filters__filter vue-filter-level2"
@@ -221,7 +221,8 @@
                     </div>
                 </div>
             </div>
-            <o-announcements :the_user="theUser" v-if="!isShowOperationStatusErrorReports"></o-announcements>
+            <o-announcements v-if="!isShowOperationStatusErrorReports" :the_user="theUser"
+                :active_area="activeCategory"></o-announcements>
         </div>
         <div class="o-list-of-cases" v-if="!isViewNewsOrOperationStatus || isShowOperationStatusErrorReports">
             <div class="o-body__header o-wrapper" v-if="!isNewDesignActive">
@@ -1956,7 +1957,7 @@
                                 class="tio">clear_circle</i>
                         </div>
                     </div>
-                    <button class="o-btn o-btn--primary" @click="setIsCreateAnnouncementModal(true)">Create Announcement</button>
+                    <button class="o-btn o-btn--primary" @click="setIsCreateAnnouncementModal(true)"><span v-if="active_area === 'News'">Create news</span><span v-else>Create announcement</span></button>
                 </div>
             </div>
             <h4 class="text-explainer o-center" v-if="!isLoadingAnnouncements && searchedAnnouncements.length === 0">Ingen udmeldinger matcher din søgning</h4>
@@ -1972,7 +1973,8 @@
                     @click="setActiveItem(item)">
                     <div class="o-cases__case_element__header">
                         <div class="o-cases__case_element__header__row">
-                            <div>{{ item.version }}ONID:{{item.onid}}</div>
+                            <div>ONID:{{item.onid}}</div>
+                            <div>Version: {{ item.version }}</div>
                             <div>Created :{{item.createdTime}}</div>
                             <div>Udløb:{{item.expire_date}}</div>
                             <div>By:{{item.from}},{{item.company_display}}</div>
@@ -1990,9 +1992,9 @@
                             <div class="o-cases__case-group"><label>Type:</label>
                                 <p>{{item.type}}</p>
                             </div>
-                            <div class="o-cases__case-group" v-if="item.message_short"><label>Kort
+                            <div class="o-cases__case-group" v-if="item.shortDesc"><label>Kort
                                     beskrivelse:</label>
-                                <p>{{item.message_short}}</p>
+                                <p>{{item.shortDesc}}</p>
                             </div>
                         </div>
                         <div class="o-cases__case_element__body__arrow"> 
@@ -2027,6 +2029,7 @@
         <transition name="modalFadeIn">
             <o-announcements-modal 
                 v-if="isCreateAnnouncementModal" 
+                :active_area="active_area"
                 :standard_options="standardOptions"
                 :filteredReceivers="filteredReceivers"
                 :master_templates="masterTemplates"
@@ -2042,6 +2045,7 @@
             <o-announcements-modal 
                 v-if="isNewMasterModal" 
                 :the_user="the_user"
+                :active_area="active_area"
                 :standard_options="standardOptions"
                 :filteredReceivers="filteredReceivers"
                 :edit_master_template="theEditMasterTemplate"
@@ -2121,6 +2125,10 @@
                                 <div class="o-group">
                                     <label class="o-label">Subject email</label>
                                     <input type="text" v-model="theEmailSubject" class="o-input" />
+                                </div>
+                                <div class="o-group" v-if="active_area === 'News'">
+                                    <label class="o-label">Teaser</label>
+                                    <textarea v-model="theEmailTeaser" class="o-input"></textarea>
                                 </div>
                                 <hr class="o-hr">
                                 <div class="o-group">
