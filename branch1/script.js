@@ -1484,29 +1484,16 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			handleMutations(mutations) {
 				mutations.forEach(mutation => {
-					// Handle added nodes
 					mutation.addedNodes.forEach(node => {
-						if (node.nodeType === 1) { // Element node
+						if (node.nodeType === 1) {
 							const clonedNode = node.cloneNode(true);
-							// Attach event listeners to cloned <a> tags if needed
 							const links = clonedNode.querySelectorAll('a[deleteurl]');
 							links.forEach(link => {
 								link.addEventListener('click', this.handleCloneClick);
 							});
 							document.getElementById('cloneDestination').appendChild(clonedNode);
 						}
-					});
-					// Handle removed nodes
-					mutation.removedNodes.forEach(node => {
-						if (node.nodeType === 1 && node.hasAttribute && node.hasAttribute('deleteurl')) {
-							const deleteUrl = node.getAttribute('deleteurl');
-							// Remove the corresponding cloned node
-							const clonedLinks = document.querySelectorAll(`#cloneDestination a[deleteurl="${deleteUrl}"]`);
-							clonedLinks.forEach(clonedLink => {
-								clonedLink.closest('div').remove(); // Assuming each link is within its own div
-							});
-						}
-					});
+					})
 				});
 			},
 			handleCloneClick(event) {
@@ -1516,8 +1503,15 @@ $(document).one("trigger::vue_loaded", function () {
 					if (originalLink) {
 						originalLink.click();
 					}
+					const clonedLink = document.querySelector(`#cloneDestination a[deleteurl="${deleteUrl}"]`);
+					if (clonedLink) {
+						const wrapperDiv = clonedLink.closest('div');
+						if (wrapperDiv) {
+							wrapperDiv.remove();
+						}
+					}
 				}
-				event.preventDefault(); // Prevent the default action of the link
+				event.preventDefault();
 			},
 			startObserving() {
 				const targetNode = document.querySelector('.ppUPLOAD #uploadedPanel');
