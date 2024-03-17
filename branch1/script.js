@@ -1505,12 +1505,10 @@ $(document).one("trigger::vue_loaded", function () {
 					if (originalLink) {
 						originalLink.click();
 					}
-					const clonedLink = document.querySelector(`#cloneDestination a[deleteurl="${deleteUrl}"]`);
-					if (clonedLink) {
-						const wrapperDiv = clonedLink.closest('div');
-						if (wrapperDiv) {
-							wrapperDiv.remove();
-						}
+
+					const wrapperDiv = event.target.closest('div');
+					if (wrapperDiv) {
+						wrapperDiv.remove();
 					}
 				}
 				event.preventDefault();
