@@ -2049,7 +2049,8 @@
                 @done="onEditAnnouncementDone"
                 @setEditMasterTemplate="onSetEditMasterTemplate"
                 @close="setIsCreateAnnouncementModal(false)"
-                @openNewMasterModal="setIsCreateNewMaster(true)">
+                @openNewMasterModal="setIsCreateNewMaster(true)"
+                @addAnnouncements="onAddAnnouncements">
             </o-announcements-modal>
         </transition>
         <transition name="modalFadeIn">

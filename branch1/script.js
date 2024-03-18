@@ -897,6 +897,16 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 				})
 			},
+			onAddAnnouncements(arr) {
+				arr.forEach(obj => {
+					const idx = this.announcements.findIndex(announcement => announcement.onid === obj.onid && +announcement.version === +obj.version)
+					if (idx < 0) {
+						this.announcements.push(obj)
+					} else {
+						this.announcements.splice(idx, 1, obj)
+					}
+				})
+			},
 			onSetEditMasterTemplate(template) {
 				this.theEditMasterTemplate = template
 			}
@@ -1392,6 +1402,7 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 					.then(success => {
 						console.log({ success })
+						this.$emit('addAnnouncements', success)
 					})
 					.catch(error => {
 						console.error('Error creating new announcement:', error);
