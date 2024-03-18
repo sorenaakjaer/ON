@@ -905,10 +905,10 @@ $(document).one("trigger::vue_loaded", function () {
 			this.fetchStandardOptions()
 			setTimeout(_ => {
 				this.fetchMasterTemplates()
-			}, 5000)
+			}, 3000)
 			setTimeout(_ => {
 				this.getAnnouncements()
-			}, 10000)
+			}, 6000)
 			addPurifyFromCDN()
 		}
 	})
@@ -1367,7 +1367,6 @@ $(document).one("trigger::vue_loaded", function () {
 				})
 				if (this.edit_announcement) {
 					dbObj['onid'] = this.edit_announcement.onid
-					dbObj['version'] = +this.edit_announcement.version + 1
 				}
 				const raw = JSON.stringify(dbObj)
 
@@ -1379,7 +1378,7 @@ $(document).one("trigger::vue_loaded", function () {
 				};
 
 				if (this.edit_announcement) {
-					requestOptions['PATCH'] = this.edit_announcement.onid
+					requestOptions['POST'] = 'PATCH'
 				}
 
 
