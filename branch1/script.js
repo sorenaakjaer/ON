@@ -1388,7 +1388,7 @@ $(document).one("trigger::vue_loaded", function () {
 				};
 
 				if (this.edit_announcement) {
-					requestOptions['POST'] = 'PATCH'
+					requestOptions['method'] = 'PATCH'
 				}
 
 
