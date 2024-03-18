@@ -905,10 +905,10 @@ $(document).one("trigger::vue_loaded", function () {
 			this.fetchStandardOptions()
 			setTimeout(_ => {
 				this.fetchMasterTemplates()
-			}, 2000)
+			}, 5000)
 			setTimeout(_ => {
 				this.getAnnouncements()
-			}, 5000)
+			}, 10000)
 			addPurifyFromCDN()
 		}
 	})
