@@ -604,7 +604,8 @@ $(document).one("trigger::vue_loaded", function () {
 				masterTemplates: [],
 				isLoadingMasterTemplates: false,
 				theEditMasterTemplate: null,
-				theNewMasterTemplateId: null
+				theNewMasterTemplateId: null,
+				theEditAnnouncement: null
 			}
 		},
 		computed: {
@@ -715,6 +716,15 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			onEditAnnouncementDone() {
+				this.setEditAnnouncement(null)
+			},
+			setEditAnnouncement(item) {
+				this.theEditAnnouncement = item
+				if (item) {
+					this.setIsCreateAnnouncementModal(true)
+				}
+			},
 			getisTheActiveCase(item) {
 				return this.theAnnActiveItem === item.v_id
 			},
@@ -927,6 +937,9 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			active_area: {
 				default: 'OperationsStatus' // 'OperationsStatus' or 'News'
+			},
+			edit_announcement: {
+				default: null
 			}
 		},
 		data() {
@@ -987,7 +1000,7 @@ $(document).one("trigger::vue_loaded", function () {
 		</tr>
 	</table>
 	</body>
-	</html>`,
+</html>`,
 				newMasterTitle: '',
 				isSubmitting: false,
 				isUpdateSubscription: false,
@@ -1160,12 +1173,17 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			theFormTitle() {
 				if (!this.formTypeIsMaster) {
-					return this.active_area === 'News' ? 'Create news' : 'Create announcement'
+					if (this.edit_announcement) {
+						const versionNumber = +this.edit_announcement['version'] + 1
+						return this.active_area === 'News' ? 'Rediger nyhed' : 'Ny version (' + versionNumber + ') af udmelding'
+					} else {
+						return this.active_area === 'News' ? 'Opret nyhed' : 'Opret udmelding'
+					}
 				} else {
 					if (!this.edit_master_template) {
-						return 'Create new master template'
+						return 'Opret nyt master template'
 					} else {
-						return 'Edit master template'
+						return 'Rediger master template'
 					}
 				}
 			}
@@ -1173,6 +1191,7 @@ $(document).one("trigger::vue_loaded", function () {
 		watch: {
 			theNewMasterTemplateId(val) {
 				if (val) {
+					console.log('setMasterTemplate')
 					this.setMasterTemplate(val)
 				}
 			},
@@ -1385,14 +1404,22 @@ $(document).one("trigger::vue_loaded", function () {
 					const placeHolderKey = 'placeholder_' + placeholder.num
 					dbObj[placeHolderKey] = placeholder.text
 				})
+				if (this.edit_announcement) {
+					dbObj['onid'] = this.edit_announcement.onid
+					dbObj['version'] = +this.edit_announcement.version + 1
+				}
 				const raw = JSON.stringify(dbObj)
 
-				const requestOptions = {
+				let requestOptions = {
 					method: "POST",
 					headers: myHeaders,
 					body: raw,
 					redirect: "follow"
 				};
+
+				if (this.edit_announcement) {
+					requestOptions['PATCH'] = this.edit_announcement.onid
+				}
 
 
 				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg", requestOptions)
@@ -1456,6 +1483,9 @@ $(document).one("trigger::vue_loaded", function () {
 				if (!bool) {
 					this.$emit('setEditMasterTemplate', null)
 					this.$emit('close')
+					if (this.edit_announcement) {
+						this.$emit('done')
+					}
 				}
 			},
 			handleFrameMessage(event) {
@@ -1547,6 +1577,68 @@ $(document).one("trigger::vue_loaded", function () {
 				$('.ppUPLOAD #uploadedPanel > div > a').each(function () {
 					$(this).click()
 				})
+			},
+			fncRevertFromDisplayToValue(originalArr, display) {
+				console.log({ originalArr, display })
+				const idx = originalArr.findIndex(obj => obj.display === display)
+				if (idx > -1) {
+					return originalArr[idx]['value']
+				} else {
+					return display
+				}
+			},
+			fncConvertStringToObject(str) {
+				// convert const inputString = '{"SP02","ALL_SPs"}'; to a JS object
+				if (str === null || typeof str !== 'string') {
+					console.log('!string')
+					return {};
+				}
+
+				try {
+					// Attempt to process the string
+					// Remove the leading and trailing braces and escape characters
+					const trimmedStr = str.substring(2, str.length - 2);
+
+					// Split the string into an array using the escaped quote and comma as separators
+					const items = trimmedStr.split('\",\"');
+
+					// Convert the array into an object, assigning null to each key
+					const result = items.reduce((obj, item) => {
+						obj[item] = null; // Assign null or any default value
+						return obj;
+					}, {});
+
+					return result;
+				} catch (error) {
+					// In case of any errors during processing, return an empty object
+					return {};
+				}
+			},
+			setInitialFormElements() {
+				console.log(this.edit_announcement)
+				this.activeMasterTemplateId = this.edit_announcement['template_id']
+				this.theSelectedType = this.fncRevertFromDisplayToValue(this.filteredTypes, this.edit_announcement['type'])
+				this.theSelectedStatus = this.edit_announcement['status']
+				this.theEmailFromCompany = this.edit_announcement['from']
+				this.theEmailSubject = this.edit_announcement['subject']
+				if (this.edit_announcement['updateSubscription']) {
+					this.isUpdateSubscription = this.edit_announcement['updateSubscription']
+					this.updateSubscriptionInterval = this.edit_announcement['updateSubscriptionInterval']
+					this.updateSubscriptionUserId = this.edit_announcement['updateSubscriptionUserId']
+				}
+				if (this.edit_announcement['serviceWindow']) {
+					this.isServiceWindow = true
+					this.serviceWindowStart = this.edit_announcement['serviceWindowStart']
+					this.serviceWindowEnd = this.edit_announcement['serviceWindowEnd']
+				}
+				if (this.edit_announcement['shortDesc'] && this.edit_announcement['shortDesc'].length > 0) {
+					this.theEmailTeaser = this.edit_announcement['shortDesc']
+				}
+				const editReceivers = this.edit_announcement['receivers']
+				if (editReceivers) {
+					const formattedReceivers = this.fncConvertStringToObject(this.editReceivers)
+					console.log('editReceivers', formattedReceivers)
+				}
 			}
 		},
 		beforeDestroy() {
@@ -1560,6 +1652,9 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		mounted() {
 			window.addEventListener('message', this.handleFrameMessage);
+			if (this.edit_announcement) {
+				this.setInitialFormElements()
+			}
 			if (this.formTypeIsMaster) {
 				this.setActiveTab('html')
 				if (this.edit_master_template) {

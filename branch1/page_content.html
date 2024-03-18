@@ -1976,7 +1976,6 @@
                             <div>ONID:{{item.onid}}</div>
                             <div>Version: {{ item.version }}</div>
                             <div>Created :{{item.createdTime}}</div>
-                            <div>Udløb:{{item.expire_date}}</div>
                             <div>By:{{item.from}},{{item.company_display}}</div>
                             <div>Type:{{item.type}}</div>
                             <div class="etray_case_status">
@@ -2003,6 +2002,9 @@
                         </div>
                     </div>
                     <div class="o-cases__case_element__body__ann" v-if="getisTheActiveCase(item)">
+                        <div class="o-cases__case_element__body__ann__edit">
+                            <button class="o-btn o-btn--primary o-btn--small" @click.stop="setEditAnnouncement(item)">Opret ny version</button>
+                        </div>
                         <label>Email:</label>
                         <div class="o-ann__email-container">
                             <i class="tio">
@@ -2035,7 +2037,9 @@
                 :master_templates="masterTemplates"
                 :theNewMasterTemplateId="theNewMasterTemplateId"
                 :the_user="the_user"
+                :edit_announcement="theEditAnnouncement"
                 :edit_master_template="theEditMasterTemplate"
+                @done="onEditAnnouncementDone"
                 @setEditMasterTemplate="onSetEditMasterTemplate"
                 @close="setIsCreateAnnouncementModal(false)"
                 @openNewMasterModal="setIsCreateNewMaster(true)">
@@ -2202,20 +2206,6 @@
                                 </div>
                                 <hr class="o-hr">
                                 <h4>Indstillinger</h4>
-                                <div class="o-group__flex">
-                                    <!--
-                                    <div class="o-group">
-                                        <label class="o-label">Tidspunkt (start)</label>
-                                        <input type="date" v-model="theEmailDateStart" class="o-input" />
-                                    </div>
-                                    -->
-                                </div>
-                                <div class="o-group">
-                                    <div class="o-toggle-group" @click.stop="isSendNotifications = !isSendNotifications">
-                                    <label class="o-label">Send notifikationer</label>
-                                    <div class="o-toggle" :class="{'o-toggle--activated': isSendNotifications}"></div>
-                                    </div>
-                                </div>
                                 <div class="o-group__flex">
                                     <div class="o-group">
                                         <div class="o-toggle-group o-toggle-group--button" @click="onAttachFiles">
