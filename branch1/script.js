@@ -902,9 +902,13 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		mounted() {
-			this.getAnnouncements()
-			this.fetchMasterTemplates()
 			this.fetchStandardOptions()
+			setTimeout(_ => {
+				this.fetchMasterTemplates()
+			}, 2000)
+			setTimeout(_ => {
+				this.getAnnouncements()
+			}, 5000)
 			addPurifyFromCDN()
 		}
 	})
