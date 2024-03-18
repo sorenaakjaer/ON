@@ -614,7 +614,17 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		computed: {
 			activeAnnouncements() {
-				return this.announcements.filter(announcement => announcement.area === this.active_area)
+				return this.announcements.filter(announcement => announcement.area === this.active_area).sort((a, b) => {
+					// Check if either item lacks a 'createdTime' and adjust sorting accordingly
+					if (!a.createdTime) return 1; // a has no date, sort a to the bottom
+					if (!b.createdTime) return -1; // b has no date, sort b to the bottom
+
+					// Both items have a date, compare them as before
+					const dateA = new Date(a.createdTime);
+					const dateB = new Date(b.createdTime);
+
+					return dateA - dateB;
+				})
 			},
 			announcementsInVersionsArr() {
 				const groupedByOnid = this.activeAnnouncements.reduce((acc, curr) => {
@@ -848,7 +858,8 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 					.finally(() => {
 						this.isLoadingStandardOptions = false
-					});
+						this.fetchMasterTemplates()
+					})
 			},
 			fetchMasterTemplates() {
 				this.isLoadingMasterTemplates = true
@@ -882,6 +893,7 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 					.finally(() => {
 						this.isLoadingMasterTemplates = false;
+						this.getAnnouncements()
 					});
 			},
 			onAddMasterTemplate(arr) {
@@ -909,16 +921,14 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			onSetEditMasterTemplate(template) {
 				this.theEditMasterTemplate = template
+			},
+			fetchData() {
+				this.isLoadingAnnouncements = true
+				this.fetchStandardOptions()
 			}
 		},
 		mounted() {
-			this.fetchStandardOptions()
-			setTimeout(_ => {
-				this.fetchMasterTemplates()
-			}, 3000)
-			setTimeout(_ => {
-				this.getAnnouncements()
-			}, 6000)
+			this.fetchData()
 			addPurifyFromCDN()
 		}
 	})
@@ -1269,12 +1279,11 @@ $(document).one("trigger::vue_loaded", function () {
 					subject: this.theEmailSubject,
 					area: this.active_area,
 					type: this.theSelectedType,
-					receivers: Object.keys(this.selectedReceivers).map(key => key),
+					receivers: Object.keys(this.selectedReceivers).map(key => key).join(';'),
 					send_notifications: this.isSendNotifications,
 					attachments: null,
 					html: this.newMasterHTMLSanitized
 				};
-
 				if (this.edit_master_template) {
 					dbObj['template_id'] = this.edit_master_template
 				}
@@ -1356,7 +1365,7 @@ $(document).one("trigger::vue_loaded", function () {
 					"updateSubscription": this.isUpdateSubscription,
 					"updateSubscriptionInterval": !this.isUpdateSubscription ? null : this.updateSubscriptionInterval,
 					"updateSubscriptionUserId": !this.isUpdateSubscription ? null : this.updateSubscriptionUserId,
-					"receivers": Object.keys(this.selectedReceivers).length > 0 ? Object.keys(this.selectedReceivers) : null,
+					"receivers": Object.keys(this.selectedReceivers).map(key => key).join(';'),
 					"attachments": attachmentToken ? [attachmentToken] : null,
 					"html": this.emailHTMLAllPlaceholdersReplaced,
 					"placeholder_1": null,
@@ -1443,13 +1452,9 @@ $(document).one("trigger::vue_loaded", function () {
 				this.theSelectedType = masterTemp.type
 				this.isSendNotifications = masterTemp.send_notifications === "true" // Turn into boolean
 				this.theEmailHTML = masterTemp.html
-				/*
 				if (masterTemp.receivers && masterTemp.receivers.length > 0) {
-					masterTemp.receivers.forEach(receiverId => {
-						this.$set(this.selectedReceivers, receiverId, true)
-					})
+					this.selectedReceivers = this.fncConvertSemicolonSeparatedStringToObject(masterTemp.receivers)
 				}
-				*/
 			},
 			setIsCreateNewMaster(bool) {
 				this.$emit('openNewMasterModal')
@@ -1487,7 +1492,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.theEmailFromCompany = obj.company_display
 				this.theEmailHTML = obj.html
 				this.newMasterTitle = obj.name
-				this.selectedReceivers = obj.receivers ? obj.receivers : {}
+				this.selectedReceivers = obj.receivers && obj.receivers.length > 0 ? this.fncConvertSemicolonSeparatedStringToObject(obj.receivers) : {}
 				this.isSendNotifications = obj.send_notifications
 				this.theEmailSubject = obj.subject
 				if (obj.type) {
@@ -1562,32 +1567,14 @@ $(document).one("trigger::vue_loaded", function () {
 					return display
 				}
 			},
-			fncConvertStringToObject(str) {
-				// convert const inputString = '{"SP02","ALL_SPs"}'; to a JS object
-				if (str === null || typeof str !== 'string') {
-					console.log('!string')
-					return {};
-				}
-
-				try {
-					// Attempt to process the string
-					// Remove the leading and trailing braces and escape characters
-					const trimmedStr = str.substring(2, str.length - 2);
-
-					// Split the string into an array using the escaped quote and comma as separators
-					const items = trimmedStr.split('\",\"');
-
-					// Convert the array into an object, assigning null to each key
-					const result = items.reduce((obj, item) => {
-						obj[item] = null; // Assign null or any default value
-						return obj;
-					}, {});
-
-					return result;
-				} catch (error) {
-					// In case of any errors during processing, return an empty object
-					return {};
-				}
+			fncConvertSemicolonSeparatedStringToObject(input) {
+				const object = {};
+				input.split(';').forEach(prop => {
+					if (prop) {
+						object[prop] = true
+					}
+				});
+				return object;
 			},
 			setInitialFormElements() {
 				console.log(this.edit_announcement)
@@ -1611,8 +1598,9 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				const editReceivers = this.edit_announcement['receivers']
 				if (editReceivers) {
-					const formattedReceivers = this.fncConvertStringToObject(this.editReceivers)
+					const formattedReceivers = this.fncConvertSemicolonSeparatedStringToObject(editReceivers)
 					console.log('editReceivers', formattedReceivers)
+					this.selectedReceivers = formattedReceivers
 				}
 				this.theEmailHTML = this.edit_announcement['html']
 			}
