@@ -221,7 +221,7 @@
                     </div>
                 </div>
             </div>
-            <o-announcements v-if="!isShowOperationStatusErrorReports" :the_user="theUser"
+            <o-announcements v-if="!isShowOperationStatusErrorReports" :the_user="theUser" :the_user_type="theUserType"
                 :active_area="activeCategory"></o-announcements>
         </div>
         <div class="o-list-of-cases" v-if="!isViewNewsOrOperationStatus || isShowOperationStatusErrorReports">
@@ -1957,7 +1957,7 @@
                                 class="tio">clear_circle</i>
                         </div>
                     </div>
-                    <button class="o-btn o-btn--primary" @click="setIsCreateAnnouncementModal(true)"><span v-if="active_area === 'News'">Create news</span><span v-else>Create announcement</span></button>
+                    <button class="o-btn o-btn--primary" @click="setIsCreateAnnouncementModal(true)" v-if="the_user_type === 'IO' || the_user_type === 'ON'"><span v-if="active_area === 'News'">Opret nyhed</span><span v-else>Opret udmelding</span></button>
                 </div>
             </div>
             <h4 class="text-explainer o-center" v-if="!isLoadingAnnouncements && searchedAnnouncements.length === 0">Ingen udmeldinger matcher din søgning</h4>
@@ -2003,7 +2003,7 @@
                     </div>
                     <div class="o-cases__case_element__body__ann" v-if="getisTheActiveCase(item)">
                         <div class="o-cases__case_element__body__ann__edit">
-                            <button class="o-btn o-btn--primary o-btn--small" @click.stop="setEditAnnouncement(item)">Opret ny version</button>
+                            <button class="o-btn o-btn--primary o-btn--small" @click.stop="setEditAnnouncement(item)" v-if="the_user_type === 'IO' || the_user_type === 'ON'">Redigèr/ny version</button>
                         </div>
                         <label>Email:</label>
                         <div class="o-ann__email-container">
@@ -2013,15 +2013,22 @@
                             <div class="o-ann__email-container__html" v-html="item.html" v-if="item.html && item.html.length > 0"></div>
                         </div>
                     </div>
-                    <div v-if="item.vEarlierVersions.length > 0">
+                    <div v-if="item.v_earlierVersions.length > 0">
                         <div class="o-cases__case_element__body__ann" v-if="getisTheActiveCase(item)">
-                            <label>Se tidligere Emails:</label>
-                            <div class="o-ann__email-container" v-for="ealierItem in item.vEarlierVersions" :key="ealierItem.v_id"  v-if="ealierItem.html && ealierItem.html.length > 0">
+                            <div class="o-ann__see-more-container" v-if="theActiveSeeMoreCase !== item.onid">
+                                <button class="o-btn o-btn--small" @click.stop="theActiveSeeMoreCase = item.onid">Se tidligere Emails:</button>
+                            </div>
+                            <template v-else> 
+                            <div class="o-ann__see-more-container">
+                                <button class="o-btn o-btn--small" @click.stop="theActiveSeeMoreCase = null">Skjul tidligere Emails:</button>
+                            </div>
+                            <div class="o-ann__email-container" v-for="ealierItem in item.v_earlierVersions" :key="ealierItem.v_id"  v-if="ealierItem.html && ealierItem.html.length > 0">
                                 <i class="tio">
                                     email_outlined
                                     </i>
                                 <div class="o-ann__email-container__html" v-html="ealierItem.html"></div>
                             </div>
+                        </template>
                         </div>
                     </div>
                 </div>
@@ -2074,8 +2081,8 @@
                         <h4>{{ theFormTitle }}</h4>
                     </div>
                     <div class="o-modal__header__right">
-                        <button v-if="formTypeIsMaster && edit_master_template" class="o-btn o-btn--small" @click="setIsDeleteConfirmation(true)">Delete</button>
-                        <button class="o-btn o-btn--small o-btn--primary" :class="{'o-btn--loading': isSubmitting}" @click="onSubmit">Save</button>
+                        <button v-if="formTypeIsMaster && edit_master_template" class="o-btn o-btn--small" @click="setIsDeleteConfirmation(true)">Slet</button>
+                        <button class="o-btn o-btn--small o-btn--primary" :class="[{'o-btn--loading': isSubmitting}, {'o-btn--disabled': !isSaveButtonValid}]" @click="onSubmit">Send udmelding</button>
                     </div>
                 </div>
                 <div class="o-modal__body">
@@ -2123,7 +2130,7 @@
                                     </div>
                                 </div>
                                 <div class="o-group">
-                                    <label class="o-label">From (Shown in email sender)</label>
+                                    <label class="o-label">Fra firma (Shown in email sender)</label>
                                     <input type="text" v-model="theEmailFromCompany" class="o-input" />
                                 </div>
                                 <div class="o-group">
@@ -2204,6 +2211,7 @@
                                         </ul>
                                     </div>
                                 </div>
+                            <template v-if="!formTypeIsMaster">
                                 <hr class="o-hr">
                                 <h4>Indstillinger</h4>
                                 <div class="o-group__flex">
@@ -2228,7 +2236,7 @@
                                         <input type="datetime-local" class="o-input" v-model="serviceWindowEnd" />
                                     </div>
                                 </div>
-                                <div class="o-group__flex" v-if="!formTypeIsMaster">
+                                <div class="o-group__flex">
                                     <div class="o-toggle-group" @click="isUpdateSubscription = !isUpdateSubscription">
                                         <label class="o-label">Get update notifikation</label>
                                         <div class="o-toggle" :class="{'o-toggle--activated': isUpdateSubscription}"></div>
@@ -2245,8 +2253,8 @@
                                             <option v-for="item in filteredAssignUpdatesToList" :value="item.Id">{{ item.Name }}</option>
                                         </select>
                                     </div>
-                                    
                                 </div>
+                            </template>
                             </div>
                             </div>
                         </form>

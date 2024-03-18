@@ -11016,3 +11016,20 @@ ul.tags-selector__dropdow__create {
 .o-ann--modal__confirm .o-modal__body {
     flex-direction: column;
 }
+
+.o-cases__case_element__body__ann__edit {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.o-ann__see-more-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.o-btn.o-btn--disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}

@@ -586,6 +586,9 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			the_user: {
 				default: () => { }
+			},
+			the_user_type: {
+				default: '' // IO, SP, ON etc.
 			}
 		},
 		data() {
@@ -605,7 +608,8 @@ $(document).one("trigger::vue_loaded", function () {
 				isLoadingMasterTemplates: false,
 				theEditMasterTemplate: null,
 				theNewMasterTemplateId: null,
-				theEditAnnouncement: null
+				theEditAnnouncement: null,
+				theActiveSeeMoreCase: null
 			}
 		},
 		computed: {
@@ -614,11 +618,9 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			announcementsInVersionsArr() {
 				const groupedByOnid = this.activeAnnouncements.reduce((acc, curr) => {
-					// Group announcements by 'onid'
 					(acc[curr.onid] = acc[curr.onid] || []).push(curr);
 					return acc;
 				}, {});
-
 				return Object.values(groupedByOnid).map(group => {
 					group.sort((a, b) => b.version - a.version);
 
@@ -626,7 +628,7 @@ $(document).one("trigger::vue_loaded", function () {
 					const earlierVersions = group.slice(1);
 					return {
 						...newest,
-						vEarlierVersions: earlierVersions
+						v_earlierVersions: earlierVersions
 					};
 				});
 			},
@@ -675,7 +677,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			filterStatuses() {
 				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden status', v_sort: true }]
-				this.announcements.forEach(ann => {
+				this.activeAnnouncements.forEach(ann => {
 					const annStatus = ann['status']
 					if (annStatus) {
 						const idx = uniqueTags.findIndex(allTag => allTag.value === annStatus)
@@ -689,7 +691,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			filterTypes() {
 				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden type', v_sort: true }]
-				this.announcements.forEach(ann => {
+				this.activeAnnouncements.forEach(ann => {
 					const annProp = ann['type']
 					if (annProp) {
 						const idx = uniqueTags.findIndex(allTag => allTag.value === annProp)
@@ -729,7 +731,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return this.theAnnActiveItem === item.v_id
 			},
 			setActiveItem(item) {
-				console.log('setActiveItem', item)
+				this.theActiveSeeMoreCase = null
 				if (this.theAnnActiveItem !== item.v_id) {
 					this.theAnnActiveItem = item.v_id
 				} else {
@@ -853,7 +855,6 @@ $(document).one("trigger::vue_loaded", function () {
 				if (typeof ISLOCALHOST !== 'undefined') {
 					this.masterTemplates = MASTERTEMPLATES
 					this.isLoadingMasterTemplates = false
-					console.log({ MASTERTEMPLATES })
 					return
 				}
 				const myHeaders = new Headers();
@@ -884,7 +885,6 @@ $(document).one("trigger::vue_loaded", function () {
 					});
 			},
 			onAddMasterTemplate(arr) {
-				console.log('parent::onAddMasterTemplate', arr)
 				arr.forEach(newMasterTemp => {
 					const idx = this.masterTemplates.findIndex(masterTemp => masterTemp.template_id === newMasterTemp.template_id)
 					if (idx < 0) {
@@ -946,66 +946,11 @@ $(document).one("trigger::vue_loaded", function () {
 			return {
 				activeMasterTemplateId: null,
 				theEmailHTML: '',
-				initNewMasterHTML:
-					`<!DOCTYPE html>
-<html lang="da-DK">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>{{{pp_mergecode:subject}}}</title>
-	</head>
-	<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; font-size: 16px; color: #333;">
-	<table width="100%" cellspacing="0" cellpadding="0" border="0">
-		<tr>
-			<td align="center" style="padding: 20px 0;">
-			<!-- Email Container -->
-			<table width="600" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse; border: 1px solid #cccccc; background: #ffffff;width: 100%;max-width: 600px;">
-				<!-- Header Section -->
-				<tr>
-					<td align="center" bgcolor="#4CAF50" style="padding: 20px; color: #ffffff; font-size: 24px; font-weight: bold;">
-					{{{pp_mergecode:subject}}}
-					</td>
-				</tr>
-				<!-- Body Section -->
-				<tr>
-					<td style="padding: 20px; text-align: left;">
-					<h2 style="font-size: 22px;">{{{pp_mergecode:type}}}</h2>
-					<h3 style="font-size: 18px;">Hi Partner,</h2>
-					<p>{{{ pp_mergecode:placeholder1}}}</p>
-					<br>
-					<h4>Best regards</h4>
-					<p>{{{pp_mergecode:from}}}<p>
-					<p>{{{pp_mergecode:user_name}}}</p>
-					<!-- HISTORY -->
-					{{ pp_hasdata:history_placeholder1-X }}
-					<table cellspacing="0" cellpadding="0" border="0" style="margin-top: 20px;">
-						<tr>
-							<td>
-								<h4>HISTORY</h4>
-								<p>{{{ pp_mergecode:history_placeholder1-X }}} <p>
-							</td>
-						</tr>
-					</table>
-					</td>
-				</tr>
-				<!-- Footer Section -->
-				<tr>
-					<td align="center" bgcolor="#f2f2f2" style="padding: 20px; color: #666666; font-size: 14px;">
-						Email Footer Content<br>
-						<a href="https://example.com/unsubscribe" target="_blank" style="color: #666666; text-decoration: underline;">Unsubscribe</a>
-					</td>
-				</tr>
-			</table>
-			</td>
-		</tr>
-	</table>
-	</body>
-</html>`,
 				newMasterTitle: '',
 				isSubmitting: false,
 				isUpdateSubscription: false,
 				updateSubscriptionInterval: null,
-				updateSubscriptionUserId: null,
+				updateSubscriptionUserId: this.the_user ? this.the_user.id : null,
 				isAttachFiles: false,
 				attachments: null,
 				isSendNotifications: false,
@@ -1092,10 +1037,8 @@ $(document).one("trigger::vue_loaded", function () {
 					replacements['teaser'] = this.theEmailTeaser
 				}
 				this.activePlaceholders.forEach(place => {
-					if (place.text.length > 0) {
-						const key = 'placeholder' + place['num']
-						replacements[key] = place.text
-					}
+					const key = 'placeholder' + place['num']
+					replacements[key] = place.text
 				})
 				return replacements
 			},
@@ -1144,8 +1087,17 @@ $(document).one("trigger::vue_loaded", function () {
 					.sort((a, b) => b.template_id - a.template_id);
 			},
 			filteredTypes() {
+				const allTypes = []
 				const oTypes = this.standard_options && this.standard_options['extMsg_type'] ? this.standard_options['extMsg_type'] : []
-				return oTypes.filter(oType => oType.area === this.active_area)
+				oTypes.forEach(oType => {
+					if (oType.area === this.active_area) {
+						const idx = allTypes.findIndex(allType => allType.value === oType.value)
+						if (idx < 0) {
+							allTypes.push(oType)
+						}
+					}
+				})
+				return allTypes.sort((a, b) => a.display.localeCompare(b.display))
 			},
 			filteredStatusses() {
 				const oStatusses = this.standard_options && this.standard_options['extMsg_status'] ? this.standard_options['extMsg_status'] : []
@@ -1175,7 +1127,7 @@ $(document).one("trigger::vue_loaded", function () {
 				if (!this.formTypeIsMaster) {
 					if (this.edit_announcement) {
 						const versionNumber = +this.edit_announcement['version'] + 1
-						return this.active_area === 'News' ? 'Rediger nyhed' : 'Ny version (' + versionNumber + ') af udmelding'
+						return this.active_area === 'News' ? 'Rediger nyhed' : 'Ny udmelding (version nr. ' + versionNumber + ')'
 					} else {
 						return this.active_area === 'News' ? 'Opret nyhed' : 'Opret udmelding'
 					}
@@ -1186,12 +1138,14 @@ $(document).one("trigger::vue_loaded", function () {
 						return 'Rediger master template'
 					}
 				}
+			},
+			isSaveButtonValid() {
+				return !this.getIsFormInvalid()
 			}
 		},
 		watch: {
 			theNewMasterTemplateId(val) {
 				if (val) {
-					console.log('setMasterTemplate')
 					this.setMasterTemplate(val)
 				}
 			},
@@ -1212,12 +1166,23 @@ $(document).one("trigger::vue_loaded", function () {
 						}
 					}
 				}
-			},
-			edit_master_template(val) {
-				console.log('child::watcH::edit_master_template', val)
 			}
 		},
 		methods: {
+			getIsFormInvalid() {
+				const errors = {}
+				if (this.formTypeIsMaster) {
+					if (this.newMasterTitle.length === 0) {
+						errors['master_title'] = 'Der skal være en titel'
+					}
+					return Object.keys(errors).length > 0
+				}
+				// Not master validation
+				if (this.selectedReceiversLength === 0) {
+					errors['receivers'] = 'Der skal vælges mindst en modtager'
+				}
+				return Object.keys(errors).length > 0
+			},
 			setIsDeleteConfirmation(bool) {
 				this.isConfirmation = bool
 			},
@@ -1276,14 +1241,6 @@ $(document).one("trigger::vue_loaded", function () {
 					const regex = new RegExp(`{{\\{\\s*pp_mergecode:${key}\\s*\\}\\}}`, 'g')
 					html = html.replace(regex, value)
 				});
-
-				Object.entries(replacements).forEach(([key, value]) => {
-					if (key.startsWith('history_placeholder')) {
-						const regex = new RegExp(`{{\\s*pp_hasdata:${key}\\s*}}`, 'g')
-						html = html.replace(regex, value);
-					}
-				})
-
 				return html
 			},
 			createMasterTemplate() {
@@ -1442,6 +1399,10 @@ $(document).one("trigger::vue_loaded", function () {
 					});
 			},
 			onSubmit() {
+				if (this.getIsFormInvalid()) {
+					this.isShowErrors = true
+					return
+				}
 				this.isSubmitting = true
 				if (this.formTypeIsMaster) {
 					this.createMasterTemplate()
@@ -1639,6 +1600,7 @@ $(document).one("trigger::vue_loaded", function () {
 					const formattedReceivers = this.fncConvertStringToObject(this.editReceivers)
 					console.log('editReceivers', formattedReceivers)
 				}
+				this.theEmailHTML = this.edit_announcement['html']
 			}
 		},
 		beforeDestroy() {
@@ -1669,6 +1631,16 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 				})
 			} else {
+				let tempId = 0
+				this.sortedMasterTemplates.forEach(masterTemp => {
+					console.log({ masterTemp })
+					if (+masterTemp.template_id > tempId) {
+						tempId = +masterTemp.template_id
+					}
+				})
+				if (tempId > 0) {
+					this.setMasterTemplate(tempId)
+				}
 				this.setActiveTab('placeholders')
 			}
 		}
