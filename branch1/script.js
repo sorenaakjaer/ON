@@ -643,9 +643,23 @@ $(document).one("trigger::vue_loaded", function () {
 				});
 			},
 			vAnnouncements() {
+				const potentialReceivers = [{ id: 'ALL', name: 'All' }, { id: 'ALL_SPs', name: 'All SPs' }, { id: 'ALL_IOs', name: 'All IOs' }].concat(this.filteredReceivers)
+				const changeIdsToNames = (item) => {
+					const rece = item.receivers && item.receivers.length > 0 ? item.receivers : ''
+					const names = rece.split(';').map(userid => {
+						const idx = potentialReceivers.findIndex(user => user.id === userid);
+						if (idx > -1) {
+							return potentialReceivers[idx]['name']
+						} else {
+							return userid
+						}
+					})
+					return names.join(', ')
+				}
 				return this.announcementsInVersionsArr.map(ann => ({
 					...ann,
-					v_id: `${ann.onid}_${ann.version}`
+					v_id: `${ann.onid}_${ann.version}`,
+					v_receivers: changeIdsToNames(ann)
 				}))
 			},
 			vAnnouncementsFilteredWithType() {
@@ -777,13 +791,6 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			getAnnouncements() {
 				this.isLoadingAnnouncements = true;
-				if (typeof ISLOCALHOST !== 'undefined') {
-					console.log({ ANNOUNCEMENTS })
-					this.announcements = ANNOUNCEMENTS
-					this.isLoadingAnnouncements = false;
-					return
-				}
-
 				const myHeaders = new Headers();
 				myHeaders.append("Accept", "application/json");
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
@@ -825,13 +832,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			fetchStandardOptions() {
-				console.log('fetchStandardOptions')
 				this.isLoadingStandardOptions = true
-				if (typeof ISLOCALHOST !== 'undefined') {
-					this.isLoadingStandardOptions = false
-					this.standardOptions = JSON.parse(JSON.stringify(STANDARDOPTIONS))
-					return
-				}
 				const myHeaders = new Headers();
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
 
@@ -863,11 +864,6 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			fetchMasterTemplates() {
 				this.isLoadingMasterTemplates = true
-				if (typeof ISLOCALHOST !== 'undefined') {
-					this.masterTemplates = MASTERTEMPLATES
-					this.isLoadingMasterTemplates = false
-					return
-				}
 				const myHeaders = new Headers();
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
 				myHeaders.append("Accept", "application/json");
@@ -924,6 +920,13 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			fetchData() {
 				this.isLoadingAnnouncements = true
+				if (typeof ISLOCALHOST !== 'undefined') {
+					this.masterTemplates = MASTERTEMPLATES
+					this.announcements = ANNOUNCEMENTS
+					this.isLoadingAnnouncements = false;
+					this.standardOptions = JSON.parse(JSON.stringify(STANDARDOPTIONS))
+					return
+				}
 				this.fetchStandardOptions()
 			}
 		},
@@ -1010,7 +1013,7 @@ $(document).one("trigger::vue_loaded", function () {
 					{ id: '{{{pp_mergecode:placeholder9}}}', num: 9, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder9}}}', isShow: false },
 					{ id: '{{{pp_mergecode:placeholder10}}}', num: 10, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder10}}}', isShow: false }
 				],
-				placeholder_hist: null,
+				placeholderHist: null,
 				activeTab: 'placeholders',
 				isServiceWindow: false,
 				serviceWindowStart: this.formatDate(new Date()),
@@ -1386,7 +1389,9 @@ $(document).one("trigger::vue_loaded", function () {
 				})
 				if (this.edit_announcement) {
 					dbObj['onid'] = this.edit_announcement.onid
+					dbObj['placeholder_hist'] = this.placeholderHist
 				}
+				console.log({ dbObj })
 				const raw = JSON.stringify(dbObj)
 
 				let requestOptions = {
@@ -1559,7 +1564,6 @@ $(document).one("trigger::vue_loaded", function () {
 				})
 			},
 			fncRevertFromDisplayToValue(originalArr, display) {
-				console.log({ originalArr, display })
 				const idx = originalArr.findIndex(obj => obj.display === display)
 				if (idx > -1) {
 					return originalArr[idx]['value']
@@ -1577,19 +1581,18 @@ $(document).one("trigger::vue_loaded", function () {
 				return object;
 			},
 			setInitialFormElements() {
-				console.log(this.edit_announcement)
 				this.activeMasterTemplateId = this.edit_announcement['template_id']
 				this.theSelectedType = this.fncRevertFromDisplayToValue(this.filteredTypes, this.edit_announcement['type'])
 				this.theSelectedStatus = this.edit_announcement['status']
 				this.theEmailFromCompany = this.edit_announcement['from']
 				this.theEmailSubject = this.edit_announcement['subject']
 				if (this.edit_announcement['updateSubscription']) {
-					this.isUpdateSubscription = this.edit_announcement['updateSubscription']
+					this.isUpdateSubscription = this.edit_announcement['updateSubscription'] != 'false'
 					this.updateSubscriptionInterval = this.edit_announcement['updateSubscriptionInterval']
 					this.updateSubscriptionUserId = this.edit_announcement['updateSubscriptionUserId']
 				}
 				if (this.edit_announcement['serviceWindow']) {
-					this.isServiceWindow = true
+					this.isServiceWindow = this.edit_announcement['serviceWindow'] != 'false'
 					this.serviceWindowStart = this.edit_announcement['serviceWindowStart']
 					this.serviceWindowEnd = this.edit_announcement['serviceWindowEnd']
 				}
@@ -1599,10 +1602,39 @@ $(document).one("trigger::vue_loaded", function () {
 				const editReceivers = this.edit_announcement['receivers']
 				if (editReceivers) {
 					const formattedReceivers = this.fncConvertSemicolonSeparatedStringToObject(editReceivers)
-					console.log('editReceivers', formattedReceivers)
 					this.selectedReceivers = formattedReceivers
 				}
 				this.theEmailHTML = this.edit_announcement['html']
+				// Placeholder history
+				let newHistPlaceholder = {}
+				const currentHist = this.edit_announcement['placeholder_hist']
+				try {
+					let historyObj = JSON.parse(currentHist)
+					newHistPlaceholder = historyObj
+				} catch {
+					console.log('cannot JSON.parse()')
+				}
+				console.log('start', { newHistPlaceholder })
+				for (let i = 1; i < 11; i++) {
+					const currentPlaceholder = this.edit_announcement['placeholder_' + i]
+					console.log(i, currentPlaceholder)
+					// Den kan være null
+					const historyPlaceholder = newHistPlaceholder['placeholder' + i]
+					// tjek om den generelt er null , hvis den er, så dropper du den
+					if (historyPlaceholder == null && currentPlaceholder == null) {
+						console.log('Gør intet', { historyPlaceholder, currentPlaceholder })
+					} else if (currentPlaceholder && historyPlaceholder == null) {
+						// Hvis den har tekst, og den oprindelige var null
+						console.log('set den på en null', historyPlaceholder)
+						console.log('newHistPlaceholder[historyPlaceholder]', newHistPlaceholder[historyPlaceholder])
+						newHistPlaceholder['placeholder' + i] = [{ time: this.edit_announcement['createdTime'], text: currentPlaceholder }]
+					} else if (currentPlaceholder && historyPlaceholder) {
+						// Hvis den har tekst, og den oprindelige også har noget
+						newHistPlaceholder['placeholder' + i].push({ time: this.edit_announcement['createdTime'], text: currentPlaceholder })
+					}
+				}
+				this.placeholderHist = newHistPlaceholder
+				console.log('end', { newHistPlaceholder })
 			}
 		},
 		beforeDestroy() {
@@ -1633,15 +1665,16 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 				})
 			} else {
-				let tempId = 0
-				this.sortedMasterTemplates.forEach(masterTemp => {
-					console.log({ masterTemp })
-					if (+masterTemp.template_id > tempId) {
-						tempId = +masterTemp.template_id
+				if (!this.edit_announcement) {
+					let tempId = 0
+					this.sortedMasterTemplates.forEach(masterTemp => {
+						if (+masterTemp.template_id > tempId) {
+							tempId = +masterTemp.template_id
+						}
+					})
+					if (tempId > 0) {
+						this.setMasterTemplate(tempId)
 					}
-				})
-				if (tempId > 0) {
-					this.setMasterTemplate(tempId)
 				}
 				this.setActiveTab('placeholders')
 			}
