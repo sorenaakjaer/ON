@@ -1204,8 +1204,9 @@ $(document).one("trigger::vue_loaded", function () {
 				return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
 			},
 			isNewDesignActive() {
-				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet', 'SP Dev Company', 'IO Dev Company']
-				return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
+				    return true;
+				//const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet', 'SP Dev Company', 'IO Dev Company']
+				//return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
 			},
 			allCaseCategories() {
 				const uniqueArr = [{ value: 'v_no_selected', label: 'Uden kategori', v_sort: true }]
