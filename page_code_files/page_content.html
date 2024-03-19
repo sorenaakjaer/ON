@@ -142,10 +142,10 @@
                 </li>
                 <!-- START OpenNet OpenAnalytics  -->
                 <li @click="setActivecCategory('OpenAnalytics')"
-                    :class="{'li--active': activeCategory==='OpenAnalytics'}" class="menu_openanalytics">
+                    :class="{'li--active': activeCategory==='OpenAnalytics'}" class="menu_openanalytics"  v-if="showOpenAnalytics">
                     <div>
                         <h4>OpenAnalytics</h4>
-                        <p>Access and retrieve insightful, dynamic data from OpenNet expansive data universe</p>
+                        <p>Se dynamiske rapporter og hent filer</p>
                     </div>
                     <div class="tio chevron_right"></div>
                 </li>
