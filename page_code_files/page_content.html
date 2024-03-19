@@ -355,11 +355,11 @@
                             <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__left">
                                 <o-multi-select :items="allCaseCategories" :selected_items="theActiveFilterCategories"
                                     @toggle_item="toggleFilterCategory" select_title="Vælg kategorier"></o-multi-select>
-                                <o-multi-select :items="allCaseTags" :selected_items="theActiveFilterTags"
+                                <o-multi-select v-if="isUserOpennetOrSP" :items="allCaseTags" :selected_items="theActiveFilterTags"
                                     @toggle_item="toggleFilterTag" select_title="Vælg tag"></o-multi-select>
-                                <o-multi-select :items="allCaseGroups" :selected_items="theActiveFilterGroups"
+                                <o-multi-select v-if="isUserOpennetOrSP":items="allCaseGroups" :selected_items="theActiveFilterGroups"
                                     @toggle_item="toggleFilterGroup" select_title="Vælg gruppe"></o-multi-select>
-                                <o-multi-select :items="allCaseStatus" :selected_items="theActiveFilterStatus"
+                                <o-multi-select v-if="isUserOpennetOrSP" :items="allCaseStatus" :selected_items="theActiveFilterStatus"
                                     @toggle_item="toggleFilterStatus" select_title="Vælg status"
                                     :i18n="statusI18N"></o-multi-select>
                             </div>
@@ -588,7 +588,7 @@
                             </div>
                         </template>
                     </div>
-                    <div class="o-body__list-of-cases__right" v-if="theActiveFilter !=='dynamic' && !isNewDesignActive && activeCategory !=='OpenAnalytics'">
+                    <div class="o-body__list-of-cases__right" v-if="theActiveFilter !=='dynamic' && !isCases && activeCategory !=='OpenAnalytics'">
                         <div class="o-search-group">
                             <div class="o-icon">
                                 <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
