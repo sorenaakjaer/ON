@@ -1397,7 +1397,8 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				if (this.edit_announcement) {
 					dbObj['onid'] = this.edit_announcement.onid
-					dbObj['placeholder_hist'] = JSON.stringify(fncConvertNullsToEmptyArrays(this.placeholderHist))
+					console.log('placeholder_hist', JSON.stringify(fncConvertNullsToEmptyArrays(this.placeholderHist)))
+					// dbObj['placeholder_hist'] = JSON.stringify(fncConvertNullsToEmptyArrays(this.placeholderHist))
 				}
 				console.log({ dbObj })
 				const raw = JSON.stringify(dbObj)
