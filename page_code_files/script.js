@@ -2398,14 +2398,14 @@ $(document).one("trigger::vue_loaded", function () {
 					return newURL;
 				}
 				if (this.theActiveFilter === 'OpenAnalytics_tab1') {
-					const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/1';
+					if ($(".ENV > input").val() === "PROD") {const openAnalyticsUrl = 'https://opn-iframes-prod.azurewebsites.net/1'} else {const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/1'};
 					this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
 					// For demonstration purpose
 					const openAnalyticsIframeURL = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret);
-					console.log(openAnalyticsIframeURL);
+					//console.log(openAnalyticsIframeURL);
 				}
 				if (this.theActiveFilter === 'OpenAnalytics_tab2') {
-					const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/2';
+					if ($(".ENV > input").val() === "PROD") {const openAnalyticsUrl = 'https://opn-iframes-prod.azurewebsites.net/2'} else {const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/2'};					
 					this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
 				}
 				// Wait for Vue's next tick to ensure the DOM updates
@@ -2422,7 +2422,7 @@ $(document).one("trigger::vue_loaded", function () {
 				const self = this
 				const handleMessage = (event) => {
 					console.log('message!', event)
-					if (event.origin !== 'https://opn-iframes-dev.azurewebsites.net') {
+					if (event.origin !== 'https://opn-iframes-dev.azurewebsites.net' && event.origin !== 'https://opn-iframes-prod.azurewebsites.net') {
 						return; // Ensure the message is from a trusted origin
 					}
 					if (event.data.event === 'Inspari_iframeChanged') {
