@@ -609,7 +609,8 @@ $(document).one("trigger::vue_loaded", function () {
 				theEditMasterTemplate: null,
 				theNewMasterTemplateId: null,
 				theEditAnnouncement: null,
-				theActiveSeeMoreCase: null
+				theActiveSeeMoreCase: null,
+				isDayJSLoadedToPage: false
 			}
 		},
 		computed: {
@@ -659,7 +660,9 @@ $(document).one("trigger::vue_loaded", function () {
 				return this.announcementsInVersionsArr.map(ann => ({
 					...ann,
 					v_id: `${ann.onid}_${ann.version}`,
-					v_receivers: changeIdsToNames(ann)
+					v_receivers: changeIdsToNames(ann),
+					v_timeFromNow: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).fromNow() : ann.createdTime,
+					v_createTimeFormatted: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).format('LLL') : ann.createdTime
 				}))
 			},
 			vAnnouncementsFilteredWithType() {
@@ -931,11 +934,49 @@ $(document).one("trigger::vue_loaded", function () {
 					return
 				}
 				this.fetchStandardOptions()
+			},
+			addDayJSFromCDN() {
+				if (this.isDayJSLoadedToPage) {
+					return;
+				}
+				const scriptsToLoad = [
+					"https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js",
+					"https://cdn.jsdelivr.net/npm/dayjs@1.11.10/locale/da.js",
+					"https://cdn.jsdelivr.net/npm/dayjs@1.11.10/plugin/relativeTime.js",
+					'https://cdn.jsdelivr.net/npm/dayjs@1.11.10/plugin/localizedFormat.js'
+				];
+
+				const loadScript = (scriptUrl) => {
+					return new Promise((resolve, reject) => {
+						$.getScript(scriptUrl, (e, t, s) => {
+							resolve();
+						}).fail((jqxhr, settings, exception) => {
+							reject(exception);
+						});
+					});
+				};
+
+				scriptsToLoad.reduce((prevPromise, scriptUrl) => {
+					return prevPromise.then(() => loadScript(scriptUrl));
+				}, Promise.resolve())
+					.then(() => {
+						dayjs.locale('da');
+						dayjs.extend(window.dayjs_plugin_relativeTime);
+						dayjs.extend(window.dayjs_plugin_localizedFormat);
+						this.isDayJSLoadedToPage = true;
+						console.log('DayJS and plugins loaded successfully.');
+					})
+					.catch(error => {
+						console.error('Error loading DayJS scripts:', error);
+					});
 			}
+		},
+		beforeMount() {
+			this.addDayJSFromCDN();
 		},
 		mounted() {
 			this.fetchData()
-			addPurifyFromCDN()
+			addPurifyFromCDN();
 		}
 	})
 	Vue.component('o-announcements-modal', {
@@ -1624,21 +1665,15 @@ $(document).one("trigger::vue_loaded", function () {
 					let historyObj = JSON.parse(currentHist)
 					newHistPlaceholder = historyObj
 				} catch {
-					console.log('cannot JSON.parse()')
 				}
-				console.log('start', { newHistPlaceholder })
 				for (let i = 1; i < 11; i++) {
 					const currentPlaceholder = this.edit_announcement['placeholder_' + i]
-					console.log(i, currentPlaceholder)
 					// Den kan være null
 					const historyPlaceholder = newHistPlaceholder['placeholder' + i]
 					// tjek om den generelt er null , hvis den er, så dropper du den
 					if (historyPlaceholder == null && currentPlaceholder == null) {
-						console.log('Gør intet', { historyPlaceholder, currentPlaceholder })
 					} else if (currentPlaceholder && historyPlaceholder == null) {
 						// Hvis den har tekst, og den oprindelige var null
-						console.log('set den på en null', historyPlaceholder)
-						console.log('newHistPlaceholder[historyPlaceholder]', newHistPlaceholder[historyPlaceholder])
 						newHistPlaceholder['placeholder' + i] = [{ time: this.edit_announcement['createdTime'], text: currentPlaceholder }]
 					} else if (currentPlaceholder && historyPlaceholder) {
 						// Hvis den har tekst, og den oprindelige også har noget
@@ -1646,7 +1681,6 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 				}
 				this.placeholderHist = newHistPlaceholder
-				console.log('end', { newHistPlaceholder })
 			}
 		},
 		beforeDestroy() {
