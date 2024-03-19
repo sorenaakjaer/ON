@@ -790,6 +790,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}, 600)
 			},
 			getAnnouncements() {
+				console.log('fetchAnnouncements')
 				this.isLoadingAnnouncements = true;
 				const myHeaders = new Headers();
 				myHeaders.append("Accept", "application/json");
@@ -799,9 +800,9 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: "follow"
 				};
-				console.log('requestOptions', requestOptions);
 				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg", requestOptions)
 					.then(response => {
+						console.log('fetchAnnouncements::answer', response)
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
@@ -832,6 +833,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			fetchStandardOptions() {
+				console.log('fetchStandardOptions')
 				this.isLoadingStandardOptions = true
 				const myHeaders = new Headers();
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
@@ -844,7 +846,7 @@ $(document).one("trigger::vue_loaded", function () {
 
 				fetch("https://dev-portal.opennet.dk/ppServices/api/general/getFormDetails/all", requestOptions)
 					.then(response => {
-						console.log('fetchStandardOptions', { response })
+						console.log('fetchStandardOptions::answer', { response })
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
@@ -863,6 +865,7 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 			},
 			fetchMasterTemplates() {
+				console.log('fetchMasterTemplates')
 				this.isLoadingMasterTemplates = true
 				const myHeaders = new Headers();
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
@@ -875,7 +878,7 @@ $(document).one("trigger::vue_loaded", function () {
 				};
 				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate", requestOptions)
 					.then(response => {
-						console.log('fetchMasterTemplates', { response })
+						console.log('fetchMasterTemplates::answer', { response })
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
