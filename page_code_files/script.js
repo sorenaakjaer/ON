@@ -9,7 +9,7 @@ $(document).one("TRIGGER_AFTER_LOGIN", function () {
 	function observe_o_page_loaded() {
 		const el = $('#o-app')
 		if (!el || el.length === 0) {
-			console.warn('No element found with selector');
+			//console.warn('No element found with selector');
 			return;
 		}
 		let cInterval = setInterval(_ => {
@@ -18,7 +18,7 @@ $(document).one("TRIGGER_AFTER_LOGIN", function () {
 				clearInterval(cInterval)
 				$(document).trigger('trigger::o_page_loaded')
 			} else {
-				console.log('observer::empty')
+				//console.log('observer::empty')
 			}
 		}, 1000)
 	}
@@ -1286,19 +1286,19 @@ $(document).one("trigger::vue_loaded", function () {
 
 				// Filter reports by the active category
 				let filteredReports = this.PBIReportsData.filter(report => report.area === this.activeCategory);
-				console.log('filteredReports',filteredReports);
+				//console.log('filteredReports',filteredReports);
 				// Find the index of the report with the display name "Vælg"
 				let indexOfValg = filteredReports.findIndex(report => report && report.reportDisplayName === "Vælg");
-				console.log('indexOfValg',indexOfValg);
+				//console.log('indexOfValg',indexOfValg);
 				// If there are reports and "Vælg" is not found, add a placeholder to the beginning
 				if (filteredReports.length > 0 && indexOfValg < 0) {
-					console.log('run_unshift');
+					//console.log('run_unshift');
 					filteredReports.unshift({
 						reportDisplayName: "Vælg",
 						reportId: "placeholderDropdown"
 					});
 				}
-				console.log('filteredReports',filteredReports)
+				//console.log('filteredReports',filteredReports)
 				return filteredReports;
 			},
 			theSortSetting() {
@@ -1896,7 +1896,7 @@ $(document).one("trigger::vue_loaded", function () {
 					this.theActiveCaseForTag = null
 					return
 				}
-				console.log('event::setTheActiveTagDropdown', { itemCase })
+				//console.log('event::setTheActiveTagDropdown', { itemCase })
 				this.theActiveCaseForTag = itemCase
 				this.theShowTagDropdown = tagType
 				this.$nextTick(_ => {
@@ -2313,7 +2313,7 @@ $(document).one("trigger::vue_loaded", function () {
 					if ("Report" === e || "Invoice" === e || "OpenAnalytics" === e) {
 						// Retrieve HTML content from the specified element
 						var PBIListOfReportsHTML = $(".PBI_ListOfReports > div").html();
-						console.log('$(".PBI_ListOfReports > div").html()', $(".PBI_ListOfReports > div").html());
+						//console.log('$(".PBI_ListOfReports > div").html()', $(".PBI_ListOfReports > div").html());
 
 						if (PBIListOfReportsHTML.length > 3) {
 							this.PBIReportsData = JSON.parse(PBIListOfReportsHTML);
@@ -2423,32 +2423,32 @@ $(document).one("trigger::vue_loaded", function () {
 			addIframeEventListeners(iframe) {
 				const self = this
 				const handleMessage = (event) => {
-					console.log('message!', event)
+					//console.log('message!', event)
 					if (event.origin !== 'https://opn-iframes-dev.azurewebsites.net' && event.origin !== 'https://opn-iframes-prod.azurewebsites.net') {
 						return; // Ensure the message is from a trusted origin
 					}
 					if (event.data.event === 'Inspari_iframeChanged') {
-						console.log('Inspari_iframeChanged event received', event.data);
+						//console.log('Inspari_iframeChanged event received', event.data);
 						// Handling Inspari_iframeChanged event to adjust iframe size
 					        var iframe = document.querySelector('.o-iframe-container');
 						
 						if (current_iframeHeight !=  event.data.iframeHeight)
 							{
-							console.log('Current iframe height',current_iframeHeight);
+							//console.log('Current iframe height',current_iframeHeight);
 								iframe.style.height = event.data.iframeHeight + 'px';
-							console.log('New iframe height',event.data.iframeHeight);
+							//console.log('New iframe height',event.data.iframeHeight);
 							current_iframeHeight = event.data.iframeHeight;								
 							}
 					}
 
 					if (event.data.event === 'Inspari_iframeLoaded') {
 						self.isLoadingTheOpenAnalyticsIframe = false
-						console.log('Inspari_iframeLoaded event received', event.data);
+						//console.log('Inspari_iframeLoaded event received', event.data);
 						var iframe = document.querySelector('.o-iframe-container');
 						
-							console.log('Current iframe height',current_iframeHeight);
+							//console.log('Current iframe height',current_iframeHeight);
 								iframe.style.height = event.data.iframeHeight + 'px';
-							console.log('New iframe height',event.data.iframeHeight);
+							//console.log('New iframe height',event.data.iframeHeight);
 							current_iframeHeight = event.data.iframeHeight;								
 						
 					}
@@ -3354,7 +3354,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			setTheEditOnp(editItem) {
-				console.log('setEdit', editItem)
+				//console.log('setEdit', editItem)
 				this.setIsCreateOnpModal(editItem)
 			},
 			infinteScrollONPLoadMore() {
@@ -3412,7 +3412,7 @@ $(document).one("trigger::vue_loaded", function () {
 				})
 			},
 			deleteNewOrderSkadeItem(idx) {
-				console.log('deleteNewOrderSkadeItem', idx)
+				//console.log('deleteNewOrderSkadeItem', idx)
 				this.theNewOrderSkaderItems.splice(idx, 1)
 			},
 			validateSSID(e) {
@@ -3467,7 +3467,7 @@ $(document).one("trigger::vue_loaded", function () {
 				(!e.v_count || isNaN(1 * e.v_count) || e.v_count < 0) && (e.v_count = 0)
 			},
 			submitOrder() {
-				console.log(this.dbOrder)
+				//console.log(this.dbOrder)
 				const self = this;
 				if (this.orderCustomerEmail.length === 0 && this.theActiveOrderType === '001') {
 					this.$refs.order_customer_email_input.focus();
@@ -3801,7 +3801,7 @@ var Set_UM_USER_INIT = !0;
 var openAnalyticsSecret = 'your_secret_value_here_global';
 var current_iframeHeight = 10;
 var current_iframeWidth = 10;	
-console.log(openAnalyticsSecret)
+//console.log(openAnalyticsSecret)
 // Variables - START //
 
 // FUNCTIONS - START //
@@ -3848,7 +3848,7 @@ function addPopperFromCDN() {
 
 	// Create a <script> element for the Vue Multiselect script
 	$.getScript("https://unpkg.com/@popperjs/core@2", function (e, t, s) {
-		console.log('popper loaded')
+		//console.log('popper loaded')
 		$(document).trigger("trigger::vue__virtual_scroller_loaded")
 	})
 }
@@ -3894,7 +3894,7 @@ function CreateCaseAndClose() {
 	// Set input value to true
 	$(".CLOSE_ON_CREATE > input").val('true');
 	$(".FROM_COMPANY_STATUS > input").val('Closed');
-	console.log("FROM_COMPANY_STATUS", $(".FROM_COMPANY_STATUS > input").val());
+	//console.log("FROM_COMPANY_STATUS", $(".FROM_COMPANY_STATUS > input").val());
 
 
 	// If validation logic returns true, execute the following logic
@@ -4352,27 +4352,27 @@ function download_file(e) {
 // Starts definition of PowerBI report functions
 // Function to run and manage a Power BI report based on a given report ID and action
 function RunReport(reportId, action) {
-	console.log('RunReport Step 1 reportId',reportId);
-	console.log('RunReport Step 1 action',action)
+	//console.log('RunReport Step 1 reportId',reportId);
+	//console.log('RunReport Step 1 action',action)
     // Triggers loading and changes state in the application using custom events
     $(document).trigger("vue::BILoadingTrigger", true); // Indicates the start of loading
     $(document).trigger("vue::BIChangeTrigger", action); // Indicates a change based on the action
 
     // Checks if a report is already loaded and, if so, stops listening for the 'rendered' event to prevent memory leaks or duplicate handlers
     if (report) {
-	console.log('report.off("rendered");');
+	//console.log('report.off("rendered");');
         report.off("rendered");
     }
 
     // If the action is to 'select' (denoted by "Vælg"), stop the loading trigger and exit the function
     if ("Vælg" === action) {
-	console.log('"Vælg" === action');    
+	//console.log('"Vælg" === action');    
         $(document).trigger("vue::BILoadingTrigger", false); // Stops the loading indication
         return;
     }
 
     try {
-	console.log('Make AJAX call');  	    
+	//console.log('Make AJAX call');  	    
         // Initiates an AJAX POST request to fetch a new token for embedding the report
 	    $.ajax({
             type: "POST",
@@ -4386,7 +4386,7 @@ function RunReport(reportId, action) {
         });
     } catch (error) {
         // Logs the error and calls a generic error handler function with context
-        console.log(error);
+        //console.log(error);
         handleError("RunReport", error);
     }
 }
@@ -4394,7 +4394,7 @@ function RunReport(reportId, action) {
 
 // Defines a function to handle the success scenario after attempting to embed a Power BI report.
 function successFunc(response, status) {
-	console.log('successFunc');
+	//console.log('successFunc');
     try {
         // Checks if the status is 'success'.
         if (status == "success") {
@@ -4404,7 +4404,7 @@ function successFunc(response, status) {
             const reportId = response.ReportId;
             const sharedSecret = $(".PBI_sharedSecret > input").val(); // Gets the shared secret from an input field.
             
-            console.log("v_sharedSecret", sharedSecret); // Logs the shared secret for debugging.
+            //console.log("v_sharedSecret", sharedSecret); // Logs the shared secret for debugging.
 
             // Accesses the Power BI Client models for configuration.
             const powerBiClientModels = window["powerbi-client"].models;
@@ -4454,13 +4454,13 @@ function successFunc(response, status) {
         }
     } catch (error) {
         // Logs any errors and calls a function to handle them.
-        console.log(error);
+        //console.log(error);
         handleError("successFunc", error);
     }
 }
 
 function errorFunc() {
-	console.log('errorFunc');
+	//console.log('errorFunc');
 	try {
 		alert("The report could not be embedded.  Please reload the page and try again.")
 	} catch (e) {
@@ -4473,7 +4473,7 @@ function handleError(e, t) {
 }
 
 function RemoveReport() {
-    console.log('RemoveReport: Removing embedded Power BI report');
+    //console.log('RemoveReport: Removing embedded Power BI report');
 
     // Selects the DOM element where the report was embedded
     var embedContainer = $("#embedContainer")[0];
@@ -4482,6 +4482,7 @@ function RemoveReport() {
     if (window.powerbi && window.powerbi.embeds.length > 0) {
         // Use the Power BI service API to reset the embed container
         window.powerbi.reset(embedContainer);
-        console.log('Report remove')}}
+        //console.log('Report remove')
+    }}
 
 // PowerBI report funcs - START
