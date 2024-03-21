@@ -615,17 +615,7 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		computed: {
 			activeAnnouncements() {
-				return this.announcements.filter(announcement => announcement.area === this.active_area).sort((a, b) => {
-					// Check if either item lacks a 'createdTime' and adjust sorting accordingly
-					if (!a.createdTime) return 1; // a has no date, sort a to the bottom
-					if (!b.createdTime) return -1; // b has no date, sort b to the bottom
-
-					// Both items have a date, compare them as before
-					const dateA = new Date(a.createdTime);
-					const dateB = new Date(b.createdTime);
-
-					return dateA - dateB;
-				})
+				return this.announcements.filter(announcement => announcement.area === this.active_area)
 			},
 			activeAnnouncementsWithVProps() {
 				const potentialReceivers = [{ id: 'ALL', name: 'All' }, { id: 'ALL_SPs', name: 'All SPs' }, { id: 'ALL_IOs', name: 'All IOs' }].concat(this.filteredReceivers)
@@ -666,7 +656,17 @@ $(document).one("trigger::vue_loaded", function () {
 				});
 			},
 			vAnnouncements() {
-				return this.announcementsInVersionsArr
+				return this.announcementsInVersionsArr.sort((a, b) => {
+					// Check if either item lacks a 'createdTime' and adjust sorting accordingly
+					if (!a.createdTime) return 1; // a has no date, sort a to the bottom
+					if (!b.createdTime) return -1; // b has no date, sort b to the bottom
+
+					// Both items have a date, compare them as before
+					const dateA = new Date(a.createdTime);
+					const dateB = new Date(b.createdTime);
+
+					return dateB - dateA;
+				})
 			},
 			vAnnouncementsFilteredWithType() {
 				if (this.theActiveFilterTypes.length < 1) {
@@ -901,13 +901,20 @@ $(document).one("trigger::vue_loaded", function () {
 						this.getAnnouncements()
 					});
 			},
+			onDeleteMasterTemplate(deletedTemplateId) {
+				const idx = this.masterTemplates.findIndex(masterTemp => masterTemp.template_id === deletedTemplateId)
+				if (idx > -1) {
+					this.masterTemplates.splice(idx, 1)
+					if (this.masterTemplates.length > 0) {
+						this.theNewMasterTemplateId = this.masterTemplates[this.masterTemplates.length - 1]
+					}
+				}
+			},
 			onAddMasterTemplate(arr) {
 				arr.forEach(newMasterTemp => {
 					const idx = this.masterTemplates.findIndex(masterTemp => masterTemp.template_id === newMasterTemp.template_id)
 					if (idx < 0) {
-						console.log('pushNewMAster', this.masterTemplates)
 						this.masterTemplates.push(newMasterTemp)
-						console.log('afterPush', this.masterTemplates)
 						this.theNewMasterTemplateId = newMasterTemp.template_id
 					} else {
 						this.masterTemplates.splice(idx, 1, newMasterTemp)
@@ -992,9 +999,14 @@ $(document).one("trigger::vue_loaded", function () {
 				type: Boolean,
 				default: false
 			}
-		},
-		beforeMount() {
-			console.log(this.email)
+		}
+	})
+	Vue.component('o-announcements-metrics', {
+		template: '#o-announcements-metrics-template',
+		props: {
+			announcements: {
+				default: () => []
+			}
 		}
 	})
 	Vue.component('o-announcements-modal', {
@@ -1300,7 +1312,7 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 					.then(success => {
 						console.log({ success })
-						this.$emit('deleteMasterTemplate', success)
+						this.$emit('deleteMasterTemplate', this.edit_master_template)
 					})
 					.catch(error => {
 						console.error('Error creating new announcement:', error);
@@ -1355,21 +1367,21 @@ $(document).one("trigger::vue_loaded", function () {
 					dbObj['template_id'] = this.edit_master_template
 				}
 				const raw = JSON.stringify(dbObj)
-
-				let requestOptions = {
+				const requestOptions = {
 					method: "POST",
 					headers: myHeaders,
 					body: raw,
 					redirect: "follow"
 				};
+				let url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate'
 
 				if (this.edit_master_template) {
-					requestOptions['method'] = 'PATCH'
+					url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate?action=PATCH&template_id=' + this.edit_master_template
 				}
 
-				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate", requestOptions)
+				fetch(url, requestOptions)
 					.then(response => {
-						console.log('createMasterTemplate', { response })
+						console.log('createMasterTemplate', { ur, response })
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
@@ -1574,7 +1586,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.theEmailSubject = obj.subject
 				if (obj.type) {
 					const selectedTypeIdx = this.filteredTypes.findIndex(oType => {
-						return oType.display === obj.type
+						return oType.value === obj.type
 					})
 					this.theSelectedType = selectedTypeIdx > -1 ? this.filteredTypes[selectedTypeIdx].value : null
 				}
@@ -1747,7 +1759,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.setActiveTab('placeholders')
 				setTimeout(_ => {
 					if ($('.o-placeholders__placeholder').length > 0) {
-						$('.o-placeholders__placeholder .o-input').focus()
+						$('.o-placeholders__placeholder .o-input')[0].focus()
 					}
 				}, 250)
 			}

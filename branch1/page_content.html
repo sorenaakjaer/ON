@@ -204,6 +204,7 @@
         <div class="o-menu__overlay js-o-menu__overlay"></div>
     </div>
     <div class="o-body" :class="{'o-body__container': isNewDesignActive}">
+        <o-announcements-metrics v-if="isViewNewsOrOperationStatus"></o-announcements-metrics>
         <div v-if="isViewNewsOrOperationStatus">
             <div class="o-body__subheader" v-if="isViewOperationStatus">
                 <div class="o-wrapper">
@@ -1912,26 +1913,27 @@
     </div>
 </div>
 
-<script type="text/x-template" id="o-announcements-template">
-    <div class="o-ann">
-        <!--
-        <div class="o-wrapper">
-            <div class="o-ann__banner">
-                <div class="o-ann__dash">
-                    <h4>Incidents</h4>
-                    <div class="o-pill o-pill--red">4</div>
-                </div>
-                <div class="o-ann__dash">
-                    <h4>Planned</h4>
-                    <div class="o-pill o-pill--green">4</div>
-                </div>
-                <div class="o-ann__dash">
-                    <h4>Other</h4>
-                    <div class="o-pill">4</div>
-                </div>
+<script type="text/x-template" id="o-announcements-metrics-template">
+    <div class="o-wrapper">
+        <div class="o-ann__banner">
+            <div class="o-ann__dash">
+                <h4>Incidents</h4>
+                <div class="o-pill o-pill--red">4</div>
+            </div>
+            <div class="o-ann__dash">
+                <h4>Planned</h4>
+                <div class="o-pill o-pill--green">4</div>
+            </div>
+            <div class="o-ann__dash">
+                <h4>Other</h4>
+                <div class="o-pill">4</div>
             </div>
         </div>
-        -->
+    </div>
+</script>
+
+<script type="text/x-template" id="o-announcements-template">
+    <div class="o-ann">
         <div class="o-ann__body">
             <div class="o-ann__body__header o-wrapper">
                 <div class="o-ann__body__header__left">
@@ -2061,6 +2063,7 @@
                 :master_templates="masterTemplates"
                 formType="master"
                 formTitle="Create Master New Template"
+                @deleteMasterTemplate="onDeleteMasterTemplate"
                 @addMasterTemplate="onAddMasterTemplate"
                 @close="setIsCreateNewMaster(false)">
             </o-announcements-modal>
@@ -2079,8 +2082,8 @@
                         <h4>{{ theFormTitle }}</h4>
                     </div>
                     <div class="o-modal__header__right">
-                        <button v-if="formTypeIsMaster && edit_master_template" class="o-btn o-btn--small" @click="setIsDeleteConfirmation(true)">Slet</button>
-                        <button class="o-btn o-btn--small o-btn--primary" :class="[{'o-btn--loading': isSubmitting}, {'o-btn--disabled': !isSaveButtonValid}]" @click="onSubmit"><template v-if="formTypeIsMaster">Gem</template><template v-else>Send udmelding</template></button>
+                        <button v-if="formTypeIsMaster && edit_master_template" class="o-btn o-btn--small" @click="setIsDeleteConfirmation(true)">Slet master</button>
+                        <button class="o-btn o-btn--small o-btn--primary" :class="[{'o-btn--loading': isSubmitting}, {'o-btn--disabled': !isSaveButtonValid}]" @click="onSubmit"><template v-if="formTypeIsMaster && !edit_master_template">Gem master</template><template v-if="formTypeIsMaster && edit_master_template">Opdater master</template><template v-else>Send ny udmelding</template></button>
                     </div>
                 </div>
                 <div class="o-modal__body">
