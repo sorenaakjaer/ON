@@ -627,8 +627,30 @@ $(document).one("trigger::vue_loaded", function () {
 					return dateA - dateB;
 				})
 			},
+			activeAnnouncementsWithVProps() {
+				const potentialReceivers = [{ id: 'ALL', name: 'All' }, { id: 'ALL_SPs', name: 'All SPs' }, { id: 'ALL_IOs', name: 'All IOs' }].concat(this.filteredReceivers)
+				const changeIdsToNames = (item) => {
+					const rece = item.receivers && item.receivers.length > 0 ? item.receivers : ''
+					const names = rece.split(';').map(userid => {
+						const idx = potentialReceivers.findIndex(user => user.id === userid);
+						if (idx > -1) {
+							return potentialReceivers[idx]['name']
+						} else {
+							return userid
+						}
+					})
+					return names.join(', ')
+				}
+				return this.activeAnnouncements.map(ann => ({
+					...ann,
+					v_id: `${ann.onid}_${ann.version}`,
+					v_receivers: changeIdsToNames(ann),
+					v_timeFromNow: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).fromNow() : ann.createdTime,
+					v_createTimeFormatted: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).format('LLL') : ann.createdTime
+				}))
+			},
 			announcementsInVersionsArr() {
-				const groupedByOnid = this.activeAnnouncements.reduce((acc, curr) => {
+				const groupedByOnid = this.activeAnnouncementsWithVProps.reduce((acc, curr) => {
 					(acc[curr.onid] = acc[curr.onid] || []).push(curr);
 					return acc;
 				}, {});
@@ -644,26 +666,7 @@ $(document).one("trigger::vue_loaded", function () {
 				});
 			},
 			vAnnouncements() {
-				const potentialReceivers = [{ id: 'ALL', name: 'All' }, { id: 'ALL_SPs', name: 'All SPs' }, { id: 'ALL_IOs', name: 'All IOs' }].concat(this.filteredReceivers)
-				const changeIdsToNames = (item) => {
-					const rece = item.receivers && item.receivers.length > 0 ? item.receivers : ''
-					const names = rece.split(';').map(userid => {
-						const idx = potentialReceivers.findIndex(user => user.id === userid);
-						if (idx > -1) {
-							return potentialReceivers[idx]['name']
-						} else {
-							return userid
-						}
-					})
-					return names.join(', ')
-				}
-				return this.announcementsInVersionsArr.map(ann => ({
-					...ann,
-					v_id: `${ann.onid}_${ann.version}`,
-					v_receivers: changeIdsToNames(ann),
-					v_timeFromNow: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).fromNow() : ann.createdTime,
-					v_createTimeFormatted: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).format('LLL') : ann.createdTime
-				}))
+				return this.announcementsInVersionsArr
 			},
 			vAnnouncementsFilteredWithType() {
 				if (this.theActiveFilterTypes.length < 1) {
@@ -979,6 +982,21 @@ $(document).one("trigger::vue_loaded", function () {
 			addPurifyFromCDN();
 		}
 	})
+	Vue.component('o-email', {
+		template: '#o-email-template',
+		props: {
+			email: {
+				default: null
+			},
+			is_earlier_version: {
+				type: Boolean,
+				default: false
+			}
+		},
+		beforeMount() {
+			console.log(this.email)
+		}
+	})
 	Vue.component('o-announcements-modal', {
 		template: '#o-announcements-modal-form-template',
 		props: {
@@ -1089,8 +1107,10 @@ $(document).one("trigger::vue_loaded", function () {
 				return this.theEmailHTML
 			},
 			contentReplacement() {
+				if (this.formTypeIsMaster) {
+					return {}
+				}
 				let replacements = {}
-
 				if (this.theSelectedType) {
 					const selectedType = this.filteredTypes.find(oType => oType.value === this.theSelectedType)
 					replacements['type'] = selectedType && selectedType.display ? selectedType.display : this.theSelectedType
@@ -1442,7 +1462,7 @@ $(document).one("trigger::vue_loaded", function () {
 				if (this.edit_announcement) {
 					dbObj['onid'] = this.edit_announcement.onid
 					console.log('placeholder_hist', JSON.stringify(fncConvertNullsToEmptyArrays(this.placeholderHist)))
-					// dbObj['placeholder_hist'] = JSON.stringify(fncConvertNullsToEmptyArrays(this.placeholderHist))
+					dbObj['placeholder_hist'] = JSON.stringify(fncConvertNullsToEmptyArrays(this.placeholderHist))
 				}
 				console.log({ dbObj })
 				const raw = JSON.stringify(dbObj)
@@ -1657,7 +1677,10 @@ $(document).one("trigger::vue_loaded", function () {
 					const formattedReceivers = this.fncConvertSemicolonSeparatedStringToObject(editReceivers)
 					this.selectedReceivers = formattedReceivers
 				}
-				this.theEmailHTML = this.edit_announcement['html']
+				const masterTemp = this.master_templates.find(temp => +temp.template_id === +this.activeMasterTemplateId)
+				if (masterTemp) {
+					this.theEmailHTML = masterTemp['html']
+				}
 				// Placeholder history
 				let newHistPlaceholder = {}
 				const currentHist = this.edit_announcement['placeholder_hist']
@@ -1723,6 +1746,11 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 				}
 				this.setActiveTab('placeholders')
+				setTimeout(_ => {
+					if ($('.o-placeholders__placeholder').length > 0) {
+						$('.o-placeholders__placeholder .o-input').focus()
+					}
+				}, 250)
 			}
 		}
 	})
@@ -2550,7 +2578,7 @@ $(document).one("trigger::vue_loaded", function () {
 			casesFiltered2() {
 				if (this.activeCategory == 'operation_status' && this.isShowOperationStatusErrorReports) {
 					const allIncidentCases = this.casesOpen.concat(this.casesClosed)
-					const errorIncidentFilters = ['IT Incident (Pre-Production/Test)', 'IT Incident (Production)']
+					const errorIncidentFilters = ['IT Incident (Pre-Production/Test)', 'IT Incident (Production)', 'Ændring af POI']
 					return allIncidentCases.filter(itemCase => errorIncidentFilters.indexOf(itemCase.filter_category) > -1)
 				}
 				if (this.theActiveFilter === "active") {

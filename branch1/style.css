@@ -10846,10 +10846,6 @@ ul.tags-selector__dropdow__create {
 
 .o-ann__email-container {
     position: relative;
-    border: 1px solid #ccc;
-    margin: 0 auto 2rem;
-    max-width: 600px;
-    width: 100%;
 }
 
 .o-ann__email-container__html {
@@ -11162,9 +11158,54 @@ ul.tags-selector__dropdow__create {
 
 .o-ann__see-more__old-emails {
     background: #eee;
-    padding: 2rem 0;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
 }
 
 .o-ann__see-more__old-emails .o-ann__email-container {
     background: #fff;
+}
+
+.o-ann__email-container__header {
+    padding-top: 1.5rem;
+    background: #fff;
+    border-radius: 4px 4px 0 0;
+}
+
+.o-ann__email {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    position: relative;
+}
+
+.o-ann__email__icon {
+    position: absolute;
+    top: calc(-31px / 2);
+    left: 6px;
+    background: #fff;
+    font-size: 24px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 2px 4px;
+    border-radius: 4px;
+    gap: 0.5rem;
+    z-index: 1;
+}
+
+.o-ann__email__icon.o-ann__email__icon--right {
+    left: auto;
+    right: 1rem;
+    top: -10px;
+}
+
+.o-ann__see-more__old-emails .o-ann__email__icon {
+    font-size: 24px;
+}
+
+.o-ann__email__icon .tio {
+    color: var(--grey);
 }

@@ -1969,18 +1969,17 @@
                     <div class="o-ann__element vue-list-complete__element" 
                     :class="{'o-ann__element--open': getisTheActiveCase(item)}"
                         v-for="item in searchedAnnouncements" 
-                        :key="item.v_id" 
-                        @click="setActiveItem(item)">
+                        :key="item.v_id" >
                         <div class="o-ann__element__header">
                                     <label class="pp-label">
-                                        Oprettet: <span class="hint--top" :aria-label="item.v_createTimeFormatted">{{ item.v_timeFromNow }}</span>
+                                        Sendt for <span class="hint--top" :aria-label="item.v_createTimeFormatted">{{ item.v_timeFromNow }}</span>
                                     </label> 
                                     <label class="pp-label">{{item.type}}</label>
                                     <label class="pp-label">
                                         <span class="o-pill o-pill--yellow">{{ item.status }} </span>
                                     </label>
                                 <label class="pp-label">
-                                    Onid: {{ item.onid }}, Version: {{ item.version }}
+                                    Onid: {{ item.onid }} ({{ item.version }}. version) 
                                 </label>
                             </div>
                         <div class="o-ann__element__row o-ann__element__row--border">
@@ -1988,7 +1987,7 @@
                             <p>{{item.from}} ({{item.company_display}} )</p>
                         </div>
                         <div class="o-ann__element__row o-ann__element__row--border">
-                            <label class="pp-label pp-label--row">Sendt til:</label>
+                            <label class="pp-label pp-label--row">Til</label>
                             <p>{{item.v_receivers}}</p>
                         </div>
                         <div class="o-ann__element__row o-ann__element__row--border">
@@ -1996,10 +1995,10 @@
                             <h4>{{item.subject}}</h4>
                         </div>
                         <div class="o-ann__element__row o-ann__element__row--border" v-if="item.shortDesc">
-                            <label class="pp-label pp-label--row">Beskrivelse:</label>
+                            <label class="pp-label pp-label--row">Beskrivelse</label>
                             <p>{{item.shortDesc}}</p>
                         </div>
-                        <div class="o-ann__element__row o-ann__element__row--border o-ann__element__row--border__email">
+                        <div class="o-ann__element__row o-ann__element__row--border o-ann__element__row--border__email" @click="setActiveItem(item)">
                             <div class="o-ann__element__row--border__email__icon"><i class="tio">email_outlined</i></div>
                             <div class="o-ann__element__row--border__email__inner">
                                 <div>
@@ -2014,105 +2013,22 @@
                                 <div class="o-cases__case_element__body__ann__edit">
                                     <button class="o-btn o-btn--primary o-btn--small" @click.stop="setEditAnnouncement(item)" v-if="the_user_type === 'IO' || the_user_type === 'ON'">Redigèr/ny version</button>
                                 </div>
-                                <div class="o-ann__email-container">
-                                    <i class="tio">
-                                        email_outlined
-                                        </i>
-                                    <div class="o-ann__email-container__html" v-html="item.html" v-if="item.html && item.html.length > 0"></div>
-                                </div>
+                                <o-email :email="item" :key="item.v_id" v-if="item.html && item.html.length > 0"></o-email>
                             </div>
                             <div v-if="item.v_earlierVersions.length > 0">
                                     <div class="o-ann__see-more-container" v-if="theActiveSeeMoreCase !== item.onid">
-                                        <button class="o-btn o-btn--small" @click.stop="theActiveSeeMoreCase = item.onid">Se tidligere Emails:</button>
+                                        <button class="o-btn o-btn--small" @click.stop="theActiveSeeMoreCase = item.onid">Se tidligere emails</button>
                                     </div>
                                     <div class="o-ann__see-more-container" v-else>
-                                        <button class="o-btn o-btn--small" @click.stop="theActiveSeeMoreCase = null">Skjul tidligere Emails:</button>
+                                        <button class="o-btn o-btn--small" @click.stop="theActiveSeeMoreCase = null">Skjul tidligere emails</button>
                                     </div>
                                     <div class="o-ann__see-more__old-emails" v-if="theActiveSeeMoreCase === item.onid">
-                                        <div class="o-ann__email-container" v-for="ealierItem in item.v_earlierVersions" :key="ealierItem.v_id"  v-if="ealierItem.html && ealierItem.html.length > 0">
-                                            <div class="o-ann__email-container__html">
-                                                <label class="pp-label">Sendt: {{ ealierItem.createdTime }} </label>
-                                                <div v-html="ealierItem.html"></div>
-                                            </div>
-                                        </div>
+                                        <o-email :email="email" :is_earlier_version="true" v-for="email in item.v_earlierVersions" :key="email.v_id" v-if="email.html && email.html.length > 0"></o-email>
                                     </div>
                             </div>
                         </div>
                 </div>
             </transition-group>
-        <!--
-         <transition-group name="list-complete" tag="div" class="vue-list-of-cases o-wrapper pos-relative">
-                <div class="o-ann__element case_element--view_files_in_list case_element case_element__document vue-list-complete__element" 
-                :class="{'o-ann__element--open': getisTheActiveCase(item)}"
-                    v-for="item in searchedAnnouncements" 
-                    :key="item.v_id" 
-                    @click="setActiveItem(item)">
-                    <div class="o-cases__case_element__header">
-                        <div class="o-cases__case_element__header__row">
-                            <div>ONID:{{item.onid}}</div>
-                            <div>Version: {{ item.version }}</div>
-                            <div>Created :{{item.createdTime}}</div>
-                            <div>By:{{item.from}},{{item.company_display}}</div>
-                            <div>Type:{{item.type}}</div>
-                            <div class="etray_case_status">
-                                <span class="o-pill">{{ item.status }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="o-cases__case_element__body">
-                        <div class="o-cases__case_element__body__input">
-                            <div class="o-cases__case-group"><label>Sendt til:</label>
-                                <p>{{item.v_receivers}}</p>
-                            </div>
-                            <div class="o-cases__case-group"><label>Emne:</label>
-                                <p>{{item.subject}}</p>
-                            </div>
-                            <div class="o-cases__case-group"><label>Type:</label>
-                                <p>{{item.type}}</p>
-                            </div>
-                            <div class="o-cases__case-group" v-if="item.shortDesc"><label>Kort
-                                    beskrivelse:</label>
-                                <p>{{item.shortDesc}}</p>
-                            </div>
-                        </div>
-                        <div class="o-cases__case_element__body__arrow"> 
-                            Se {{ getisTheActiveCase(item) ? 'mindre' : 'mere' }}
-                            <div class="tio chevron_right"></div>
-                        </div>
-                    </div>
-                    <div class="o-cases__case_element__body__ann" v-if="getisTheActiveCase(item)">
-                        <div class="o-cases__case_element__body__ann__edit">
-                            <button class="o-btn o-btn--primary o-btn--small" @click.stop="setEditAnnouncement(item)" v-if="the_user_type === 'IO' || the_user_type === 'ON'">Redigèr/ny version</button>
-                        </div>
-                        <label>Email:</label>
-                        <div class="o-ann__email-container">
-                            <i class="tio">
-                                email_outlined
-                                </i>
-                            <div class="o-ann__email-container__html" v-html="item.html" v-if="item.html && item.html.length > 0"></div>
-                        </div>
-                    </div>
-                    <div v-if="item.v_earlierVersions.length > 0">
-                        <div class="o-cases__case_element__body__ann" v-if="getisTheActiveCase(item)">
-                            <div class="o-ann__see-more-container" v-if="theActiveSeeMoreCase !== item.onid">
-                                <button class="o-btn o-btn--small" @click.stop="theActiveSeeMoreCase = item.onid">Se tidligere Emails:</button>
-                            </div>
-                            <template v-else> 
-                            <div class="o-ann__see-more-container">
-                                <button class="o-btn o-btn--small" @click.stop="theActiveSeeMoreCase = null">Skjul tidligere Emails:</button>
-                            </div>
-                            <div class="o-ann__email-container" v-for="ealierItem in item.v_earlierVersions" :key="ealierItem.v_id"  v-if="ealierItem.html && ealierItem.html.length > 0">
-                                <i class="tio">
-                                    email_outlined
-                                    </i>
-                                <div class="o-ann__email-container__html" v-html="ealierItem.html"></div>
-                            </div>
-                        </template>
-                        </div>
-                    </div>
-                </div>
-            </transition-group>
-                            -->
             </div>
         </div>
         <transition name="modalFadeIn">
@@ -2247,16 +2163,18 @@
                                     </div>
                                     <ul class="o-ann-form__editor__tabs">
                                         <li class="o-ann-form__editor__tabs__tab" v-if="!formTypeIsMaster" :class="{'o-ann-form__editor__tabs__tab--selected': getIsActiveTab('placeholders')}" @click="setActiveTab('placeholders')">Placeholders ({{ activePlaceholders.length }})</li>
-                                        <li class="o-ann-form__editor__tabs__tab" :class="{'o-ann-form__editor__tabs__tab--selected': getIsActiveTab('html')}"  @click="setActiveTab('html')">HTML</li>
+                                        <li class="o-ann-form__editor__tabs__tab" v-if="formTypeIsMaster" :class="{'o-ann-form__editor__tabs__tab--selected': getIsActiveTab('html')}"  @click="setActiveTab('html')">HTML</li>
                                     </ul>
                                     <div class="o-editor">
                                         <template v-if="getIsActiveTab('placeholders')">
                                             <p class="text-explainer text-grey" v-if="activePlaceholders.length === 0">Ingen aktive placeholders</p>
-                                        <div class="marg-1-bottom" v-for="(oPlaceholder, key) in activePlaceholders" :key="oPlaceholder.id">
-                                            <label class="o-label">Placerholder {{ oPlaceholder.num }}</label>
-                                            <input type="text" class="o-input" :placeholder="oPlaceholder.placeholder" v-model="oPlaceholder.text">
-                                            <!-- <o-editor></o-editor> -->
-                                        </div>
+                                        <ul class="o-placeholders" v-if="activePlaceholders.length > 0">
+                                            <li class="marg-1-bottom o-placeholders__placeholder" v-for="(oPlaceholder, key) in activePlaceholders" :key="oPlaceholder.id">
+                                                <label class="o-label">Placerholder {{ oPlaceholder.num }}</label>
+                                                <!-- <o-editor></o-editor> -->
+                                                <input type="text" class="o-input" :placeholder="oPlaceholder.placeholder" v-model="oPlaceholder.text">
+                                            </li>
+                                        </ul>
                                     </template>
                                         <textarea v-else class="o-editor__textarea" v-model="theEmailHTML" placeholder="Enter HTML here"></textarea>
                                     </div>
@@ -2374,7 +2292,42 @@
                     </div>
                 </transition>
             </div>
-    </script>
+</script>
+
+<script type="text/x-template" id="o-email-template">
+    <div class="o-ann__email">
+        <div class="o-ann__email__icon">
+            <i class="tio">email_outlined</i>
+            <label class="pp-label">{{email.v_createTimeFormatted}} ({{email.v_timeFromNow}} )</label>
+        </div>
+        <div class="o-ann__email__icon o-ann__email__icon--right" v-if="is_earlier_version">
+            <label class="pp-label">{{ email.version }}. version</label>
+        </div>
+        <div class="o-ann__email-container__header">
+            <div class="o-ann__element__row o-ann__element__row--border">
+                <label class="pp-label pp-label--row">Fra</label>
+                <p>{{email.from}} ({{email.company_display}} )</p>
+            </div>
+            <div class="o-ann__element__row o-ann__element__row--border">
+                <label class="pp-label pp-label--row">Til:</label>
+                <p>{{email.v_receivers}}</p>
+            </div>
+            <div class="o-ann__element__row o-ann__element__row--border">
+                <label class="pp-label pp-label--row">Emne</label>
+                <h4>{{email.subject}}</h4>
+            </div>
+            <div class="o-ann__element__row o-ann__element__row--border" v-if="email.shortDesc">
+                <label class="pp-label pp-label--row">Beskrivelse:</label>
+                <p>{{email.shortDesc}}</p>
+            </div>
+        </div>
+        <div class="o-ann__email-container" >
+            <div class="o-ann__email-container__html">
+                <div v-html="email.html"></div>
+            </div>
+        </div>
+    </div>
+</script>
 
 <script type="text/x-template" id="o-editor-template">
         <div class="o-ann-form__editor">
