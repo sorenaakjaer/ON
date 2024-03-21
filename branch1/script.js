@@ -906,11 +906,14 @@ $(document).one("trigger::vue_loaded", function () {
 				if (idx > -1) {
 					this.masterTemplates.splice(idx, 1)
 					if (this.masterTemplates.length > 0) {
-						this.theNewMasterTemplateId = this.masterTemplates[this.masterTemplates.length - 1]
+						this.theNewMasterTemplateId = this.masterTemplates[this.masterTemplates.length - 1]['template_id']
 					}
 				}
 			},
-			onAddMasterTemplate(arr) {
+			onAddMasterTemplate(succesObj) {
+				console.log('onAddMasterTemplate', succesObj)
+				const arr = succesObj.success
+				const updatedTemplateId = succesObj.updatedTemplateId
 				arr.forEach(newMasterTemp => {
 					const idx = this.masterTemplates.findIndex(masterTemp => masterTemp.template_id === newMasterTemp.template_id)
 					if (idx < 0) {
@@ -918,6 +921,9 @@ $(document).one("trigger::vue_loaded", function () {
 						this.theNewMasterTemplateId = newMasterTemp.template_id
 					} else {
 						this.masterTemplates.splice(idx, 1, newMasterTemp)
+					}
+					if (updatedTemplateId) {
+						this.theNewMasterTemplateId = updatedTemplateId
 					}
 				})
 			},
@@ -1381,15 +1387,17 @@ $(document).one("trigger::vue_loaded", function () {
 
 				fetch(url, requestOptions)
 					.then(response => {
-						console.log('createMasterTemplate', { url, response })
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
 						return response.json();
 					})
 					.then(success => {
-						console.log({ success })
-						this.$emit('addMasterTemplate', success)
+						const succesObj = {
+							success: success,
+							updatedTemplateId: this.edit_master_template ? this.edit_master_template : null
+						}
+						this.$emit('addMasterTemplate', succesObj)
 					})
 					.catch(error => {
 						console.error('Error creating new announcement:', error);
@@ -1535,7 +1543,10 @@ $(document).one("trigger::vue_loaded", function () {
 			setMasterTemplate(masterTemplateId) {
 				this.activeMasterTemplateId = +masterTemplateId
 				const masterTemp = this.master_templates.find(temp => +temp.template_id === +masterTemplateId)
-				console.log('setMasterTemplate', masterTemp)
+				console.log('setMasterTemplate', masterTemplateId, masterTemp)
+				if (!masterTemp) {
+					return
+				}
 				this.theEmailFromCompany = masterTemp.company_display
 				this.theEmailSubject = masterTemp.subject
 				this.theSelectedType = masterTemp.type
