@@ -1384,7 +1384,7 @@ $(document).one("trigger::vue_loaded", function () {
 				let url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate'
 
 				if (this.edit_master_template) {
-					url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate?action=PATCH&template_id=' + this.edit_master_template
+					url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate?action=PATCH'
 				}
 
 				fetch(url, requestOptions)
