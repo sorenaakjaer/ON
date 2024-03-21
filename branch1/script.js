@@ -2575,9 +2575,13 @@ $(document).one("trigger::vue_loaded", function () {
 				return this.casesFiltered.filter(e => "partnerCases" == e.filter_open_closed)
 			},
 			casesFiltered2() {
-				if (this.activeCategory == 'operation_status' && this.isShowOperationStatusErrorReports) {
+				if (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) {
+					// Kun return når begge er loadel
+					if (this.isClosedCasesLoading || this.casesIsLoading) {
+						return []
+					}
 					const allIncidentCases = this.casesOpen.concat(this.casesClosed)
-					const errorIncidentFilters = ['IT Incident (Pre-Production/Test)', 'IT Incident (Production)', 'Ændring af POI']
+					const errorIncidentFilters = ['Fremrykning']
 					return allIncidentCases.filter(itemCase => errorIncidentFilters.indexOf(itemCase.filter_category) > -1)
 				}
 				if (this.theActiveFilter === "active") {
@@ -2619,7 +2623,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			caseFilteredWithCategories() {
-				if (this.activeCategory == 'operation_status' && this.isShowOperationStatusErrorReports) {
+				if (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) {
 					return this.caseFilteredWithStatus
 				}
 				if (this.theActiveFilterCategories.length < 1) {
@@ -2725,7 +2729,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return "" !== this.activeCategory && "roles" !== this.activeCategory && "all_cases" !== this.activeCategory && "my_cases" !== this.activeCategory && "end_customer_pricing_config" !== this.activeCategory && "end_customer_orders" !== this.activeCategory
 			},
 			isCases() {
-				return "all_cases" == this.activeCategory || "my_cases" == this.activeCategory || (this.activeCategory == 'operation_status' && this.isShowOperationStatusErrorReports)
+				return "all_cases" == this.activeCategory || "my_cases" == this.activeCategory || (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports)
 			},
 			allCategories() {
 				let e = [];

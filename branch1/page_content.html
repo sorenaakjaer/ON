@@ -708,7 +708,7 @@
 
                     </div>
                     <h4 class=" text-explainer"
-                        v-if="(activeCategory == 'operation_status' && !isShowOperationStatusErrorReports) && activeCategory !=='OpenAnalytics' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && !isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter !=='dynamic'"
+                        v-if="(activeCategory == 'OperationsStatus' && !isShowOperationStatusErrorReports) && activeCategory !=='OpenAnalytics' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && !isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter !=='dynamic'"
                         v-cloak> Ingen dokumenter matcher din søgning (1) {{ activeCategory }}
                     </h4>
                     <!-- <h4 class="text-explainer" v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1" v-cloak> Ingen dokumenter matcher din søgning</h4>-->
@@ -766,7 +766,8 @@
                         <div class="vue-spinner o-spinner"></div>
                         <p class="text-explainer o-spinner__text">Ny sag oprettes</p>
                     </template>
-                    <div class="vue-spinner__container" v-if="isDocs && isOpenDocsLoading" v-cloak>
+                    <div class="vue-spinner__container"
+                        v-if="!isShowOperationStatusErrorReports && isDocs && isOpenDocsLoading" v-cloak>
                         <div class="vue-spinner o-spinner"></div>
                         <p class="text-explainer o-spinner__text">Henter dokumenter</p>
                     </div>
