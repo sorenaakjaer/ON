@@ -1154,7 +1154,8 @@ $(document).one("trigger::vue_loaded", function () {
 				return replacements
 			},
 			emailHTMLReplaced() {
-				return this.replacePlaceholders(this.newMasterHTMLSanitized, this.contentReplacement);
+				const html = this.newMasterHTMLSanitized ? this.newMasterHTMLSanitized : ''
+				return this.replacePlaceholders(html, this.contentReplacement);
 			},
 			iframeContent() {
 				let htmlContent = this.emailHTMLReplaced
@@ -1261,10 +1262,10 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			theEmailHTML(val) {
-				if (!val) {
+				// Find number of placeholders
+				if (!this.theEmailHTML) {
 					return
 				}
-				// Find number of placeholders
 				const htmlContent = this.theEmailHTML
 				const contentWithoutSpaces = htmlContent.replace(/\s+/g, '')
 				for (let i = 1; i <= 10; i++) {
