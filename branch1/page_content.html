@@ -2117,18 +2117,18 @@
                                         <label class="o-label">Template name</label>
                                         <input type="text" class="o-input" ref="new_template_title_input" v-model="newMasterTitle" />
                                     </div>
+                                    <div class="o-group" v-if="!formTypeIsMaster">
+                                        <label class="o-label">Status</label>
+                                        <select class="o-select" v-model="theSelectedStatus">
+                                            <option v-for="status in filteredStatusses" :value="status.value">{{ status.display }}</option>
+                                        </select>
+                                    </div>
                                     <div class="o-group">
                                         <label class="o-label">Type</label>
                                             <select class="o-select"
                                             v-model="theSelectedType">
                                                 <option v-for="oType in filteredTypes" 
                                                 :value="oType.value">{{ oType.display }}</option>
-                                        </select>
-                                    </div>
-                                    <div class="o-group" v-if="!formTypeIsMaster">
-                                        <label class="o-label">Status</label>
-                                        <select class="o-select" v-model="theSelectedStatus">
-                                            <option v-for="status in filteredStatusses" :value="status.value">{{ status.display }}</option>
                                         </select>
                                     </div>
                                 </div>

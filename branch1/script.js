@@ -907,6 +907,8 @@ $(document).one("trigger::vue_loaded", function () {
 					this.masterTemplates.splice(idx, 1)
 					if (this.masterTemplates.length > 0) {
 						this.theNewMasterTemplateId = this.masterTemplates[this.masterTemplates.length - 1]['template_id']
+					} else {
+						this.theNewMasterTemplateId = null
 					}
 				}
 			},
@@ -1540,7 +1542,20 @@ $(document).one("trigger::vue_loaded", function () {
 			getIsReceiverSelected(receiverId) {
 				return this.selectedReceivers[receiverId]
 			},
+			resetTemplateSettings() {
+				this.theEmailFromCompany = '';
+				this.theEmailSubject = '';
+				this.theSelectedType = null;
+				this.isSendNotifications = false;
+				this.theEmailHTML = '';
+				this.selectedReceivers = {};
+			},
 			setMasterTemplate(masterTemplateId) {
+				if (masterTemplateId === null) {
+					this.activeMasterTemplateId = null;
+					this.resetTemplateSettings();
+					return;
+				}
 				const newMasterTemplateId = +masterTemplateId;
 				if (this.activeMasterTemplateId !== newMasterTemplateId) {
 					this.activeMasterTemplateId = newMasterTemplateId;
