@@ -2078,9 +2078,7 @@
                         <h4>{{ theFormTitle }}</h4>
                     </div>
                     <div class="o-modal__header__right">
-                        <!--
                         <button v-if="formTypeIsMaster && edit_master_template" class="o-btn o-btn--small" @click="setIsDeleteConfirmation(true)">Slet</button>
-                        -->
                         <button class="o-btn o-btn--small o-btn--primary" :class="[{'o-btn--loading': isSubmitting}, {'o-btn--disabled': !isSaveButtonValid}]" @click="onSubmit"><template v-if="formTypeIsMaster">Gem</template><template v-else>Send udmelding</template></button>
                     </div>
                 </div>

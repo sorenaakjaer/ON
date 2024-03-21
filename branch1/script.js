@@ -1283,12 +1283,12 @@ $(document).one("trigger::vue_loaded", function () {
 				myHeaders.append("Content-Type", "application/json");
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
 				const requestOptions = {
-					method: "DELETE",
+					method: "POST",
 					headers: myHeaders,
 					redirect: "follow"
 				};
 
-				const url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate?template_id=' + this.edit_master_template
+				const url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate?action=DELETE&template_id=' + this.edit_master_template
 
 				fetch(url, requestOptions)
 					.then(response => {
@@ -1473,13 +1473,12 @@ $(document).one("trigger::vue_loaded", function () {
 					body: raw,
 					redirect: "follow"
 				};
+				let url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg'
 
 				if (this.edit_announcement) {
-					requestOptions['method'] = 'PATCH'
+					url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg?action=PATCH'
 				}
-
-
-				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg", requestOptions)
+				fetch(url, requestOptions)
 					.then(response => {
 						console.log('createAnnouncement', { response })
 						if (!response.ok) {
