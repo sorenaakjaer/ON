@@ -1541,20 +1541,29 @@ $(document).one("trigger::vue_loaded", function () {
 				return this.selectedReceivers[receiverId]
 			},
 			setMasterTemplate(masterTemplateId) {
-				this.activeMasterTemplateId = +masterTemplateId
-				const masterTemp = this.master_templates.find(temp => +temp.template_id === +masterTemplateId)
-				console.log('setMasterTemplate', masterTemplateId, masterTemp)
+				const newMasterTemplateId = +masterTemplateId;
+				if (this.activeMasterTemplateId !== newMasterTemplateId) {
+					this.activeMasterTemplateId = newMasterTemplateId;
+				}
+
+				const masterTemp = this.master_templates.find(temp => +temp.template_id === newMasterTemplateId);
 				if (!masterTemp) {
-					return
+					console.error('Template not found', newMasterTemplateId);
+					return;
 				}
-				this.theEmailFromCompany = masterTemp.company_display
-				this.theEmailSubject = masterTemp.subject
-				this.theSelectedType = masterTemp.type
-				this.isSendNotifications = masterTemp.send_notifications === "true" // Turn into boolean
-				this.theEmailHTML = masterTemp.html
-				if (masterTemp.receivers && masterTemp.receivers.length > 0) {
-					this.selectedReceivers = this.fncConvertSemicolonSeparatedStringToObject(masterTemp.receivers)
+
+				this.theEmailFromCompany = masterTemp.company_display;
+				this.theEmailSubject = masterTemp.subject;
+				this.theSelectedType = masterTemp.type;
+				this.isSendNotifications = this.convertToBoolean(masterTemp.send_notifications);
+				this.theEmailHTML = masterTemp.html;
+
+				if (masterTemp.receivers?.length > 0) {
+					this.selectedReceivers = this.fncConvertSemicolonSeparatedStringToObject(masterTemp.receivers);
 				}
+			},
+			convertToBoolean(value) {
+				return String(value).toLowerCase() === "true";
 			},
 			setIsCreateNewMaster(bool) {
 				this.$emit('openNewMasterModal')
