@@ -1381,7 +1381,7 @@ $(document).one("trigger::vue_loaded", function () {
 
 				fetch(url, requestOptions)
 					.then(response => {
-						console.log('createMasterTemplate', { ur, response })
+						console.log('createMasterTemplate', { url, response })
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}

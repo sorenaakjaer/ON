@@ -204,7 +204,9 @@
         <div class="o-menu__overlay js-o-menu__overlay"></div>
     </div>
     <div class="o-body" :class="{'o-body__container': isNewDesignActive}">
+        <!-- 
         <o-announcements-metrics v-if="isViewNewsOrOperationStatus"></o-announcements-metrics>
+        -->
         <div v-if="isViewNewsOrOperationStatus">
             <div class="o-body__subheader" v-if="isViewOperationStatus">
                 <div class="o-wrapper">
@@ -2083,7 +2085,7 @@
                     </div>
                     <div class="o-modal__header__right">
                         <button v-if="formTypeIsMaster && edit_master_template" class="o-btn o-btn--small" @click="setIsDeleteConfirmation(true)">Slet master</button>
-                        <button class="o-btn o-btn--small o-btn--primary" :class="[{'o-btn--loading': isSubmitting}, {'o-btn--disabled': !isSaveButtonValid}]" @click="onSubmit"><template v-if="formTypeIsMaster && !edit_master_template">Gem master</template><template v-if="formTypeIsMaster && edit_master_template">Opdater master</template><template v-else>Send ny udmelding</template></button>
+                        <button class="o-btn o-btn--small o-btn--primary" :class="[{'o-btn--loading': isSubmitting}, {'o-btn--disabled': !isSaveButtonValid}]" @click="onSubmit"><template v-if="formTypeIsMaster && !edit_master_template">Gem master</template><template v-if="formTypeIsMaster && edit_master_template">Opdater master</template><template v-if="!formTypeIsMaster">Send ny udmelding</template></button>
                     </div>
                 </div>
                 <div class="o-modal__body">
