@@ -1261,6 +1261,9 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			theEmailHTML(val) {
+				if (!val) {
+					return
+				}
 				// Find number of placeholders
 				const htmlContent = this.theEmailHTML
 				const contentWithoutSpaces = htmlContent.replace(/\s+/g, '')
