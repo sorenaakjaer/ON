@@ -204,9 +204,10 @@
         <div class="o-menu__overlay js-o-menu__overlay"></div>
     </div>
     <div class="o-body" :class="{'o-body__container': isNewDesignActive}">
-        <!-- 
-        <o-announcements-metrics v-if="isViewNewsOrOperationStatus"></o-announcements-metrics>
-        -->
+        <o-announcements-metrics :announcements="announcements" :error_reports="errorReports"
+            :is_error_reports_loading="isErrorReportsLoading" :active_category="activeCategory"
+            v-if="isViewNewsOrOperationStatus">
+        </o-announcements-metrics>
         <div v-if="isViewNewsOrOperationStatus">
             <div class="o-body__subheader" v-if="isViewOperationStatus">
                 <div class="o-wrapper">
@@ -225,7 +226,8 @@
                 </div>
             </div>
             <o-announcements v-if="!isShowOperationStatusErrorReports" :the_user="theUser" :the_user_type="theUserType"
-                :active_area="activeCategory"></o-announcements>
+                :active_area="activeCategory" @emit_announcements="onEmitAnnouncements">
+            </o-announcements>
         </div>
         <div class="o-list-of-cases" v-if="!isViewNewsOrOperationStatus || isShowOperationStatusErrorReports">
             <div class="o-body__header o-wrapper" v-if="!isNewDesignActive">
@@ -757,8 +759,8 @@
                     <p class="text-explainer o-spinner__text" v-if="isNewUserLoading && activeCategory=='roles'"
                         v-cloak>
                         Bruger oprettes / opdateres</p>
-                    <p v-if="(isShowOperationStatusErrorReports && (casesIsLoading || isClosedCasesLoading))"
-                        class="text-explainer o-spinner__text">Henter incidents</p>
+                    <p v-if="(isShowOperationStatusErrorReports && isErrorReportsLoading)"
+                        class="text-explainer o-spinner__text">Henter error reports</p>
                     <p class="text-explainer o-spinner__text"
                         v-if="isNewAnnouncementLoading && activeCategory=='Announcement'" v-cloak>Ny udmelding
                         oprettes</p>
@@ -1917,18 +1919,104 @@
 
 <script type="text/x-template" id="o-announcements-metrics-template">
     <div class="o-wrapper">
-        <div class="o-ann__banner">
-            <div class="o-ann__dash">
-                <h4>Incidents</h4>
-                <div class="o-pill o-pill--red">4</div>
+        <div class="o-announcements-metrics">
+            <div class="o-metrics__container marg-1-bottom" v-if="active_category === 'News'">
+                <h5>Nyheder seneste 30 dage</h5>
+                <div class="o-metrics">
+                    <div class="o-metrics__metric">
+                        <div class="o-metrics__metric__icon o-metrics__metric__icon--red">
+                            <i class="tio">warning_outlined</i>
+                        </div>
+                        <div class="o-metrics__metric__container">
+                            <label class="pp-label">Kampagner</label>
+                            <p class="o-metrics__metric__number">{{ newsCampaigns.length }}</p>
+                        </div>
+                    </div>
+                    <div class="o-metrics__metric">
+                        <div class="o-metrics__metric__icon o-metrics__metric__icon--yellow">
+                            <i class="tio">calendar_month</i>
+                        </div>
+                        <div class="o-metrics__metric__container">
+                            <label class="pp-label">Udstyr</label>
+                            <p class="o-metrics__metric__number">
+                                {{ newsEquipments.length }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="o-metrics__metric">
+                        <div class="o-metrics__metric__icon">
+                            <i class="tio">comment_vs_outlined</i>
+                        </div>
+                        <div class="o-metrics__metric__container">
+                            <label class="pp-label">Andre</label>
+                            <p class="o-metrics__metric__number">{{ other.length }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="o-ann__dash">
-                <h4>Planned</h4>
-                <div class="o-pill o-pill--green">4</div>
+
+            <div class="o-metrics__container" v-if="active_category === 'OperationsStatus'">
+                <h5>Åbne udmeldinger pr. område</h5>
+                <div class="o-metrics">
+                    <div class="o-metrics__metric">
+                        <div class="o-metrics__metric__icon o-metrics__metric__icon--red">
+                            <i class="tio">warning_outlined</i>
+                        </div>
+                        <div class="o-metrics__metric__container">
+                            <label class="pp-label">Hændelser</label>
+                            <p class="o-metrics__metric__number">{{ incidents.length }}</p>
+                        </div>
+                    </div>
+                    <div class="o-metrics__metric">
+                        <div class="o-metrics__metric__icon o-metrics__metric__icon--yellow">
+                            <i class="tio">calendar_month</i>
+                        </div>
+                        <div class="o-metrics__metric__container">
+                            <label class="pp-label">Planlagt</label>
+                            <p class="o-metrics__metric__number">
+                                {{ planned.length }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="o-metrics__metric">
+                        <div class="o-metrics__metric__icon">
+                            <i class="tio">comment_vs_outlined</i>
+                        </div>
+                        <div class="o-metrics__metric__container">
+                            <label class="pp-label">Andre</label>
+                            <p class="o-metrics__metric__number">{{ other.length }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="o-ann__dash">
-                <h4>Other</h4>
-                <div class="o-pill">4</div>
+            <div class="o-metrics__container" v-if="active_category === 'OperationsStatus'">
+                <h5>Åbne error reports</h5>
+                <div class="o-metrics">
+                    <div class="o-metrics__metric">
+                        <div class="o-metrics__metric__icon o-metrics__metric__icon--red">
+                            <i class="tio">warning_outlined</i>
+                        </div>
+                        <div class="o-metrics__metric__container">
+                            <label class="pp-label">Total</label>
+                            <div class="o-spinner o-spinner--small" v-if="is_error_reports_loading"></div>
+                            <p class="o-metrics__metric__number" v-else>
+                                {{ errorReports.length }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="o-metrics__metric">
+                        <div class="o-metrics__metric__icon o-metrics__metric__icon--yellow">
+                            <i class="tio">calendar_month</i>
+                        </div>
+                        <div class="o-metrics__metric__container">
+                            <label class="pp-label">Overskredet SLA</label>
+                            <div class="o-spinner o-spinner--small" v-if="is_error_reports_loading"></div>
+                            <p class="o-metrics__metric__number" v-else>
+                                {{ errorReportsPastSLA.length }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

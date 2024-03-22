@@ -816,6 +816,7 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 					.then(result => {
 						this.announcements = result; // Assign the fetched data to the component's data property
+						this.$emit('emit_announcements', this.announcements)
 					})
 					.catch(error => {
 						console.error('Error:', error);
@@ -949,6 +950,7 @@ $(document).one("trigger::vue_loaded", function () {
 					this.announcements = ANNOUNCEMENTS
 					this.isLoadingAnnouncements = false;
 					this.standardOptions = JSON.parse(JSON.stringify(STANDARDOPTIONS))
+					this.$emit('emit_announcements', this.announcements)
 					return
 				}
 				this.fetchStandardOptions()
@@ -1014,6 +1016,54 @@ $(document).one("trigger::vue_loaded", function () {
 		props: {
 			announcements: {
 				default: () => []
+			},
+			error_reports: {
+				default: () => []
+			},
+			active_category: {
+				default: 'OperationsStatus' // OperationsStatus, News etc.
+			},
+			is_error_reports_loading: {
+				type: Boolean,
+				default: false
+			}
+		},
+		computed: {
+			news() {
+				return this.announcements.filter(ann => ann.area == 'News')
+			},
+			operationsAnnouncements() {
+				return this.announcements.filter(ann => ann.area == 'OperationsStatus')
+			},
+			errorReports() {
+				return this.error_reports
+			},
+			errorReportsPastSLA() {
+				return this.errorReports.filter(errorReport => errorReport.sla_past_deadline == 'true')
+			},
+			incidents() {
+				const types = ['Incident Prod']
+				return this.operationsAnnouncements.filter(ann => types.indexOf(ann.type) > -1)
+			},
+			planned() {
+				const types = ['Driftsudmelding']
+				return this.operationsAnnouncements.filter(ann => types.indexOf(ann.type) > -1)
+			},
+			other() {
+				const types = ['IT-Production Planned']
+				return this.operationsAnnouncements.filter(ann => types.indexOf(ann.type) > -1)
+			},
+			newsCampaigns() {
+				const types = ['Kampagner']
+				return this.news.filter(ann => types.indexOf(ann.type) > -1)
+			},
+			newsEquipments() {
+				const types = ['IT']
+				return this.news.filter(ann => types.indexOf(ann.type) > -1)
+			},
+			newsOther() {
+				const types = ['Nyudrulning']
+				return this.news.filter(ann => types.indexOf(ann.type) > -1)
 			}
 		}
 	})
@@ -2139,6 +2189,7 @@ $(document).one("trigger::vue_loaded", function () {
 	new Vue({
 		el: "#o-app",
 		data: {
+			announcements: [],
 			isShowOperationStatusErrorReports: true,
 			isShowNewOperationStatus: true,
 			toast: {
@@ -2625,15 +2676,21 @@ $(document).one("trigger::vue_loaded", function () {
 			partnerCases() {
 				return this.casesFiltered.filter(e => "partnerCases" == e.filter_open_closed)
 			},
+			isErrorReportsLoading() {
+				return this.isClosedCasesLoading || this.casesIsLoading
+			},
+			errorReports() {
+				// Kun return når begge er loaded
+				if (this.isErrorReportsLoading) {
+					return []
+				}
+				const allIncidentCases = this.casesOpen.concat(this.casesClosed)
+				const errorIncidentFilters = ['Fremrykning']
+				return allIncidentCases.filter(itemCase => errorIncidentFilters.indexOf(itemCase.filter_category) > -1)
+			},
 			casesFiltered2() {
 				if (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) {
-					// Kun return når begge er loadel
-					if (this.isClosedCasesLoading || this.casesIsLoading) {
-						return []
-					}
-					const allIncidentCases = this.casesOpen.concat(this.casesClosed)
-					const errorIncidentFilters = ['Fremrykning']
-					return allIncidentCases.filter(itemCase => errorIncidentFilters.indexOf(itemCase.filter_category) > -1)
+					return this.errorReports
 				}
 				if (this.theActiveFilter === "active") {
 					return this.casesOpen
@@ -2961,6 +3018,9 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			onEmitAnnouncements(payload) {
+				this.announcements = payload
+			},
 			setIsShowOperationStatusErrorReports(bool) {
 				if (bool) {
 					this.isShowOperationStatusErrorReports = true

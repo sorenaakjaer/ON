@@ -10760,20 +10760,6 @@ ul.tags-selector__dropdow__create {
     background-color: var(--bgLigthBlue);
 }
 
-.o-ann__banner {
-    display: flex;
-    background: #fff;
-    padding: 1rem;
-}
-
-.o-ann__dash {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    flex: 1;
-    max-width: 200px;
-}
-
 .o-editor__textarea {
     width: 100%;
     border: 1px solid #ccc;
@@ -11046,7 +11032,7 @@ ul.tags-selector__dropdow__create {
     cursor: not-allowed !important;
 }
 
-.o-ann__element .pp-label {
+.o-ann__element .pp-label, .pp-label {
     font-size: 11px;
     color: var(--grey);
     margin-bottom: 0;
@@ -11208,4 +11194,87 @@ ul.tags-selector__dropdow__create {
 
 .o-ann__email__icon .tio {
     color: var(--grey);
+}
+
+.o-announcements-metrics {
+    display: flex;
+    justify-content: space-between;
+}
+
+.o-metrics {
+    display: flex;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+.o-metrics__metric {
+    display: flex;
+    align-items: center;
+    min-width: 175px;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.o-metrics>.o-metrics__metric:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+.o-metrics>.o-metrics__metric:last-child {
+    border-radius: 0 4px 4px 0;
+    border-right: 0;
+}
+
+.o-metrics__metric {
+    border-right: 1px solid #eee;
+}
+
+.o-metrics__metric__icon {
+    background: #f1f5f9;
+    color: #6d727c;
+    height: 50px;
+    width: 50px;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.o-metrics__metric__icon.o-metrics__metric__icon--red {
+    background-color: #fdf1f2;
+    color: #9f374f;
+}
+
+.o-metrics__metric__icon.o-metrics__metric__icon--yellow {
+    background-color: #fdf7b2;
+    color: #855529;
+}
+
+.o-metrics__metric__icon p {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.o-metrics__metric__number {
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 0;
+}
+
+.o-metrics__metric__container {
+    line-height: 1.1;
+}
+
+.o-metrics__container {
+    border-radius: 4px;
+}
+
+.o-metrics__container h5 {
+    font-size: 13px;
+    color: var(--grey);
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
 }
