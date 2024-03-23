@@ -1,5891 +1,11286 @@
-// Set loaded div
-$('.triggers').html($('.triggers').html() + '<div class="v_js_loaded"></div>');
+.hidden_field {
+	position: absolute;
+	left: -10000px;
+	top: -10000px;
+}
 
-// STEP 1 - TRIGGER TRIGGER_AFTER_LOGIN - START  //
-$(document).one("TRIGGER_AFTER_LOGIN", function () {
-	//console.log('TRIGGER_AFTER_LOGIN')
-	observe_o_page_loaded()
+.display_none {
+	display: none!important;
+}
 
-	function observe_o_page_loaded() {
-		const el = $('#o-app')
-		if (!el || el.length === 0) {
-			console.warn('No element found with selector');
-			return;
-		}
-		let cInterval = setInterval(_ => {
-			const html = el.html()
-			if (html.length > 3) {
-				clearInterval(cInterval)
-				$(document).trigger('trigger::o_page_loaded')
-			} else {
-				console.log('observer::empty')
-			}
-		}, 1000)
+@font-face {
+	font - family: 'The-Icon-of';
+	src: url('https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/fonts/The-Icon-of.eot'),
+		url('https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/fonts/The-Icon-of.woff2') format('woff2');
+	font - weight: normal;
+	font - style: normal;
+	font - display: block;
+}
+
+.tio {
+	/* use !important to prevent issues with browser extensions that change fonts */
+	font - family: 'The-Icon-of'!important;
+	speak: none;
+	font - style: normal;
+	font - weight: normal;
+	font - variant: normal;
+	text - transform: none;
+	line - height: 1;
+
+	/* Enable Ligatures ================ */
+	letter - spacing: 0;
+	-ms - font - feature - settings: "liga"1;
+	-webkit - font - feature - settings: "liga";
+	font - feature - settings: "liga";
+	-webkit - font - variant - ligatures: discretionary - ligatures;
+	font - variant - ligatures: discretionary - ligatures;
+
+	/* Better Font Rendering =========== */
+	-webkit - font - smoothing: antialiased;
+	-moz - osx - font - smoothing: grayscale;
+}
+
+.add_circle_outlined:before {
+	content: "\e900";
+}
+
+.add_circle:before {
+	content: "\e901";
+}
+
+.add_square_outlined:before {
+	content: "\e902";
+}
+
+.add_square:before {
+	content: "\e903";
+}
+
+.add:before {
+	content: "\e904";
+}
+
+.appointment_cancelled:before {
+	content: "\e905";
+}
+
+.appointment:before {
+	content: "\e906";
+}
+
+.archive:before {
+	content: "\e907";
+}
+
+.autorenew:before {
+	content: "\e908";
+}
+
+.block_ads:before {
+	content: "\e909";
+}
+
+.bookmark_outlined:before {
+	content: "\e90a";
+}
+
+.bookmark:before {
+	content: "\e90b";
+}
+
+.bookmarks_outlined:before {
+	content: "\e90c";
+}
+
+.bookmarks:before {
+	content: "\e90d";
+}
+
+.browser_window:before {
+	content: "\e90e";
+}
+
+.browser_windows:before {
+	content: "\e90f";
+}
+
+.cached:before {
+	content: "\e910";
+}
+
+.calendar_month:before {
+	content: "\e911";
+}
+
+.calendar_note:before {
+	content: "\e912";
+}
+
+.calendar:before {
+	content: "\e913";
+}
+
+.carousel_horizontal_outlined:before {
+	content: "\e914";
+}
+
+.carousel_horizontal:before {
+	content: "\e915";
+}
+
+.carousel_vertical_outlined:before {
+	content: "\e916";
+}
+
+.carousel_vertical:before {
+	content: "\e917";
+}
+
+.checkmark_circle_outlined:before {
+	content: "\e918";
+}
+
+.checkmark_circle:before {
+	content: "\e919";
+}
+
+.checkmark_square_outlined:before {
+	content: "\e91a";
+}
+
+.checkmark_square:before {
+	content: "\e91b";
+}
+
+.clear_circle_outlined:before {
+	content: "\e91c";
+}
+
+.clear_circle:before {
+	content: "\e91d";
+}
+
+.clear_square_outlined:before {
+	content: "\e91e";
+}
+
+.clear_square:before {
+	content: "\e91f";
+}
+
+.clear:before {
+	content: "\e920";
+}
+
+.column_view_outlined:before {
+	content: "\e921";
+}
+
+.column_view:before {
+	content: "\e922";
+}
+
+.command_outlined:before {
+	content: "\e923";
+}
+
+.command:before {
+	content: "\e924";
+}
+
+.date_range:before {
+	content: "\e925";
+}
+
+.done:before {
+	content: "\e926";
+}
+
+.drag:before {
+	content: "\e927";
+}
+
+.eject_circle_outlined:before {
+	content: "\e928";
+}
+
+.eject_circle:before {
+	content: "\e929";
+}
+
+.eject:before {
+	content: "\e92a";
+}
+
+.event:before {
+	content: "\e92b";
+}
+
+.exit_fullscreen_1_1:before {
+	content: "\e92c";
+}
+
+.exit_fullscreen_4_3:before {
+	content: "\e92d";
+}
+
+.exit_fullscreen_16_9:before {
+	content: "\e92e";
+}
+
+.find_replace:before {
+	content: "\e92f";
+}
+
+.first_page:before {
+	content: "\e930";
+}
+
+.hashtag:before {
+	content: "\e931";
+}
+
+.heart_outlined:before {
+	content: "\e932";
+}
+
+.heart:before {
+	content: "\e933";
+}
+
+.help_outlined:before {
+	content: "\e934";
+}
+
+.help:before {
+	content: "\e935";
+}
+
+.history:before {
+	content: "\e936";
+}
+
+.incognito:before {
+	content: "\e937";
+}
+
+.info_outined:before {
+	content: "\e938";
+}
+
+.info:before {
+	content: "\e939";
+}
+
+.key:before {
+	content: "\e93a";
+}
+
+.label_important:before {
+	content: "\e93b";
+}
+
+.label_off:before {
+	content: "\e93c";
+}
+
+.label_outlined:before {
+	content: "\e93d";
+}
+
+.label:before {
+	content: "\e93e";
+}
+
+.labels_outlined:before {
+	content: "\e93f";
+}
+
+.labels:before {
+	content: "\e940";
+}
+
+.last_page:before {
+	content: "\e941";
+}
+
+.layout:before {
+	content: "\e942";
+}
+
+.move_page:before {
+	content: "\e943";
+}
+
+.multi_direction_diagonal:before {
+	content: "\e944";
+}
+
+.multi_direction:before {
+	content: "\e945";
+}
+
+.notebook_bookmarked:before {
+	content: "\e946";
+}
+
+.notice_outlined:before {
+	content: "\e947";
+}
+
+.notice:before {
+	content: "\e948";
+}
+
+.open_in_new:before {
+	content: "\e949";
+}
+
+.pages_outlined:before {
+	content: "\e94a";
+}
+
+.pages:before {
+	content: "\e94b";
+}
+
+.publish:before {
+	content: "\e94c";
+}
+
+.record_screen:before {
+	content: "\e94d";
+}
+
+.refresh:before {
+	content: "\e94e";
+}
+
+.remaining_time:before {
+	content: "\e94f";
+}
+
+.remove_circle_outlined:before {
+	content: "\e950";
+}
+
+.remove_circle:before {
+	content: "\e951";
+}
+
+.remove_square_outlined:before {
+	content: "\e952";
+}
+
+.remove_square:before {
+	content: "\e953";
+}
+
+.remove:before {
+	content: "\e954";
+}
+
+.restore:before {
+	content: "\e955";
+}
+
+.search:before {
+	content: "\e956";
+}
+
+.settings_back:before {
+	content: "\e957";
+}
+
+.shopping_basket_add:before {
+	content: "\e958";
+}
+
+.shopping_basket_clear:before {
+	content: "\e959";
+}
+
+.shopping_basket_outlined:before {
+	content: "\e95a";
+}
+
+.shopping_basket_remove:before {
+	content: "\e95b";
+}
+
+.shopping_basket:before {
+	content: "\e95c";
+}
+
+.shopping_cart_add:before {
+	content: "\e95d";
+}
+
+.shopping_cart_off:before {
+	content: "\e95e";
+}
+
+.shopping_cart_outlined:before {
+	content: "\e95f";
+}
+
+.shopping_cart_remove:before {
+	content: "\e960";
+}
+
+.shopping_cart:before {
+	content: "\e961";
+}
+
+.snooze_notification:before {
+	content: "\e962";
+}
+
+.snooze:before {
+	content: "\e963";
+}
+
+.sort:before {
+	content: "\e964";
+}
+
+.star_half:before {
+	content: "\e965";
+}
+
+.star_outlined:before {
+	content: "\e966";
+}
+
+.star:before {
+	content: "\e967";
+}
+
+.subscribe:before {
+	content: "\e968";
+}
+
+.support:before {
+	content: "\e969";
+}
+
+.sync_off:before {
+	content: "\e96a";
+}
+
+.sync:before {
+	content: "\e96b";
+}
+
+.tab:before {
+	content: "\e96c";
+}
+
+.tabs:before {
+	content: "\e96d";
+}
+
+.time_20_s:before {
+	content: "\e96e";
+}
+
+.time_30_s:before {
+	content: "\e96f";
+}
+
+.time_40_s:before {
+	content: "\e970";
+}
+
+.time:before {
+	content: "\e971";
+}
+
+.timer_20_s:before {
+	content: "\e972";
+}
+
+.timer_30_s:before {
+	content: "\e973";
+}
+
+.timer_40_s:before {
+	content: "\e974";
+}
+
+.timer_off:before {
+	content: "\e975";
+}
+
+.timer:before {
+	content: "\e976";
+}
+
+.turn_off:before {
+	content: "\e977";
+}
+
+.unarchive:before {
+	content: "\e978";
+}
+
+.update:before {
+	content: "\e979";
+}
+
+.vibrations_off:before {
+	content: "\e97a";
+}
+
+.vibrations:before {
+	content: "\e97b";
+}
+
+.watch_later:before {
+	content: "\e97c";
+}
+
+.youtube_search:before {
+	content: "\e97d";
+}
+
+.battery_alert:before {
+	content: "\e97e";
+}
+
+.error_outlined:before {
+	content: "\e97f";
+}
+
+.error:before {
+	content: "\e980";
+}
+
+.message_failed_outlined:before {
+	content: "\e981";
+}
+
+.message_failed:before {
+	content: "\e982";
+}
+
+.new_release_outlined:before {
+	content: "\e983";
+}
+
+.new_release:before {
+	content: "\e984";
+}
+
+.notification_add:before {
+	content: "\e985";
+}
+
+.notifications_alert:before {
+	content: "\e986";
+}
+
+.notifications_off:before {
+	content: "\e987";
+}
+
+.notifications_on_outlined:before {
+	content: "\e988";
+}
+
+.notifications_on:before {
+	content: "\e989";
+}
+
+.notifications_outlined:before {
+	content: "\e98a";
+}
+
+.notifications:before {
+	content: "\e98b";
+}
+
+.report_outlined:before {
+	content: "\e98c";
+}
+
+.report:before {
+	content: "\e98d";
+}
+
+.security_warning_outlined:before {
+	content: "\e98e";
+}
+
+.security_warning:before {
+	content: "\e98f";
+}
+
+.warning_outlined:before {
+	content: "\e990";
+}
+
+.warning:before {
+	content: "\e991";
+}
+
+.arrow_backward:before {
+	content: "\e992";
+}
+
+.arrow_doublesided_horizontal:before {
+	content: "\e993";
+}
+
+.arrow_doublesided_vertical:before {
+	content: "\e994";
+}
+
+.arrow_downward:before {
+	content: "\e995";
+}
+
+.arrow_drop_down_circle_outlined:before {
+	content: "\e996";
+}
+
+.arrow_drop_down_circle:before {
+	content: "\e997";
+}
+
+.arrow_drop_up_circle_outlined:before {
+	content: "\e998";
+}
+
+.arrow_drop_up_circle:before {
+	content: "\e999";
+}
+
+.arrow_forward:before {
+	content: "\e99a";
+}
+
+.arrow_large_backward_outlined:before {
+	content: "\e99b";
+}
+
+.arrow_large_backward:before {
+	content: "\e99c";
+}
+
+.arrow_large_downward_outlined:before {
+	content: "\e99d";
+}
+
+.arrow_large_downward:before {
+	content: "\e99e";
+}
+
+.arrow_large_forward_outlined:before {
+	content: "\e99f";
+}
+
+.arrow_large_forward:before {
+	content: "\e9a0";
+}
+
+.arrow_large_upward_outlined:before {
+	content: "\e9a1";
+}
+
+.arrow_large_upward:before {
+	content: "\e9a2";
+}
+
+.arrow_left_circle_outlined:before {
+	content: "\e9a3";
+}
+
+.arrow_left_circle:before {
+	content: "\e9a4";
+}
+
+.arrow_long_down:before {
+	content: "\e9a5";
+}
+
+.arrow_long_left:before {
+	content: "\e9a6";
+}
+
+.arrow_long_right:before {
+	content: "\e9a7";
+}
+
+.arrow_long_up:before {
+	content: "\e9a8";
+}
+
+.arrow_right_circle_outlined:before {
+	content: "\e9a9";
+}
+
+.arrow_right_circle:before {
+	content: "\e9aa";
+}
+
+.arrow_upward:before {
+	content: "\e9ab";
+}
+
+.back_ui:before {
+	content: "\e9ac";
+}
+
+.caret_down:before {
+	content: "\e9ad";
+}
+
+.caret_left:before {
+	content: "\e9ae";
+}
+
+.caret_right:before {
+	content: "\e9af";
+}
+
+.caret_up:before {
+	content: "\e9b0";
+}
+
+.chevron_down:before {
+	content: "\e9b1";
+}
+
+.chevron_left:before {
+	content: "\e9b2";
+}
+
+.chevron_right:before {
+	content: "\e9b3";
+}
+
+.chevron_up:before {
+	content: "\e9b4";
+}
+
+.collapse_all:before {
+	content: "\e9b5";
+}
+
+.double_caret_horizontal:before {
+	content: "\e9b6";
+}
+
+.double_caret_vertical:before {
+	content: "\e9b7";
+}
+
+.down_ui:before {
+	content: "\e9b8";
+}
+
+.expand_all:before {
+	content: "\e9b9";
+}
+
+.next_ui:before {
+	content: "\e9ba";
+}
+
+.pull_right_left:before {
+	content: "\e9bb";
+}
+
+.subdirectory_left:before {
+	content: "\e9bc";
+}
+
+.subdirectory_right:before {
+	content: "\e9bd";
+}
+
+.up_ui:before {
+	content: "\e9be";
+}
+
+.fast_forward:before {
+	content: "\e9bf";
+}
+
+.fast_rewind:before {
+	content: "\e9c0";
+}
+
+.forward:before {
+	content: "\e9c1";
+}
+
+.mic_off_outlined:before {
+	content: "\e9c2";
+}
+
+.mic_off:before {
+	content: "\e9c3";
+}
+
+.mic_outlined:before {
+	content: "\e9c4";
+}
+
+.mic:before {
+	content: "\e9c5";
+}
+
+.music_off:before {
+	content: "\e9c6";
+}
+
+.music:before {
+	content: "\e9c7";
+}
+
+.pause_circle_outlined:before {
+	content: "\e9c8";
+}
+
+.pause_circle:before {
+	content: "\e9c9";
+}
+
+.pause:before {
+	content: "\e9ca";
+}
+
+.play_circle_outlined:before {
+	content: "\e9cb";
+}
+
+.play_circle:before {
+	content: "\e9cc";
+}
+
+.play_outlined:before {
+	content: "\e9cd";
+}
+
+.play:before {
+	content: "\e9ce";
+}
+
+.record_outlined:before {
+	content: "\e9cf";
+}
+
+.record_voice_outlined:before {
+	content: "\e9d0";
+}
+
+.record_voice:before {
+	content: "\e9d1";
+}
+
+.record:before {
+	content: "\e9d2";
+}
+
+.repeat:before {
+	content: "\e9d3";
+}
+
+.replay:before {
+	content: "\e9d4";
+}
+
+.shuffle:before {
+	content: "\e9d5";
+}
+
+.skip_back:before {
+	content: "\e9d6";
+}
+
+.skip_forward:before {
+	content: "\e9d7";
+}
+
+.skip_next:before {
+	content: "\e9d8";
+}
+
+.skip_previous:before {
+	content: "\e9d9";
+}
+
+.skip:before {
+	content: "\e9da";
+}
+
+.stop_circle_outlined:before {
+	content: "\e9db";
+}
+
+.stop_circle:before {
+	content: "\e9dc";
+}
+
+.stop_outlined:before {
+	content: "\e9dd";
+}
+
+.stop:before {
+	content: "\e9de";
+}
+
+.tune_horizontal:before {
+	content: "\e9df";
+}
+
+.tune_vertical:before {
+	content: "\e9e0";
+}
+
+.tune:before {
+	content: "\e9e1";
+}
+
+.voice_line:before {
+	content: "\e9e2";
+}
+
+.voice:before {
+	content: "\e9e3";
+}
+
+.volume_down:before {
+	content: "\e9e4";
+}
+
+.volume_low:before {
+	content: "\e9e5";
+}
+
+.volume_minus:before {
+	content: "\e9e6";
+}
+
+.volume_mute:before {
+	content: "\e9e7";
+}
+
+.volume_off:before {
+	content: "\e9e8";
+}
+
+.volume_plus:before {
+	content: "\e9e9";
+}
+
+.volume_up:before {
+	content: "\e9ea";
+}
+
+.adaptive_lighting:before {
+	content: "\e9eb";
+}
+
+.airbag_deactivated:before {
+	content: "\e9ec";
+}
+
+.airbag_warning:before {
+	content: "\e9ed";
+}
+
+.alternator_warning_outlined:before {
+	content: "\e9ee";
+}
+
+.alternator_warning:before {
+	content: "\e9ef";
+}
+
+.bonnet_open:before {
+	content: "\e9f0";
+}
+
+.boot_open:before {
+	content: "\e9f1";
+}
+
+.brake_pad_warning:before {
+	content: "\e9f2";
+}
+
+.cruise_control_on:before {
+	content: "\e9f3";
+}
+
+.dipped_beam_headlights:before {
+	content: "\e9f4";
+}
+
+.direction_indicators:before {
+	content: "\e9f5";
+}
+
+.door_open:before {
+	content: "\e9f6";
+}
+
+.engine_warning_outlined:before {
+	content: "\e9f7";
+}
+
+.engine_warning:before {
+	content: "\e9f8";
+}
+
+.exterior_light_fault:before {
+	content: "\e9f9";
+}
+
+.fog_light_front:before {
+	content: "\e9fa";
+}
+
+.fog_light_rear:before {
+	content: "\e9fb";
+}
+
+.glow_plug_warning:before {
+	content: "\e9fc";
+}
+
+.handbrake_warning:before {
+	content: "\e9fd";
+}
+
+.hazard_warning:before {
+	content: "\e9fe";
+}
+
+.main_beam_headlights:before {
+	content: "\e9ff";
+}
+
+.oil_pressure_low_outlined:before {
+	content: "\ea00";
+}
+
+.oil_pressure_low:before {
+	content: "\ea01";
+}
+
+.parking_brake_light:before {
+	content: "\ea02";
+}
+
+.rain_sensor:before {
+	content: "\ea03";
+}
+
+.rear_window_defrost:before {
+	content: "\ea04";
+}
+
+.recirculation:before {
+	content: "\ea05";
+}
+
+.seatbelt_not_on:before {
+	content: "\ea06";
+}
+
+.sidelight_indicator:before {
+	content: "\ea07";
+}
+
+.sidelight_information:before {
+	content: "\ea08";
+}
+
+.stability_control_off:before {
+	content: "\ea09";
+}
+
+.temperature_warning:before {
+	content: "\ea0a";
+}
+
+.tyre_pressure_low:before {
+	content: "\ea0b";
+}
+
+.washer_fluid_low:before {
+	content: "\ea0c";
+}
+
+.windscreen_defrost:before {
+	content: "\ea0d";
+}
+
+.call_cancelled:before {
+	content: "\ea0e";
+}
+
+.call_ended:before {
+	content: "\ea0f";
+}
+
+.call_forward:before {
+	content: "\ea10";
+}
+
+.call_talking_quiet:before {
+	content: "\ea11";
+}
+
+.call_talking:before {
+	content: "\ea12";
+}
+
+.call:before {
+	content: "\ea13";
+}
+
+.chat_outlined:before {
+	content: "\ea14";
+}
+
+.chat:before {
+	content: "\ea15";
+}
+
+.comment_image_outlined:before {
+	content: "\ea16";
+}
+
+.comment_image:before {
+	content: "\ea17";
+}
+
+.comment_outlined:before {
+	content: "\ea18";
+}
+
+.comment_play_outlined:before {
+	content: "\ea19";
+}
+
+.comment_play:before {
+	content: "\ea1a";
+}
+
+.comment_text_outlined:before {
+	content: "\ea1b";
+}
+
+.comment_text:before {
+	content: "\ea1c";
+}
+
+.comment_video:before {
+	content: "\ea1d";
+}
+
+.comment_vs_outlined:before {
+	content: "\ea1e";
+}
+
+.comment_vs:before {
+	content: "\ea1f";
+}
+
+.comment:before {
+	content: "\ea20";
+}
+
+.contact_notebook:before {
+	content: "\ea21";
+}
+
+.contacts_book:before {
+	content: "\ea22";
+}
+
+.contacts:before {
+	content: "\ea23";
+}
+
+.draft:before {
+	content: "\ea24";
+}
+
+.email_outlined:before {
+	content: "\ea25";
+}
+
+.email:before {
+	content: "\ea26";
+}
+
+.favorite_comment:before {
+	content: "\ea27";
+}
+
+.import_export:before {
+	content: "\ea28";
+}
+
+.inbox:before {
+	content: "\ea29";
+}
+
+.inboxes:before {
+	content: "\ea2a";
+}
+
+.made_call:before {
+	content: "\ea2b";
+}
+
+.message_add_outlined:before {
+	content: "\ea2c";
+}
+
+.message_add:before {
+	content: "\ea2d";
+}
+
+.message_outlined:before {
+	content: "\ea2e";
+}
+
+.message_play_outlined:before {
+	content: "\ea2f";
+}
+
+.message_play:before {
+	content: "\ea30";
+}
+
+.message:before {
+	content: "\ea31";
+}
+
+.messages_outlined:before {
+	content: "\ea32";
+}
+
+.messages:before {
+	content: "\ea33";
+}
+
+.missed_call_outgoing:before {
+	content: "\ea34";
+}
+
+.missed_call:before {
+	content: "\ea35";
+}
+
+.mms_outlined:before {
+	content: "\ea36";
+}
+
+.mms:before {
+	content: "\ea37";
+}
+
+.new_email:before {
+	content: "\ea38";
+}
+
+.received_call:before {
+	content: "\ea39";
+}
+
+.reply_all:before {
+	content: "\ea3a";
+}
+
+.reply:before {
+	content: "\ea3b";
+}
+
+.send_outlined:before {
+	content: "\ea3c";
+}
+
+.send:before {
+	content: "\ea3d";
+}
+
+.share_message:before {
+	content: "\ea3e";
+}
+
+.share_screen:before {
+	content: "\ea3f";
+}
+
+.sms_active_outlined:before {
+	content: "\ea40";
+}
+
+.sms_active:before {
+	content: "\ea41";
+}
+
+.sms_chat_outlined:before {
+	content: "\ea42";
+}
+
+.sms_chat:before {
+	content: "\ea43";
+}
+
+.sms_outlined:before {
+	content: "\ea44";
+}
+
+.sms:before {
+	content: "\ea45";
+}
+
+.swap_horizontal:before {
+	content: "\ea46";
+}
+
+.swap_vs:before {
+	content: "\ea47";
+}
+
+.swap:before {
+	content: "\ea48";
+}
+
+.unsubscribe:before {
+	content: "\ea49";
+}
+
+.voice_chat:before {
+	content: "\ea4a";
+}
+
+.voicemail:before {
+	content: "\ea4b";
+}
+
+.airpods:before {
+	content: "\ea4c";
+}
+
+.android_phone_vs:before {
+	content: "\ea4d";
+}
+
+.android_phone:before {
+	content: "\ea4e";
+}
+
+.android_phones:before {
+	content: "\ea4f";
+}
+
+.apple_watch:before {
+	content: "\ea50";
+}
+
+.batery_vertical_3_quarters:before {
+	content: "\ea51";
+}
+
+.battery_horizontal_3_quarters:before {
+	content: "\ea52";
+}
+
+.battery_horizontal_half:before {
+	content: "\ea53";
+}
+
+.battery_horizontal_outlined:before {
+	content: "\ea54";
+}
+
+.battery_horizontal_quarter:before {
+	content: "\ea55";
+}
+
+.battery_horizontal:before {
+	content: "\ea56";
+}
+
+.battery_vertical_half:before {
+	content: "\ea57";
+}
+
+.battery_vertical_outlined:before {
+	content: "\ea58";
+}
+
+.battery_vertical_quarter:before {
+	content: "\ea59";
+}
+
+.battery_vertical:before {
+	content: "\ea5a";
+}
+
+.calculator:before {
+	content: "\ea5b";
+}
+
+.charging:before {
+	content: "\ea5c";
+}
+
+.devices_1:before {
+	content: "\ea5d";
+}
+
+.devices_2:before {
+	content: "\ea5e";
+}
+
+.devices_apple:before {
+	content: "\ea5f";
+}
+
+.disc:before {
+	content: "\ea60";
+}
+
+.hdmi_outlined:before {
+	content: "\ea61";
+}
+
+.hdmi:before {
+	content: "\ea62";
+}
+
+.headphones:before {
+	content: "\ea63";
+}
+
+.imac:before {
+	content: "\ea64";
+}
+
+.iphone:before {
+	content: "\ea65";
+}
+
+.iphones:before {
+	content: "\ea66";
+}
+
+.joystick:before {
+	content: "\ea67";
+}
+
+.keyboard_hide:before {
+	content: "\ea68";
+}
+
+.keyboard_vs:before {
+	content: "\ea69";
+}
+
+.keyboard:before {
+	content: "\ea6a";
+}
+
+.laptop:before {
+	content: "\ea6b";
+}
+
+.light_battery:before {
+	content: "\ea6c";
+}
+
+.microphone:before {
+	content: "\ea6d";
+}
+
+.monitor:before {
+	content: "\ea6e";
+}
+
+.mouse_outlined:before {
+	content: "\ea6f";
+}
+
+.mouse_pad_outlined:before {
+	content: "\ea70";
+}
+
+.mouse_pad:before {
+	content: "\ea71";
+}
+
+.mouse:before {
+	content: "\ea72";
+}
+
+.no_sim_card:before {
+	content: "\ea73";
+}
+
+.photo_camera:before {
+	content: "\ea74";
+}
+
+.plug_outlined:before {
+	content: "\ea75";
+}
+
+.plug:before {
+	content: "\ea76";
+}
+
+.radio:before {
+	content: "\ea77";
+}
+
+.remote_controller:before {
+	content: "\ea78";
+}
+
+.router:before {
+	content: "\ea79";
+}
+
+.sim_card:before {
+	content: "\ea7a";
+}
+
+.speaker:before {
+	content: "\ea7b";
+}
+
+.surveillance_camera:before {
+	content: "\ea7c";
+}
+
+.tablet_phone:before {
+	content: "\ea7d";
+}
+
+.tablet:before {
+	content: "\ea7e";
+}
+
+.tv_new:before {
+	content: "\ea7f";
+}
+
+.tv_old:before {
+	content: "\ea80";
+}
+
+.usb_c_outlined:before {
+	content: "\ea81";
+}
+
+.usb_c:before {
+	content: "\ea82";
+}
+
+.usb_port_outlined:before {
+	content: "\ea83";
+}
+
+.usb_port:before {
+	content: "\ea84";
+}
+
+.video_camera_off:before {
+	content: "\ea85";
+}
+
+.video_camera_outlined:before {
+	content: "\ea86";
+}
+
+.video_camera:before {
+	content: "\ea87";
+}
+
+.vinyl:before {
+	content: "\ea88";
+}
+
+.watches:before {
+	content: "\ea89";
+}
+
+.document_outlined:before {
+	content: "\ea8a";
+}
+
+.document_text_outlined:before {
+	content: "\ea8b";
+}
+
+.document_text:before {
+	content: "\ea8c";
+}
+
+.document:before {
+	content: "\ea8d";
+}
+
+.documents_outlined:before {
+	content: "\ea8e";
+}
+
+.documents:before {
+	content: "\ea8f";
+}
+
+.file_add_outlined:before {
+	content: "\ea90";
+}
+
+.file_add:before {
+	content: "\ea91";
+}
+
+.file_outlined:before {
+	content: "\ea92";
+}
+
+.file_text_outlined:before {
+	content: "\ea93";
+}
+
+.file_text:before {
+	content: "\ea94";
+}
+
+.file:before {
+	content: "\ea95";
+}
+
+.files_labeled_outlined:before {
+	content: "\ea96";
+}
+
+.files_labeled:before {
+	content: "\ea97";
+}
+
+.files_outlined:before {
+	content: "\ea98";
+}
+
+.files:before {
+	content: "\ea99";
+}
+
+.folder_add:before {
+	content: "\ea9a";
+}
+
+.folder_bookmarked:before {
+	content: "\ea9b";
+}
+
+.folder_labeled_outlined:before {
+	content: "\ea9c";
+}
+
+.folder_labeled:before {
+	content: "\ea9d";
+}
+
+.folder_opened_labeled:before {
+	content: "\ea9e";
+}
+
+.folder_opened:before {
+	content: "\ea9f";
+}
+
+.folder_outlined:before {
+	content: "\eaa0";
+}
+
+.folder_photo:before {
+	content: "\eaa1";
+}
+
+.folder_shared:before {
+	content: "\eaa2";
+}
+
+.folder_special:before {
+	content: "\eaa3";
+}
+
+.folder:before {
+	content: "\eaa4";
+}
+
+.folders_outlined:before {
+	content: "\eaa5";
+}
+
+.folders:before {
+	content: "\eaa6";
+}
+
+.avocado:before {
+	content: "\eaa7";
+}
+
+.banana:before {
+	content: "\eaa8";
+}
+
+.beer_bottle_labeled:before {
+	content: "\eaa9";
+}
+
+.beer_bottle:before {
+	content: "\eaaa";
+}
+
+.chicken_outlined:before {
+	content: "\eaab";
+}
+
+.chicken:before {
+	content: "\eaac";
+}
+
+.citrus_fruits:before {
+	content: "\eaad";
+}
+
+.drink_outlined:before {
+	content: "\eaae";
+}
+
+.drink:before {
+	content: "\eaaf";
+}
+
+.egg:before {
+	content: "\eab0";
+}
+
+.fastfood:before {
+	content: "\eab1";
+}
+
+.fish_outlined:before {
+	content: "\eab2";
+}
+
+.fish:before {
+	content: "\eab3";
+}
+
+.fruit_apple_outlined:before {
+	content: "\eab4";
+}
+
+.fruit_apple:before {
+	content: "\eab5";
+}
+
+.ice_cream:before {
+	content: "\eab6";
+}
+
+.ice_cream_cup:before {
+	content: "\eab7";
+}
+
+.meal_outlined:before {
+	content: "\eab8";
+}
+
+.meal:before {
+	content: "\eab9";
+}
+
+.mushroom:before {
+	content: "\eaba";
+}
+
+.pizza_outlined:before {
+	content: "\eabb";
+}
+
+.pizza:before {
+	content: "\eabc";
+}
+
+.soda:before {
+	content: "\eabd";
+}
+
+.strawberry:before {
+	content: "\eabe";
+}
+
+.water_bottle_labeled:before {
+	content: "\eabf";
+}
+
+.water_bottle:before {
+	content: "\eac0";
+}
+
+.wine_bottle_labeled:before {
+	content: "\eac1";
+}
+
+.wine_bottle:before {
+	content: "\eac2";
+}
+
+.clap:before {
+	content: "\eac3";
+}
+
+.expressionless:before {
+	content: "\eac4";
+}
+
+.face_female:before {
+	content: "\eac5";
+}
+
+.face_male:before {
+	content: "\eac6";
+}
+
+.frowning:before {
+	content: "\eac7";
+}
+
+.gesture_hand_1f:before {
+	content: "\eac8";
+}
+
+.gesture_hand_2f:before {
+	content: "\eac9";
+}
+
+.gesture_hover_1f:before {
+	content: "\eaca";
+}
+
+.gesture_scroll_down_2f:before {
+	content: "\eacb";
+}
+
+.gesture_scroll_down:before {
+	content: "\eacc";
+}
+
+.gesture_scroll_up_2f:before {
+	content: "\eacd";
+}
+
+.gesture_scroll_up_down_2f:before {
+	content: "\eace";
+}
+
+.gesture_scroll_up_down:before {
+	content: "\eacf";
+}
+
+.gesture_scroll_up:before {
+	content: "\ead0";
+}
+
+.gesture_swipe_left_2f:before {
+	content: "\ead1";
+}
+
+.gesture_swipe_left_right_2f:before {
+	content: "\ead2";
+}
+
+.gesture_swipe_left_right:before {
+	content: "\ead3";
+}
+
+.gesture_swipe_left:before {
+	content: "\ead4";
+}
+
+.gesture_swipe_right_2f:before {
+	content: "\ead5";
+}
+
+.gesture_swipe_right:before {
+	content: "\ead6";
+}
+
+.hand_basic:before {
+	content: "\ead7";
+}
+
+.hand_draw:before {
+	content: "\ead8";
+}
+
+.hand_metal_horns:before {
+	content: "\ead9";
+}
+
+.hand_middle_finger:before {
+	content: "\eada";
+}
+
+.hand_ok:before {
+	content: "\eadb";
+}
+
+.hand_piece:before {
+	content: "\eadc";
+}
+
+.hand_wave:before {
+	content: "\eadd";
+}
+
+.neutral_face:before {
+	content: "\eade";
+}
+
+.protection:before {
+	content: "\eadf";
+}
+
+.sad:before {
+	content: "\eae0";
+}
+
+.slap:before {
+	content: "\eae1";
+}
+
+.slightly_smilling:before {
+	content: "\eae2";
+}
+
+.smile:before {
+	content: "\eae3";
+}
+
+.thumbs_down:before {
+	content: "\eae4";
+}
+
+.thumbs_up_down:before {
+	content: "\eae5";
+}
+
+.thumbs_up:before {
+	content: "\eae6";
+}
+
+.wink:before {
+	content: "\eae7";
+}
+
+.alt:before {
+	content: "\eae8";
+}
+
+.backspace_outlined:before {
+	content: "\eae9";
+}
+
+.backspace:before {
+	content: "\eaea";
+}
+
+.caps_lock:before {
+	content: "\eaeb";
+}
+
+.command_key:before {
+	content: "\eaec";
+}
+
+.enter:before {
+	content: "\eaed";
+}
+
+.keyboard_brightness_1:before {
+	content: "\eaee";
+}
+
+.keyboard_brightness_2:before {
+	content: "\eaef";
+}
+
+.space_bar:before {
+	content: "\eaf0";
+}
+
+.tab_key:before {
+	content: "\eaf1";
+}
+
+.rotate:before {
+	content: "\eaf2";
+}
+
+.beijing:before {
+	content: "\eaf3";
+}
+
+.bratislava:before {
+	content: "\eaf4";
+}
+
+.broadleaf_tree_outlined:before {
+	content: "\eaf5";
+}
+
+.broadleaf_tree:before {
+	content: "\eaf6";
+}
+
+.cafe_outlined:before {
+	content: "\eaf7";
+}
+
+.cafe:before {
+	content: "\eaf8";
+}
+
+.cairo:before {
+	content: "\eaf9";
+}
+
+.castle:before {
+	content: "\eafa";
+}
+
+.city:before {
+	content: "\eafb";
+}
+
+.clinic:before {
+	content: "\eafc";
+}
+
+.company:before {
+	content: "\eafd";
+}
+
+.conifer_outlined:before {
+	content: "\eafe";
+}
+
+.conifer:before {
+	content: "\eaff";
+}
+
+.direction:before {
+	content: "\eb00";
+}
+
+.dubai:before {
+	content: "\eb01";
+}
+
+.earth_east:before {
+	content: "\eb02";
+}
+
+.earth_west:before {
+	content: "\eb03";
+}
+
+.education_outlined:before {
+	content: "\eb04";
+}
+
+.education:before {
+	content: "\eb05";
+}
+
+.factory:before {
+	content: "\eb06";
+}
+
+.gas_station:before {
+	content: "\eb07";
+}
+
+.globe:before {
+	content: "\eb08";
+}
+
+.gym:before {
+	content: "\eb09";
+}
+
+.hospital:before {
+	content: "\eb0a";
+}
+
+.hotel:before {
+	content: "\eb0b";
+}
+
+.location_off:before {
+	content: "\eb0c";
+}
+
+.location_search:before {
+	content: "\eb0d";
+}
+
+.machu - picchu:before {
+	content: "\eb0e";
+}
+
+.map_outlined:before {
+	content: "\eb0f";
+}
+
+.map_zoom_out:before {
+	content: "\eb10";
+}
+
+.map:before {
+	content: "\eb11";
+}
+
+.museum:before {
+	content: "\eb12";
+}
+
+.my_location:before {
+	content: "\eb13";
+}
+
+.navigate_outlined:before {
+	content: "\eb14";
+}
+
+.navigate:before {
+	content: "\eb15";
+}
+
+.neighborhood:before {
+	content: "\eb16";
+}
+
+.new_york:before {
+	content: "\eb17";
+}
+
+.paris:before {
+	content: "\eb18";
+}
+
+.parking_outlined:before {
+	content: "\eb19";
+}
+
+.parking:before {
+	content: "\eb1a";
+}
+
+.pharmacy_outlined:before {
+	content: "\eb1b";
+}
+
+.pharmacy:before {
+	content: "\eb1c";
+}
+
+.pin_outlined:before {
+	content: "\eb1d";
+}
+
+.pin:before {
+	content: "\eb1e";
+}
+
+.poi_add_outlined:before {
+	content: "\eb1f";
+}
+
+.poi_add:before {
+	content: "\eb20";
+}
+
+.poi_delete_outlined:before {
+	content: "\eb21";
+}
+
+.poi_delete:before {
+	content: "\eb22";
+}
+
+.poi_outlined:before {
+	content: "\eb23";
+}
+
+.poi_remove_outlined:before {
+	content: "\eb24";
+}
+
+.poi_remove:before {
+	content: "\eb25";
+}
+
+.poi_user:before {
+	content: "\eb26";
+}
+
+.poi:before {
+	content: "\eb27";
+}
+
+.pyramid:before {
+	content: "\eb28";
+}
+
+.restaurant:before {
+	content: "\eb29";
+}
+
+.rome:before {
+	content: "\eb2a";
+}
+
+.route_dashed:before {
+	content: "\eb2b";
+}
+
+.route:before {
+	content: "\eb2c";
+}
+
+.san_francisco:before {
+	content: "\eb2d";
+}
+
+.shop_outlined:before {
+	content: "\eb2e";
+}
+
+.shop:before {
+	content: "\eb2f";
+}
+
+.shopping_icon:before {
+	content: "\eb30";
+}
+
+.shopping:before {
+	content: "\eb31";
+}
+
+.singapore:before {
+	content: "\eb32";
+}
+
+.spa_outlined:before {
+	content: "\eb33";
+}
+
+.spa:before {
+	content: "\eb34";
+}
+
+.sydney:before {
+	content: "\eb35";
+}
+
+.theatre:before {
+	content: "\eb36";
+}
+
+.toilets:before {
+	content: "\eb37";
+}
+
+.trencin:before {
+	content: "\eb38";
+}
+
+.zoom_in:before {
+	content: "\eb39";
+}
+
+.zoom_out:before {
+	content: "\eb3a";
+}
+
+.add_photo:before {
+	content: "\eb3b";
+}
+
+.adjust:before {
+	content: "\eb3c";
+}
+
+.align_to_bottom_outlined:before {
+	content: "\eb3d";
+}
+
+.align_to_bottom_vs:before {
+	content: "\eb3e";
+}
+
+.align_to_bottom:before {
+	content: "\eb3f";
+}
+
+.align_to_center_outlined:before {
+	content: "\eb40";
+}
+
+.align_to_center_vs:before {
+	content: "\eb41";
+}
+
+.align_to_center:before {
+	content: "\eb42";
+}
+
+.align_to_left_outlined:before {
+	content: "\eb43";
+}
+
+.align_to_left_vs:before {
+	content: "\eb44";
+}
+
+.align_to_left:before {
+	content: "\eb45";
+}
+
+.align_to_middle_outlined:before {
+	content: "\eb46";
+}
+
+.align_to_middle_vs:before {
+	content: "\eb47";
+}
+
+.align_to_middle:before {
+	content: "\eb48";
+}
+
+.align_to_right_outlined:before {
+	content: "\eb49";
+}
+
+.align_to_right_vs:before {
+	content: "\eb4a";
+}
+
+.align_to_right:before {
+	content: "\eb4b";
+}
+
+.align_to_top_outlined:before {
+	content: "\eb4c";
+}
+
+.align_to_top_vs:before {
+	content: "\eb4d";
+}
+
+.align_to_top:before {
+	content: "\eb4e";
+}
+
+.artboard_outlined:before {
+	content: "\eb4f";
+}
+
+.artboard:before {
+	content: "\eb50";
+}
+
+.black_white:before {
+	content: "\eb51";
+}
+
+.blend_tool:before {
+	content: "\eb52";
+}
+
+.bold:before {
+	content: "\eb53";
+}
+
+.brightness_1_outlined:before {
+	content: "\eb54";
+}
+
+.brightness_1:before {
+	content: "\eb55";
+}
+
+.brightness_2_outlined:before {
+	content: "\eb56";
+}
+
+.brightness_2:before {
+	content: "\eb57";
+}
+
+.brightness_3:before {
+	content: "\eb58";
+}
+
+.bring_forward:before {
+	content: "\eb59";
+}
+
+.bring_to_front:before {
+	content: "\eb5a";
+}
+
+.brush:before {
+	content: "\eb5b";
+}
+
+.camera_enhance:before {
+	content: "\eb5c";
+}
+
+.camera_roll:before {
+	content: "\eb5d";
+}
+
+.canvas_graphics:before {
+	content: "\eb5e";
+}
+
+.canvas_text:before {
+	content: "\eb5f";
+}
+
+.canvas:before {
+	content: "\eb60";
+}
+
+.color_off_outlined:before {
+	content: "\eb61";
+}
+
+.color_off:before {
+	content: "\eb62";
+}
+
+.color_outlined:before {
+	content: "\eb63";
+}
+
+.color_picker_empty:before {
+	content: "\eb64";
+}
+
+.color_picker_point:before {
+	content: "\eb65";
+}
+
+.color_picker:before {
+	content: "\eb66";
+}
+
+.color:before {
+	content: "\eb67";
+}
+
+.copy:before {
+	content: "\eb68";
+}
+
+.crop:before {
+	content: "\eb69";
+}
+
+.cut_in_half:before {
+	content: "\eb6a";
+}
+
+.cut:before {
+	content: "\eb6b";
+}
+
+.difference:before {
+	content: "\eb6c";
+}
+
+.eraser:before {
+	content: "\eb6d";
+}
+
+.exposure:before {
+	content: "\eb6e";
+}
+
+.flare:before {
+	content: "\eb6f";
+}
+
+.flash_off:before {
+	content: "\eb70";
+}
+
+.flash:before {
+	content: "\eb71";
+}
+
+.focus:before {
+	content: "\eb72";
+}
+
+.format_1_1:before {
+	content: "\eb73";
+}
+
+.format_4_3:before {
+	content: "\eb74";
+}
+
+.format_16_9:before {
+	content: "\eb75";
+}
+
+.formats:before {
+	content: "\eb76";
+}
+
+.free_transform:before {
+	content: "\eb77";
+}
+
+.fullscreen_1_1:before {
+	content: "\eb78";
+}
+
+.fullscreen_4_3:before {
+	content: "\eb79";
+}
+
+.fullscreen_16_9:before {
+	content: "\eb7a";
+}
+
+.gesture:before {
+	content: "\eb7b";
+}
+
+.gradient:before {
+	content: "\eb7c";
+}
+
+.grid:before {
+	content: "\eb7d";
+}
+
+.image_rotate_left:before {
+	content: "\eb7e";
+}
+
+.image_rotate_right:before {
+	content: "\eb7f";
+}
+
+.image:before {
+	content: "\eb80";
+}
+
+.intersect:before {
+	content: "\eb81";
+}
+
+.invert_colors_off:before {
+	content: "\eb82";
+}
+
+.invert_colors:before {
+	content: "\eb83";
+}
+
+.invert:before {
+	content: "\eb84";
+}
+
+.italic:before {
+	content: "\eb85";
+}
+
+.keyframe_bezier_in:before {
+	content: "\eb86";
+}
+
+.keyframe_bezier_out:before {
+	content: "\eb87";
+}
+
+.keyframe_cont_bezier:before {
+	content: "\eb88";
+}
+
+.keyframe_linear_in:before {
+	content: "\eb89";
+}
+
+.keyframe_linear_out:before {
+	content: "\eb8a";
+}
+
+.keyframe_linear:before {
+	content: "\eb8b";
+}
+
+.knife:before {
+	content: "\eb8c";
+}
+
+.lasso:before {
+	content: "\eb8d";
+}
+
+.layers_off:before {
+	content: "\eb8e";
+}
+
+.layers_outlined:before {
+	content: "\eb8f";
+}
+
+.layers:before {
+	content: "\eb90";
+}
+
+.ligature:before {
+	content: "\eb91";
+}
+
+.macro_outlined:before {
+	content: "\eb92";
+}
+
+.macro:before {
+	content: "\eb93";
+}
+
+.magic_wand:before {
+	content: "\eb94";
+}
+
+.marker_outlined:before {
+	content: "\eb95";
+}
+
+.marker:before {
+	content: "\eb96";
+}
+
+.mask_vs:before {
+	content: "\eb97";
+}
+
+.mask:before {
+	content: "\eb98";
+}
+
+.material:before {
+	content: "\eb99";
+}
+
+.media_photo:before {
+	content: "\eb9a";
+}
+
+.mesh_grid:before {
+	content: "\eb9b";
+}
+
+.mouse_cursor_outlined:before {
+	content: "\eb9c";
+}
+
+.mouse_cursor:before {
+	content: "\eb9d";
+}
+
+.opacity:before {
+	content: "\eb9e";
+}
+
+.paint_bucket:before {
+	content: "\eb9f";
+}
+
+.paint_outlined:before {
+	content: "\eba0";
+}
+
+.paint:before {
+	content: "\eba1";
+}
+
+.palette_outlined:before {
+	content: "\eba2";
+}
+
+.palette:before {
+	content: "\eba3";
+}
+
+.pan_tool:before {
+	content: "\eba4";
+}
+
+.panorama_image:before {
+	content: "\eba5";
+}
+
+.panorama_outlined:before {
+	content: "\eba6";
+}
+
+.panorama_vs_outlined:before {
+	content: "\eba7";
+}
+
+.panorama_vs:before {
+	content: "\eba8";
+}
+
+.panorama:before {
+	content: "\eba9";
+}
+
+.paste:before {
+	content: "\ebaa";
+}
+
+.pattern:before {
+	content: "\ebab";
+}
+
+.pen:before {
+	content: "\ebac";
+}
+
+.photo_album:before {
+	content: "\ebad";
+}
+
+.photo_filter:before {
+	content: "\ebae";
+}
+
+.photo_gallery_outlined:before {
+	content: "\ebaf";
+}
+
+.photo_gallery:before {
+	content: "\ebb0";
+}
+
+.photo_landscape_outlined:before {
+	content: "\ebb1";
+}
+
+.photo_landscape:before {
+	content: "\ebb2";
+}
+
+.photo_square_outlined:before {
+	content: "\ebb3";
+}
+
+.photo_square:before {
+	content: "\ebb4";
+}
+
+.podcast:before {
+	content: "\ebb5";
+}
+
+.print_disabled:before {
+	content: "\ebb6";
+}
+
+.print:before {
+	content: "\ebb7";
+}
+
+.redo:before {
+	content: "\ebb8";
+}
+
+.reflect_horizontal:before {
+	content: "\ebb9";
+}
+
+.reflect_vertical:before {
+	content: "\ebba";
+}
+
+.rounded_corner:before {
+	content: "\ebbb";
+}
+
+.ruler:before {
+	content: "\ebbc";
+}
+
+.save_outlined:before {
+	content: "\ebbd";
+}
+
+.save:before {
+	content: "\ebbe";
+}
+
+.scan_document_icon:before {
+	content: "\ebbf";
+}
+
+.scan_document:before {
+	content: "\ebc0";
+}
+
+.selection:before {
+	content: "\ebc1";
+}
+
+.send_backward:before {
+	content: "\ebc2";
+}
+
+.send_to_back:before {
+	content: "\ebc3";
+}
+
+.sharpness:before {
+	content: "\ebc4";
+}
+
+.shear:before {
+	content: "\ebc5";
+}
+
+.shutter_outlined:before {
+	content: "\ebc6";
+}
+
+.shutter:before {
+	content: "\ebc7";
+}
+
+.slideshow_outlined:before {
+	content: "\ebc8";
+}
+
+.slideshow:before {
+	content: "\ebc9";
+}
+
+.small_caps:before {
+	content: "\ebca";
+}
+
+.snap_to:before {
+	content: "\ebcb";
+}
+
+.spiral:before {
+	content: "\ebcc";
+}
+
+.stamp:before {
+	content: "\ebcd";
+}
+
+.strikethrough:before {
+	content: "\ebce";
+}
+
+.stroke_weight:before {
+	content: "\ebcf";
+}
+
+.substract:before {
+	content: "\ebd0";
+}
+
+.switch_camera:before {
+	content: "\ebd1";
+}
+
+.switch_video:before {
+	content: "\ebd2";
+}
+
+.text_center:before {
+	content: "\ebd3";
+}
+
+.text_left:before {
+	content: "\ebd4";
+}
+
+.text_right:before {
+	content: "\ebd5";
+}
+
+.text:before {
+	content: "\ebd6";
+}
+
+.texture:before {
+	content: "\ebd7";
+}
+
+.tools:before {
+	content: "\ebd8";
+}
+
+.transform_artboard:before {
+	content: "\ebd9";
+}
+
+.transform:before {
+	content: "\ebda";
+}
+
+.underline:before {
+	content: "\ebdb";
+}
+
+.undo:before {
+	content: "\ebdc";
+}
+
+.union:before {
+	content: "\ebdd";
+}
+
+.vector:before {
+	content: "\ebde";
+}
+
+.vertical_align_bottom:before {
+	content: "\ebdf";
+}
+
+.vertical_align_middle:before {
+	content: "\ebe0";
+}
+
+.vertical_align_top:before {
+	content: "\ebe1";
+}
+
+.video_add:before {
+	content: "\ebe2";
+}
+
+.video_gallery_outlined:before {
+	content: "\ebe3";
+}
+
+.video_gallery:before {
+	content: "\ebe4";
+}
+
+.video_horizontal_outlined:before {
+	content: "\ebe5";
+}
+
+.video_horizontal:before {
+	content: "\ebe6";
+}
+
+.video_vertical_outlined:before {
+	content: "\ebe7";
+}
+
+.video_vertical:before {
+	content: "\ebe8";
+}
+
+.american_football:before {
+	content: "\ebe9";
+}
+
+.anchor:before {
+	content: "\ebea";
+}
+
+.armchair:before {
+	content: "\ebeb";
+}
+
+.baseball:before {
+	content: "\ebec";
+}
+
+.basketball:before {
+	content: "\ebed";
+}
+
+.birthday_outlined:before {
+	content: "\ebee";
+}
+
+.birthday:before {
+	content: "\ebef";
+}
+
+.block:before {
+	content: "\ebf0";
+}
+
+.book_bookmarked:before {
+	content: "\ebf1";
+}
+
+.book_opened:before {
+	content: "\ebf2";
+}
+
+.book_outlined:before {
+	content: "\ebf3";
+}
+
+.book:before {
+	content: "\ebf4";
+}
+
+.brain:before {
+	content: "\ebf5";
+}
+
+.brick_wall:before {
+	content: "\ebf6";
+}
+
+.briefcase_not_accessible:before {
+	content: "\ebf7";
+}
+
+.briefcase_outlined:before {
+	content: "\ebf8";
+}
+
+.briefcase:before {
+	content: "\ebf9";
+}
+
+.chair:before {
+	content: "\ebfa";
+}
+
+.circle_outlined:before {
+	content: "\ebfb";
+}
+
+.circle:before {
+	content: "\ebfc";
+}
+
+.cricket:before {
+	content: "\ebfd";
+}
+
+.crossfit:before {
+	content: "\ebfe";
+}
+
+.cube:before {
+	content: "\ebff";
+}
+
+.dining_table_outlined:before {
+	content: "\ec00";
+}
+
+.dining_table:before {
+	content: "\ec01";
+}
+
+.diving:before {
+	content: "\ec02";
+}
+
+.door:before {
+	content: "\ec03";
+}
+
+.flag_cross_1:before {
+	content: "\ec04";
+}
+
+.flag_cross_2:before {
+	content: "\ec05";
+}
+
+.flag_half_1:before {
+	content: "\ec06";
+}
+
+.flag_half_2:before {
+	content: "\ec07";
+}
+
+.flag_outlined:before {
+	content: "\ec08";
+}
+
+.flag_quarter_1:before {
+	content: "\ec09";
+}
+
+.flag_quarter_2:before {
+	content: "\ec0a";
+}
+
+.flag:before {
+	content: "\ec0b";
+}
+
+.flask:before {
+	content: "\ec0c";
+}
+
+.flower:before {
+	content: "\ec0d";
+}
+
+.foot_print:before {
+	content: "\ec0e";
+}
+
+.gift:before {
+	content: "\ec0f";
+}
+
+.glasses_outlined:before {
+	content: "\ec10";
+}
+
+.glasses:before {
+	content: "\ec11";
+}
+
+.hourglass_half:before {
+	content: "\ec12";
+}
+
+.hourglass_outlined:before {
+	content: "\ec13";
+}
+
+.hourglass_quarter:before {
+	content: "\ec14";
+}
+
+.hourglass:before {
+	content: "\ec15";
+}
+
+.ice_hockey:before {
+	content: "\ec16";
+}
+
+.infinity:before {
+	content: "\ec17";
+}
+
+.justice:before {
+	content: "\ec18";
+}
+
+.lab:before {
+	content: "\ec19";
+}
+
+.leaf_diagonal:before {
+	content: "\ec1a";
+}
+
+.leaf:before {
+	content: "\ec1b";
+}
+
+.light_on:before {
+	content: "\ec1c";
+}
+
+.lightbulb:before {
+	content: "\ec1d";
+}
+
+.medicaments:before {
+	content: "\ec1e";
+}
+
+.mma:before {
+	content: "\ec1f";
+}
+
+.moon_outlined:before {
+	content: "\ec20";
+}
+
+.moon_vs_outlined:before {
+	content: "\ec21";
+}
+
+.moon_vs:before {
+	content: "\ec22";
+}
+
+.moon:before {
+	content: "\ec23";
+}
+
+.movie:before {
+	content: "\ec24";
+}
+
+.node_multiple_outlined:before {
+	content: "\ec25";
+}
+
+.node_multiple:before {
+	content: "\ec26";
+}
+
+.node_outlined:before {
+	content: "\ec27";
+}
+
+.node:before {
+	content: "\ec28";
+}
+
+.pet:before {
+	content: "\ec29";
+}
+
+.pill:before {
+	content: "\ec2a";
+}
+
+.puzzle:before {
+	content: "\ec2b";
+}
+
+.quotes:before {
+	content: "\ec2c";
+}
+
+.recycling:before {
+	content: "\ec2d";
+}
+
+.rugby:before {
+	content: "\ec2e";
+}
+
+.seat_outlined:before {
+	content: "\ec2f";
+}
+
+.seat:before {
+	content: "\ec30";
+}
+
+.shoe_print_outlined:before {
+	content: "\ec31";
+}
+
+.shoe_print:before {
+	content: "\ec32";
+}
+
+.shower:before {
+	content: "\ec33";
+}
+
+.sign_man:before {
+	content: "\ec34";
+}
+
+.sign_woman:before {
+	content: "\ec35";
+}
+
+.skull:before {
+	content: "\ec36";
+}
+
+.smoke_free:before {
+	content: "\ec37";
+}
+
+.smoking:before {
+	content: "\ec38";
+}
+
+.snowflake:before {
+	content: "\ec39";
+}
+
+.sport:before {
+	content: "\ec3a";
+}
+
+.square_outlined:before {
+	content: "\ec3b";
+}
+
+.square:before {
+	content: "\ec3c";
+}
+
+.stairs_down:before {
+	content: "\ec3d";
+}
+
+.stairs_up:before {
+	content: "\ec3e";
+}
+
+.survey:before {
+	content: "\ec3f";
+}
+
+.t_shirt:before {
+	content: "\ec40";
+}
+
+.table_tennis:before {
+	content: "\ec41";
+}
+
+.temperature:before {
+	content: "\ec42";
+}
+
+.tennis:before {
+	content: "\ec43";
+}
+
+.test - tube:before {
+	content: "\ec44";
+}
+
+.ticket:before {
+	content: "\ec45";
+}
+
+.triangle_outlined:before {
+	content: "\ec46";
+}
+
+.triangle:before {
+	content: "\ec47";
+}
+
+.umbrella_outlined:before {
+	content: "\ec48";
+}
+
+.umbrella:before {
+	content: "\ec49";
+}
+
+.volleyball:before {
+	content: "\ec4a";
+}
+
+.weight_outlined:before {
+	content: "\ec4b";
+}
+
+.weight:before {
+	content: "\ec4c";
+}
+
+.wishlist_outlined:before {
+	content: "\ec4d";
+}
+
+.wishlist:before {
+	content: "\ec4e";
+}
+
+.wrench:before {
+	content: "\ec4f";
+}
+
+.american_express:before {
+	content: "\ec50";
+}
+
+.atm_outlined:before {
+	content: "\ec51";
+}
+
+.atm:before {
+	content: "\ec52";
+}
+
+.bitcoin_outlined:before {
+	content: "\ec53";
+}
+
+.bitcoin:before {
+	content: "\ec54";
+}
+
+.coin:before {
+	content: "\ec55";
+}
+
+.credit_card_add:before {
+	content: "\ec56";
+}
+
+.credit_card_outlined:before {
+	content: "\ec57";
+}
+
+.credit_card_remove:before {
+	content: "\ec58";
+}
+
+.credit_card:before {
+	content: "\ec59";
+}
+
+.credit_cards:before {
+	content: "\ec5a";
+}
+
+.discover:before {
+	content: "\ec5b";
+}
+
+.dollar_outlined:before {
+	content: "\ec5c";
+}
+
+.dollar:before {
+	content: "\ec5d";
+}
+
+.ethereum_outlined:before {
+	content: "\ec5e";
+}
+
+.ethereum:before {
+	content: "\ec5f";
+}
+
+.euro_outlined:before {
+	content: "\ec60";
+}
+
+.euro:before {
+	content: "\ec61";
+}
+
+.insurance:before {
+	content: "\ec62";
+}
+
+.litecoin_outlined:before {
+	content: "\ec63";
+}
+
+.litecoin:before {
+	content: "\ec64";
+}
+
+.mastercard:before {
+	content: "\ec65";
+}
+
+.money_vs:before {
+	content: "\ec66";
+}
+
+.money:before {
+	content: "\ec67";
+}
+
+.paypal:before {
+	content: "\ec68";
+}
+
+.pound_outlined:before {
+	content: "\ec69";
+}
+
+.pound:before {
+	content: "\ec6a";
+}
+
+.receipt_outlined:before {
+	content: "\ec6b";
+}
+
+.receipt:before {
+	content: "\ec6c";
+}
+
+.saving_outlined:before {
+	content: "\ec6d";
+}
+
+.saving:before {
+	content: "\ec6e";
+}
+
+.savings:before {
+	content: "\ec6f";
+}
+
+.visa:before {
+	content: "\ec70";
+}
+
+.wallet_outlined:before {
+	content: "\ec71";
+}
+
+.wallet:before {
+	content: "\ec72";
+}
+
+.accessibility_vs:before {
+	content: "\ec73";
+}
+
+.accessibility:before {
+	content: "\ec74";
+}
+
+.accessible_forward:before {
+	content: "\ec75";
+}
+
+.accessible:before {
+	content: "\ec76";
+}
+
+.hiking:before {
+	content: "\ec77";
+}
+
+.man:before {
+	content: "\ec78";
+}
+
+.pregnancy:before {
+	content: "\ec79";
+}
+
+.running:before {
+	content: "\ec7a";
+}
+
+.standing:before {
+	content: "\ec7b";
+}
+
+.swimming:before {
+	content: "\ec7c";
+}
+
+.walking:before {
+	content: "\ec7d";
+}
+
+.woman:before {
+	content: "\ec7e";
+}
+
+.award_outlined:before {
+	content: "\ec7f";
+}
+
+.award:before {
+	content: "\ec80";
+}
+
+.boost:before {
+	content: "\ec81";
+}
+
+.crown_outlined:before {
+	content: "\ec82";
+}
+
+.crown:before {
+	content: "\ec83";
+}
+
+.diamond_outlined:before {
+	content: "\ec84";
+}
+
+.diamond:before {
+	content: "\ec85";
+}
+
+.dna_spiral:before {
+	content: "\ec86";
+}
+
+.luck:before {
+	content: "\ec87";
+}
+
+.medal:before {
+	content: "\ec88";
+}
+
+.planet:before {
+	content: "\ec89";
+}
+
+.premium_outlined:before {
+	content: "\ec8a";
+}
+
+.premium:before {
+	content: "\ec8b";
+}
+
+.robot:before {
+	content: "\ec8c";
+}
+
+.sticker_outlined:before {
+	content: "\ec8d";
+}
+
+.sticker:before {
+	content: "\ec8e";
+}
+
+.top_security_outlined:before {
+	content: "\ec8f";
+}
+
+.top_security:before {
+	content: "\ec90";
+}
+
+.verified_outlined:before {
+	content: "\ec91";
+}
+
+.verified:before {
+	content: "\ec92";
+}
+
+.appstore:before {
+	content: "\ec93";
+}
+
+.behance:before {
+	content: "\ec94";
+}
+
+.dribbble:before {
+	content: "\ec95";
+}
+
+.dropbox:before {
+	content: "\ec96";
+}
+
+.facebook_square:before {
+	content: "\ec97";
+}
+
+.facebook:before {
+	content: "\ec98";
+}
+
+.github:before {
+	content: "\ec99";
+}
+
+.gmail_outlined:before {
+	content: "\ec9a";
+}
+
+.gmail:before {
+	content: "\ec9b";
+}
+
+.google_drive:before {
+	content: "\ec9c";
+}
+
+.google_play:before {
+	content: "\ec9d";
+}
+
+.google:before {
+	content: "\ec9e";
+}
+
+.hangouts_outlined:before {
+	content: "\ec9f";
+}
+
+.hangouts:before {
+	content: "\eca0";
+}
+
+.instagram:before {
+	content: "\eca1";
+}
+
+.linkedin_square:before {
+	content: "\eca2";
+}
+
+.linkedin:before {
+	content: "\eca3";
+}
+
+.medium_square:before {
+	content: "\eca4";
+}
+
+.medium:before {
+	content: "\eca5";
+}
+
+.messenger_outlined:before {
+	content: "\eca6";
+}
+
+.messenger:before {
+	content: "\eca7";
+}
+
+.pinterest_circle:before {
+	content: "\eca8";
+}
+
+.pinterest:before {
+	content: "\eca9";
+}
+
+.reddit:before {
+	content: "\ecaa";
+}
+
+.rss:before {
+	content: "\ecab";
+}
+
+.skype:before {
+	content: "\ecac";
+}
+
+.slack:before {
+	content: "\ecad";
+}
+
+.snapchat_outlined:before {
+	content: "\ecae";
+}
+
+.snapchat:before {
+	content: "\ecaf";
+}
+
+.steam:before {
+	content: "\ecb0";
+}
+
+.telegram:before {
+	content: "\ecb1";
+}
+
+.tik_tok:before {
+	content: "\ecb2";
+}
+
+.twitch:before {
+	content: "\ecb3";
+}
+
+.twitter:before {
+	content: "\ecb4";
+}
+
+.viber_outlined:before {
+	content: "\ecb5";
+}
+
+.viber:before {
+	content: "\ecb6";
+}
+
+.vimeo_square:before {
+	content: "\ecb7";
+}
+
+.vimeo:before {
+	content: "\ecb8";
+}
+
+.vkontakte:before {
+	content: "\ecb9";
+}
+
+.whatsapp_outlined:before {
+	content: "\ecba";
+}
+
+.whatsapp:before {
+	content: "\ecbb";
+}
+
+.youtube_outlined:before {
+	content: "\ecbc";
+}
+
+.youtube:before {
+	content: "\ecbd";
+}
+
+.airdrop:before {
+	content: "\ecbe";
+}
+
+.airplay:before {
+	content: "\ecbf";
+}
+
+.android:before {
+	content: "\ecc0";
+}
+
+.apple_outlined:before {
+	content: "\ecc1";
+}
+
+.apple:before {
+	content: "\ecc2";
+}
+
+.augmented_reality:before {
+	content: "\ecc3";
+}
+
+.barcode:before {
+	content: "\ecc4";
+}
+
+.bluetooth_connect:before {
+	content: "\ecc5";
+}
+
+.bluetooth_off:before {
+	content: "\ecc6";
+}
+
+.bluetooth_search:before {
+	content: "\ecc7";
+}
+
+.bluetooth:before {
+	content: "\ecc8";
+}
+
+.chart_bar_1:before {
+	content: "\ecc9";
+}
+
+.chart_bar_2:before {
+	content: "\ecca";
+}
+
+.chart_bar_3:before {
+	content: "\eccb";
+}
+
+.chart_bar_4:before {
+	content: "\eccc";
+}
+
+.chart_bubble:before {
+	content: "\eccd";
+}
+
+.chart_donut_1:before {
+	content: "\ecce";
+}
+
+.chart_donut_2:before {
+	content: "\eccf";
+}
+
+.chart_line_down:before {
+	content: "\ecd0";
+}
+
+.chart_line_up:before {
+	content: "\ecd1";
+}
+
+.chart_pie_1:before {
+	content: "\ecd2";
+}
+
+.chart_pie_2:before {
+	content: "\ecd3";
+}
+
+.cloud_disabled:before {
+	content: "\ecd4";
+}
+
+.cloud_off_outlined:before {
+	content: "\ecd5";
+}
+
+.cloud_off:before {
+	content: "\ecd6";
+}
+
+.cloud_on:before {
+	content: "\ecd7";
+}
+
+.cloud_outlined:before {
+	content: "\ecd8";
+}
+
+.cloud:before {
+	content: "\ecd9";
+}
+
+.code:before {
+	content: "\ecda";
+}
+
+.data_sharing:before {
+	content: "\ecdb";
+}
+
+.download_from_cloud:before {
+	content: "\ecdc";
+}
+
+.face_id:before {
+	content: "\ecdd";
+}
+
+.fingerprint:before {
+	content: "\ecde";
+}
+
+.link_off:before {
+	content: "\ecdf";
+}
+
+.link:before {
+	content: "\ece0";
+}
+
+.memory_chip:before {
+	content: "\ece1";
+}
+
+.mobile_data_low:before {
+	content: "\ece2";
+}
+
+.mobile_data:before {
+	content: "\ece3";
+}
+
+.online:before {
+	content: "\ece4";
+}
+
+.plugin_outlined:before {
+	content: "\ece5";
+}
+
+.plugin:before {
+	content: "\ece6";
+}
+
+.poll:before {
+	content: "\ece7";
+}
+
+.qr_code:before {
+	content: "\ece8";
+}
+
+.scan:before {
+	content: "\ece9";
+}
+
+.security_off_outlined:before {
+	content: "\ecea";
+}
+
+.security_off:before {
+	content: "\eceb";
+}
+
+.security_on_outlined:before {
+	content: "\ecec";
+}
+
+.security_on:before {
+	content: "\eced";
+}
+
+.security:before {
+	content: "\ecee";
+}
+
+.touch_id:before {
+	content: "\ecef";
+}
+
+.trending_down:before {
+	content: "\ecf0";
+}
+
+.trending_up:before {
+	content: "\ecf1";
+}
+
+.upload_on_cloud:before {
+	content: "\ecf2";
+}
+
+.usb:before {
+	content: "\ecf3";
+}
+
+.virtual_reality_outlined:before {
+	content: "\ecf4";
+}
+
+.virtual_reality:before {
+	content: "\ecf5";
+}
+
+.website:before {
+	content: "\ecf6";
+}
+
+.wifi_off:before {
+	content: "\ecf7";
+}
+
+.wifi:before {
+	content: "\ecf8";
+}
+
+.windows:before {
+	content: "\ecf9";
+}
+
+.arrival:before {
+	content: "\ecfa";
+}
+
+.bike:before {
+	content: "\ecfb";
+}
+
+.boat:before {
+	content: "\ecfc";
+}
+
+.bus:before {
+	content: "\ecfd";
+}
+
+.car_police:before {
+	content: "\ecfe";
+}
+
+.car:before {
+	content: "\ecff";
+}
+
+.departure:before {
+	content: "\ed00";
+}
+
+.flight_cancelled:before {
+	content: "\ed01";
+}
+
+.flight:before {
+	content: "\ed02";
+}
+
+.metro:before {
+	content: "\ed03";
+}
+
+.motocycle:before {
+	content: "\ed04";
+}
+
+.taxi:before {
+	content: "\ed05";
+}
+
+.traffic_light:before {
+	content: "\ed06";
+}
+
+.train:before {
+	content: "\ed07";
+}
+
+.tram:before {
+	content: "\ed08";
+}
+
+.truck:before {
+	content: "\ed09";
+}
+
+.add_event:before {
+	content: "\ed0a";
+}
+
+.add_to_trash:before {
+	content: "\ed0b";
+}
+
+.agenda_view_outlined:before {
+	content: "\ed0c";
+}
+
+.agenda_view:before {
+	content: "\ed0d";
+}
+
+.alarm_add:before {
+	content: "\ed0e";
+}
+
+.alarm_alert:before {
+	content: "\ed0f";
+}
+
+.alarm_off:before {
+	content: "\ed10";
+}
+
+.alarm_on:before {
+	content: "\ed11";
+}
+
+.alarm:before {
+	content: "\ed12";
+}
+
+.album:before {
+	content: "\ed13";
+}
+
+.albums:before {
+	content: "\ed14";
+}
+
+.all_done:before {
+	content: "\ed15";
+}
+
+.apps:before {
+	content: "\ed16";
+}
+
+.attachment_diagonal:before {
+	content: "\ed17";
+}
+
+.attachment:before {
+	content: "\ed18";
+}
+
+.blocked:before {
+	content: "\ed19";
+}
+
+.category_outlined:before {
+	content: "\ed1a";
+}
+
+.category:before {
+	content: "\ed1b";
+}
+
+.clock:before {
+	content: "\ed1c";
+}
+
+.dashboard_outlined:before {
+	content: "\ed1d";
+}
+
+.dashboard_vs_outlined:before {
+	content: "\ed1e";
+}
+
+.dashboard_vs:before {
+	content: "\ed1f";
+}
+
+.dashboard:before {
+	content: "\ed20";
+}
+
+.delete_outlined:before {
+	content: "\ed21";
+}
+
+.delete:before {
+	content: "\ed22";
+}
+
+.download_outlined:before {
+	content: "\ed23";
+}
+
+.download_to:before {
+	content: "\ed24";
+}
+
+.download:before {
+	content: "\ed25";
+}
+
+.edit:before {
+	content: "\ed26";
+}
+
+.explore_off_outlined:before {
+	content: "\ed27";
+}
+
+.explore_off:before {
+	content: "\ed28";
+}
+
+.explore_outlined:before {
+	content: "\ed29";
+}
+
+.explore:before {
+	content: "\ed2a";
+}
+
+.feed_outlined:before {
+	content: "\ed2b";
+}
+
+.feed:before {
+	content: "\ed2c";
+}
+
+.filter_list:before {
+	content: "\ed2d";
+}
+
+.filter_outlined:before {
+	content: "\ed2e";
+}
+
+.filter:before {
+	content: "\ed2f";
+}
+
+.format_bullets:before {
+	content: "\ed30";
+}
+
+.format_points:before {
+	content: "\ed31";
+}
+
+.hidden_outlined:before {
+	content: "\ed32";
+}
+
+.hidden:before {
+	content: "\ed33";
+}
+
+.home_outlined:before {
+	content: "\ed34";
+}
+
+.home_vs_1_outlined:before {
+	content: "\ed35";
+}
+
+.home_vs_2_outlined:before {
+	content: "\ed36";
+}
+
+.home_vs:before {
+	content: "\ed37";
+}
+
+.home:before {
+	content: "\ed38";
+}
+
+.hot:before {
+	content: "\ed39";
+}
+
+.import:before {
+	content: "\ed3a";
+}
+
+.invisible:before {
+	content: "\ed3b";
+}
+
+.launch_outlined:before {
+	content: "\ed3c";
+}
+
+.launch_vs_outlined:before {
+	content: "\ed3d";
+}
+
+.launch_vs:before {
+	content: "\ed3e";
+}
+
+.launch:before {
+	content: "\ed3f";
+}
+
+.lock_open_outlined:before {
+	content: "\ed40";
+}
+
+.lock_opened:before {
+	content: "\ed41";
+}
+
+.lock_outlined:before {
+	content: "\ed42";
+}
+
+.lock:before {
+	content: "\ed43";
+}
+
+.menu_hamburger:before {
+	content: "\ed44";
+}
+
+.menu_left_right:before {
+	content: "\ed45";
+}
+
+.menu_left:before {
+	content: "\ed46";
+}
+
+.menu_vs_outlined:before {
+	content: "\ed47";
+}
+
+.menu_vs:before {
+	content: "\ed48";
+}
+
+.more_horizontal:before {
+	content: "\ed49";
+}
+
+.more_vertical:before {
+	content: "\ed4a";
+}
+
+.new_message:before {
+	content: "\ed4b";
+}
+
+.password_open:before {
+	content: "\ed4c";
+}
+
+.password:before {
+	content: "\ed4d";
+}
+
+.remove_from_trash:before {
+	content: "\ed4e";
+}
+
+.settings_outlined:before {
+	content: "\ed4f";
+}
+
+.settings_vs_outlined:before {
+	content: "\ed50";
+}
+
+.settings_vs:before {
+	content: "\ed51";
+}
+
+.settings:before {
+	content: "\ed52";
+}
+
+.share_vs:before {
+	content: "\ed53";
+}
+
+.share:before {
+	content: "\ed54";
+}
+
+.sign_in:before {
+	content: "\ed55";
+}
+
+.sign_out:before {
+	content: "\ed56";
+}
+
+.support_vs:before {
+	content: "\ed57";
+}
+
+.toggle_off:before {
+	content: "\ed59";
+}
+
+.toggle_on:before {
+	content: "\ed5a";
+}
+
+.upload_outlined:before {
+	content: "\ed5b";
+}
+
+.upload:before {
+	content: "\ed5c";
+}
+
+.visible_outlined:before {
+	content: "\ed5d";
+}
+
+.visible:before {
+	content: "\ed5e";
+}
+
+.account_circle:before {
+	content: "\ed5f";
+}
+
+.account_square_outlined:before {
+	content: "\ed60";
+}
+
+.account_square:before {
+	content: "\ed61";
+}
+
+.group_add:before {
+	content: "\ed62";
+}
+
+.group_equal:before {
+	content: "\ed63";
+}
+
+.group_junior:before {
+	content: "\ed64";
+}
+
+.group_senior:before {
+	content: "\ed65";
+}
+
+.user_add:before {
+	content: "\ed66";
+}
+
+.user_big_outlined:before {
+	content: "\ed67";
+}
+
+.user_big:before {
+	content: "\ed68";
+}
+
+.user_outlined:before {
+	content: "\ed69";
+}
+
+.user_switch:before {
+	content: "\ed6a";
+}
+
+.user:before {
+	content: "\ed6b";
+}
+
+.users_switch:before {
+	content: "\ed6c";
+}
+
+@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+:root {
+	--primary: #0a37aa;
+	--borderBlue: #cfdbfc;
+	--fontColor: #0b2238;
+	--borderColor: #edeef1;
+	--boxShadow: 0 0 14px rgb(0 0 0 / 20 %);
+	--radius: 4px;
+	--red: rgba(230, 35, 56, 1);
+	--green: rgba(32, 118, 86, 1);
+	--yellow: rgba(255, 240, 89, 1);
+	--lightBlue: rgba(85, 105, 220, 1);
+	--grey: #6c7a87;
+	--bgLigthBlue: #f5f7fc;
+}
+
+* {
+    - webkit - box - sizing: border - box;
+box - sizing: border - box;
+outline: none;
+}
+
+html, body {
+	font - size: 16px!important;
+	font - size: 1rem!important;
+}
+
+body, .o - page {
+	font - family: "Roboto", sans - serif;
+	color: #0b2238;
+	-webkit - font - smoothing: antialiased;
+	background - color: #161933!important;
+	font - size: 16px;
+}
+
+.o - btn {
+	display: inline - block;
+	cursor: pointer;
+	font - weight: 400;
+	color: #212529;
+	text - align: center;
+	vertical - align: middle;
+	-ms - user - select: none;
+	-webkit - user - select: none;
+	-moz - user - select: none;
+	user - select: none;
+	background - color: #ffffff;
+	border: 1px solid #edeef1;
+	padding: 0.85rem 1.8rem;
+	line - height: 1.5;
+	border - radius: 8px;
+	-webkit - transition: all .15s ease -in -out;
+	-o - transition: all .15s ease -in -out;
+	transition: all .15s ease -in -out;
+	-webkit - transform: scale(1) translateZ(0);
+	transform: scale(1) translateZ(0);
+	font - size: 15px;
+	position: relative;
+}
+
+.o - btn.o - btn--loading {
+	pointer - events: none;
+}
+
+.o - btn.o - btn--loading:before {
+	content: '';
+	z - index: 1212;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	border - radius: 8px;
+	pointer - events: none;
+	background: var(--primary);
+}
+
+.o - btn.o - btn--loading:after {
+	content: '';
+	position: absolute;
+	top: 12px;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	z - index: 211221;
+	border: 3px solid #98a7d8;
+	border - radius: 50 %;
+	border - top: 3px solid #ffffff;
+	height: 20px;
+	width: 20px;
+	-webkit - animation: spin 0.8s linear infinite;
+	animation: spin 0.8s linear infinite;
+}
+
+.o - btn.o - btn--small {
+	padding: .375rem .75rem;
+	font - size: 14px;
+}
+
+.o - btn:hover {
+	background: #f7f8fa;
+	opacity: 0.8;
+}
+
+.o - btn:active {
+	-webkit - transform: scale(0.95);
+	-ms - transform: scale(0.95);
+	transform: scale(0.95);
+}
+
+.o - btn.o - btn--primary {
+	background - color: var(--primary);
+	color: #ffffff;
+	font - size: 15px;
+}
+
+.o - btn.o - btn--secondary {
+	position: relative;
+	font - size: 0.85rem;
+	cursor: pointer;
+	text - decoration: none!important;
+	padding: 0.6rem 1.4rem;
+	overflow: hidden;
+	background: #0b2238;
+	color: #ffffff;
+}
+
+.o - btn.o - btn--transparent {
+	background: transparent;
+	color: #0b2238;
+	border - color: #0b2238;
+}
+
+.o - btn.o - btn--secondary: hover:before {
+	-webkit - transform: scaleY(1);
+	-ms - transform: scaleY(1);
+	transform: scaleY(1);
+}
+
+.o - content {
+	font - family: "Roboto", sans - serif;
+	background: #ffffff;
+	width: 96 %;
+	margin - left: auto;
+	margin - right: auto;
+	margin - top: 1rem;
+	border - radius: 12px;
+	font - size: 16px;
+}
+
+.o - spinner {
+	border: 3px solid var(--borderBlue);
+	border - radius: 50 %;
+	border - top: 3px solid var(--primary);
+	height: 32px;
+	width: 32px;
+	-webkit - animation: spin 0.8s linear infinite;
+	animation: spin 0.8s linear infinite;
+	margin - top: 1rem;
+}
+
+@-webkit - keyframes spin {
+	0 % {
+        - webkit - transform: rotate(0);
+	transform: rotate(0);
+}
+
+100 % {
+        - webkit - transform: rotate(360deg);
+transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+	0 % {
+        - webkit - transform: rotate(0);
+	transform: rotate(0);
+}
+
+100 % {
+        - webkit - transform: rotate(360deg);
+transform: rotate(360deg);
+    }
+}
+
+.o - content ul {
+	list - style - type: none;
+	padding: 0;
+	margin: 0;
+}
+
+.o - content a {
+	color: var(--fontColor);
+}
+
+.o - content a:hover {
+	color: var(--primary);
+}
+
+.o - header {
+	position: absolute;
+	z - index: 2;
+	left: 0;
+	right: 0;
+	width: 96 %;
+	margin - left: auto;
+	margin - right: auto;
+	top: 45px;
+	border - bottom: 1px solid var(--borderColor);
+}
+
+.o - header a {
+	font - weight: 400;
+}
+
+.o - header.o - header--fixed {
+	position: fixed;
+	top: 0;
+	-webkit - backdrop - filter: saturate(1) blur(20px)!important;
+	backdrop - filter: saturate(1) blur(20px)!important;
+}
+
+.o - container {
+	width: 100 %;
+	padding - right: 2rem;
+	padding - left: 2rem;
+	margin - right: auto;
+	margin - left: auto;
+}
+
+.o - navbar {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	-ms - flex - pack: justify;
+	-webkit - box - pack: justify;
+	justify - content: space - between;
+	height: auto;
+	padding: 0.75rem 0;
+	margin: 0 auto;
+}
+
+.o - navbar__home {
+	cursor: pointer;
+	-webkit - transition: -webkit - transform 0.25s;
+	transition: -webkit - transform 0.25s;
+	-o - transition: transform 0.25s;
+	transition: transform 0.25s;
+	transition: transform 0.25s, -webkit - transform 0.25s;
+}
+
+.o - navbar__home:active {
+	-webkit - transform: scale(0.90);
+	-ms - transform: scale(0.90);
+	transform: scale(0.90);
+}
+
+.o - logo {
+	width: 110px;
+	height: 43px;
+}
+
+.o - menu {
+	color: #0b2238;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	margin: 0;
+	outline: none;
+	position: relative;
+	z - index: 2;
+	border: none;
+	background: none;
+	cursor: pointer;
+	-webkit - appearence: none;
+	-webkit - tap - highlight - color: transparent;
+}
+
+.bg - icon - hover {
+	-webkit - transition: background - color 0.35s;
+	-o - transition: background - color 0.35s;
+	transition: background - color 0.35s;
+	border - radius: 50 %;
+	cursor: pointer;
+}
+
+.bg - icon - hover:hover {
+	background: rgb(10 55 170 / 15 %);
+}
+
+.o - menu svg {
+	width: 44px;
+	height: 48px;
+	top: -6px;
+	left: -14px;
+	stroke: #0b2238;
+	stroke - width: 0.2rem;
+	stroke - linecap: round;
+	stroke - linejoin: round;
+	fill: none;
+	display: block;
+	position: absolute;
+}
+
+.o - menu svg path {
+	-webkit - transition: stroke - dasharray var(--duration, 0.85s) var(--easing, ease) var(--delay, 0s), stroke - dashoffset var(--duration, 0.85s) var(--easing, ease) var(--delay, 0s);
+	-o - transition: stroke - dasharray var(--duration, 0.85s) var(--easing, ease) var(--delay, 0s), stroke - dashoffset var(--duration, 0.85s) var(--easing, ease) var(--delay, 0s);
+	transition: stroke - dasharray var(--duration, 0.85s) var(--easing, ease) var(--delay, 0s), stroke - dashoffset var(--duration, 0.85s) var(--easing, ease) var(--delay, 0s);
+	stroke - dasharray: var(--array - 1, 26px) var(--array - 2, 100px);
+	stroke - dashoffset: var(--offset, 126px);
+	-webkit - transform: translateZ(0);
+	transform: translateZ(0);
+}
+
+.o - menu svg path: nth - child(2) {
+	--duration: 0.7s;
+	--easing: ease -in;
+	--offset: 100px;
+	--array - 2: 74px;
+}
+
+.o - menu svg path: nth - child(3) {
+	--offset: 133px;
+	--array - 2: 107px;
+}
+
+.o - menu.active svg path {
+	--offset: 57px;
+}
+
+.o - menu.active svg path: nth - child(1), .o - menu.active svg path: nth - child(3) {
+	--delay: 0.15s;
+	--easing: cubic - bezier(0.2, 0.4, 0.2, 1.1);
+}
+
+.o - menu.active svg path: nth - child(2) {
+	--duration: 0.4s;
+	--offset: 2px;
+	--array - 1: 1px;
+}
+
+.o - menu.active svg path: nth - child(3) {
+	--offset: 58px;
+}
+
+.o - menu__items {
+	position: absolute;
+	z - index: 5;
+	top: calc(100 %);
+	right: 0;
+	bottom: 0;
+	max - width: 350px;
+	height: calc(100vh - (4rem + 78px));
+	background: #ffffff;
+	-webkit - transform - origin: bottom right;
+	-ms - transform - origin: bottom right;
+	transform - origin: bottom right;
+	overflow - y: auto;
+	will - change: transform;
+	pointer - events: none;
+	-webkit - transition: all cubic - bezier(0.4, 0, 0.2, 1) 0.4s!important;
+	-o - transition: all cubic - bezier(0.4, 0, 0.2, 1) 0.4s!important;
+	transition: all cubic - bezier(0.4, 0, 0.2, 1) 0.4s!important;
+	-webkit - box - shadow: 0px 5px 10px 1px rgb(0 0 0 / 20 %);
+	box - shadow: 0px 5px 10px 1px rgb(0 0 0 / 20 %);
+	-webkit - transform: scaleX(0);
+	-ms - transform: scaleX(0);
+	transform: scaleX(0);
+	width: calc(100 % - 4 %);
+}
+
+.o - menu__items__inner {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - direction: column;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	flex - direction: column;
+	overflow - y: auto;
+}
+
+.o - menu__items__inner__header {
+	background: var(--primary);
+	padding: 0 1rem;
+	color: #ffffff;
+}
+
+.o - menu__items__inner__header h3 {
+	margin: 0.5rem 0;
+	-webkit - user - select: none;
+	-moz - user - select: none;
+	-ms - user - select: none;
+	user - select: none;
+}
+
+.o - menu__items__inner > li {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	-ms - flex - pack: justify;
+	-webkit - box - pack: justify;
+	justify - content: space - between;
+	padding: 0.5rem 1rem;
+	cursor: pointer;
+	-webkit - transition: background - color 0.25s;
+	-o - transition: background - color 0.25s;
+	transition: background - color 0.25s;
+}
+
+.o - menu__items__inner > li:hover {
+	background - color: rgb(10 55 170 / 10 %);
+}
+
+.o - menu__items__inner > li: hover.tio {
+	margin - right: -4px;
+}
+
+.o - menu__items__inner > li.li--active > div > h4,
+.o - menu__items__inner > li: hover > div > h4 {
+	color: var(--primary);
+}
+
+
+.o - menu__items__inner > li > div > h4 {
+	font - size: 1rem;
+	margin: 0;
+}
+
+.o - menu__items__inner > li > div > p {
+	color: var(--grey);
+	font - size: 0.85rem;
+	margin - bottom: 0;
+}
+
+.o - menu__items__inner > li.tio {
+	font - size: 2rem;
+	color: var(--grey);
+	-webkit - transition: margin - right 0.25s;
+	-o - transition: margin - right 0.25s;
+	transition: margin - right 0.25s;
+}
+
+.o - menu__overlay {
+	position: absolute;
+	z - index: 4;
+	top: calc(100 %);
+	right: 0;
+	left: 0;
+	bottom: 0;
+	background - color: var(--primary);
+	height: 100vh;
+	opacity: 0;
+	pointer - events: none;
+	-webkit - transition: opacity 0.5s;
+	-o - transition: opacity 0.5s;
+	transition: opacity 0.5s;
+}
+
+.o - menu__overlay.o - menu__overlay--active {
+	opacity: 0.33;
+	pointer - events: initial;
+}
+
+.o - menu__items.o - menu__items--active {
+	opacity: 1;
+	pointer - events: auto;
+	visibility: visible;
+	-webkit - transform: scaleX(1);
+	-ms - transform: scaleX(1);
+	transform: scaleX(1);
+	-webkit - transition: none;
+	-o - transition: none;
+	transition: none;
+}
+
+.o - menu__items.o - menu__items__inner {
+	-webkit - transform: translateX(100 %);
+	-ms - transform: translateX(100 %);
+	transform: translateX(100 %);
+	width: 100 %;
+	-webkit - transition: -webkit - transform 0.4s;
+	transition: -webkit - transform 0.4s;
+	-o - transition: transform 0.4s;
+	transition: transform 0.4s;
+	transition: transform 0.4s, -webkit - transform 0.4s;
+	opacity: 0;
+}
+
+.o - menu__items.o - menu__items--active.o - menu__items__inner {
+	-webkit - transform: translateX(0);
+	-ms - transform: translateX(0);
+	transform: translateX(0);
+	opacity: 1;
+}
+
+.o - header.o - header--fixed +.o - menu__items {
+	position: fixed;
+	top: 0;
+}
+
+.progress_indicator.active - progress {
+	opacity: 1;
+	visibility: visible;
+	-webkit - transform: translateY(0)!important;
+	-ms - transform: translateY(0)!important;
+	transform: translateY(0)!important;
+}
+
+.progress_indicator {
+	position: fixed;
+	z - index: 10;
+	right: 1rem;
+	bottom: 100px;
+	height: 46px;
+	width: 46px;
+	cursor: pointer;
+	display: block;
+	border - radius: 50px;
+	-webkit - box - shadow: inset 0 0 0 2px rgb(22 93 245 / 20 %);
+	box - shadow: inset 0 0 0 2px rgb(22 93 245 / 20 %);
+	opacity: 0;
+	visibility: hidden;
+	-webkit - transform: translateY(15px);
+	-ms - transform: translateY(15px);
+	transform: translateY(15px);
+	transform: translateY(15px)!important;
+	-webkit - transition: all 200ms linear!important;
+	-o - transition: all 200ms linear!important;
+	transition: all 200ms linear!important;
+}
+
+.progress_indicator:before {
+	position: absolute;
+	font - family: "The-Icon-of";
+	content: "\e9a2";
+	text - align: center;
+	line - height: 46px;
+	font - size: 18px;
+	opacity: 0;
+	-webkit - background - clip: text;
+	-webkit - text - fill - color: transparent;
+	left: 0;
+	top: 0;
+	height: 46px;
+	width: 46px;
+	cursor: pointer;
+	display: block;
+	z - index: 2;
+	-webkit - transition: all 200ms linear!important;
+	-o - transition: all 200ms linear!important;
+	transition: all 200ms linear!important;
+}
+
+.progress_indicator:after {
+	position: absolute;
+	font - family: "The-Icon-of";
+	content: "\e9a2";
+	text - align: center;
+	line - height: 46px;
+	font - size: 18px;
+	color: rgba(22, 93, 245, 0.2);
+	left: 0;
+	top: 0;
+	height: 46px;
+	width: 46px;
+	cursor: pointer;
+	display: block;
+	z - index: 1;
+	-webkit - transition: all 200ms linear!important;
+	-o - transition: all 200ms linear!important;
+	transition: all 200ms linear!important;
+}
+
+.progress_indicator: hover:after {
+	color: #0a37aa;
+}
+
+.progress_indicator svg path {
+	fill: none;
+}
+
+.progress_indicator svg.progress - circle path {
+	stroke: #0a37aa;
+	stroke - width: 4;
+	-webkit - box - sizing: border - box;
+	box - sizing: border - box;
+	-webkit - transition: all 200ms linear!important;
+	-o - transition: all 200ms linear!important;
+	transition: all 200ms linear!important;
+}
+
+.o - body {
+	padding: 6rem 0 0;
+}
+
+.o - wrapper {
+	max - width: 1200px;
+	margin: 0 auto;
+	padding: 0 1rem;
+	width: 100 %;
+}
+
+.o - body__subheader.o - wrapper {
+	padding: 0;
+}
+
+.o - body__header {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - pack: justify;
+	-webkit - box - pack: justify;
+	justify - content: space - between;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+}
+
+.o - footer {
+	text - align: center;
+	color: #9da6af;
+	font - size: 14px;
+	padding: 4rem 2rem 2rem 2rem;
+}
+
+.o - footer a {
+	color: #ffffff!important;
+}
+
+.o - footer a:hover {
+	text - decoration: underline;
+}
+
+.o - bg - overlay {
+	position: fixed;
+	z - index: 10;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgb(10 55 170 / 45 %);
+	opacity: 0;
+	pointer - events: none;
+	-webkit - transition: opacity 0.5s;
+	-o - transition: opacity 0.5s;
+	transition: opacity 0.5s;
+}
+
+.o - bg - overlay.o - bg - overlay--active {
+	opacity: 1;
+	pointer - events: initial;
+}
+
+.vue - modal__overlay {
+	position: fixed;
+	z - index: 10;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgb(10 55 170 / 45 %);
+}
+
+/* TABLE */
+
+.ETRAY_LIST_OF_CASES.webform_tableTitle, .ETRAY_LIST_OF_CASES.table > thead {
+	display: none;
+}
+
+.o - body__subheader {
+	border - bottom: 1px solid var(--borderColor);
+	margin - top: 2rem;
+	position: fixed;
+	z - index: 12;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: #ffffff;
+}
+
+.o - body__list - of - cases {
+	margin - bottom: 1rem;
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - pack: justify;
+	-webkit - box - pack: justify;
+	justify - content: space - between;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	-ms - flex - direction: column;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	flex - direction: column;
+}
+
+.o - body__list - of - cases__left {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - direction: column;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	flex - direction: column;
+	width: 100 %;
+}
+
+.o - btn.o - btn__filter {
+	position: relative;
+	background: #fff;
+	height: 37px;
+	padding: 0 1rem;
+	margin: 0 0 0.5rem 0;
+	font - size: 0.85rem;
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	border: 1px solid var(--borderColor);
+	border - radius: 4px;
+	font - weight: normal;
+	width: 100 %;
+	font - size: 13px;
+}
+
+.o - btn.o - btn__filter.o - badge {
+	margin: 0 0 0 1rem;
+}
+
+.o - btn.o - btn__filter.o - btn__filter-- - active {
+	border - color: var(--primary);
+	background: rgb(10 55 170 / 10 %);
+	font - weight: bold;
+}
+
+.o - body__list - of - cases__left >.tio {
+	color: var(--grey);
+	margin - bottom: 0.5rem;
+}
+
+.o - page.o - page--all - cases.o - body__list - of - cases__left >* {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+}
+
+	.o - checkbox {
+	position: relative;
+	width: 15px;
+	height: 15px;
+	border: 1px solid var(--borderColor);
+	background - color: #ffffff;
+
+	border - radius: 4px;
+	margin: 0 0.5rem;
+}
+
+.o - checkbox:after {
+	content: '';
+	position: absolute;
+	top: 1px;
+	left: 4px;
+	width: 3px;
+	height: 7px;
+	border: 2px solid white;
+	border - width: 0 2px 2px 0;
+	background - color: transparent;
+	-webkit - transition: backgroundColor 0.25s, -webkit - transform 0.4s;
+	transition: backgroundColor 0.25s, -webkit - transform 0.4s;
+	-o - transition: transform 0.4s, backgroundColor 0.25s;
+	transition: transform 0.4s, backgroundColor 0.25s;
+	transition: transform 0.4s, backgroundColor 0.25s, -webkit - transform 0.4s;
+	-webkit - transform: rotate(0deg);
+	-ms - transform: rotate(0deg);
+	transform: rotate(0deg);
+}
+
+.o - btn.o - btn__filter.o - btn__filter-- - active.o - checkbox {
+	background - color: var(--primary);
+}
+
+.o - btn.o - btn__filter.o - btn__filter-- - active.o - checkbox:after {
+	-webkit - transform: rotate(40deg);
+	-ms - transform: rotate(40deg);
+	transform: rotate(40deg);
+}
+
+.o - body__list - of - cases__right {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: end;
+	-webkit - box - align: end;
+	-ms - flex - align: end;
+	align - items: flex - end;
+	-webkit - box - pack: end;
+	-ms - flex - pack: end;
+	justify - content: flex - end;
+	width: 100 %;
+	margin - bottom: 0.5rem;
+	gap: 0.5rem;
+}
+
+.o - search - group {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	-ms - flex - pack: center;
+	-webkit - box - pack: center;
+	justify - content: center;
+	position: relative;
+}
+
+.o - search - group.o - icon {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 37px;
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	-ms - flex - pack: center;
+	-webkit - box - pack: center;
+	justify - content: center;
+	padding - left: 0.5rem;
+}
+
+.o - search - group.o - icon svg {
+	width: 20px;
+}
+
+.o - page input[type = "search"].o - search - cases {
+	border: 1px solid var(--borderColor);
+	border - radius: 4px;
+	line - height: 1.5;
+	padding: 0.5rem 1rem 0.5rem calc(20px + 1rem);
+	-webkit - transition: border - color 0.25s, width 0.25s;
+	-o - transition: border - color 0.25s, width 0.25s;
+	transition: border - color 0.25s, width 0.25s;
+	width: 100 %;
+}
+
+.o - page input[type = "search"].o - search - cases.o - search - cases--active,
+.o - page input[type = "search"]: focus.o - search - cases {
+	border - color: var(--primary);
+}
+
+@media only screen and(min - width: 400px) {
+    .o - page input[type = "search"].o - search - cases {
+		width: 220px;
 	}
 
-
-})
-// TRIGGER TRIGGER_AFTER_LOGIN - END //
-
-//STEP 2 - TRIGGER trigger::o_page_loaded - START //
-$(document).one("trigger::o_page_loaded", function () {
-	//console.log('trigger::o_page_loaded')	
-
-	// Set Secret record
-	$('.PBI_Set_sharedSecret > a').click();
-
-
-	var e, t, s = $(".LOGIN_CUSTOMER_TYPE > input").val();
-	"SP" == s && ($(".typ_of_cust_cat option").filter(function () {
-		return $(this).text() == $(".LOGIN_CUSTOMER_TYPE > input").val()
-	}).prop("selected", !0), $(".typ_of_cust_cat > select").change(), $(".INQUIRY_TYPE_LEVEL1 option").filter(function () {
-		return "Case" == $(this).text()
-	}).prop("selected", !0), $(".INQUIRY_TYPE_LEVEL1 > select").trigger("change")), "IO" == s && ($(".typ_of_cust_cat option").filter(function () {
-		return $(this).text() == $(".LOGIN_CUSTOMER_TYPE > input").val()
-	}).prop("selected", !0), $(".typ_of_cust_cat > select").change(), $(".INQUIRY_TYPE_LEVEL1 option").filter(function () {
-		return "Case IO" == $(this).text()
-	}).prop("selected", !0), $(".INQUIRY_TYPE_LEVEL1 > select").trigger("change"), $(".menu_announcement > div > p").html("L\xe6s/rediger/opret aktive og tidligere udmeldinger / varslinger")), $.blockUI.defaults = {
-		message: "",
-		fadeIn: 0,
-		fadeOut: 0,
-		timeout: 0,
-		showOverlay: !1,
-		centerY: !1,
-		css: {
-			width: "1px",
-			top: "0",
-			left: "",
-			right: "0",
-			border: "none",
-			padding: "0",
-			opacity: 0,
-			color: "#fff"
-		}
-	}, $(".INQUIRY_TYPE_LEVEL2_SP > select").html($(".LIST_OF_CREATE_CASES_OPTION_SP > input").val()), $(".INQUIRY_TYPE_LEVEL2_IO > select").html($(".LIST_OF_CREATE_CASES_OPTION_IO > input").val()), "OpenNet" == $(".FROM_COMPANY > input").val() && $(".INQUIRY_TYPE_LEVEL0").removeClass("hidden_field"), $(".INQUIRY_TYPE_LEVEL0").change(function () {
-		("IO" == $(".INQUIRY_TYPE_LEVEL0 > select").find(":selected").text() || "Til Service Provider (SP)" == $(".INQUIRY_TYPE_LEVEL0 > select").find(":selected").text()) && ($(".INQUIRY_TYPE_LEVEL1 option").filter(function () {
-			return "Case IO" == $(this).text()
-		}).prop("selected", !0), $(".INQUIRY_TYPE_LEVEL1 > select").trigger("change")), ("SP" == $(".INQUIRY_TYPE_LEVEL0 > select").find(":selected").text() || "Til Infrastructure owner (IO)" == $(".INQUIRY_TYPE_LEVEL0 > select").find(":selected").text()) && ($(".INQUIRY_TYPE_LEVEL1 option").filter(function () {
-			return "Case" == $(this).text()
-		}).prop("selected", !0), $(".INQUIRY_TYPE_LEVEL1 > select").trigger("change"))
-	}), "-1" == $(".IO_RELATION_LIST > input").val().indexOf("OpenNet") && $(".IO_RELATION_LIST > input").val('<option value="">[V\xe6lg]</option>' + $(".IO_RELATION_LIST > input").val()), "-1" == $(".SP_RELATION_LIST > input").val().indexOf("OpenNet") && $(".SP_RELATION_LIST > input").val('<option value="">[V\xe6lg]</option>' + $(".SP_RELATION_LIST > input").val()), $(".SP_PICKLIST > select").html($(".SP_RELATION_LIST > input").val()), $(".IO_PICKLIST > select").html($(".IO_RELATION_LIST > input").val()), "OpenNet" == $(".FROM_COMPANY > input").val() && ($(".IO_ASSIGN_TO_OPENNET_TEXTBOX").removeClass("hidden_field"), $(".IO_ASSIGN_TO_OPENNET_TEXTBOX > select").html($(".SP_PICKLIST > select").html()), $(".SP_ASSIGN_TO_OPENNET_TEXTBOX").removeClass("hidden_field"), $(".SP_ASSIGN_TO_OPENNET_TEXTBOX > select").html($(".IO_PICKLIST > select").html())), $(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_ANNOUNCEMENT > input").val()), $(".EXT_DOCS_TYPE option").filter(function () {
-		return "Andet" == $(this).text()
-	}).prop("selected", !0), $(".js-filter__open-cases").click(),
-		$(".v_list_of_cases").html($(".ETRAY_LIST_OF_USERS > div").html()),
-		clearJSONfields(),
-		$(".UM_COPY_OF > select").html('<option value="">[V\xe6lg]</option>' + $(".v_list_of_cases").html().replaceAll("</p>", "</option>").replaceAll("<p id", "<option value"))
-		, "true" == $(".show_announcement_menu").html() || $(".menu_announcement").addClass("hidden_field")
-		, "true" == $(".show_contract_menu").html() || $(".menu_contract").addClass("hidden_field")
-		, "true" == $(".show_documentation_menu").html() || $(".menu_documentaion").addClass("hidden_field")
-		, "true" == $(".show_invoice_menu").html() || $(".menu_invoice").addClass("hidden_field")
-		, "true" == $(".show_report_menu").html() || $(".menu_report").addClass("hidden_field")
-		, "true" == $(".show_openanalytics_menu").html() || $(".menu_openanalytics").addClass("hidden_field")
-		, "true" == $(".show_user_admin_menu").html() || $(".menu_user_admin").addClass("hidden_field")
-		, "true" == $(".show_end_customer_orders").html() || $(".menu_end_customer_orders").addClass("hidden_field")
-		, "true" == $(".show_end_customer_pricing_config").html() || $(".menu_end_customer_pricing_config").addClass("hidden_field")
-		, $.getScript("https://cdn.jsdelivr.net/npm/vue@2", function (e, t, s) {
-			$(document).trigger("trigger::vue_loaded")
-		}), setInterval(function () {
-			$(".BTN_KeepAlive > a").click()
-		}, 3e5), $(".UM_USER_NAME > input").on("keyup", function () {
-			clearTimeout(e), e = setTimeout(function () {
-				var e = $(".UM_USER_NAME > input").val().toLowerCase().replaceAll("\xf8", "oe").replaceAll("\xe6", "ae").replaceAll("\xe5", "aa").replaceAll(" ", "_").substring(0, 18);
-				UM_USERNAME_VALIDATION(e)
-			}, 600)
-		}), $(".UM_USER_INIT > input").on("keyup", function () {
-			Set_UM_USER_INIT = !1, clearTimeout(t), t = setTimeout(function () {
-				$(".BTN_GetUserValidation > a").click(), $(".BTN_GetUserValidation_Result > input").val("N"), WAIT_FOR_UM_USERNAME_VALIDATION_ANSWER_ETRAY()
-			}, 600)
-		})
-
-	//Temp For Eniig SP
-	if ($(".FROM_COMPANY > input").val() == "Eniig SP") {
-		$(".menu_create_cases").addClass("hidden_field")
-		$(".js-btn-create-case").addClass("hidden_field")
-	}
-	//
-
-	$('.SSID > input').keyup(function () {
-		var V_SSID = $('.SSID:visible > input').val().length;
-		var V_SSID_VAL = $('.SSID:visible > input').val();
-		$(".SSID_DESC:visible > div").html('');
-		if (V_SSID == 10) {
-			//console.log('V_SSID_VAL',V_SSID_VAL)
-			$('.API_SSID > input').val(V_SSID_VAL);
-			// Set observer 
-			observeChanges('.API_TO_COMPANY_NAME_RESULT > input', (OK) => {
-				if ($('.API_TO_COMPANY_NAME_RESULT > input').val() == 'OK') {
-					$('.IO_PICKLIST:visible > select').val($('.API_TO_COMPANY_NAME > input').val())
-					$('.IO_PICKLIST:visible > select').prop('disabled', 'disabled');
-					$('.IO_PICKLIST:visible > select').change();
-					$('.API_TO_COMPANY_NAME_RESULT > input').val('');
-					$(".SSID_DESC:visible > div").html('<p><em><strong><span style="color:#2ecc71">Gyldigt Service Subscription ID fundet. &quot;Send til&quot;&nbsp; dropdown er automatisk udfyldt.</span></strong></em></p>');
-					// Ved success
-					$('.SSID:visible > .o-icon-on-input').remove()
-					$('.SSID:visible').append('<i class="o-icon-on-input o-icon-on-input--success tio">checkmark_circle</i>')
-				}
-
-				if ($('.API_TO_COMPANY_NAME_RESULT > input').val() == 'Not found') {
-					$('.IO_PICKLIST:visible > select').removeAttr('disabled');
-					$(".SSID_DESC:visible > div").html('<p><span style="color:#c0392b"><em><strong>Kunne ikke finde angivet Service Subscription ID i system.&nbsp;</strong></em></span></p>');
-					$('.IO_PICKLIST:visible > select').change();
-					// Ved fejl
-					$('SSID:visible > .o-icon-on-input').remove()
-					$('SSID:visible').append('<i class="o-icon-on-input tio">error</i>')
-
-				}
-
-
-
-
-
-
-
-			});
-			//Get data
-			$('.API_TO_COMPANY_NAME_BTN > a').click();
-		}
-		else {
-			$('.IO_PICKLIST:visible > select').removeAttr('disabled');
-			$('.IO_PICKLIST:visible > select').change();
-		}
-
-
-	})
-
-	function observeChanges(selector, callback) {
-		const el = $(selector)
-		if (!el || el.length === 0) {
-			//console.warn(`No element found with selector ${selector}`);
-			return;
-		}
-		el.val('loading')
-		let cInterval = setInterval(_ => {
-			const val = el.val()
-			if (val !== 'loading') {
-				clearInterval(cInterval)
-				callback(val);
-			} else {
-				//console.log('observer::empty', { selector })
-			}
-		}, 1000)
-	}
-
-
-	// New SSID code	
-
-	// Bind click event for closing case creation
-	$(".js-close-o-create-case").on("click", function () {
-		closeCreateCase();
-	});
-
-	// Bind click event for overlay click
-	$(".js-click-on-overlay").on("click", function () {
-		closeCreateCase();
-		closeCasesModal();
-	});
-
-	// Bind click event for case creation cancellation
-	$(".js-btn-create-case-cancel").on("click", function () {
-		closeCreateCase();
-	});
-
-	setProgressPath()
-
-
-	$(".js-case__save-commentary").on("click", function () {
-		var commentText = $(".comment_field").val();
-
-		if (commentText != '') {
-			$(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val(commentText);
-			$(".ETRAY_READ_MESSAGE_TYPE > input").val($(".ETRAY_COMMENT_MESSAGE_TYPE > input").val());
-
-			var caseIdToken = $(".o-modal__case").attr("data-case-id-token");
-			var caseId = $(".o-modal__case").attr("data-case-id");
-
-			$(".ETRAY_READ_CASE_TOKEN_ID > input").val(caseIdToken);
-			$(".ETRAY_READ_CASE_ID > input").val(caseId);
-
-			if (submit_validation_logic() === true) {
-				clearJSONfields();
-				$(".webformCreateMore").click();
-				addMutationOberserverToSingleCase();
-				clear_fields_after_submit();
-				readEtrayCase(caseIdToken, caseId);
-			}
-
-			if (!$(".js-case__save-commentary").hasClass("o-btn--loading")) {
-				$(".js-case__save-commentary").addClass("o-btn--loading");
-			}
-
-			$(document).one("etray::single-case-loaded", function () {
-				$(".o-modal__case__commentary__textarea").val("");
-				$(".js-case__save-commentary").removeClass("o-btn--loading");
-			});
-
-			if ("Afsluttet" == $("#js-case-element__inserted > div > .etray_case_status span").html()) {
-				$("#js-case-element__inserted > div > .etray_case_status").html('<span class="o-pill o-pill--yellow">Åben</span>');
-				$(".js-case__save-commentary").html("Gem kommentar");
-
-				if ($(".js-case-save-close").hasClass("display_none")) {
-					$(".js-case-save-close").removeClass("display_none");
-				}
-
-				if (!$(".js-case-save-reopen").hasClass("display_none")) {
-					$(".js-case-save-reopen").addClass("display_none");
-				}
-
-				$(document).trigger("vue::update_case_prop", [caseId, { filter_open_closed: "open" }]);
-			}
-		}
-	});
-
-
-
-	$(".js-case-click-assign-case").on("click", function () {
-		openSmallModal("js-o-modal--small__assign-case");
-		var e = $(".o-modal__case").attr("data-case-id-token"),
-			t = $(".o-modal__case").attr("data-case-id");
-		$(".ETRAY_READ_CASE_TOKEN_ID > input").val(e), $(".ETRAY_READ_CASE_ID > input").val(t), $(".js-o-modal--small__assign-case .js-o-select-items").html(""), $(".v_list_of_cases > p").each(function () {
-			let e = $(this).attr("id"),
-				t = $(this).text();
-			$(".js-o-modal--small__assign-case .js-o-select-items").append('<li id="' + e + '">' + t + "</a></li>")
-		}), oSelect();
-		var s = $(".ETRAY_READ_CASE__ASSIGNED_USER_ID > input").val();
-		s ? oSelectPreselect("js-o-modal--small__assign-case", s) : resetOSelectPreSelected("js-o-modal--small__assign-case"), setTimeout(function () {
-			$(".o-select").hasClass("o-select--item-selected") || $(".o-search-input").focus()
-		}, 250)
-	});
-
-	$(".js-close-modal-small").on("click", function () {
-		closeSmallModal(), closeOSelect()
-	});
-
-	$(".js-click-modal-small-cancel").on("click", function () {
-		closeSmallModal(), closeOSelect()
-	});
-
-	$(".js-case-assign-case-save").on("click", function () {
-		var e = $(".js-o-modal--small__assign-case .js-o-select-selected-item-id").val(),
-			t = $(".js-o-modal--small__assign-case .o-modal__case__commentary__textarea").val(),
-			s = $(".js-o-select-selected-item-name").text();
-		$(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val(t), $(".ETRAY_READ_CASE__ASSIGNED_USER_ID > input").val(e), $(".ETRAY_READ_MESSAGE_TYPE > input").val("ASSIGN_TO"), $(".ETRAY_UPDATE_CASE > a").click(), $("#js-case-element__inserted > div > .js-case-assigned-to").html("Tildelt: " + s), addMutationOberserverToSingleCase(), closeSmallModal("js-o-modal--small__assign-case"), closeOSelect(), readEtrayCaseComments();
-		var a = $(".o-modal__case").attr("data-case-id");
-		$(document).trigger("vue::update_case_prop", [a, {
-			assign_to: s
-		}]), setTimeout(function () {
-			$(".o-modal__case__commentary__textarea").val(""), $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val("")
-		}, 0)
-	});
-
-	$(".js-click-case-change-category").on("click", function () {
-		openSmallModal("js-o-modal--small__change-category");
-		var e = $(".ETRAY_READ_CASE__CATEGORY_ID > input").val();
-		e && oSelectPreselect("js-o-modal--small__change-category", e)
-	});
-
-	$(".ETRAY_LIST_OF_CATEGORIES > p").each(function () {
-		let e = $(this).attr("id"),
-			t = $(this).text();
-		$(".js-o-modal--small__change-category .js-o-select-items").append('<li id="' + e + '">' + t + "</a></li>")
-	});
-
-	$(".js-case-change-category-save").on("click", function () {
-		var e = $(".js-o-modal--small__change-category .js-o-select-selected-item-id").val(),
-			t = $(".js-o-modal--small__change-category .o-modal__case__commentary__textarea").val();
-		$(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val(t), $(".ETRAY_READ_CASE__CATEGORY_ID > input").val(e), $(".ETRAY_UPDATE_CASE__CATEGORY_ID").click(), closeSmallModal("js-o-modal--small__change-category"), closeOSelect(), readEtrayCaseComments(), setTimeout(function () {
-			$(".o-modal__case__commentary__textarea").val(""), $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val("")
-		}, 0)
-	});
-
-	$(".js-click-case-follow-up").on("click", function () {
-		openSmallModal("js-o-modal--small__follow-up")
-	});
-
-	$(".js-case-save-follow-up").on("click", function () {
-		var e = $(".js-o-modal--small__follow-up .datetimepicker").val(),
-			t = $(".js-o-modal--small__follow-up .o-modal__case__commentary__textarea").val(),
-			s = $(".o-modal__case").attr("data-case-id-token"),
-			a = $(".o-modal__case").attr("data-case-id");
-		$(".ETRAY_READ_CASE_TOKEN_ID > input").val(s), $(".ETRAY_READ_CASE_ID > input").val(a), $(".ETRAY_READ_CASE__FOLLOW_UP > input").val(e), $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val(t), $(".ETRAY_READ_MESSAGE_TYPE > input").val("FOLLOW_UP"), $(".ETRAY_UPDATE_CASE > a").click(), $("#js-case-element__inserted > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--red">Opf\xf8lgning</span></div>'), addMutationOberserverToSingleCase(), closeSmallModal("js-o-modal--small__follow-up"), readEtrayCaseComments(), setTimeout(function () {
-			$(".o-modal__case__commentary__textarea").val(""), $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val("")
-		}, 1e3)
-	});
-
-	$(".js-case-save-close").on("click", function () {
-		var e = $(".o-modal__case").attr("data-case-id-token"),
-			t = $(".o-modal__case").attr("data-case-id");
-		$(".ETRAY_READ_CASE_TOKEN_ID > input").val(e), $(".ETRAY_READ_CASE_ID > input").val(t), $(".ETRAY_READ_MESSAGE_TYPE > input").val("CLOSE_CASE"), $(".ETRAY_UPDATE_CASE > a").click(), addMutationOberserverToSingleCase(), readEtrayCaseComments(), $("#js-case-element__inserted > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--grey">Afsluttet</span></div>'), $(".js-case__save-commentary").html("Gem kommentar og gen\xe5ben sag"), $(".js-case-save-close").hasClass("display_none") || $(".js-case-save-close").addClass("display_none"), $(".js-case-save-reopen").hasClass("display_none") && $(".js-case-save-reopen").removeClass("display_none"), $(document).trigger("vue::update_case_prop", [t, {
-			filter_open_closed: "closed"
-		}])
-	});
-
-	$(".js-case-save-reopen").on("click", function () {
-		var e = $(".o-modal__case").attr("data-case-id-token"),
-			t = $(".o-modal__case").attr("data-case-id");
-		$(".ETRAY_READ_CASE_TOKEN_ID > input").val(e), $(".ETRAY_READ_CASE_ID > input").val(t), $(".ETRAY_READ_MESSAGE_TYPE > input").val("REOPEN_CASE"), $(".ETRAY_UPDATE_CASE > a").click(), addMutationOberserverToSingleCase(), readEtrayCaseComments(), $("#js-case-element__inserted > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--yellow">\xc5ben</span></div>'), $(".js-case__save-commentary").html("Gem kommentar"), $(".js-case-save-close").hasClass("display_none") && $(".js-case-save-close").removeClass("display_none"), $(".js-case-save-reopen").hasClass("display_none") && $(".js-case-save-reopen").addClass("display_none"), $(document).trigger("vue::update_case_prop", [t, {
-			filter_open_closed: "open"
-		}])
-	});
-
-	$(".js-follow-case").on("click", function () {
-		var e = $(".o-modal__case").attr("data-case-id-token"),
-			t = $(".o-modal__case").attr("data-case-id");
-		$(".ETRAY_READ_CASE_TOKEN_ID > input").val(e), $(".ETRAY_READ_CASE_ID > input").val(t), $(".ETRAY_READ_MESSAGE_TYPE > input").val("FOLLOW"), $(".ETRAY_UPDATE_CASE > a").click(), addMutationOberserverToSingleCase(), readEtrayCaseComments()
-	});
-
-	$(".js-click-case-create-note").on("click", function () {
-		openSmallModal("js-o-modal--small__create-note")
-	});
-
-	$(".js-case-create-note").on("click", function () {
-		$(".js-o-modal--small__create-note .datetimepicker").val();
-		var e = $(".js-o-modal--small__create-note .o-modal__case__commentary__textarea").val(),
-			t = $(".o-modal__case").attr("data-case-id-token"),
-			s = $(".o-modal__case").attr("data-case-id");
-		$(".ETRAY_READ_CASE_TOKEN_ID > input").val(t), $(".ETRAY_READ_CASE_ID > input").val(s), $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val(e), $(".ETRAY_READ_MESSAGE_TYPE > input").val("INTERNAL_NOTE"), $(".ETRAY_UPDATE_CASE > a").click(), addMutationOberserverToSingleCase(), closeSmallModal("js-o-modal--small__create-note"), readEtrayCaseComments(), setTimeout(function () {
-			$(".o-modal__case__commentary__textarea").val(""), $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val("")
-		}, 0)
-	});
-
-	$(".js-click-case-edit-ref").on("click", function () {
-		openSmallModal("js-o-modal--small__edit-ref")
-	});
-
-	$(".js-case-edit-ref").on("click", function () {
-		$(".js-o-modal--small__create-note .datetimepicker").val();
-		var e = $(".js-o-modal--small__edit-ref .o-modal__case__commentary__textarea").val(),
-			t = $(".o-modal__case").attr("data-case-id-token"),
-			s = $(".o-modal__case").attr("data-case-id");
-		$(".ETRAY_READ_CASE_TOKEN_ID > input").val(t), $(".ETRAY_READ_CASE_ID > input").val(s), $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val(e), $(".ETRAY_READ_MESSAGE_TYPE > input").val("EDIT_REF"), $(".ETRAY_UPDATE_CASE > a").click(), $("#js-case-element__inserted > div > .js-intern-ref").html("Intern ref:" + e), $(document).trigger("vue::update_case_prop", [s, {
-			company_ref: e
-		}]), addMutationOberserverToSingleCase(), closeSmallModal("js-o-modal--small__create-note"), readEtrayCaseComments(), setTimeout(function () {
-			$(".o-modal__case__commentary__textarea").val(""), $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val("")
-		}, 0)
-	})
-
-	$(".js-follow-case").on("click", function () {
-		if ($(this).hasClass("js-is-following-case")) {
-			$(this).removeClass("js-is-following-case"), $(".ETRAY_READ_CASE__USER_FOLLOWS > input").val("false");
-			var e = $(".o-modal__case").attr("data-case-id");
-			$(document).trigger("vue::update_case_prop", [e, {
-				filter_followed_by_me: "false"
-			}])
-		} else {
-			$(this).addClass("js-is-following-case"), $(".ETRAY_READ_CASE__USER_FOLLOWS > input").val("true");
-			var e = $(".o-modal__case").attr("data-case-id");
-			$(document).trigger("vue::update_case_prop", [e, {
-				filter_followed_by_me: "true"
-			}])
-		}
-		$(".ETRAY_UPDATE_CASE__USER_FOLLOWS_UPDATE > button").click()
-	});
-
-	$(".js-filter__assigned_to").on("click", function () {
-		$(".js-filter__assigned_to .js-o-dropdown__ul").append('<li id="">Alle brugere</li>');
-	});
-
-	$(".v_list_of_cases > p").each(function () {
-		let e = $(this).attr("id"),
-			t = $(this).text();
-		$(".js-filter__assigned_to .js-o-dropdown__ul").append('<li id="' + e + '">' + t + "</li>")
-	});
-
-
-	$(document).on("etray::single-case-loaded", function () {
-		"true" != $(".ETRAY_READ_CASE__USER_FOLLOWS > input").val() || $(".js-follow-case").hasClass("js-is-following-case") || $(".js-follow-case").addClass("js-is-following-case")
-	});
-
-
-
-	$(document).ready(function () {
-		$("textarea").on("keyup keypress", function () {
-			$(this).height(0), $(this).height(this.scrollHeight)
-		})
-	});
-
-	// Attach a click event to the list items under the dropdown
-	$(".js-filter__assigned_to.js-o-dropdown ul li").on("click", function () {
-
-		// Grab the value from a particular input
-		var inputVal = $(".ETRAY_LIST_VIEWER_CASES_LEVEL_5 > input").val();
-
-		// Get the ID of the clicked list item
-		var clickedId = $(this).attr("id");
-
-		// Get the ID of the selected dropdown item
-		var selectedDropdownId = $(this).closest(".js-o-dropdown")
-			.find(".o-dropdown__selected p")
-			.attr("id");
-
-		// Initialize a replacement string                                    
-		var replaceStr = "";
-
-		// Replace the text and ID of the selected dropdown item with the clicked item's values
-		var selectedDropdownText = $(this).closest(".js-o-dropdown")
-			.find(".o-dropdown__selected p");
-		selectedDropdownText.text($(this).text());
-		selectedDropdownText.attr("id", clickedId);
-
-		// Replace the selected ID in the input value with the clicked ID
-		replaceStr = inputVal.replace(selectedDropdownId, clickedId);
-		$(".ETRAY_LIST_VIEWER_CASES_LEVEL_5 > input").val(replaceStr);
-
-		// If there's an ID, handle the dropdown selection and potentially update another filter
-		if (clickedId.length > 0) {
-
-			var dropdown = $(this).closest(".js-o-dropdown");
-
-			// If the dropdown doesn't already indicate a selection, add the indicator
-			if (!dropdown.hasClass("o-dropdown--has-selection")) {
-				dropdown.addClass("o-dropdown--has-selection");
-
-				var notAssignedFilter = $(".js-filter__not_assigned");
-
-				// If the 'not assigned' filter is active, deactivate it and remove its effect
-				if (notAssignedFilter.hasClass("o-btn__filter---active")) {
-					notAssignedFilter.removeClass("o-btn__filter---active");
-
-					var level3InputVal = $(".ETRAY_LIST_VIEWER_CASES_LEVEL_3 > input").val();
-					level3InputVal = level3InputVal.replace(notAssignedFilter.data("filter"), "");
-					$(".ETRAY_LIST_VIEWER_CASES_LEVEL_3 > input").val(level3InputVal);
-				}
-			}
-		} else {
-			// If there's no ID, indicate that the dropdown has no selection
-			$(this).closest(".js-o-dropdown").removeClass("o-dropdown--has-selection");
-		}
-	});
-
-
-
-
-	/*	
-	// Check if the current element has the class 'o-dropdown--active'
-	if ($(this).hasClass("o-dropdown--active")) {
-		// If it does, call the 'closeDropdown' function
-		closeDropdown();
-	};
-	
-	// Attach a click event handler to the element with class 'o-page'
-	$(".o-page").on("click", function (e) {
-		if (!$(e.target).closest(".js-o-dropdown").hasClass("o-dropdown--active")) {
-			closeDropdown();
-		}
-	});
-	*/
-
-	$("#js-checkbox__toogle-timeline_read_msg").click(function () {
-		$(this).is(":checked") ? showTimelineReadMsg() : hideTimelineReadMsg()
-	}), readTimelineReadMsgCookie();
-	var report = null;
-
-
-	readAllNotifications();
-	readAllNumberOfCases();
-
-	$(".js-close-modal").on("click", function () {
-		closeCasesModal()
-	});
-
-	$(".js-case-click-add-file").on("click", function () {
-		$('.ETRAY_COMMENT_UPLOAD input[type="file"]').click(), addMutationObserverOnCommentFiles()
-	});
-
-	$(window).on("scroll", function () {
-		$(this).scrollTop() > offset ? $(".progress_indicator").addClass("active-progress") : $(".progress_indicator").removeClass("active-progress")
-	}), $(".progress_indicator").on("click", function (e) {
-		return e.preventDefault(), $("html, body").animate({
-			scrollTop: 0
-		}, duration), !1
-	})
-
-
-
-
-});
-// TRIGGER trigger::o_page_loaded - END //
-
-//STEP 3 - TRIGGER VUE_LOADED - START //
-$(document).one("trigger::vue_loaded", function () {
-	function e(e) {
-		var t, s, a = e.srcElement;
-		e.stopPropagation(), e.preventDefault(), s = (t = e.clipboardData || window.clipboardData).getData("Text");
-		var i = $("#" + a.id).prop("selectionStart"),
-			r = $("#" + a.id).val(),
-			o = r.substring(0, i),
-			n = r.substring(i, r.length);
-		$("#" + a.id).val(o + s + n)
-	}
-	document.querySelectorAll(".Web_MainControl_textbox").forEach(function (t) {
-		t.addEventListener("paste", e)
-	})
-	document.querySelectorAll(".Web_MainControl_note").forEach(function (t) {
-		t.addEventListener("paste", e)
-	})
-
-	Vue.directive("click-outside", {
-		bind: function (e, t, s) {
-			e.clickOutsideEvent = function (a) {
-				e == a.target || e.contains(a.target) || s.context[t.expression](a)
-			}, document.body.addEventListener("click", e.clickOutsideEvent)
-		},
-		unbind: function (e) {
-			document.body.removeEventListener("click", e.clickOutsideEvent)
-		}
-	})
-	Vue.component('o-editor', {
-		template: '#o-editor-template',
-		data() {
-			return {
-				theActiveTab: 'editor',
-				activeStyles: {
-					bold: false,
-					italic: false,
-					underline: false
-				}
-			}
-		},
-		methods: {
-			setTheActiveTab(tab) {
-				this.theActiveTab = tab
-				if (tab === 'html') {
-					this.$nextTick(_ => {
-						this.$refs.o_editor_textarea.focus()
-					})
-				}
-				if (tab === 'editor') {
-					this.$nextTick(_ => {
-						this.$refs.o_text_editor.focus()
-					})
-				}
-			},
-			applyStyle(style, target) {
-				this.focusTextEditor();
-				this.toggleStyleActive(style);
-				document.execCommand(style, false);
-			},
-			createLink() {
-				const url = prompt('Enter the URL');
-				if (url) {
-					document.execCommand('createLink', false, url);
-				}
-			},
-			focusTextEditor() {
-				this.$refs.o_text_editor.focus()
-			},
-			toggleStyleActive(style) {
-				this.activeStyles[style] = !this.activeStyles[style];
-			}
-		}
-	})
-	Vue.component('o-announcements', {
-		template: '#o-announcements-template',
-		props: {
-			active_area: {
-				default: 'OperationsStatus' // 'OperationsStatus' or 'News'
-			},
-			the_user: {
-				default: () => { }
-			},
-			the_user_type: {
-				default: '' // IO, SP, ON etc.
-			}
-		},
-		data() {
-			return {
-				isLoadingAnnouncements: false,
-				announcements: [],
-				isCreateAnnouncementModal: false,
-				isNewMasterModal: false,
-				searchQuery: '',
-				debounce: null,
-				theActiveFilterStatuses: [],
-				theActiveFilterTypes: [],
-				theAnnActiveItem: null,
-				standardOptions: {},
-				isLoadingStandardOptions: false,
-				masterTemplates: [],
-				isLoadingMasterTemplates: false,
-				theEditMasterTemplate: null,
-				theNewMasterTemplateId: null,
-				theEditAnnouncement: null,
-				theActiveSeeMoreCase: null,
-				isDayJSLoadedToPage: false
-			}
-		},
-		computed: {
-			activeAnnouncements() {
-				return this.announcements.filter(announcement => announcement.area === this.active_area)
-			},
-			activeAnnouncementsWithVProps() {
-				const potentialReceivers = [{ id: 'ALL', name: 'All' }, { id: 'ALL_SPs', name: 'All SPs' }, { id: 'ALL_IOs', name: 'All IOs' }].concat(this.filteredReceivers)
-				const changeIdsToNames = (item) => {
-					const rece = item.receivers && item.receivers.length > 0 ? item.receivers : ''
-					const names = rece.split(';').map(userid => {
-						const idx = potentialReceivers.findIndex(user => user.id === userid);
-						if (idx > -1) {
-							return potentialReceivers[idx]['name']
-						} else {
-							return userid
-						}
-					})
-					return names.join(', ')
-				}
-				return this.activeAnnouncements.map(ann => ({
-					...ann,
-					v_id: `${ann.onid}_${ann.version}`,
-					v_receivers: changeIdsToNames(ann),
-					v_timeFromNow: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).fromNow() : ann.createdTime,
-					v_createTimeFormatted: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).format('LLL') : ann.createdTime
-				}))
-			},
-			announcementsInVersionsArr() {
-				const groupedByOnid = this.activeAnnouncementsWithVProps.reduce((acc, curr) => {
-					(acc[curr.onid] = acc[curr.onid] || []).push(curr);
-					return acc;
-				}, {});
-				return Object.values(groupedByOnid).map(group => {
-					group.sort((a, b) => b.version - a.version);
-
-					const newest = group[0];
-					const earlierVersions = group.slice(1);
-					return {
-						...newest,
-						v_earlierVersions: earlierVersions
-					};
-				});
-			},
-			vAnnouncements() {
-				return this.announcementsInVersionsArr.sort((a, b) => {
-					// Check if either item lacks a 'createdTime' and adjust sorting accordingly
-					if (!a.createdTime) return 1; // a has no date, sort a to the bottom
-					if (!b.createdTime) return -1; // b has no date, sort b to the bottom
-
-					// Both items have a date, compare them as before
-					const dateA = new Date(a.createdTime);
-					const dateB = new Date(b.createdTime);
-
-					return dateB - dateA;
-				})
-			},
-			vAnnouncementsFilteredWithType() {
-				if (this.theActiveFilterTypes.length < 1) {
-					return this.vAnnouncements;
-				} else {
-					return this.vAnnouncements.filter(itemCase => {
-						const hasNoSelectedType = this.theActiveFilterTypes.includes('v_no_selected');
-						if (hasNoSelectedType && (!itemCase.type || itemCase.type === '')) {
-							return true;
-						}
-						return this.theActiveFilterTypes.includes(itemCase.type);
-					})
-				}
-			},
-			vAnnouncementsFilteredWithStatus() {
-				if (this.theActiveFilterStatuses.length < 1) {
-					return this.vAnnouncementsFilteredWithType;
-				} else {
-					return this.vAnnouncementsFilteredWithType.filter(itemCase => {
-						const hasNoSelectedStatus = this.theActiveFilterStatuses.includes('v_no_selected');
-						if (hasNoSelectedStatus && (!itemCase.status || itemCase.status === '')) {
-							return true;
-						}
-						return this.theActiveFilterStatuses.includes(itemCase.status);
-					})
-				}
-			},
-			searchedAnnouncements() {
-				if (!this.searchQuery.trim()) {
-					return this.vAnnouncementsFilteredWithStatus;
-				}
-				const searchLower = this.searchQuery.toLowerCase();
-				return this.vAnnouncementsFilteredWithStatus.filter(announcement => {
-					return Object.values(announcement).some(value => {
-						return value && value.toString().toLowerCase().includes(searchLower);
-					});
-				});
-			},
-			filterStatuses() {
-				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden status', v_sort: true }]
-				this.activeAnnouncements.forEach(ann => {
-					const annStatus = ann['status']
-					if (annStatus) {
-						const idx = uniqueTags.findIndex(allTag => allTag.value === annStatus)
-						if (idx < 0) {
-							const tag = { value: annStatus, label: annStatus }
-							uniqueTags.push(tag)
-						}
-					}
-				})
-				return uniqueTags;
-			},
-			filterTypes() {
-				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden type', v_sort: true }]
-				this.activeAnnouncements.forEach(ann => {
-					const annProp = ann['type']
-					if (annProp) {
-						const idx = uniqueTags.findIndex(allTag => allTag.value === annProp)
-						if (idx < 0) {
-							const tag = { value: annProp, label: annProp }
-							uniqueTags.push(tag)
-						}
-					}
-				})
-				return uniqueTags;
-			},
-			filteredReceivers() {
-				const arr = this.standardOptions && this.standardOptions['extMsg_Partners'] ? this.standardOptions['extMsg_Partners'] : []
-				return arr.sort((a, b) => {
-					if (a.type < b.type) return -1;
-					if (a.type > b.type) return 1;
-					return a.name.localeCompare(b.name);
-				})
-			}
-		},
-		watch: {
-			the_user(val) {
-				console.log('THEUSER', val)
-			}
-		},
-		methods: {
-			onEditAnnouncementDone() {
-				this.setEditAnnouncement(null)
-			},
-			setEditAnnouncement(item) {
-				this.theEditAnnouncement = item
-				if (item) {
-					this.setIsCreateAnnouncementModal(true)
-				}
-			},
-			getisTheActiveCase(item) {
-				return this.theAnnActiveItem === item.v_id
-			},
-			setActiveItem(item) {
-				this.theActiveSeeMoreCase = null
-				if (this.theAnnActiveItem !== item.v_id) {
-					this.theAnnActiveItem = item.v_id
-				} else {
-					this.theAnnActiveItem = null
-				}
-			},
-			toggleFilterStatus(item) {
-				this.toggleFilter('theActiveFilterStatuses', item);
-			},
-			toggleFilterTypes(item) {
-				this.toggleFilter('theActiveFilterTypes', item);
-			},
-			toggleFilter(filterType, item) {
-				const idx = this[filterType].indexOf(item.value);
-				if (idx < 0) {
-					this[filterType].push(item.value);
-				} else {
-					this[filterType].splice(idx, 1);
-				}
-			},
-			clearSearchQuery() {
-				if (this.$refs.v_ann_search_query) {
-					this.$refs.v_ann_search_query.value = "";
-				}
-				this.searchQuery = "";
-			},
-			debounceSearch(e) {
-				this.searchQuery = "",
-					clearTimeout(this.debounce)
-				this.debounce = setTimeout(() => {
-					this.searchQuery = e.target.value
-				}, 600)
-			},
-			getAnnouncements() {
-				console.log('fetchAnnouncements')
-				this.isLoadingAnnouncements = true;
-				const myHeaders = new Headers();
-				myHeaders.append("Accept", "application/json");
-				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
-				const requestOptions = {
-					method: "GET",
-					headers: myHeaders,
-					redirect: "follow"
-				};
-				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg", requestOptions)
-					.then(response => {
-						console.log('fetchAnnouncements::answer', response)
-						if (!response.ok) {
-							throw new Error('Network response was not ok');
-						}
-						return response.json(); // Assuming the response is JSON formatted
-					})
-					.then(result => {
-						this.announcements = result; // Assign the fetched data to the component's data property
-						this.$emit('emit_announcements', this.announcements)
-					})
-					.catch(error => {
-						console.error('Error:', error);
-					})
-					.finally(() => {
-						this.isLoadingAnnouncements = false; // Ensure loading state is managed correctly
-					});
-			},
-			setIsCreateAnnouncementModal(bool) {
-				if (bool) {
-					this.isCreateAnnouncementModal = true
-				} else {
-					this.isCreateAnnouncementModal = false
-				}
-			},
-			setIsCreateNewMaster(bool) {
-				if (bool) {
-					this.isNewMasterModal = true
-				} else {
-					this.isNewMasterModal = false
-				}
-			},
-			fetchStandardOptions() {
-				console.log('fetchStandardOptions')
-				this.isLoadingStandardOptions = true
-				const myHeaders = new Headers();
-				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
-
-				const requestOptions = {
-					method: "GET",
-					headers: myHeaders,
-					redirect: "follow"
-				};
-
-				fetch("https://dev-portal.opennet.dk/ppServices/api/general/getFormDetails/all", requestOptions)
-					.then(response => {
-						console.log('fetchStandardOptions::answer', { response })
-						if (!response.ok) {
-							throw new Error('Network response was not ok');
-						}
-						return response.json();
-					})
-					.then(result => {
-						console.log({ result })
-						this.standardOptions = result
-					})
-					.catch(error => {
-						console.error('Error fetching master templates data:', error);
-					})
-					.finally(() => {
-						this.isLoadingStandardOptions = false
-						this.fetchMasterTemplates()
-					})
-			},
-			fetchMasterTemplates() {
-				console.log('fetchMasterTemplates')
-				this.isLoadingMasterTemplates = true
-				const myHeaders = new Headers();
-				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
-				myHeaders.append("Accept", "application/json");
-
-				const requestOptions = {
-					method: 'GET',
-					headers: myHeaders,
-					redirect: 'follow'
-				};
-				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate", requestOptions)
-					.then(response => {
-						console.log('fetchMasterTemplates::answer', { response })
-						if (!response.ok) {
-							throw new Error('Network response was not ok');
-						}
-						return response.json();
-					})
-					.then(result => {
-						this.masterTemplates = result;
-					})
-					.catch(error => {
-						console.error('Error fetching master templates data:', error);
-					})
-					.finally(() => {
-						this.isLoadingMasterTemplates = false;
-						this.getAnnouncements()
-					});
-			},
-			onDeleteMasterTemplate(deletedTemplateId) {
-				const idx = this.masterTemplates.findIndex(masterTemp => masterTemp.template_id === deletedTemplateId)
-				if (idx > -1) {
-					this.masterTemplates.splice(idx, 1)
-					if (this.masterTemplates.length > 0) {
-						this.theNewMasterTemplateId = this.masterTemplates[this.masterTemplates.length - 1]['template_id']
-					} else {
-						this.theNewMasterTemplateId = null
-					}
-				}
-			},
-			onAddMasterTemplate(succesObj) {
-				const arr = succesObj.success
-				const updatedTemplateId = succesObj.updatedTemplateId
-				arr.forEach(newMasterTemp => {
-					const idx = this.masterTemplates.findIndex(masterTemp => masterTemp.template_id === newMasterTemp.template_id)
-					if (idx < 0) {
-						this.masterTemplates.push(newMasterTemp)
-						this.theNewMasterTemplateId = newMasterTemp.template_id
-					} else {
-						this.masterTemplates.splice(idx, 1, newMasterTemp)
-					}
-					if (updatedTemplateId) {
-						this.theNewMasterTemplateId = null
-						setTimeout(_ => {
-							this.theNewMasterTemplateId = updatedTemplateId
-						}, 500)
-					}
-				})
-			},
-			onAddAnnouncements(arr) {
-				arr.forEach(obj => {
-					const idx = this.announcements.findIndex(announcement => announcement.onid === obj.onid && +announcement.version === +obj.version)
-					if (idx < 0) {
-						this.announcements.push(obj)
-					} else {
-						this.announcements.splice(idx, 1, obj)
-					}
-				})
-			},
-			onSetEditMasterTemplate(template) {
-				this.theEditMasterTemplate = template
-			},
-			fetchData() {
-				this.isLoadingAnnouncements = true
-				if (typeof ISLOCALHOST !== 'undefined') {
-					this.masterTemplates = MASTERTEMPLATES
-					this.announcements = ANNOUNCEMENTS
-					this.isLoadingAnnouncements = false;
-					this.standardOptions = JSON.parse(JSON.stringify(STANDARDOPTIONS))
-					this.$emit('emit_announcements', this.announcements)
-					return
-				}
-				this.fetchStandardOptions()
-			},
-			addDayJSFromCDN() {
-				if (this.isDayJSLoadedToPage) {
-					return;
-				}
-				const scriptsToLoad = [
-					"https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js",
-					"https://cdn.jsdelivr.net/npm/dayjs@1.11.10/locale/da.js",
-					"https://cdn.jsdelivr.net/npm/dayjs@1.11.10/plugin/relativeTime.js",
-					'https://cdn.jsdelivr.net/npm/dayjs@1.11.10/plugin/localizedFormat.js'
-				];
-
-				const loadScript = (scriptUrl) => {
-					return new Promise((resolve, reject) => {
-						$.getScript(scriptUrl, (e, t, s) => {
-							resolve();
-						}).fail((jqxhr, settings, exception) => {
-							reject(exception);
-						});
-					});
-				};
-
-				scriptsToLoad.reduce((prevPromise, scriptUrl) => {
-					return prevPromise.then(() => loadScript(scriptUrl));
-				}, Promise.resolve())
-					.then(() => {
-						dayjs.locale('da');
-						dayjs.extend(window.dayjs_plugin_relativeTime);
-						dayjs.extend(window.dayjs_plugin_localizedFormat);
-						this.isDayJSLoadedToPage = true;
-						console.log('DayJS and plugins loaded successfully.');
-					})
-					.catch(error => {
-						console.error('Error loading DayJS scripts:', error);
-					});
-			}
-		},
-		beforeMount() {
-			this.addDayJSFromCDN();
-		},
-		mounted() {
-			this.fetchData()
-			addPurifyFromCDN();
-		}
-	})
-	Vue.component('o-email', {
-		template: '#o-email-template',
-		props: {
-			email: {
-				default: null
-			},
-			is_earlier_version: {
-				type: Boolean,
-				default: false
-			}
-		},
-		computed: {
-			sanitizedHtml() {
-				return this.email.html
-			}
-		},
-		methods: {
-			adjustIframeHeight() {
-				const iframe = this.$refs.iframe;
-				if (iframe.contentWindow.document.body) {
-					iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + 'px';
-				}
-			}
-		}
-	})
-	Vue.component('o-announcements-metrics', {
-		template: '#o-announcements-metrics-template',
-		props: {
-			announcements: {
-				default: () => []
-			},
-			error_reports: {
-				default: () => []
-			},
-			active_category: {
-				default: 'OperationsStatus' // OperationsStatus, News etc.
-			},
-			is_error_reports_loading: {
-				type: Boolean,
-				default: false
-			}
-		},
-		computed: {
-			news() {
-				return this.announcements.filter(ann => ann.area == 'News')
-			},
-			operationsAnnouncements() {
-				return this.announcements.filter(ann => ann.area == 'OperationsStatus')
-			},
-			errorReports() {
-				return this.error_reports
-			},
-			errorReportsPastSLA() {
-				return this.errorReports.filter(errorReport => errorReport.sla_past_deadline == 'true')
-			},
-			incidents() {
-				const types = ['Incident Prod']
-				return this.operationsAnnouncements.filter(ann => types.indexOf(ann.type) > -1)
-			},
-			planned() {
-				const types = ['Driftsudmelding']
-				return this.operationsAnnouncements.filter(ann => types.indexOf(ann.type) > -1)
-			},
-			other() {
-				const types = ['IT-Production Planned']
-				return this.operationsAnnouncements.filter(ann => types.indexOf(ann.type) > -1)
-			},
-			newsCampaigns() {
-				const types = ['Kampagner']
-				return this.news.filter(ann => types.indexOf(ann.type) > -1)
-			},
-			newsEquipments() {
-				const types = ['IT']
-				return this.news.filter(ann => types.indexOf(ann.type) > -1)
-			},
-			newsOther() {
-				const types = ['Nyudrulning']
-				return this.news.filter(ann => types.indexOf(ann.type) > -1)
-			}
-		}
-	})
-	Vue.component('o-announcements-modal', {
-		template: '#o-announcements-modal-form-template',
-		props: {
-			formType: {
-				default: 'announcement' // 'master', 'announcement'
-			},
-			formTitle: {
-				default: 'Create announcement'
-			},
-			standard_options: {
-				default: () => { }
-			},
-			filteredReceivers: {
-				default: () => []
-			},
-			master_templates: {
-				default: () => []
-			},
-			edit_master_template: {
-				default: null
-			},
-			theNewMasterTemplateId: {
-				default: null
-			},
-			the_user: {
-				default: () => { }
-			},
-			active_area: {
-				default: 'OperationsStatus' // 'OperationsStatus' or 'News'
-			},
-			edit_announcement: {
-				default: null
-			}
-		},
-		data() {
-			return {
-				activeMasterTemplateId: null,
-				theEmailHTML: '',
-				newMasterTitle: '',
-				isSubmitting: false,
-				isUpdateSubscription: false,
-				updateSubscriptionInterval: null,
-				updateSubscriptionUserId: this.the_user ? this.the_user.id : null,
-				isAttachFiles: false,
-				attachments: null,
-				isSendNotifications: false,
-				theSelectedStatus: 'New',
-				theEmailDateStart: new Date().toISOString().slice(0, 10),
-				theEmailSubject: '',
-				theEmailFromCompany: '',
-				theSelectedType: null,
-				updateIntervals: [
-					{ value: '15', display: '15min' },
-					{ value: '30', display: '30min' },
-					{ value: '60', display: '1 time' },
-					{ value: '180', display: '3 time' },
-					{ value: '360', display: '6 time' },
-					{ value: '720', display: '12 time' },
-					{ value: '1440', display: '24 time' },
-					{ value: '4320', display: '3 dage' },
-					{ value: '10080', display: '7 dage' },
-					{ value: '43200', display: '30 dage' },
-					{ value: '129600', display: '90 dage' }
-				],
-				selectedReceivers: {},
-				isCreatingNewAnnouncement: false,
-				placeholders: [
-					{ id: '{{{pp_mergecode:placeholder1}}}', num: 1, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder1}}}', isShow: false },
-					{ id: '{{{pp_mergecode:placeholder2}}}', num: 2, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder2}}}', isShow: false },
-					{ id: '{{{pp_mergecode:placeholder3}}}', num: 3, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder3}}}', isShow: false },
-					{ id: '{{{pp_mergecode:placeholder4}}}', num: 4, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder4}}}', isShow: false },
-					{ id: '{{{pp_mergecode:placeholder5}}}', num: 5, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder5}}}', isShow: false },
-					{ id: '{{{pp_mergecode:placeholder6}}}', num: 6, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder6}}}', isShow: false },
-					{ id: '{{{pp_mergecode:placeholder7}}}', num: 7, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder7}}}', isShow: false },
-					{ id: '{{{pp_mergecode:placeholder8}}}', num: 8, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder8}}}', isShow: false },
-					{ id: '{{{pp_mergecode:placeholder9}}}', num: 9, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder9}}}', isShow: false },
-					{ id: '{{{pp_mergecode:placeholder10}}}', num: 10, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder10}}}', isShow: false }
-				],
-				placeholderHist: null,
-				activeTab: 'placeholders',
-				isServiceWindow: false,
-				serviceWindowStart: this.formatDate(new Date()),
-				serviceWindowEnd: this.formatDate(new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000)), // Adding 7 days,
-				theEditMasterTemplate: null,
-				isDeleting: false,
-				isConfirmation: false,
-				attachFilesObserver: null,
-				theEmailTeaser: ''
-			}
-		},
-		computed: {
-			isAllReceiversSelected() {
-				return this.getIsReceiverSelected('ALL')
-			},
-			isAllSPsSelected() {
-				return this.getIsReceiverSelected('ALL_SPs')
-			},
-			isAllIOsSelected() {
-				return this.getIsReceiverSelected('ALL_IOs')
-			},
-			activePlaceholders() {
-				return this.placeholders.filter(place => place.isShow)
-			},
-			formTypeIsMaster() {
-				return this.formType === 'master'
-			},
-			newMasterHTMLSanitized() {
-				return this.theEmailHTML
-			},
-			contentReplacement() {
-				if (this.formTypeIsMaster) {
-					return {};
-				}
-
-				let replacements = {
-					...this.theSelectedType ? {
-						type: this.filteredTypes.find(oType => oType.value === this.theSelectedType)?.display || this.theSelectedType
-					} : {},
-					...this.theEmailSubject ? { subject: this.theEmailSubject } : {},
-					...this.theEmailFromCompany ? { from: this.theEmailFromCompany } : {},
-					...this.theEmailFromUser ? { user_name: this.theEmailFromUser } : {},
-					...this.theEmailTeaser ? { teaser: this.theEmailTeaser } : {},
-					...Object.fromEntries(this.activePlaceholders.map(place => [`placeholder${place.num}`, place.text])),
-					...Array.from({ length: 10 }, (_, i) => i + 1).reduce((acc, num) => {
-						const history = this.replaceHistoryPlaceholderWithTable(`placeholder${num}`);
-						if (history) {
-							acc[`history_placeholder${num}`] = history;
-						}
-						return acc;
-					}, {})
-				};
-
-				return replacements;
-			},
-			emailHistoryPlaceholders() {
-				let arr = []
-				if (!this.placeholderHist) {
-					return arr
-				}
-
-				Object.keys(this.placeholderHist).forEach(prop => {
-					if (this.placeholderHist[prop] && this.placeholderHist[prop].length > 0) {
-						arr.push(prop)
-					}
-				});
-				return arr
-			},
-			emailHTMLReplaced() {
-				const placeholderToRemove = ['placeholder1', 'placeholder2', 'placeholder3', 'placeholder4', 'placeholder5', 'placeholder6', 'placeholder7', 'placeholder8', 'placeholder9', 'placeholder10']
-				let html = this.newMasterHTMLSanitized ? this.newMasterHTMLSanitized : ''
-				if (this.emailHistoryPlaceholders.length > 0) {
-					this.emailHistoryPlaceholders.forEach(placeholderName => {
-						const idx = placeholderToRemove.indexOf(placeholderName)
-						if (idx > -1) {
-							placeholderToRemove.splice(idx, 1)
-						}
-						html = this.removeFilledHistoryPlaceholderLabels(html, 'history_' + placeholderName)
-					})
-				}
-				placeholderToRemove.forEach(placeholderName => {
-					html = this.removeEmptyHistoryPlaceholder(html, 'history_' + placeholderName)
-				})
-				const placeholderHTML = this.replacePlaceholders(html, this.contentReplacement);
-				return placeholderHTML
-			},
-			iframeContent() {
-				let htmlContent = this.emailHTMLReplaced
-				const script1 = `<script>
-				window.onload = function() {
-					const height = document.documentElement.scrollHeight;
-					window.parent.postMessage({ type: 'oiFrameHeight', frameHeight: height }, '*');
-				};
-				</script>
-				`
-				const script2 = `<script>
-				window.onload = function() {
-					const height = document.documentElement.scrollHeight;
-					window.parent.postMessage({ type: 'oiFrameHeightMaster', frameHeight: height }, '*');
-				};
-				</script>
-				`
-				const script = this.formTypeIsMaster ? script2 : script1
-				// Insert the script before the closing </body> tag
-				if (htmlContent.includes('</body>')) {
-					htmlContent = htmlContent.replace('</body>', script + '</body>');
-				} else {
-					htmlContent += script;
-				}
-
-				return htmlContent;
-			},
-			emailHTMLAllPlaceholdersReplaced() {
-				// Removes all {{{ }}}
-				return this.emailHTMLReplaced.replace(/\{\{\{[^}]+\}\}\}/g, '');
-			},
-			userKey() {
-				return eTrayWebportal && eTrayWebportal.User.Key ? eTrayWebportal.User.Key : null
-			},
-			theEmailFromUser() {
-				return this.the_user && this.the_user['display_name'] ? this.the_user['display_name'] : ''
-			},
-			sortedMasterTemplates() {
-				return this.master_templates
-					.filter(masterTemp => masterTemp.area === this.active_area)
-					.sort((a, b) => b.template_id - a.template_id);
-			},
-			filteredTypes() {
-				const allTypes = []
-				const oTypes = this.standard_options && this.standard_options['extMsg_type'] ? this.standard_options['extMsg_type'] : []
-				oTypes.forEach(oType => {
-					if (oType.area === this.active_area) {
-						const idx = allTypes.findIndex(allType => allType.value === oType.value)
-						if (idx < 0) {
-							allTypes.push(oType)
-						}
-					}
-				})
-				return allTypes.sort((a, b) => a.display.localeCompare(b.display))
-			},
-			filteredStatusses() {
-				const oStatusses = this.standard_options && this.standard_options['extMsg_status'] ? this.standard_options['extMsg_status'] : []
-				return oStatusses
-			},
-			selectedReceiversLength() {
-				return Object.keys(this.selectedReceivers).length;
-			},
-			filteredAssignUpdatesToList() {
-				const arr = this.standard_options && this.standard_options['assigntoList'] ? this.standard_options['assigntoList'] : []
-				return arr.sort((a, b) => {
-					return a.Name.localeCompare(b.Name);
-				})
-			},
-			receiverNames() {
-				const names = [];
-				const potentialReceivers = [{ id: 'ALL', name: 'All' }, { id: 'ALL_SPs', name: 'All SPs' }, { id: 'ALL_IOs', name: 'All IOs' }].concat(this.filteredReceivers)
-				Object.keys(this.selectedReceivers).forEach(key => {
-					const idx = potentialReceivers.findIndex(user => user.id === key);
-					if (idx > -1) {
-						names.push(potentialReceivers[idx]['name']);
-					}
-				});
-				return names.join(', ')
-			},
-			theFormTitle() {
-				if (!this.formTypeIsMaster) {
-					if (this.edit_announcement) {
-						const versionNumber = +this.edit_announcement['version'] + 1
-						return this.active_area === 'News' ? 'Rediger nyhed' : 'Ny udmelding (version nr. ' + versionNumber + ')'
-					} else {
-						return this.active_area === 'News' ? 'Opret nyhed' : 'Opret udmelding'
-					}
-				} else {
-					if (!this.edit_master_template) {
-						return 'Opret nyt master template'
-					} else {
-						return 'Rediger master template'
-					}
-				}
-			},
-			isSaveButtonValid() {
-				return !this.getIsFormInvalid()
-			}
-		},
-		watch: {
-			theNewMasterTemplateId(val) {
-				if (val) {
-					this.setMasterTemplate(val)
-				}
-			},
-			theEmailHTML(val) {
-				// Find number of placeholders
-				if (!this.theEmailHTML) {
-					return
-				}
-				const htmlContent = this.theEmailHTML
-				const contentWithoutSpaces = htmlContent.replace(/\s+/g, '')
-				for (let i = 1; i <= 10; i++) {
-					const id = '{{{pp_mergecode:placeholder' + i + '}}}'
-					const regex = new RegExp(`\\{\\{\\{pp_mergecode:placeholder${i}\\}\\}\\}`, 'g')
-					const matches = contentWithoutSpaces.match(regex)
-					const idx = this.placeholders.findIndex(place => place.id === id)
-					if (idx > -1) {
-						if (matches) {
-							this.placeholders[idx]['isShow'] = true
-						} else {
-							this.placeholders[idx]['isShow'] = false
-						}
-					}
-				}
-			}
-		},
-		methods: {
-			replaceHistoryPlaceholderWithTable(historyPlaceholderName) {
-				if (!this.placeholderHist || this.placeholderHist.length < 1) {
-					return null;
-				}
-				let str = '';
-				if (this.placeholderHist[historyPlaceholderName]) {
-					this.placeholderHist[historyPlaceholderName].forEach(obj => {
-						let date = obj['time'] ? obj['time'] : '';
-						if (date.length > 0) {
-							date = dayjs ? dayjs(date).format('LLL') : date
-						}
-						const text = obj['text'] ? obj['text'] : '';
-						str += '<tr><td style="border: 1px solid #eee;padding: 10px 20px;">' + date + '</td><td style="border: 1px solid #eee;padding: 10px 20px;">' + text + '</td></tr>';
-					});
-				}
-				const tableHTML = '<table style="border-collapse: collapse;"><thead></thead><tbody>' + str + '</tbody></table>';
-				return tableHTML;
-			},
-			getIsFormInvalid() {
-				const errors = {}
-				if (this.formTypeIsMaster) {
-					if (this.newMasterTitle.length === 0) {
-						errors['master_title'] = 'Der skal være en titel'
-					}
-					return Object.keys(errors).length > 0
-				}
-				// Not master validation
-				if (this.selectedReceiversLength === 0) {
-					errors['receivers'] = 'Der skal vælges mindst en modtager'
-				}
-				return Object.keys(errors).length > 0
-			},
-			setIsDeleteConfirmation(bool) {
-				this.isConfirmation = bool
-			},
-			deleteMasterTemplate() {
-				this.isDeleting = true
-				const myHeaders = new Headers();
-				myHeaders.append("Content-Type", "application/json");
-				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
-				const requestOptions = {
-					method: "POST",
-					headers: myHeaders,
-					redirect: "follow"
-				};
-
-				const url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate?action=DELETE&template_id=' + this.edit_master_template
-
-				fetch(url, requestOptions)
-					.then(response => {
-						console.log('deleteMasterTemplate', { response })
-						if (!response.ok) {
-							throw new Error('Network response was not ok');
-						}
-						return response.json();
-					})
-					.then(success => {
-						console.log({ success })
-						this.$emit('deleteMasterTemplate', this.edit_master_template)
-					})
-					.catch(error => {
-						console.error('Error creating new announcement:', error);
-					})
-					.finally(() => {
-						this.isDeleting = false
-						this.setIsCreateModal(false)
-					});
-			},
-			setEditMasterTemplate(template) {
-				this.$emit('setEditMasterTemplate', template)
-				this.setIsCreateNewMaster(true)
-			},
-			formatDate(date) {
-				// Format dates as "YYYY-MM-DD"
-				const year = date.getFullYear();
-				const month = String(date.getMonth() + 1).padStart(2, '0')
-				const day = String(date.getDate()).padStart(2, '0')
-				return `${year}-${month}-${day}`;
-			},
-			setActiveTab(tabName) {
-				return this.activeTab = tabName
-			},
-			getIsActiveTab(tabName) {
-				return this.activeTab === tabName
-			},
-			replacePlaceholders(html, replacements) {
-				Object.entries(replacements).forEach(([key, value]) => {
-					const regex = new RegExp(`{{\\{\\s*pp_mergecode:${key}\\s*\\}\\}}`, 'g')
-					html = html.replace(regex, value)
-				});
-				return html
-			},
-			removeFilledHistoryPlaceholderLabels(html, placeholderName) {
-				if (this.formTypeIsMaster) {
-					return html;
-				}
-				// Updated regex to allow for optional spaces around "end:"
-				var startMarkerRegex = new RegExp(`\\{\\{\\{\\s*pp_hasdata:${placeholderName}\\}\\}\\}`, 'g');
-				var endMarkerRegex = new RegExp(`\\{\\{\\{\\s*end\\s*:\\s*pp_hasdata:${placeholderName}\\s*\\}\\}\\}`, 'g');
-
-				// Use regex to replace the start and end markers with an empty string
-				html = html.replace(startMarkerRegex, '');
-				html = html.replace(endMarkerRegex, '');
-				return html;
-			},
-
-			removeEmptyHistoryPlaceholder(html, placeholderName) {
-				if (this.formTypeIsMaster) {
-					return html;
-				}
-				// Updated regex to include optional spaces around "end:"
-				var startMarkerRegex = new RegExp(`\\{\\{\\{\\s*pp_hasdata:${placeholderName}\\}\\}\\}`, 'g');
-				var endMarkerRegex = new RegExp(`\\{\\{\\{\\s*end\\s*:\\s*pp_hasdata:${placeholderName}\\s*\\}\\}\\}`, 'g');
-
-				var startIndex = html.search(startMarkerRegex);
-				var match = html.match(endMarkerRegex);
-
-				if (startIndex !== -1 && match) {
-					var endIndex = html.indexOf(match[0], startIndex) + match[0].length;
-					// Remove the section from startIndex to endIndex
-					return html.slice(0, startIndex) + html.slice(endIndex);
-				} else {
-					return html;
-				}
-			},
-			createMasterTemplate() {
-				const myHeaders = new Headers();
-				myHeaders.append("Content-Type", "application/json");
-				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
-
-				let dbObj = {
-					template_id: null,
-					name: this.newMasterTitle,
-					company_display: this.theEmailFromCompany,
-					subject: this.theEmailSubject,
-					area: this.active_area,
-					type: this.theSelectedType,
-					receivers: Object.keys(this.selectedReceivers).map(key => key).join(';'),
-					send_notifications: this.isSendNotifications,
-					attachments: null,
-					html: this.newMasterHTMLSanitized
-				};
-				if (this.edit_master_template) {
-					dbObj['template_id'] = this.edit_master_template
-				}
-				const raw = JSON.stringify(dbObj)
-				const requestOptions = {
-					method: "POST",
-					headers: myHeaders,
-					body: raw,
-					redirect: "follow"
-				};
-				let url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate'
-
-				if (this.edit_master_template) {
-					url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate?action=PATCH'
-				}
-
-				fetch(url, requestOptions)
-					.then(response => {
-						if (!response.ok) {
-							throw new Error('Network response was not ok');
-						}
-						return response.json();
-					})
-					.then(success => {
-						const succesObj = {
-							success: success,
-							updatedTemplateId: this.edit_master_template ? this.edit_master_template : null
-						}
-						this.$emit('addMasterTemplate', succesObj)
-					})
-					.catch(error => {
-						console.error('Error creating new announcement:', error);
-					})
-					.finally(() => {
-						this.isSubmitting = false
-						this.setIsCreateModal(false)
-					});
-			},
-			createAnnouncement() {
-				let attachmentToken = null
-				const lengthOfAttachedFiles = $('.ppUPLOAD #uploadedPanel > div') ? $('.ppUPLOAD #uploadedPanel > div').length : 0
-				if (lengthOfAttachedFiles > 0) {
-					clearJSONfields()
-					attachmentToken = Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2)
-					$(".ppUPLOAD_TOKEN > input").val(attachmentToken)
-					$(".webformCreateMore").click()
-				}
-				const myHeaders = new Headers();
-				myHeaders.append("Content-Type", "application/json");
-				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
-
-				const timestamp = getCurrentTimestamp();
-				function getCurrentTimestamp() {
-					const now = new Date();
-					const year = now.getFullYear();
-					const month = String(now.getMonth() + 1).padStart(2, '0'); // getMonth() is zero-indexed
-					const day = String(now.getDate()).padStart(2, '0');
-					const hours = String(now.getHours()).padStart(2, '0');
-					const minutes = String(now.getMinutes()).padStart(2, '0');
-					const seconds = String(now.getSeconds()).padStart(2, '0');
-
-					return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-				}
-				const selectedType = this.filteredTypes.find(oType => oType.value === this.theSelectedType)
-				let dbObj = {
-					"onid": null,
-					"version": null,
-					"createdTime": timestamp,
-					"expired": "false",
-					"area": this.active_area,
-					"type": selectedType && selectedType.display ? selectedType.display : this.theSelectedType,
-					"template_id": this.activeMasterTemplateId,
-					"from": this.the_user && this.the_user['display_name'] ? this.the_user['display_name'] : '',
-					"company_display": this.theEmailFromCompany,
-					"subject": this.theEmailSubject,
-					"shortDesc": this.active_area === 'News' && this.theEmailTeaser.length > 0 ? this.theEmailTeaser : null,
-					"status": this.theSelectedStatus,
-					"serviceWindow": this.isServiceWindow,
-					"serviceWindowStart": this.isServiceWindow ? this.serviceWindowStart : null,
-					"serviceWindowEnd": this.isServiceWindow ? this.serviceWindowEnd : null,
-					"updateSubscription": this.isUpdateSubscription,
-					"updateSubscriptionInterval": !this.isUpdateSubscription ? null : this.updateSubscriptionInterval,
-					"updateSubscriptionUserId": !this.isUpdateSubscription ? null : this.updateSubscriptionUserId,
-					"receivers": Object.keys(this.selectedReceivers).map(key => key).join(';'),
-					"attachments": attachmentToken ? [attachmentToken] : null,
-					"html": this.emailHTMLAllPlaceholdersReplaced,
-					"placeholder_1": null,
-					"placeholder_2": null,
-					"placeholder_3": null,
-					"placeholder_4": null,
-					"placeholder_5": null,
-					"placeholder_6": null,
-					"placeholder_7": null,
-					"placeholder_8": null,
-					"placeholder_9": null,
-					"placeholder_10": null,
-					"placeholder_hist": null
-				};
-				this.activePlaceholders.forEach(placeholder => {
-					const placeHolderKey = 'placeholder_' + placeholder.num
-					dbObj[placeHolderKey] = placeholder.text
-				})
-				const fncConvertNullsToEmptyArrays = (obj) => {
-					Object.keys(obj).forEach(key => {
-						if (obj[key] === null) {
-							obj[key] = [];
-						}
-					});
-					return obj;
-				}
-				if (this.edit_announcement) {
-					dbObj['onid'] = this.edit_announcement.onid
-					console.log('placeholder_hist', JSON.stringify(fncConvertNullsToEmptyArrays(this.placeholderHist)))
-					dbObj['placeholder_hist'] = JSON.stringify(fncConvertNullsToEmptyArrays(this.placeholderHist))
-				}
-				console.log({ dbObj })
-				const raw = JSON.stringify(dbObj)
-
-				let requestOptions = {
-					method: "POST",
-					headers: myHeaders,
-					body: raw,
-					redirect: "follow"
-				};
-				let url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg'
-
-				if (this.edit_announcement) {
-					url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg?action=PATCH'
-				}
-				fetch(url, requestOptions)
-					.then(response => {
-						console.log('createAnnouncement', { response })
-						if (!response.ok) {
-							throw new Error('Network response was not ok');
-						}
-						return response.json();
-					})
-					.then(success => {
-						console.log({ success })
-						this.$emit('addAnnouncements', success)
-					})
-					.catch(error => {
-						console.error('Error creating new announcement:', error);
-					})
-					.finally(() => {
-						this.isSubmitting = false
-						this.setIsCreateModal(false)
-					});
-			},
-			onSubmit() {
-				if (this.getIsFormInvalid()) {
-					this.isShowErrors = true
-					return
-				}
-				this.isSubmitting = true
-				if (this.formTypeIsMaster) {
-					this.createMasterTemplate()
-					return
-				}
-				this.createAnnouncement()
-			},
-			setSelectedReceiver(receiverId) {
-				if (this.selectedReceivers[receiverId]) {
-					this.$delete(this.selectedReceivers, receiverId)
-				} else {
-					this.$set(this.selectedReceivers, receiverId, true)
-				}
-			},
-			getIsReceiverSelected(receiverId) {
-				return this.selectedReceivers[receiverId]
-			},
-			resetTemplateSettings() {
-				this.theEmailFromCompany = '';
-				this.theEmailSubject = '';
-				this.theSelectedType = null;
-				this.isSendNotifications = false;
-				this.theEmailHTML = '';
-				this.selectedReceivers = {};
-			},
-			setMasterTemplate(masterTemplateId) {
-				if (masterTemplateId === null) {
-					this.activeMasterTemplateId = null;
-					this.resetTemplateSettings();
-					return;
-				}
-				const newMasterTemplateId = +masterTemplateId;
-				if (this.activeMasterTemplateId !== newMasterTemplateId) {
-					this.activeMasterTemplateId = newMasterTemplateId;
-				}
-
-				const masterTemp = this.master_templates.find(temp => +temp.template_id === newMasterTemplateId);
-				if (!masterTemp) {
-					console.error('Template not found', newMasterTemplateId);
-					return;
-				}
-
-				this.theEmailFromCompany = masterTemp.company_display;
-				this.theEmailSubject = masterTemp.subject;
-				this.theSelectedType = masterTemp.type;
-				this.isSendNotifications = this.convertToBoolean(masterTemp.send_notifications);
-				this.theEmailHTML = masterTemp.html;
-
-				if (masterTemp.receivers?.length > 0) {
-					this.selectedReceivers = this.fncConvertSemicolonSeparatedStringToObject(masterTemp.receivers);
-				}
-			},
-			convertToBoolean(value) {
-				return String(value).toLowerCase() === "true";
-			},
-			setIsCreateNewMaster(bool) {
-				this.$emit('openNewMasterModal')
-			},
-			setIsCreateModal(bool) {
-				if (!bool) {
-					this.$emit('setEditMasterTemplate', null)
-					this.$emit('close')
-					if (this.edit_announcement) {
-						this.$emit('done')
-					}
-				}
-			},
-			handleFrameMessage(event) {
-				if (event.data.type && event.data.type === 'oiFrameHeight') {
-					const iFrameHeight = event.data.frameHeight
-					this.$refs.o_preview_iframe.height = iFrameHeight + 'px'
-				}
-				if (event.data.type && event.data.type === 'oiFrameHeightMaster') {
-					const iFrameHeight = event.data.frameHeight
-					this.$nextTick(_ => {
-						const el = this.$refs.o_preview_iframe_master
-						if (el) {
-							el.height = iFrameHeight + 'px'
-						}
-					})
-				}
-			},
-			setInitMasterTemplateValues(obj) {
-				this.active_area = obj.area
-				if (obj.attachments) {
-					this.isAttachFiles = true
-					this.attachments = obj.attachments
-				}
-				this.theEmailFromCompany = obj.company_display
-				this.theEmailHTML = obj.html
-				this.newMasterTitle = obj.name
-				this.selectedReceivers = obj.receivers && obj.receivers.length > 0 ? this.fncConvertSemicolonSeparatedStringToObject(obj.receivers) : {}
-				this.isSendNotifications = obj.send_notifications
-				this.theEmailSubject = obj.subject
-				if (obj.type) {
-					const selectedTypeIdx = this.filteredTypes.findIndex(oType => {
-						return oType.value === obj.type
-					})
-					this.theSelectedType = selectedTypeIdx > -1 ? this.filteredTypes[selectedTypeIdx].value : null
-				}
-			},
-			onAttachFiles() {
-				document.querySelector('.ppUPLOAD #fileupload').click();
-				subCatChangeSelect('UPLOAD');
-				if (this.attachFilesObserver) {
-					this.attachFilesObserver.disconnect();
-				}
-
-				this.startObserving();
-			},
-			handleMutations(mutations) {
-				mutations.forEach(mutation => {
-					mutation.addedNodes.forEach(node => {
-						if (node.nodeType === 1) {
-							const clonedNode = node.cloneNode(true);
-							const links = clonedNode.querySelectorAll('a[deleteurl]');
-							links.forEach(link => {
-								link.addEventListener('click', this.handleCloneClick);
-							});
-							const elId = `${this.formType}_cloneDestination`;
-							document.getElementById(elId).appendChild(clonedNode);
-						}
-					})
-				});
-			},
-			handleCloneClick(event) {
-				const deleteUrl = event.target.getAttribute('deleteurl');
-				if (deleteUrl) {
-					const originalLink = document.querySelector(`.ppUPLOAD #uploadedPanel a[deleteurl="${deleteUrl}"]`);
-					if (originalLink) {
-						originalLink.click();
-					}
-
-					const wrapperDiv = event.target.closest('div');
-					if (wrapperDiv) {
-						wrapperDiv.remove();
-					}
-				}
-				event.preventDefault();
-			},
-			startObserving() {
-				const targetNode = document.querySelector('.ppUPLOAD #uploadedPanel');
-
-				if (targetNode) {
-					this.attachFilesObserver = new MutationObserver(this.handleMutations);
-
-					this.attachFilesObserver.observe(targetNode, {
-						childList: true,
-						subtree: true
-					});
-				}
-			},
-			resetFilesOnClose() {
-				$('.ppUPLOAD #uploadedPanel > div > a').each(function () {
-					$(this).click()
-				})
-			},
-			fncRevertFromDisplayToValue(originalArr, display) {
-				const idx = originalArr.findIndex(obj => obj.display === display)
-				if (idx > -1) {
-					return originalArr[idx]['value']
-				} else {
-					return display
-				}
-			},
-			fncConvertSemicolonSeparatedStringToObject(input) {
-				const object = {};
-				input.split(';').forEach(prop => {
-					if (prop) {
-						object[prop] = true
-					}
-				});
-				return object;
-			},
-			setInitialFormElements() {
-				this.activeMasterTemplateId = this.edit_announcement['template_id']
-				this.theSelectedType = this.fncRevertFromDisplayToValue(this.filteredTypes, this.edit_announcement['type'])
-				this.theSelectedStatus = this.edit_announcement['status']
-				this.theEmailFromCompany = this.edit_announcement['from']
-				this.theEmailSubject = this.edit_announcement['subject']
-				if (this.edit_announcement['updateSubscription']) {
-					this.isUpdateSubscription = this.edit_announcement['updateSubscription'] != 'false'
-					this.updateSubscriptionInterval = this.edit_announcement['updateSubscriptionInterval']
-					this.updateSubscriptionUserId = this.edit_announcement['updateSubscriptionUserId']
-				}
-				if (this.edit_announcement['serviceWindow']) {
-					this.isServiceWindow = this.edit_announcement['serviceWindow'] != 'false'
-					this.serviceWindowStart = this.edit_announcement['serviceWindowStart']
-					this.serviceWindowEnd = this.edit_announcement['serviceWindowEnd']
-				}
-				if (this.edit_announcement['shortDesc'] && this.edit_announcement['shortDesc'].length > 0) {
-					this.theEmailTeaser = this.edit_announcement['shortDesc']
-				}
-				const editReceivers = this.edit_announcement['receivers']
-				if (editReceivers) {
-					const formattedReceivers = this.fncConvertSemicolonSeparatedStringToObject(editReceivers)
-					this.selectedReceivers = formattedReceivers
-				}
-				const masterTemp = this.master_templates.find(temp => +temp.template_id === +this.activeMasterTemplateId)
-				if (masterTemp) {
-					this.theEmailHTML = masterTemp['html']
-				}
-				// Placeholder history
-				let newHistPlaceholder = {}
-				const currentHist = this.edit_announcement['placeholder_hist']
-				try {
-					let historyObj = JSON.parse(currentHist)
-					newHistPlaceholder = historyObj
-				} catch {
-				}
-				for (let i = 1; i < 11; i++) {
-					const currentPlaceholder = this.edit_announcement['placeholder_' + i]
-					// Den kan være null
-					const historyPlaceholder = newHistPlaceholder['placeholder' + i]
-					// tjek om den generelt er null , hvis den er, så dropper du den
-					if (historyPlaceholder == null && currentPlaceholder == null) {
-					} else if (currentPlaceholder && historyPlaceholder == null) {
-						// Hvis den har tekst, og den oprindelige var null
-						newHistPlaceholder['placeholder' + i] = [{ time: this.edit_announcement['createdTime'], text: currentPlaceholder }]
-					} else if (currentPlaceholder && historyPlaceholder) {
-						// Hvis den har tekst, og den oprindelige også har noget
-						newHistPlaceholder['placeholder' + i].push({ time: this.edit_announcement['createdTime'], text: currentPlaceholder })
-					}
-				}
-				this.placeholderHist = newHistPlaceholder
-			}
-		},
-		beforeDestroy() {
-			window.removeEventListener('message', this.handleFrameMessage);
-			if (this.attachFilesObserver) {
-				this.attachFilesObserver.disconnect();
-			}
-			setTimeout(_ => {
-				this.resetFilesOnClose()
-			})
-		},
-		mounted() {
-			window.addEventListener('message', this.handleFrameMessage);
-			if (this.edit_announcement) {
-				this.setInitialFormElements()
-			}
-			if (this.formTypeIsMaster) {
-				this.setActiveTab('html')
-				if (this.edit_master_template) {
-					const idx = this.master_templates.findIndex(masterTemp => +masterTemp.template_id === +this.edit_master_template)
-					if (idx > -1) {
-						this.setInitMasterTemplateValues(this.master_templates[idx])
-					}
-				}
-				this.$nextTick(_ => {
-					if (this.$refs.new_template_title_input) {
-						this.$refs.new_template_title_input.focus()
-					}
-				})
-			} else {
-				if (!this.edit_announcement) {
-					let tempId = 0
-					this.sortedMasterTemplates.forEach(masterTemp => {
-						if (+masterTemp.template_id > tempId) {
-							tempId = +masterTemp.template_id
-						}
-					})
-					if (tempId > 0) {
-						this.setMasterTemplate(tempId)
-					}
-				}
-				this.setActiveTab('placeholders')
-				setTimeout(_ => {
-					if ($('.o-placeholders__placeholder').length > 0) {
-						$('.o-placeholders__placeholder .o-input')[0].focus()
-					}
-				}, 250)
-			}
-		}
-	})
-	/* START 17-12-23 */
-	Vue.component('o-multi-select', {
-		template: '#o-multi-select-template',
-		props: {
-			select_title: {
-				type: String,
-				default: 'Vælg..'
-			},
-			items: {
-				type: Array,
-				default: () => []
-			},
-			selected_items: {
-				type: Array,
-				default: () => []
-			},
-			i18n: {
-				type: Object,
-				default: () => null
-			}
-		},
-		data() {
-			return {
-				query: '',
-				isOpen: false,
-			}
-		},
-		computed: {
-			selectTitle() {
-				if (this.selected_items.length === 0) {
-					return this.select_title
-				}
-				if (this.selected_items.length === 1) {
-					const selectedItem = this.selected_items[0]
-					const labelIdx = this.items.findIndex(tagItem => tagItem['label'] && tagItem['value'] == this.selected_items[0])
-					if (labelIdx > -1) {
-						return this.items[labelIdx]['label']
-					}
-					if (this.i18n) {
-						return this.i18n[selectedItem] ? this.i18n[selectedItem] : selectedItem
-					}
-					return selectedItem
-				}
-				if (this.selected_items.length > 1) {
-					return this.selected_items.length + ' valgt'
-				}
-			},
-			itemsWithProps() {
-				const combinedItems = [...this.items];
-
-				this.selected_items.forEach(selectedItem => {
-					if (!combinedItems.some(item => item.value === selectedItem)) {
-						combinedItems.push({ value: selectedItem });
-					}
-				});
-				return combinedItems.map(item => {
-					const isSelected = this.selected_items.includes(item.value);
-					return {
-						...item,
-						v_selected: isSelected
-					};
-				});
-			},
-			itemsSorted() {
-				return this.itemsWithProps.slice().sort((a, b) => {
-					// Prioritize items with value 'v_no_selected'
-					if (a.value === 'v_no_selected') return -1;
-					if (b.value === 'v_no_selected') return 1;
-
-					// Prioritize items with 'v_sort' property next
-					const aHasVSort = 'v_sort' in a;
-					const bHasVSort = 'v_sort' in b;
-
-					if (aHasVSort && !bHasVSort) return -1;
-					if (!aHasVSort && bHasVSort) return 1;
-
-					// For items with 'v_sort', sort them alphabetically
-					if (aHasVSort && bHasVSort) {
-						return a.value.localeCompare(b.value);
-					}
-
-					// Standard alphabetical sorting for other cases
-					return a.value.localeCompare(b.value);
-				});
-			},
-			filteredItems() {
-				const lowerCaseQuery = this.query.toLowerCase();
-
-				return this.itemsSorted.filter(item => {
-					let itemTitle = item.label ? item.label.toLowerCase() : item.value.toLowerCase()
-
-					// Check if a localized version of the item title exists
-					if (this.i18n && this.i18n[item.value]) {
-						itemTitle = this.i18n[item.value].toLowerCase()
-					}
-
-					return itemTitle.includes(lowerCaseQuery)
-				})
-			}
-		},
-		methods: {
-			setIsOpen(bool) {
-				this.isOpen = bool
-				if (bool) {
-					this.$nextTick(_ => {
-						this.$refs.query_input.focus()
-					})
-				}
-				if (!bool) {
-					this.query = ''
-				}
-			},
-			toggleItem(item) {
-				this.$emit('toggle_item', item)
-			},
-			onMultiSelectBGClick() {
-				this.setIsOpen(false)
-				this.$emit('close')
-			},
-			clearQuery() {
-				this.query = ''
-				this.$refs.query_input.focus()
-			},
-		}
-	})
-
-	Vue.component('tags-selector', {
-		template: '#tags-selector-template',
-		props: {
-			is_loading_tag_button: {
-				type: Boolean,
-				default: false
-			},
-			tags: {
-				type: Array,
-				default: () => []
-			},
-			groups: {
-				type: Array,
-				default: () => []
-			},
-			active_case: {
-				type: Object,
-				default: null
-			},
-			active_tag_type: {
-				type: String
-			}
-		},
-		data() {
-			return {
-				theTagsSelectorView: 1,
-				highlightedIndex: -1,
-				tagsSearch: '',
-				tagColors: [
-					"#F87171",
-					"#FB923C",
-					"#FBBF24",
-					"#4ADE80",
-					"#34D399",
-					"#2DD4BF",
-					"#22D3EE",
-					"#38BDF8",
-					"#60A5FA",
-					"#A78BFA",
-					"#C084FC",
-					"#F472B6",
-					"#FB7185",
-					"#A8A29E",
-					"#A1A1AA"
-				],
-				tagFormName: '',
-				tagFormColor: '#F87171',
-				theEditingExisting: null,
-				isInputError: false,
-				isEdited: false,
-				selectedTags: [],
-				newTags: [],
-				isForgotToSave: false
-			};
-		},
-		computed: {
-			oldAndNewTags() {
-				if (this.active_tag_type === 'tag') {
-					return this.tags.concat(this.newTags)
-				} else {
-					return this.groups.concat(this.newTags)
-				}
-			},
-			tagsWithProps() {
-				return this.oldAndNewTags.filter(tag => tag.value !== 'v_no_selected').map(tag => {
-					// Check if the current tag exists in this.selectedTags
-					const isSelected = this.selectedTags.findIndex(selectedTag => selectedTag.value === tag.value) > -1
-					// Return a new object for the tag with the v_selected property
-					return {
-						...tag,
-						v_selected: isSelected
-					};
-				});
-			},
-			tagsWithPropsSorted() {
-				return this.tagsWithProps.slice().sort((a, b) => {
-					// Prioritize items with value 'v_no_selected'
-					if (a.value === 'v_no_selected') return -1;
-					if (b.value === 'v_no_selected') return 1;
-
-					// Prioritize items with 'v_sort' property next
-					const aHasVSort = 'v_sort' in a;
-					const bHasVSort = 'v_sort' in b;
-
-					if (aHasVSort && !bHasVSort) return -1;
-					if (!aHasVSort && bHasVSort) return 1;
-
-					// For items with 'v_sort', sort them alphabetically
-					if (aHasVSort && bHasVSort) {
-						return a.value.localeCompare(b.value);
-					}
-
-					// Standard alphabetical sorting for other cases
-					return a.value.localeCompare(b.value);
-				});
-			},
-			filteredTags() {
-				return this.tagsWithPropsSorted.filter(tag => tag.value.toLowerCase().includes(this.tagsSearch.toLowerCase()));
-			}
-		},
-		methods: {
-			createAndAddNewTag() {
-				// Validation
-				if (this.tagFormName.length < 1) {
-					const el = document.querySelector('#create_new_tag_input')
-					el.focus()
-					el.classList.remove('animate-shake')
-					setTimeout(_ => {
-						el.classList.add('animate-shake')
-					}, 100)
-					return
-				}
-				const idxOfCurrent = this.oldAndNewTags.findIndex(tag => tag.value === this.tagFormName)
-				if (idxOfCurrent > -1) {
-					this.isInputError = true
-					return
-				}
-				const newTagObj = {
-					value: this.tagFormName,
-					color: this.tagFormColor,
-				}
-				this.newTags.push(newTagObj)
-				this.selectedTags.push(newTagObj)
-				this.tagFormName = ''
-				this.tagsSearch = ''
-				this.tagFormColor = this.tagColors[0]
-				this.setTheTagsSelectorView(1)
-				this.isEdited = true
-			},
-			onTagsBGClick() {
-				if (this.is_loading_tag_button) {
-					return
-				}
-				if (this.isEdited) {
-					this.isForgotToSave = true
-				} else {
-					this.$emit('close')
-				}
-			},
-			closeWithoutSaving() {
-				if (this.is_loading_tag_button) {
-					return
-				}
-				this.$emit('close')
-			},
-			onCancelClick() {
-				this.$emit('close')
-			},
-			setTheTagsSelectorView(num) {
-				this.theTagsSelectorView = num
-				this.$nextTick(_ => {
-					if (num === 1) {
-						document.querySelector('#tag_selector_search_input').focus()
-					} else {
-						if (this.tagsSearch.length > 0) {
-							this.tagFormName = JSON.parse(JSON.stringify(this.tagsSearch))
-						}
-						this.$refs.create_new_tag_input.focus()
-					}
-				})
-			},
-			setTheEditTag(tag) {
-				this.tagFormName = tag.value
-				this.tagFormColor = tag.color ? tag.color : this.tagColors[0]
-				this.theEditingExisting = tag
-				this.setTheTagsSelectorView(2)
-			},
-			removeTag(tag) {
-				this.isEdited = true
-				const idx = this.selectedTags.findIndex(selectedTag => selectedTag.value === tag.value)
-				this.selectedTags.splice(idx, 1)
-			},
-			removeAllTags() {
-				this.selectedTags = []
-				this.isEdited = true
-			},
-			onSelectTag(tag) {
-				if (tag.v_selected) {
-					return
-				} else {
-					this.isEdited = true
-					this.selectedTags.push(tag)
-				}
-			},
-			saveTags() {
-				this.$emit('save_tags', this.selectedTags)
-			},
-			setCreateNewTag() {
-				this.resetForm()
-				this.setTheTagsSelectorView(2)
-			},
-			resetForm() {
-				this.tagFormName = ''
-				this.tagFormColor = this.tagColors[0]
-				this.theEditingExisting = null
-			}
-		},
-		mounted() {
-			if (this.active_tag_type === 'tag') {
-				this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_tags))
-			} else {
-				this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_groups))
-			}
-		}
-	})
-	/* END 17-12-23 */
-	new Vue({
-		el: "#o-app",
-		data: {
-			announcements: [],
-			isShowOperationStatusErrorReports: true,
-			isShowNewOperationStatus: true,
-			toast: {
-				message: '',
-				visible: false
-			},
-			isCreateGhostUser: false,
-			isLoadingGhostUserList: false,
-			theGhostUserList: [],
-			theGhostUserSelectedPartner: null,
-			theGhostUserSelectedPartnerUser: null,
-			isGhostUserCreating: false,
-			/* START 17-12-23 */
-			PBIReportsData: [],
-			isLoadingTheOpenAnalyticsIframe: false,
-			theOpenAnalyticsIframeUrl: 'https://opn-iframes-dev.azurewebsites.net/',
-			statusI18N: {
-				New_msg: 'Ny besked',
-				New: 'Ny',
-				Åben: 'Åben',
-				Pending: 'Åben',
-				On_Hold: 'Opfølgning',
-				Follow_up: 'Opfølgning udløbet',
-				Closed: 'Afsluttet'
-			},
-			theActiveFilterCategories: [],
-			theActiveFilterStatus: [],
-			thePredefinedGroups: [],
-			theActiveFilterTags: [],
-			theActiveFilterGroups: [],
-			theActiveLoggedInCompany: null,
-			isLoadingTagButton: false,
-			theActiveCaseForTag: null,
-			theShowTagDropdown: null, /* END 17-12-23 */
-			isVueModalOverlay: !1,
-			items: [],
-			isOpenDocsLoading: !0,
-			isClosedDocsLoading: !0,
-			isNewUserLoading: !1,
-			isNewAnnouncementLoading: !1,
-			isUpdatedAnnouncementLoading: !1,
-			searchQuery: "",
-			debounce: null,
-			debounce_user_init: null,
-			theActiveFilter: "active",
-			activeCategory: "my_cases",
-			activeType: null,
-			isVueDropdown: !1,
-			theUnreadSelected: "Alle",
-			theActiveItem: null,
-			theUser: null,
-			theUserType: "",
-			observeAllUsersDiv: null,
-			users: [],
-			usersIsLoading_1_75: !0,
-			usersIsLoading_76_150: !0,
-			usersIsLoading_151_225: !0,
-			usersIsLoading_226_300: !0,
-			usersIsLoading_301_375: !0,
-			usersIsLoading_376_450: !0,
-			usersIsLoading_451_525: !0,
-			theToggleRolesAcc: [],
-			theActiveUser: null,
-			isEditUser: !1,
-			isEditUserRoles: !1,
-			isProfileClick: !1,
-			userform: {
-				name: "",
-				display_name_: "",
-				email: "",
-				sms_no: "",
-				new_password: "",
-				new_password_confirmed: ""
-			},
-			formErrors: {},
-			isSendingEmail: !1,
-			isViewRoles: !1,
-			theOSelect: null,
-			oSelectQuery: "",
-			theActiveRoleForFilter: "399",
-			toggle_group_ids: [],
-			observeLatestDocsDiv: null,
-			cases: [],
-			casesIsLoading: !0,
-			activeCasesFilters: [],
-			theActiveCaseCategory: "Alle kategorier",
-			casesQuery: "",
-			infiniteScrollNumber: 50,
-			isClosedCasesLoading: !0,
-			startLength: 1,
-			endLength: 500,
-			addLength: 500,
-			open_startLength: 1,
-			open_endLength: 500,
-			open_addLength: 500,
-			observeClosedCases: null,
-			observeOpenCasesV2: null,
-			observeLatestCasesDiv: null,
-			isNewCaseLoading: !1,
-			isCaseUpdating: !1,
-			theCaseUpdatingId: null,
-			isSortDropdown: !1,
-			theSortSettingCases: {
-				title: "Oprettelse (Nyeste f\xf8rste)",
-				value: "CREATED_ASC"
-			},
-			theSortSettingDocs: {
-				title: "Aktiv (Nyeste f\xf8rste)",
-				value: "ACTIVE_DATE_ASC"
-			},
-			isSearchingOldCases: !1,
-			isSearchingPartnerCases: !1,
-			updateCasesTimer: null,
-			updateDocsTimer: null,
-			theOrignalActiveCase: null,
-			theActiveCaseUpdatedParams: {},
-			isEncodedHappenedBeforeUser: !1,
-			onpProductList: [],
-			isLoadingOnpProductList: !1,
-			theActiveOnpProductListFilter: "Fra alle",
-			isCreateOnpModal: !1,
-			onpForm: [{
-				id: "REC_ID",
-				hide: true,
-				label: "REC_ID",
-				value: "",
-				validated: !0,
-				formErrorDesc: "Skal udfyldes"
-			}, {
-				id: "TO_COMPANY",
-				label: "Din virksomhed",
-				hide: true,
-				value: $(".FROM_COMPANY > input").val(),
-				validated: !0,
-				formErrorDesc: "Skal udfyldes"
-			}, {
-				id: "FROM_COMPANY",
-				label: "Partner",
-				value: "",
-				validated: !0,
-				formErrorDesc: "Skal udfyldes",
-				isDropdown: !0,
-				options: []
-			}, {
-				id: "TYPE",
-				label: "Type",
-				hide: true,
-				value: "",
-				validated: !0,
-				formErrorDesc: "Skal udf{yldes",
-				isDropdown: !0,
-				optionsWithValues: true,
-				options: []
-			}, {
-				id: "TRANSACTION_CODE",
-				hide: true,
-				label: "Teknisk Produktnavn",
-				value: "",
-				validated: !0,
-				formErrorDesc: "Skal udfyldes",
-				isDropdown: !0,
-				options: []
-			}, {
-				id: "LABEL",
-				hide: true,
-				label: "Produktnavn",
-				value: "",
-				validated: !0,
-				formErrorDesc: "Skal udfyldes"
-			}, {
-				id: "TEXT_DESC",
-				hide: true,
-				label: "Beskrivelse",
-				value: "",
-				validated: !0,
-				isTextArea: !0
-			}, {
-				id: "PRICE",
-				hide: true,
-				label: "Pris pr. enhed (inkl. moms)",
-				value: "",
-				validated: !0
-			}, {
-				id: "UNIT_LABEL",
-				hide: true,
-				label: "Enhed (stk., meter, etc... fest)",
-				value: "",
-				validated: !0,
-				disabled: true
-			}, {
-				id: "UNIT_DEFAULT_VALUE",
-				hide: true,
-				label: "Pr\xe6udfyldt v\xe6rdi",
-				value: "",
-				validated: !0
-			}
-			],
-			onpFormData: [],
-			isUpdatingOnpProductList: !1,
-			infiniteScrollNumberONP: 50,
-			isLoadingOnpPendingOrders: !0,
-			onpPendingOrders: [],
-			ssid: '',
-			isSSIDLoading: !1,
-			isSSIDValid: !0,
-			OnpSSIDDetails: [],
-			isNewOrderModal: !1,
-			orderCustomerEmail: "",
-			isCustomerEmailInputEmpty: !1,
-			isSubmitOrderLoading: !1,
-			isOrderCustomerEmailValid: !0,
-			theActivePrevOrder: null,
-			isCancelOrderConfirmation: !1,
-			isVueModalOverlayExtra: !1,
-			isDeletingOrder: !1,
-			theActiveDescExpanded: null,
-			theReadMoreOnp: null,
-			infiniteScrollNumberONPOrders: 50,
-			PBIReportData: [],
-			theInvoiceBIExplainer: "",
-			theReportBIExplainer: "",
-			isLoadingBIReport: !1,
-			theActiveOrderType: '001',
-			theNewOrderCreatedDate: new Date().toISOString().substring(0, 10),
-			theNewOrderSkaderItems: [],
-			isEndCustomerEmailConfigModal: false,
-			isUpdatingEndCustomerEmailConfigForm: false,
-			theEndCustomerEmailConfigForm: [
-				{
-					id: 'firmanavn',
-					label: 'Firmanavn',
-					type: 'text',
-					value: '',
-					validated: true
-				},
-				{
-					id: 'logo',
-					label: 'Logo (url)',
-					placeholder: 'Eks. https://opennet.dk/assets/img/logo-clean.png',
-					type: 'text',
-					value: '',
-					validated: true
-				},
-				{
-					id: 'emne_til_email',
-					label: 'Emnefelt til email',
-					type: 'text',
-					value: '',
-					validated: true,
-					configType: 'email'
-				},
-				{
-					id: 'tekst_til_email',
-					label: 'Brødtekst til email (Før link)',
-					type: 'textarea',
-					value: '',
-					validated: true,
-					configType: 'email'
-				},
-				{
-					id: 'link_i_email',
-					label: 'Tekst på knap (link) ',
-					type: 'text',
-					value: '',
-					validated: true,
-					configType: 'email'
-				},
-				{
-					id: 'afslutning_af_email',
-					label: 'Afslutning af email (Efter link) ',
-					type: 'textarea',
-					value: '',
-					validated: true,
-					configType: 'email'
-				},
-
-				{
-					id: 'title_til_hjemmeside',
-					label: 'Titel på hjemmeside',
-					type: 'textarea',
-					value: '',
-					validated: true,
-					configType: 'web'
-				},
-				{
-					id: 'tekst_til_hjemmeside',
-					label: 'Brødtekst på hjemmeside',
-					type: 'textarea',
-					value: '',
-					validated: true,
-					configType: 'web'
-				},
-				{
-					id: 'afslutning_af_hjemmeside',
-					label: 'Afslutning af hjemmeside',
-					type: 'textarea',
-					value: '',
-					validated: true,
-					configType: 'web'
-				},
-				{
-					id: 'css',
-					label: 'Ekstern CSS (url)',
-					placeholder: 'Eks. https://opennet.dk/assets/css/main.css',
-					type: 'text',
-					value: '',
-					validated: true,
-					configType: 'web'
-				}
-			],
-			standardOnpItems: [
-				{ value: '001', title: 'Installationsydelse' },
-				{ value: '002', title: 'Skader / Reparation' },
-				{ value: '003', title: 'Uberettiget fejlretning' }
-			],
-			isLoadingEndCustomerEmailConfigFormData: false,
-			theEndCustomerEmailConfigFormActiveType: 'web',
-			theFilteredSelectedTags: []
-		},
-		computed: {
-			isViewOperationStatus() {
-				return this.activeCategory == 'OperationsStatus'
-			},
-			isViewNewsOrOperationStatus() {
-				return this.activeCategory == 'OperationsStatus' || this.activeCategory == 'News'
-			},
-			theGhostUserListPartners() {
-				return this.theGhostUserList.map(company => company.company)
-			},
-			theGhostUserSelectedPartnerUsers() {
-				const company = this.theGhostUserList.find(c => c.company === this.theGhostUserSelectedPartner);
-				return company ? company.users : [];
-			},
-			/* START 17-12-23 */
-			isAnyFiltersActive() {
-				return this.theActiveFilterTags.length > 0 || this.theActiveFilterGroups.length > 0 || this.theActiveFilterStatus.length > 0 || this.activeType || (this.theActiveFilterCategories.length > 0 && !this.isShowOperationStatusErrorReports)
-			},
-			isUserOpennetOrSP() {
-				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet']
-				return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
-			},
-			isNewDesignActive() {
-				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet', 'SP Dev Company', 'IO Dev Company']
-				return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
-			},
-			allCaseCategories() {
-				const uniqueArr = [{ value: 'v_no_selected', label: 'Uden kategori', v_sort: true }]
-				this.casesFiltered2.forEach(caseItem => {
-					const dbValue = caseItem['filter_category']
-					if (dbValue) {
-						const idx = uniqueArr.findIndex(allTag => allTag.value === dbValue)
-						if (idx < 0) {
-							const obj = { value: dbValue }
-							uniqueArr.push(obj)
-						}
-					}
-				})
-				return uniqueArr
-			},
-			allCaseStatus() {
-				const uniqueArr = [{ value: 'v_no_selected', label: 'Uden status', v_sort: true }]
-				this.casesFiltered2.forEach(caseItem => {
-					const dbValue = caseItem['v_status']
-					if (dbValue) {
-						const idx = uniqueArr.findIndex(allTag => allTag.value === dbValue)
-						if (idx < 0) {
-							const obj = { value: dbValue, label: this.statusI18N[dbValue] }
-							uniqueArr.push(obj)
-						}
-					}
-				})
-				return uniqueArr
-			},
-			allCaseGroups() {
-				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden gruppe', v_sort: true }]
-				this.casesFiltered2.forEach(caseItem => {
-					if (caseItem['v_groups']) {
-						caseItem['v_groups'].forEach(tag => {
-							const idx = uniqueTags.findIndex(allTag => allTag.value === tag.value)
-							const idxInPredefined = this.thePredefinedGroups.findIndex(predefinedTag => predefinedTag.value === tag.value)
-							if (idx < 0 && idxInPredefined < 0) {
-								uniqueTags.push(tag)
-							}
-						})
-					}
-				})
-				return uniqueTags.concat(this.thePredefinedGroups)
-			},
-			allCaseTags() {
-				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden tags', v_sort: true }]
-				this.casesFiltered2.forEach(caseItem => {
-					if (caseItem['v_tags']) {
-						caseItem['v_tags'].forEach(tag => {
-							const idx = uniqueTags.findIndex(allTag => allTag.value === tag.value)
-							if (idx < 0) {
-								uniqueTags.push(tag)
-							}
-						})
-					}
-				})
-
-				return uniqueTags;
-			},
-			/* END 17-12-23 */
-			onpSSIDDetailsGrouped() {
-				let obj = {}
-				const itemsSorted = this.OnpSSIDDetails.sort((a, b) => a.LABEL !== b.LABEL ? a.LABEL < b.LABEL ? -1 : 1 : 0);
-				itemsSorted.forEach(item => {
-					if (obj[item.TYPE]) {
-						obj[item.TYPE].push(item)
-					} else {
-						obj[item.TYPE] = [item]
-					}
-				})
-				return obj
-			},
-			pbiReports() {
-				if (!this.PBIReportsData || this.PBIReportsData.length < 1) {
-					return [];
-				}
-
-				// Filter reports by the active category
-				let filteredReports = this.PBIReportsData.filter(report => report.area === this.activeCategory);
-				console.log('filteredReports', filteredReports);
-				// Find the index of the report with the display name "Vælg"
-				let indexOfValg = filteredReports.findIndex(report => report && report.reportDisplayName === "Vælg");
-				console.log('indexOfValg', indexOfValg);
-				// If there are reports and "Vælg" is not found, add a placeholder to the beginning
-				if (filteredReports.length > 0 && indexOfValg < 0) {
-					console.log('run_unshift');
-					filteredReports.unshift({
-						reportDisplayName: "Vælg",
-						reportId: "placeholderDropdown"
-					});
-				}
-				console.log('filteredReports', filteredReports)
-				return filteredReports;
-			},
-			theSortSetting() {
-				return this.isCases ? this.theSortSettingCases : this.theSortSettingDocs
-			},
-			allSortSettings() {
-				return this.isCases ? [{
-					title: "Oprettelse (Nyeste f\xf8rste)",
-					value: "CREATED_ASC"
-				}, {
-					title: "Oprettelse (\xc6ldste f\xf8rste)",
-					value: "CREATED_DESC"
-				}, {
-					title: "SLA (Nyeste f\xf8rste)",
-					value: "SLA_ASC"
-				}, {
-					title: "SLA (\xc6ldste f\xf8rste)",
-					value: "SLA_DESC"
-				}, {
-					title: "Opdateret (Nyeste f\xf8rste)",
-					value: "UPDATED_ASC"
-				}, {
-					title: "Opdateret (\xc6ldste f\xf8rste)",
-					value: "UPDATED_DESC"
-				}] : [{
-					title: "Aktiv (Nyeste f\xf8rste)",
-					value: "ACTIVE_DATE_ASC"
-				}, {
-					title: "Aktiv (\xc6ldste f\xf8rste)",
-					value: "ACTIVE_DATE_DESC"
-				}, {
-					title: "Udl\xf8b (Nyeste f\xf8rste)",
-					value: "EXPIRE_DATE_ASC"
-				}, {
-					title: "Udl\xf8b (\xc6ldste f\xf8rste)",
-					value: "EXPIRE_DATE_DESC"
-				}]
-			},
-			casesFiltered() {
-				return "my_cases" == this.activeCategory ? this.cases.filter(e => "true" == e.filter_my_cases) : this.cases
-			},
-			casesOpen() {
-				return this.casesFiltered.filter(e => "open" == e.filter_open_closed)
-			},
-			casesClosed() {
-				return this.casesFiltered.filter(e => "closed" == e.filter_open_closed)
-			},
-			partnerCases() {
-				return this.casesFiltered.filter(e => "partnerCases" == e.filter_open_closed)
-			},
-			isErrorReportsLoading() {
-				return this.isClosedCasesLoading || this.casesIsLoading
-			},
-			errorReports() {
-				// Kun return når begge er loaded
-				if (this.isErrorReportsLoading) {
-					return []
-				}
-				const allIncidentCases = this.casesOpen.concat(this.casesClosed)
-				const errorIncidentFilters = ['Fremrykning']
-				return allIncidentCases.filter(itemCase => errorIncidentFilters.indexOf(itemCase.filter_category) > -1)
-			},
-			casesFiltered2() {
-				if (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) {
-					return this.errorReports
-				}
-				if (this.theActiveFilter === "active") {
-					return this.casesOpen
-				} else {
-					return this.casesClosed
-				}
-			},
-			caseFilteredWithGroups() {
-				if (this.theActiveFilterGroups.length < 1) {
-					return this.casesFiltered2;
-				} else {
-					return this.casesFiltered2.filter(itemCase => {
-						const hasNoSelectedGroup = this.theActiveFilterGroups.includes('v_no_selected');
-						if (hasNoSelectedGroup && (!itemCase.v_groups || itemCase.v_groups.length === 0)) {
-							return true;
-						}
-						return itemCase.v_groups && itemCase.v_groups.some(vGroup =>
-							this.theActiveFilterGroups.includes(vGroup.value));
-					})
-				}
-			},
-			caseFilteredWithStatus() {
-				if (this.theActiveFilterStatus.length < 1) {
-					return this.caseFilteredWithGroups;
-				} else {
-					return this.caseFilteredWithGroups.filter(itemCase => {
-						// Check if 'v_no_selected' is one of the active filter statuses
-						const hasNoSelectedStatus = this.theActiveFilterStatus.includes('v_no_selected');
-
-						// If 'v_no_selected' is present and the item has an empty status, include it in the filter
-						if (hasNoSelectedStatus && (!itemCase.v_status || itemCase.v_status === '')) {
-							return true;
-						}
-
-						// If item has a status, check if it matches any of the active filter statuses
-						return this.theActiveFilterStatus.includes(itemCase.v_status);
-					})
-				}
-			},
-			caseFilteredWithCategories() {
-				if (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) {
-					return this.caseFilteredWithStatus
-				}
-				if (this.theActiveFilterCategories.length < 1) {
-					return this.caseFilteredWithStatus;
-				} else {
-					return this.caseFilteredWithStatus.filter(itemCase => {
-						// Check if 'v_no_selected' is one of the active filter statuses
-						const hasNoSelectedStatus = this.theActiveFilterCategories.includes('v_no_selected');
-
-						// If 'v_no_selected' is present and the item has an empty status, include it in the filter
-						if (hasNoSelectedStatus && (!itemCase.filter_category || itemCase.filter_category === '')) {
-							return true;
-						}
-						return this.theActiveFilterCategories.includes(itemCase.filter_category);
-					})
-				}
-			},
-			caseFilteredWithTags() {
-				if (this.theActiveFilterTags.length < 1) {
-					return this.caseFilteredWithCategories;
-				} else {
-					return this.caseFilteredWithCategories.filter(itemCase => {
-						const hasNoSelectedTag = this.theActiveFilterTags.includes('v_no_selected');
-						if (hasNoSelectedTag && (!itemCase.v_tags || itemCase.v_tags.length === 0)) {
-							return true;
-						}
-						return itemCase.v_tags && itemCase.v_tags.some(vTag =>
-							this.theActiveFilterTags.includes(vTag.value));
-					});
-				}
-			},
-			casesFiltered3() {
-				let e = this.activeType;
-				return "not_assigned" == e ? this.caseFilteredWithTags.filter(e => e.assign_to.length < 1) : "filter_not_follow_up" == e ? this.caseFilteredWithTags.filter(e => !this.activeType || "true" != e.filter_follow_up) : this.caseFilteredWithTags.filter(t => !this.activeType || "true" == t[e])
-			},
-			caseFiltered4() {
-				// Check if the active case category is not 'Alle kategorier'
-				if (this.theActiveCaseCategory !== "Alle kategorier") {
-					// If it's a specific category, filter the cases
-					return this.casesFiltered3.filter(caseItem =>
-						caseItem.filter_category === this.theActiveCaseCategory);
-				} else {
-					// If the active category is 'Alle kategorier', return all cases
-					return this.casesFiltered3;
-				}
-			},
-			casesSorted() {
-				switch (this.theSortSettingCases.value) {
-					case "CREATED_ASC":
-						return this.caseFiltered4.sort((e, t) => this.formatDateForJs(t.created_time) - this.formatDateForJs(e.created_time));
-					case "CREATED_DESC":
-						return this.caseFiltered4.sort((e, t) => this.formatDateForJs(e.created_time) - this.formatDateForJs(t.created_time));
-					case "SLA_ASC":
-						return this.caseFiltered4.sort((e, t) => this.formatDateForJs(t.sla_deadline_date, t) - this.formatDateForJs(e.sla_deadline_date, e));
-					case "SLA_DESC":
-						return this.caseFiltered4.sort((e, t) => this.formatDateForJs(e.sla_deadline_date, e) - this.formatDateForJs(t.sla_deadline_date, t));
-					case "UPDATED_ASC":
-						return this.caseFiltered4.sort((e, t) => this.formatDateForJs(t.last_updated_time) - this.formatDateForJs(e.last_updated_time));
-					case "UPDATED_DESC":
-						return this.caseFiltered4.sort((e, t) => this.formatDateForJs(e.last_updated_time) - this.formatDateForJs(t.last_updated_time))
-				}
-			},
-			searchedCases() {
-				return this.isCases ? this.searchQuery.length < 1 ? this.casesSorted : this.searchFunc(this.casesSorted) : []
-			},
-			lengthOfCases() {
-				var e = {
-					filter_created_by_me: 0,
-					filter_assigned_me: 0,
-					filter_followed_by_me: 0,
-					filter_sla_expired: 0,
-					filter_new: 0,
-					not_assigned: 0,
-					filter_follow_up: 0,
-					filter_not_follow_up: 0
-				};
-				return this.casesFiltered2.forEach(t => {
-					"true" == t.filter_created_by_me && e.filter_created_by_me++, "true" == t.filter_assigned_me && e.filter_assigned_me++, "true" == t.filter_followed_by_me && e.filter_followed_by_me++, "true" == t.filter_sla_expired && e.filter_sla_expired++, "true" == t.filter_new && e.filter_new++, t.assign_to.length < 1 && e.not_assigned++, "true" == t.filter_follow_up && e.filter_follow_up++, "false" == t.filter_follow_up && e.filter_not_follow_up++
-				}), e
-			},
-			allCategoriesFromCases() {
-				let e = [];
-				return ("active" === this.theActiveFilter ? this.itemsActiveFromCategory : this.itemsExpiredFromCategory).forEach((t, s) => {
-					if (t.type && t.type.length > 0) {
-						let a = e.findIndex(e => e.title === t.type);
-						a < 0 ? e.push({
-							title: t.type,
-							onIds: [t.onid]
-						}) : e[a].onIds.push(t.onid)
-					}
-				}), e
-			},
-			allCasesCategories() {
-				var e = [];
-				this.casesFiltered2.forEach(t => {
-					let s = unescape(t.filter_category);
-					0 > e.findIndex(e => e === s) && e.push(s)
-				});
-				let t = e.sort((e, t) => e.localeCompare(t));
-				return t.unshift("Alle kategorier"), t
-			},
-			isDocs() {
-				return "" !== this.activeCategory && "roles" !== this.activeCategory && "all_cases" !== this.activeCategory && "my_cases" !== this.activeCategory && "end_customer_pricing_config" !== this.activeCategory && "end_customer_orders" !== this.activeCategory
-			},
-			isCases() {
-				return "all_cases" == this.activeCategory || "my_cases" == this.activeCategory || (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports)
-			},
-			allCategories() {
-				let e = [];
-				return this.items.forEach((t, s) => {
-					0 > e.indexOf(t.category) && e.push(t.category)
-				}), e
-			},
-			allTypesFromCategory() {
-				let e = [];
-				return (items = "active" === this.theActiveFilter ? this.itemsActiveFromCategory : "future" === this.theActiveFilter ? this.itemsFutureFromCategory : this.itemsExpiredFromCategory).forEach((t, s) => {
-					if (t.type && t.type.length > 0) {
-						let a = e.findIndex(e => e.title === t.type);
-						a < 0 ? e.push({
-							title: t.type,
-							onIds: [t.onid]
-						}) : e[a].onIds.push(t.onid)
-					}
-				}), e
-			},
-			filteredItemsWithActiveDateAfterToday() {
-				return this.items.filter(e => !this.dateIsAfterToday(this.formatDateForJs(e.active_date)))
-			},
-			itemsSorted() {
-				let e = this.filteredItemsWithActiveDateAfterToday;
-				switch (this.theSortSettingDocs.value) {
-					case "ACTIVE_DATE_ASC":
-						return e.sort((e, t) => this.formatDateForJs(t.active_date) - this.formatDateForJs(e.active_date));
-					case "ACTIVE_DATE_DESC":
-						return e.sort((e, t) => this.formatDateForJs(e.active_date) - this.formatDateForJs(t.active_date));
-					case "EXPIRE_DATE_ASC":
-						return e.sort((e, t) => this.formatDateForJs(t.expire_date, t) - this.formatDateForJs(e.expire_date, e));
-					case "EXPIRE_DATE_DESC":
-						return e.sort((e, t) => this.formatDateForJs(e.expire_date, e) - this.formatDateForJs(t.expire_date, t))
-				}
-			},
-			filteredItemsWithCategory() {
-				return this.itemsSorted.filter(e => e.category === this.activeCategory)
-			},
-			itemsActiveFromCategory() {
-				let e = new Date;
-				return this.filteredItemsWithCategory.filter(t => {
-					let s = t.expire_date ? this.formatDateForJs(t.expire_date) : e.setDate(e.getDate() + 1);
-					return this.dateIsAfterToday(s)
-				})
-			},
-			itemsExpiredFromCategory() {
-				let e = new Date;
-				return this.filteredItemsWithCategory.filter(t => {
-					let s = t.expire_date ? this.formatDateForJs(t.expire_date) : e.setDate(e.getDate() + 1);
-					return !this.dateIsAfterToday(s)
-				})
-			},
-			itemsFutureFromCategory() {
-				let e = this.items.filter(e => e.category === this.activeCategory && this.dateIsAfterToday(this.formatDateForJs(e.active_date)));
-				switch (this.theSortSettingDocs.value) {
-					case "ACTIVE_DATE_ASC":
-						return e.sort((e, t) => this.formatDateForJs(t.active_date) - this.formatDateForJs(e.active_date));
-					case "ACTIVE_DATE_DESC":
-						return e.sort((e, t) => this.formatDateForJs(e.active_date) - this.formatDateForJs(t.active_date));
-					case "EXPIRE_DATE_ASC":
-						return e.sort((e, t) => this.formatDateForJs(t.expire_date, t) - this.formatDateForJs(e.expire_date, e));
-					case "EXPIRE_DATE_DESC":
-						return e.sort((e, t) => this.formatDateForJs(e.expire_date, e) - this.formatDateForJs(t.expire_date, t))
-				}
-			},
-			filteredItemsWithType() {
-				return (items = "active" === this.theActiveFilter ? this.itemsActiveFromCategory : "future" === this.theActiveFilter ? this.itemsFutureFromCategory : this.itemsExpiredFromCategory).filter(e => !this.activeType || e.type === this.activeType)
-			},
-			filteredItemsOnUnread() {
-				return this.filteredItemsWithType.filter(e => "Alle" === this.theUnreadSelected ? e : "Ul\xe6st" === this.theUnreadSelected ? "Yes" === e.show_unread_icon : "L\xe6st" === this.theUnreadSelected ? "No" === e.show_unread_icon : void 0)
-			},
-			searchedItems() {
-				return this.isDocs ? this.searchFunc(this.filteredItemsOnUnread) : []
-			},
-			allRoles() {
-				return this.users[0] && this.users[0].role_array ? this.users[0].role_array : []
-			},
-			searchedUsers() {
-				return "roles" !== this.activeCategory ? [] : this.searchFunc(this.users)
-			},
-			isTheActiveUserTheUser() {
-				return this.theActiveUser.id == this.theUser.id
-			},
-			oSelectUsers() {
-				return this.users.filter(e => null !== e.name ? e.name.match(RegExp(this.oSelectQuery, "i")) : "")
-			},
-			usersWithoutActiveRole(e) {
-				var e = this.theActiveRoleForFilter;
-				return this.oSelectUsers.filter(t => t.role_array.findIndex(t => t.group_id == e && "false" == t.active_role) > -1)
-			},
-			usersIsLoading() {
-				return this.usersIsLoading_1_75 || this.usersIsLoading_76_150 || this.usersIsLoading_151_225 || this.usersIsLoading_226_300 || this.usersIsLoading_301_375 || this.usersIsLoading_376_450 || this.usersIsLoading_451_525
-			},
-			onpProductListVProps() {
-				const valueTitleMap = this.standardOnpItems.reduce((obj, item) => (obj[item.value] = item.title, obj), {})
-				return this.onpProductList.map(item => {
-					this.$set(item, 'v_type', valueTitleMap[item.TYPE])
-					return item
-				})
-			},
-			onpProductListFilters() {
-				var e = [];
-				return this.onpProductListVProps.forEach(t => {
-					0 > e.indexOf(t.FROM_COMPANY) && e.push(t.FROM_COMPANY)
-				}), e.sort().unshift("Fra alle"), e
-			},
-			onpProductListFiltered() {
-				return ("Fra alle" != this.theActiveOnpProductListFilter ? this.onpProductList.filter(e => e.FROM_COMPANY === this.theActiveOnpProductListFilter) : this.onpProductList).sort(function (e, t) {
-					return e.REC_ID - t.REC_ID
-				})
-			},
-			onpProductListSearched() {
-				return this.searchFunc(this.onpProductListFiltered)
-			},
-			onpPendingOrdersVProps() {
-				const valueTitleMap = this.standardOnpItems.reduce((obj, item) => (obj[item.value] = item.title, obj), {})
-				return this.onpPendingOrders.map(item => {
-					this.$set(item, 'v_type', valueTitleMap[item.TYPE])
-					return item
-				})
-			},
-			onpPendingOrdersSorted() {
-				return this.onpPendingOrders.sort((e, t) => this.formatDateForJs2TypsOfDates(t.created_time) - this.formatDateForJs2TypsOfDates(e.created_time))
-			},
-			onpPendingOrdersSearched() {
-				return this.searchFunc(this.onpPendingOrdersSorted)
-			},
-			order() {
-				if (this.theActiveOrderType !== '002') {
-					return this.OnpSSIDDetails.filter(e => e.v_count > 0)
-				}
-				if (this.theActiveOrderType === '002') {
-					return this.theNewOrderSkaderItems
-				}
-			},
-			orderSum() {
-				var e = 0;
-				return this.order.forEach(t => {
-					e += t.PRICE * t.v_count
-				}), e
-			},
-			dbOrder() {
-				var orderStatus = this.theActiveOrderType === '001' ? "PENDING" : "APPROVED"
-				return {
-					id: "",
-					created_time: this.theNewOrderCreatedDate,
-					created_by: "",
-					order_items: this.order.map(e => ({
-						TRANSACTION_CODE: e.TRANSACTION_CODE,
-						LABEL: e.LABEL,
-						PRICE: e.PRICE,
-						QUANTITY: e.v_count,
-						UNIT_LABEL: e.UNIT_LABEL,
-						SSID: e.ssid
-					})),
-					order_sum: this.orderSum,
-					status: orderStatus,
-					can_cancel: !0,
-					customer_email: this.orderCustomerEmail,
-					ssid: this.ssid
-				}
-			},
-			theEndCustomerEmailConfigFormWithoutFilter() {
-				return this.theEndCustomerEmailConfigForm.filter(formItem => !formItem.configType)
-			},
-			theEndCustomerEmailConfigFormFiltered() {
-				return this.theEndCustomerEmailConfigForm.filter(formItem => formItem.configType && formItem.configType === this.theEndCustomerEmailConfigFormActiveType)
-			},
-			theEndCustomerEmailConfigFormHash() {
-				return this.theEndCustomerEmailConfigForm.reduce((obj, item) => (obj[item.id] = item, obj), {})
-			}
-		},
-		watch: {
-			theUser(e) {
-				this.isEncodedHappenedBeforeUser && this.cases.forEach((e, t) => {
-					e.created_by_id && e.created_by_id == this.theUser.id && (Vue.set(e, "filter_created_by_me", "true"), Vue.set(e, "filter_my_cases", "true")), e.assign_to_id && e.assign_to_id == this.theUser.id && (Vue.set(e, "filter_assigned_me", "true"), Vue.set(e, "filter_my_cases", "true")), e.followed_by_list && e.followed_by_list.split(";").indexOf(this.theUser.id) > -1 && (Vue.set(e, "filter_followed_by_me", "true"), Vue.set(e, "filter_my_cases", "true"))
-				})
-			}
-		},
-		methods: {
-			onEmitAnnouncements(payload) {
-				this.announcements = payload
-			},
-			setIsShowOperationStatusErrorReports(bool) {
-				if (bool) {
-					this.isShowOperationStatusErrorReports = true
-				} else {
-					this.isShowOperationStatusErrorReports = false
-				}
-			},
-			showToast(message) {
-				this.toast.message = message;
-				this.toast.visible = true;
-				setTimeout(() => {
-					this.toast.visible = false;
-				}, 3000); // Hide after 3 seconds
-			},
-			createGhostUser() {
-				this.isGhostUserCreating = true
-				$('.UM_EVENT_TYPE > input').val('GHOST')
-				$('.UM_USER_ID > input').val(this.theGhostUserSelectedPartnerUser)
-				$('.BTN_UserManagement > a').click()
-				setTimeout(_ => {
-					this.closeVueModalOverlay()
-					this.showToast('“ghost profile” er oprettet og detaljer kommer pr email')
-				}, 1000)
-			},
-			onTheGhostUserSelectedPartner(val) {
-				this.theGhostUserSelectedPartner = val
-				this.theGhostUserSelectedPartnerUser = null
-			},
-			onTheGhostUserSelectedPartnerUser(val) {
-				this.theGhostUserSelectedPartnerUser = val
-			},
-			setIsCreateGhostUser() {
-				if (!this.isCreateGhostUser) {
-					this.isCreateGhostUser = true
-					this.isLoadingGhostUserList = true
-					this.observeChanges('.getUserFullList_Output > div', data => {
-						this.theGhostUserList = data.length > 0 ? JSON.parse(data) : []
-						this.isLoadingGhostUserList = false
-						$('.getUserFullList_Output > div').html('')
-					})
-					$('.getUserFullList_BTN > a').click()
-				} else {
-					this.isCreateGhostUser = false
-				}
-			},
-			/* START 17-12-23 */
-			getAllLocalStorageFilter() {
-				if (!this.isNewDesignActive) {
-					return
-				}
-				this.theActiveFilterTags = []
-				this.theActiveFilterGroups = []
-				this.theActiveFilterStatus = []
-				this.theActiveFilterCategories = []
-				this.activeType = null
-				this.getLocalStorageFilter('theActiveFilterTags')
-				this.getLocalStorageFilter('theActiveFilterGroups')
-				this.getLocalStorageFilter('theActiveFilterStatus')
-				this.getLocalStorageFilter('theActiveFilterCategories')
-				this.getLocalStorageFilter('activeType')
-			},
-			removeAllFilters() {
-				this.theActiveFilterTags = []
-				this.setLocalStorageFilter('theActiveFilterTags', this.theActiveFilterTags)
-				this.theActiveFilterGroups = []
-				this.setLocalStorageFilter('theActiveFilterGroups', this.theActiveFilterGroups)
-				this.theActiveFilterStatus = []
-				this.setLocalStorageFilter('theActiveFilterStatus', this.theActiveFilterStatus)
-				this.theActiveFilterCategories = []
-				this.setLocalStorageFilter('theActiveFilterCategories', this.theActiveFilterCategories)
-				this.activeType = null;
-				this.setLocalStorageFilter('activeType', null)
-				this.infiniteScrollNumber = 50;
-				this.clearSearchQuery();
-			},
-			setLocalStorageFilter(filterType, filterArr) {
-				const localTitle = this.activeCategory + '_' + this.theActiveFilter + '_' + filterType
-				if (!filterArr || filterArr.length === 0) {
-					localStorage.removeItem(localTitle)
-				} else {
-					localStorage.setItem(localTitle, JSON.stringify(filterArr))
-				}
-			},
-			getLocalStorageFilter(filterType, filterArr) {
-				const localTitle = this.activeCategory + '_' + this.theActiveFilter + '_' + filterType
-				if (localStorage.getItem(localTitle)) {
-					this[filterType] = JSON.parse(localStorage.getItem(localTitle));
-				}
-			},
-			toggleFilterCategory(item) {
-				const idx = this.theActiveFilterCategories.indexOf(item.value)
-				if (idx < 0) {
-					this.theActiveFilterCategories.push(item.value)
-				} else {
-					this.theActiveFilterCategories.splice(idx, 1)
-				}
-				this.setLocalStorageFilter('theActiveFilterCategories', this.theActiveFilterCategories)
-			},
-			toggleFilterStatus(item) {
-				const idx = this.theActiveFilterStatus.indexOf(item.value)
-				if (idx < 0) {
-					this.theActiveFilterStatus.push(item.value)
-				} else {
-					this.theActiveFilterStatus.splice(idx, 1)
-				}
-				this.setLocalStorageFilter('theActiveFilterStatus', this.theActiveFilterStatus)
-			},
-			toggleFilterTag(item) {
-				const idx = this.theActiveFilterTags.indexOf(item.value)
-				if (idx < 0) {
-					this.theActiveFilterTags.push(item.value)
-				} else {
-					this.theActiveFilterTags.splice(idx, 1)
-				}
-				this.setLocalStorageFilter('theActiveFilterTags', this.theActiveFilterTags)
-			},
-			toggleFilterGroup(item) {
-				const idx = this.theActiveFilterGroups.indexOf(item.value)
-				if (idx < 0) {
-					this.theActiveFilterGroups.push(item.value)
-				} else {
-					this.theActiveFilterGroups.splice(idx, 1)
-				}
-				this.setLocalStorageFilter('theActiveFilterGroups', this.theActiveFilterGroups)
-			},
-			updateItemTags(tagsArr) {
-				const caseOnId = this.theActiveCaseForTag.onid
-				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
-				const tagsArrDb = tagsArr.map(tag => {
-					return {
-						value: tag.value,
-						color: tag.color
-					}
-				})
-				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArrDb));
-				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
-				$('.updTagOrGroup_Input_caseid > input').val(caseOnId)
-				this.isLoadingTagButton = true
-				this.observeChanges('.updTagOrGroup_Output > div', data => {
-					this.isLoadingTagButton = false
-					if (this.theShowTagDropdown === 'tag') {
-						this.cases[caseIdx].v_tags = tagsArr
-					} else {
-						this.cases[caseIdx].v_groups = tagsArr
-					}
-					// If modal is open then we need to update the jquery part tags and timeline
-					if ($('#js-case-element__inserted').length > 0) {
-						// Update tags/groups
-						const tagType = `data-tag-type="${this.theShowTagDropdown}"`;
-						var container = $('#js-case-element__inserted .o-cases__case_element__header__row__tags__container[' + tagType + ']');
-						var self = this
-						updateTagsHTML()
-
-						function updateTagsHTML() {
-							container.empty();
-							let htmlArr = [];
-							tagsArr.forEach(tag => {
-								var tagDiv = `<div class="item-tag" style="background-color: ${tag.color};">${tag.value}</div>`;
-								htmlArr.push(tagDiv);
-							});
-							const typei18n = self.theShowTagDropdown === 'group' ? 'gruppe' : 'tag'
-							if (htmlArr.length === 0) {
-								container.html('<div class="itemcase-tags__add">Tilføj ' + typei18n + '</div>')
-							} else {
-								container.html(htmlArr.join(''));
-							}
-						}
-						// Update timeline
-						const newHtml = $('.updTagOrGroup_Output > div').html()
-						var timelineContent = '<div class="timeline_body">' +
-							$(".updTagOrGroup_Output > div > .ETRAY_CASE_TIMELINE").text() +
-							"</div>";
-
-						// Update the ETRAY_CASE_TIMELINE with the new content
-						$(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").html(timelineContent);
-
-						// Set the new timeline content to the modal
-						$(".js-o-modal__case__timeline").html($(".ETRAY_CASE_TIMELINE_PARRENT > div").html());
-
-
-					}
-					this.setTheActiveTagDropdown(null)
-				})
-				$('.updTagOrGroup_BTN > a').click()
-			},
-			observeChanges(selector, callback) {
-				const el = $(selector)
-				if (!el || el.length === 0) {
-					//console.warn(`No element found with selector ${selector}`);
-					return;
-				}
-				el.html('loading')
-				let cInterval = setInterval(_ => {
-					const val = el.html()
-					if (val !== 'loading') {
-						clearInterval(cInterval)
-						callback(val);
-					} else {
-						// console.log('observer::empty', { selector }, el.html())
-					}
-				}, 1000)
-			},
-			createPopper(parent) {
-				const child = document.getElementById('popperTagsDropdown')
-				Popper.createPopper(
-					parent,
-					child,
-					{
-						// Popper options
-						placement: 'bottom-start',
-						modifiers: [
-							{
-								name: 'offset',
-								options: {
-									offset: [0, 10], // x-axis: 0, y-axis: -10
-								},
-							},
-						],
-					}
-				);
-				this.$nextTick(_ => {
-					document.getElementById('tag_selector_search_input').focus()
-				})
-			},
-			setTheActiveTagDropdown(tagType, itemCase, evt) {
-				if (!tagType) {
-					this.theShowTagDropdown = null
-					this.theActiveCaseForTag = null
-					return
-				}
-				console.log('event::setTheActiveTagDropdown', { itemCase })
-				this.theActiveCaseForTag = itemCase
-				this.theShowTagDropdown = tagType
-				this.$nextTick(_ => {
-					this.createPopper(evt.target)
-				})
-			},
-			/* END 17-12-23 */
-			setTheEndCustomerEmailConfigFormActiveType(type) {
-				//console.log(this.theEndCustomerEmailConfigFormActiveType)
-				this.theEndCustomerEmailConfigFormActiveType = type
-			},
-			setTheActiveOrderType(typeCode) {
-				this.theActiveOrderType = typeCode
-				if (typeCode !== '001') {
-					this.setNewOrderSkaderItems()
-					this.$nextTick(_ => {
-						const el = document.querySelector('.o-cart__items__item--form > input[type="text"]')
-						if (el) {
-							el.focus()
-						}
-					})
-				}
-			},
-			setTypeOptionsInOnpForm(items, standardFormProp, formProp) {
-				let values = [];
-				const standardItems = [
-					{ value: '001', title: 'Installationsydelse' },
-					{ value: '002', title: 'Skader / Reparation' },
-					{ value: '003', title: 'Uberettiget fejlretning' }
-				]
-				items.forEach(product => {
-					let value = product[standardFormProp];
-					if (values.indexOf(value) < 0) {
-						values.push(value);
-					}
-				});
-				const index = this.onpForm.findIndex(item => item.id === formProp);
-				let valuesWithTitle = []
-				values.sort().forEach(val => {
-					const idxOfStandard = standardItems.findIndex(standardItem => standardItem['value'] === val)
-					if (idxOfStandard > -1) {
-						valuesWithTitle.push(standardItems[idxOfStandard])
-					} else {
-						valuesWithTitle.push({ value: val, title: val })
-					}
-				})
-				this.onpForm[index].options = valuesWithTitle
-				if (valuesWithTitle.length === 1) {
-					this.onpForm[index].value = valuesWithTitle[0].value
-					this.setFormItemValidated(this.onpForm[index])
-				}
-				this.onpForm[index].hide = false
-			},
-			setOptionsInOnpForm(items, standardFormProp, formProp) {
-				let values = [];
-				items.forEach(product => {
-					let value = product[standardFormProp];
-					if (values.indexOf(value) < 0) {
-						values.push(value);
-					}
-				});
-				const index = this.onpForm.findIndex(item => item.id === formProp);
-				this.onpForm[index].options = values.sort()
-				if (values.length === 1) {
-					this.onpForm[index].value = values[0]
-					this.setFormItemValidated(this.onpForm[index])
-				}
-				this.onpForm[index].hide = false
-			},
-			setFormItemValidated(formItem) {
-				const val = formItem.value
-				formItem.validated = true
-				if (formItem.id === 'FROM_COMPANY') {
-					this.onpForm.forEach(onpFormItem => {
-						if (onpFormItem.id !== 'FROM_COMPANY' && onpFormItem.id !== 'REC_ID') {
-							onpFormItem.hide = true
-							onpFormItem.value = ''
-							onpFormItem.validated = true
-						}
-					})
-					let activeStandardItems = this.onpFormData.filter(standardFormItem => standardFormItem['from_company'] === val)
-					this.setTypeOptionsInOnpForm(activeStandardItems, 'transaction_type', 'TYPE')
-					return
-				}
-				const partnerVal = this.onpForm.filter(onpFormItem => onpFormItem.id === 'FROM_COMPANY')[0].value
-				if (formItem.id === 'TYPE') {
-					this.onpForm.forEach(onpFormItem => {
-						if (onpFormItem.id !== 'FROM_COMPANY' && onpFormItem.id !== 'TYPE' && onpFormItem.id !== 'REC_ID') {
-							onpFormItem.hide = true
-							onpFormItem.value = ''
-							onpFormItem.validated = true
-						}
-					})
-					let activeStandardItems = this.onpFormData.filter(standardFormItem => standardFormItem['from_company'] === partnerVal && standardFormItem['transaction_type'] === val)
-					if (activeStandardItems.length < 1) {
-						return
-					} else {
-						this.setOptionsInOnpForm(activeStandardItems, 'transaction_code', 'TRANSACTION_CODE')
-					}
-					return
-				}
-				const typeVal = this.onpForm.filter(onpFormItem => onpFormItem.id === 'TYPE')[0].value
-				if (formItem.id === 'TRANSACTION_CODE') {
-					const transactionCodeVal = val
-					this.onpForm.forEach(onpFormItem => {
-						if (onpFormItem.id !== 'FROM_COMPANY' && onpFormItem.id !== 'TYPE' && formItem.id !== 'TRANSACTION_CODE') {
-							onpFormItem.hide = true
-							onpFormItem.value = ''
-							onpFormItem.validated = true
-						}
-					})
-					if (transactionCodeVal) {
-						const activeStandardItems = this.onpFormData.filter(standardFormItem => standardFormItem['from_company'] === partnerVal && standardFormItem['transaction_type'] === typeVal && standardFormItem['transaction_code'] === transactionCodeVal)
-						const unitLabelValue = activeStandardItems[0]['unit_label']
-						const idx = this.onpForm.findIndex(item => item.id === 'UNIT_LABEL')
-						this.onpForm[idx].value = unitLabelValue
-						const idsToChange = ['LABEL', 'PRICE', 'UNIT_LABEL', 'UNIT_DEFAULT_VALUE']
-						if (val.length > 0 && typeVal !== '002') {
-							this.onpForm.forEach(onpFormItem => {
-								if (idsToChange.indexOf(onpFormItem.id) > -1) {
-									onpFormItem.hide = false
-								}
-							})
-						}
-					}
-				}
-			},
-			setIsSortDropdown(e) {
-				this.isSortDropdown = !this.isSortDropdown
-			},
-			setTheReadMoreOnp(e) {
-				this.theReadMoreOnp === e.REC_ID ? this.theReadMoreOnp = null : this.theReadMoreOnp = e.REC_ID
-			},
-			closeSortDropdown() {
-				this.isSortDropdown && (this.isSortDropdown = !1)
-			},
-			setTheSortSetting(e) {
-				setTimeout(t => {
-					this.isCases ? (this.theSortSettingCases = e, "undefined" != typeof Storage && window.localStorage.setItem("sortSettingCases", JSON.stringify(e))) : (this.theSortSettingDocs = e, "undefined" != typeof Storage && window.localStorage.setItem("sortSettingDocs", JSON.stringify(e)))
-				}, 0)
-			},
-			clearSearchQuery() {
-				this.$refs.v_search_query && (this.$refs.v_search_query.value = ""), this.searchQuery = ""
-			},
-			debounceSearch(e) {
-				this.searchQuery = "", clearTimeout(this.debounce), this.debounce = setTimeout(() => {
-					this.searchQuery = e.target.value
-				}, 600)
-			},
-			loadMoreCases() {
-				if (this.isCases) {
-					if (this.searchedCases.length < 50) {
-						this.infiniteScrollNumber = 50;
-						return
-					} !(this.infiniteScrollNumber > this.searchedCases.length) && (this.infiniteScrollNumber += 50)
-				}
-			},
-			onCaseClicked(caseInfo, token) {
-				// Disable auto-update
-				run_autoupdate = false;
-
-				// Find the index of the clicked case
-				let caseIndex = this.cases.findIndex(c => c.onid === caseInfo.onid);
-
-				// If the case is found, set it as the original active case
-				if (caseIndex > -1) {
-					this.theOrignalActiveCase = this.cases[caseIndex];
-				}
-
-				// Set case information
-				let caseId = caseInfo.onid;
-				let caseToken = caseInfo.onid_token;
-
-				// Add mutation observer to the single case
-				addMutationOberserverToSingleCase();
-
-				// Add loading class to modal body
-				let modalBody = $(".js-modal__single-case .o-modal__body");
-				if (!modalBody.hasClass("o-modal__body--loading")) {
-					modalBody.addClass("o-modal__body--loading");
-				}
-
-				// Add classes to overlay and modal
-				$(".o-bg-overlay").addClass("o-bg-overlay--active");
-				$(".o-modal__case").addClass("o-modal--active");
-
-				// Disable body scrolling
-				$("body").css("overflow", "hidden");
-
-				// Clone and insert case element into modal
-				let caseElement = $(".case_element[data-onid=" + caseId + "][data-onid_token=" + caseToken + "]");
-				$(caseElement).clone().attr("id", "js-case-element__inserted").appendTo(".js-case-insert");
-
-				// Set data attributes on modal
-				$(".o-modal__case").attr("data-case-id", caseId);
-				$(".o-modal__case").attr("data-case-id-token", caseToken);
-
-				// Set values for input fields
-				$(".ETRAY_READ_CASE_TOKEN_ID > input").val(caseToken);
-				$(".ETRAY_READ_CASE_ID > input").val(caseId);
-				$(".ETRAY_READ_MESSAGE_TYPE > input").val("VIEW_CASE");
-				$(".ETRAY_VIEW_CASE > a").click();
-
-				// Change select option and update UI based on user type
-				subCatChangeSelect("List of Cases");
-
-				if (this.theUserType === "ON") {
-					if (caseInfo.to_company.concat(caseInfo.from_company).indexOf("OpenNet") < 0) {
-						$(".js-o-modal__case__actions, .js-o-modal__case__commentary").addClass("hidden_field");
-					} else {
-						$(".js-o-modal__case__actions, .js-o-modal__case__commentary").removeClass("hidden_field");
-					}
-				}
-
-				// Set modal title
-				let modalTitle = caseId + " - " + caseInfo.filter_inquiry_type;
-				$(".js-modal__single-case__title").text(modalTitle);
-
-				// Read case and handle single case loaded event
-				readEtrayCase(caseToken, caseId);
-
-				$(document).one("etray::single-case-loaded", function () {
-					$(".o-modal__body").removeClass("o-modal__body--loading");
-				});
-
-				// Set date and time picker
-				setDateTimePicker();
-				// START ADDED 26-11-23 For openByOtherEmp
-				isSeeCaseOpenByOthers = true
-				this.seeCaseOpenByOthers();
-				this.setCheckCaseByOtherInInterval();
-				// END ADDED 26-11-23 For openByOtherEmp
-				// START 17-12-23
-				this.$nextTick(_ => {
-					$('#js-case-element__inserted .o-cases__case_element__header__row__tags__container').on('click', (evt) => {
-						const tagType = evt.target.dataset.tagType
-						const caseItem = this.cases[caseIndex]
-						this.setTheActiveTagDropdown(tagType, caseItem, evt)
-					})
-				})
-			},
-			// START ADDED 26-11-23 For openByOtherEmp
-			seeCaseOpenByOthers() {
-				if (!isSeeCaseOpenByOthers) {
-					return
-				}
-				$('.updCaseIdSession_Type > input').val('KEEP_ALIVE');
-				$('.updCaseIdSession_Output > div').html('');
-				$('.updCaseIdSession_BTN > a').click();
-
-				const observeCaseOpenChanges = (selector, callback) => {
-					const el = $(selector)
-					if (!el || el.length === 0) {
-						console.warn(`No element found with selector ${selector}`)
-						return;
-					}
-					el.html('loading');
-					intervalObserveCaseOpenChanges = setInterval(() => {
-						const val = el.html()
-
-						if (val !== 'loading') {
-							clearInterval(intervalObserveCaseOpenChanges)
-							callback(val)
-						}
-					}, 1000)
-				}
-
-				observeCaseOpenChanges('.updCaseIdSession_Output > div', (OK) => {
-					const whoHasItOpen = $('.openByOtherEmp > input').val()
-					const whoHasItOpenToJSON = whoHasItOpen.length > 1 ? JSON.parse(whoHasItOpen) : []
-					const caseId = this.theOrignalActiveCase.onid;
-					const caseToken = this.theOrignalActiveCase.onid_token;
-					const caseIndex = this.cases.findIndex(c => c.onid === this.theOrignalActiveCase.onid);
-					if (caseIndex > -1) {
-						this.cases[caseIndex]['openByOtherEmp'] = whoHasItOpenToJSON;
-						// Update case element in modal with Jquery
-						let htmlArr = []
-						whoHasItOpenToJSON.forEach((name, key) => {
-							const initials = name.split(' ').map(word => word.charAt(0)).join('')
-							const htmlEl = '<li class="o-case-active-users__user hint--bottom" aria-label="' + name + '">' + initials + '</li>'
-							htmlArr.push(htmlEl)
-						})
-						$(".js-case-insert .o-case-active-users").html(htmlArr.join(''));
-					}
-				})
-			},
-			setCheckCaseByOtherInInterval() {
-				intervalSeeCaseOpenByOthersTimer = setInterval(() => {
-					this.seeCaseOpenByOthers()
-				}, 1000 * 30)
-			},
-			// END ADDED 26-11-23 For openByOtherEmp
-			CreateExtDocument(e) {
-				run_autoupdate = !1;
-				var t, s = new Date,
-					a = String(s.getDate()).padStart(2, "0");
-				s = a + "-" + String(s.getMonth() + 1).padStart(2, "0") + "-" + s.getFullYear(), $(".EXT_DOCS_TIME_START > input").val(s), $(".EXT_DOCS_TIME_END > input").val(), "Announcement" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_ANNOUNCEMENT > input").val()), $(".js-modal-create-title").text("Opret udmelding")), "Report" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_REPORT > input").val()), $(".js-modal-create-title").text("Opret rapport")), "Documentation" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_DOCUMENTATION > input").val()), $(".js-modal-create-title").text("Opret dokumentation")), "Invoices" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_INVOICE > input").val()), $(".js-modal-create-title").text("Opret faktura")), "Contract" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_CONTRACT > input").val()), $(".js-modal-create-title").text("Opret kontrakt")), window.scroll(0, 0), subCatChangeSelect("Create ext docs"), $(".EXT_DOCS_ORDER_TYPE > input").val(e), $(".EXT_DOCS_EVENT_TYPE > input").val("NEW"), $(".EXT_DOCS_PAGE_IDS > input").val(""), $(".EXT_DOCS_HEADLINE > input").val(""), $(".EXT_DOCS_MESSAGE > input").val(""), $(".EXT_DOCS_MESSAGE > textarea").val(""), window.matchMedia("(max-width: 600px)").matches && closeBurgerMenu(), $(".o-bg-overlay").addClass("o-bg-overlay--active"), $(".js-o-modal__create-case").addClass("o-create-case--active"), $("body").css("overflow", "hidden");
-				var i = $(".EXT_RECIEVERS_JSON_NEW > div").html();
-				createTogglerForReceivers(i, document.querySelector(".EXT_DOCS_RECIEVERS_DISPLAY_NEW > div"))
-			},
-			editExtDocumentDirect(e, t) {
-				$(".EXT_DOCS_CASE_ID > input").val(item.onid), editExtDocument(e)
-			},
-			editExtDocument(e) {
-				window.scroll(0, 0), "Announcement" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_ANNOUNCEMENT > input").val()), $(".js-modal-create-title").text("Rediger udmelding")), "Report" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_REPORT > input").val()), $(".js-modal-create-title").text("Rediger rapport")), "Documentation" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_DOCUMENTATION > input").val()), $(".js-modal-create-title").text("Rediger dokumentation")), "Invoices" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_INVOICE > input").val()), $(".js-modal-create-title").text("Rediger faktura")), "Contract" == e && ($(".EXT_DOCS_TYPE > select").html($(".DROPDOWN_LIST_CONTRACT > input").val()), $(".js-modal-create-title").text("Rediger kontrakt")), $.TRIGGER_AFTER_EXT_DOC_RENDERRING = !1, $(".EXT_DOCS_FETCHED > input").val("N"), $(".EXT_DOCS_FETCHED > input").change(), $(".UPDATE_EXT_FIELDS").hasClass("hidden_field") || $(".UPDATE_EXT_FIELDS").addClass("hidden_field"), $(".EXT_DOCS_LOADING").hasClass("hidden_field") && $(".EXT_DOCS_LOADING").removeClass("hidden_field"), subCatChangeSelect("Edit ext docs"), $(".EXT_DOCS_ORDER_TYPE > input").val(e), $(".EXT_DOCS_PAGE_IDS > input").val(""), $(".BTN_GetExtDocsCaseInfo > a").click(), window.matchMedia("(max-width: 600px)").matches && closeBurgerMenu(), $(".o-bg-overlay").addClass("o-bg-overlay--active"), $(".js-o-modal__create-case").addClass("o-create-case--active"), $("body").css("overflow", "hidden"), this.closeVueModalOverlay()
-			},
-			dateIsAfterToday: e => new Date(e).valueOf() > new Date().valueOf(),
-			formatDateForJs(e, t) {
-				if (19 === e.length || 16 === e.length || 10 === e.length) {
-					var s = e.split(/(?:-| )+/),
-						a = s[3] ? s[3] : "00:00";
-					return new Date(s[2] + "-" + s[1] + "-" + s[0] + " " + a)
-				}
-				if (!t) return new Date(null);
-				var s = (t.created_time ? t.created_time : t.active_date).split(/(?:-| )+/),
-					a = s[3] ? s[3] : "00:00",
-					i = 1 * s[2] - 10;
-				return new Date(i + "-" + s[1] + "-" + s[0] + " " + a)
-			},
-			formatDateForJs2TypsOfDates(dateString, fallback) {
-				const dateFormat1 = /^\d{2}-\d{2}-\d{4} \d{2}:\d{2}$/;
-				const dateFormat2 = /^\d{4}-\d{2}-\d{2}$/;
-
-				let date;
-				if (dateFormat1.test(dateString)) {
-					date = new Date(dateString.replace(/(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2})/, '$3-$2-$1T$4:$5:00'));
-				} else if (dateFormat2.test(dateString)) {
-					date = new Date(dateString);
-				} else if (fallback) {
-					const dateStringFallback = fallback.created_time || fallback.active_date;
-					if (dateFormat1.test(dateStringFallback)) {
-						date = new Date(dateStringFallback.replace(/(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2})/, '$3-$2-$1T$4:$5:00'));
-					} else if (dateFormat2.test(dateStringFallback)) {
-						date = new Date(dateStringFallback);
-					}
-				}
-
-				return date || new Date(null);
-			},
-			onItemClicked(e) {
-				if (run_autoupdate = !1, $(".EXT_DOCS_CASE_ID > input").val(e.onid), $(".ETRAY_READ_CASE_TOKEN_ID > input").val(e.tid), $(".ETRAY_READ_CASE_ID > input").val(e.onid), $(".ETRAY_READ_MESSAGE_TYPE > input").val("VIEW_CASE"), $(".ETRAY_VIEW_CASE > a").click(), this.theActiveItem = e, this.isVueModalOverlay = !0, $("body").css("overflow", "hidden"), "Yes" == e.show_unread_icon) {
-					let t = this.items.findIndex(t => t.onid === e.onid);
-					this.theActiveItem.show_unread_icon, Vue.set(this.items[t], "show_unread_icon", "No")
-				}
-			},
-			downloadItem(e) {
-				if ($(".EXT_DOCS_CASE_ID > input").val(e.onid), $(".BTN_ViewExtCase > a").click(), "Yes" == e.show_unread_icon) {
-					let t = this.items.findIndex(t => t.onid === e.onid);
-					Vue.set(this.items[t], "show_unread_icon", "No")
-				}
-			},
-			closeVueDropdown() {
-				this.isVueDropdown && (this.isVueDropdown = !this.isVueDropdown)
-			},
-			setIsVueDropdown() {
-				this.isVueDropdown = !this.isVueDropdown
-			},
-			setTheUnreadSelected(e) {
-				this.theUnreadSelected = e
-			},
-			setActivecCategory(e, t) {
-				if (e !== this.activeCategory) {
-					window.scroll(0, 0)
-
-					if (e == "OpenAnalytics") {
-						$(".o-wrapper").addClass("OpenAnalytics_full_width")
-					}
-					else {
-						$(".o-wrapper").removeClass("OpenAnalytics_full_width")
-					}
-
-					$('ul.o-menu__items__inner > li[class^="js-"]').each(function () {
-						$(this).removeClass("li--active")
-					})
-					$(".js-o-cases__container").removeClass("o-cases__container--loading"), $(".o-page").removeClass("o-page--all-cases"), $(".o-page").hasClass("o-page--docs") || $(".o-page").addClass("o-page--docs");
-					var s = "";
-					this.setIsShowOperationStatusErrorReports(false)
-					switch (e) {
-						case "my_cases":
-							s = "Hjem / Mine sager";
-							break;
-						case "all_cases":
-							s = "Alle sager";
-							break;
-						case "Announcement":
-							s = "Udmeldinger";
-							break;
-						case "Contract":
-							s = "Kontrakter";
-							break;
-						//< !--START OpenNet OpenAnalytics-- >
-						case "OpenAnalytics":
-							s = "OpenAnalytics";
-							break;
-						//< !--END  OpenNet OpenAnalytics-- >
-						case "Invoice":
-							s = "Fakturaer";
-							break;
-						case "Documentation":
-							s = "Dokumenter";
-							break;
-						case "Report":
-							s = "Rapporter";
-							break;
-						case "roles":
-							s = "Brugeradministration";
-							break;
-						case "end_customer_pricing_config":
-							s = "Slutkundepriser – Konfiguration";
-							break;
-						case "end_customer_orders":
-							s = "Slutkundeordre"
-							break
-						case "OperationsStatus":
-							s = "Operation status"
-							break
-						case "News":
-							s = "Nyheder"
-							break
-					}
-					if ("Report" === e || "Invoice" === e || "OpenAnalytics" === e) {
-						// Retrieve HTML content from the specified element
-						var PBIListOfReportsHTML = $(".PBI_ListOfReports > div").html();
-						console.log('$(".PBI_ListOfReports > div").html()', $(".PBI_ListOfReports > div").html());
-
-						if (PBIListOfReportsHTML.length > 3) {
-							this.PBIReportsData = JSON.parse(PBIListOfReportsHTML);
-						}
-
-						this.theInvoiceBIExplainer = $(".PBI_Intro_Invoice > div").html()
-						this.theReportBIExplainer = $(".PBI_Intro_Report > div").html()
-					}
-					switch (e) {
-						case "end_customer_orders":
-							this.readEndCustomerOrders()
-								;
-							break;
-						case "end_customer_pricing_config":
-							this.readEndCustomerConfigs();
-							break;
-						case "roles":
-							this.readUsers();
-							break;
-						default:
-							break;
-					}
-					$(".js-page-title").text(s);
-
-					this.activeCategory = e;
-					if (this.isNewDesignActive && (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases')) {
-						this.getAllLocalStorageFilter()
-						return
-					}
-					this.resetFilters();
-					if (e === 'OpenAnalytics') {
-						this.setTheActiveFilter('')
-					}
-				}
-			},
-			resetFilters() {
-				this.infiniteScrollNumber = 50;
-				this.clearSearchQuery();
-				this.activeType = null;
-				$(".vue-filter-2").each(function () {
-					$(this).removeClass("o-btn__filter---active");
-				});
-				this.theUnreadSelected = "Alle";
-				this.theActiveFilter = "active";
-				this.theActiveCaseCategory = "Alle kategorier";
-				this.theActiveOnpProductListFilter = "Fra alle";
-			},
-			setActiveCaseCategory(e) {
-				this.theActiveCaseCategory = e
-			},
-			setTheActiveFilter(event) {
-				this.theActiveFilter = event;
-				this.clearSearchQuery();
-				this.theUnreadSelected = "Alle";
-
-				// Set the active type to null
-				this.activeType = null;
-				$(".vue-filter-2").each(function () {
-					$(this).removeClass("o-btn__filter---active");
-				})
-				if (this.isNewDesignActive && (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases')) {
-					this.getAllLocalStorageFilter()
-				}
-				//if (event == 'dynamic') {
-				//	this.theUnreadSelected = "Vælg";
-				//}
-				if (this.activeCategory !== 'OpenAnalytics') {
-
-					return
-				}
-				// For OpenAnalytics
-				this.setIframeForOpenAnalytics()
-			},
-			setIframeForOpenAnalytics() {
-				openAnalyticsSecret = JSON.parse($('.PBI_sharedSecretJSON > input').val()).sharedSecret;
-				console.log('openAnalyticsSecret', openAnalyticsSecret);
-				this.isLoadingTheOpenAnalyticsIframe = true
-				function constructURLWithSecret(baseURL, secretValue) {
-					const queryParams = new URLSearchParams(window.location.search);
-					queryParams.set('secret', secretValue);
-					const newURL = `${baseURL}?${queryParams.toString()}`;
-					return newURL;
-				}
-				if (this.theActiveFilter === 'OpenAnalytics_tab1') {
-					const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/1';
-					this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
-					// For demonstration purpose
-					const openAnalyticsIframeURL = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret);
-					console.log(openAnalyticsIframeURL);
-				}
-				if (this.theActiveFilter === 'OpenAnalytics_tab2') {
-					const openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/2';
-					this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
-				}
-				// Wait for Vue's next tick to ensure the DOM updates
-				this.$nextTick(() => {
-					const iframe = this.$refs.openAnalyticsIframe;
-					if (iframe) {
-						iframe.onload = () => {
-							this.addIframeEventListeners(iframe);
-						};
-					}
-				})
-			},
-			addIframeEventListeners(iframe) {
-				const self = this
-				const handleMessage = (event) => {
-					console.log('message!', event)
-					if (event.origin !== 'https://opn-iframes-dev.azurewebsites.net') {
-						return; // Ensure the message is from a trusted origin
-					}
-					if (event.data.event === 'Inspari_iframeChanged') {
-						console.log('Inspari_iframeChanged event received', event.data);
-						// Handling Inspari_iframeChanged event to adjust iframe size
-						var iframe = document.querySelector('.o-iframe-container');
-
-						if (current_iframeHeight != event.data.iframeHeight) {
-							console.log('Current iframe height', current_iframeHeight);
-							iframe.style.height = event.data.iframeHeight + 'px';
-							console.log('New iframe height', event.data.iframeHeight);
-							current_iframeHeight = event.data.iframeHeight;
-						}
-					}
-
-					if (event.data.event === 'Inspari_iframeLoaded') {
-						self.isLoadingTheOpenAnalyticsIframe = false
-						console.log('Inspari_iframeLoaded event received', event.data);
-						var iframe = document.querySelector('.o-iframe-container');
-						if (current_iframeHeight != event.data.iframeHeight) {
-							console.log('Current iframe height', current_iframeHeight);
-							iframe.style.height = event.data.iframeHeight + 'px';
-							console.log('New iframe height', event.data.iframeHeight);
-							current_iframeHeight = event.data.iframeHeight;
-						}
-					}
-				};
-
-				window.addEventListener('message', handleMessage);
-
-				this.$once('hook:beforeDestroy', () => {
-					window.removeEventListener('message', handleMessage);
-				});
-			},
-			setActiveType(event, target) {
-				// Reset the infinite scroll number
-				this.infiniteScrollNumber = 50;
-				$(".vue-filter-2").removeClass("o-btn__filter---active");
-
-				// Toggle the active type
-				if (this.activeType === event) {
-					this.activeType = null;
-				} else {
-					this.activeType = event;
-					$(target.currentTarget).addClass("o-btn__filter---active");
-				}
-
-				// Added 17-12-23
-				if (this.activeCategory === 'my_cases' || this.activeCategory === 'all_cases') {
-					this.setLocalStorageFilter('activeType', this.activeType)
-					return
-				}
-			},
-			createUserModal() {
-				window.scroll(0, 0), subCatChangeSelect("Create User"), Set_UM_USER_INIT = !0, $(".UM_DISPLAY_NAME > input").val(""), $(".UM_COPY_OF > select").val(""), $(".UM_USER_ID > input").val(""), $(".UM_USER_INIT > input").val(""), $(".UM_USER_INIT > .Web_Error").html(""), $(".UM_USER_INIT > .Web_Error").hide(), $(".UM_USER_NAME > input").val(""), $(".UM_EMAIL > input").val(""), $(".UM_GROUP_ID > input").val(""), $(".UM_MOBILE_NO > input").val(""), $(".UM_PASSWORD > input").val(""), $(".UM_EVENT_TYPE > input").val(""), $(".o-bg-overlay").addClass("o-bg-overlay--active"), $(".js-o-modal__create-case").addClass("o-create-case--active"), $("body").css("overflow", "hidden"), $(".js-modal-create-title").text("Opret bruger")
-			},
-			searchFunc(e) {
-				function matchObjects(obj1, obj2) {
-					var key;
-					for (key in obj1) {
-						if (obj1[key] !== obj2[key]) {
-							return false;
-						}
-					}
-					for (key in obj2) {
-						if (obj1[key] !== obj2[key]) {
-							return false;
-						}
-					}
-					return true;
-				}
-
-				function matchArray(arr, obj) {
-					var i;
-					for (i = 0; i < arr.length; i++) {
-						if (matchObjects(arr[i], obj)) {
-							return true;
-						}
-					}
-					return false;
-				}
-
-				var results = [],
-					searchQuery = function (value) {
-						var start = 0,
-							end = value.length - 1;
-						while (start < value.length && value[start] === ' ') {
-							start++;
-						}
-						while (end > start && value[end] === ' ') {
-							end--;
-						}
-						return value.substring(start, end + 1);
-					}(this.searchQuery.toLowerCase()),
-					i,
-					j,
-					item,
-					propertyValue;
-				for (i = 0; i < e.length; i++) {
-					for (j in e[i]) {
-						if (e[i].hasOwnProperty(j)) {
-							item = e[i][j];
-							if (typeof item === 'string') {
-								item = item.toLowerCase();
-							} else if (typeof item === 'number') {
-								item = item.toString();
-							}
-							if (typeof item === 'string' && item.indexOf(searchQuery) !== -1 && !matchArray(results, e[i])) {
-								results.push(e[i]);
-								break;
-							}
-						}
-					}
-				}
-				return results;
-			},
-			setTheActiveUser(e) {
-				this.theActiveUser = e
-			},
-			closeActiveUserModal() {
-				this.theActiveUser = null
-			},
-			rolesInView(e) {
-				var t = e;
-				this.isProfileClick && (t = e.filter(e => "true" == e.active_role));
-				var s = [];
-				return t.forEach(e => {
-					var t = s.findIndex(t => t.group === e.group_category);
-					t < 0 ? s.push({
-						group: e.group_category,
-						roles: [e]
-					}) : s[t].roles.push(e)
-				}), s
-			},
-			onActiveGroupChange(e, t, s) {
-				var a = e.role_array.filter(e => e.group_category == t),
-					i = s ? "true" : "false";
-				this.toggle_group_ids = [], a.forEach((t, s) => {
-					var r = a.length - 1 == s;
-					this.onActiveRoleChange(e, t.group_id, i, !0, r)
-				})
-			},
-			getIsGroupCategoryActive: (e, t) => e.role_array.filter(e => e.group_category == t).filter(e => "true" == e.active_role).length > 0,
-			onActiveRoleChange(e, t, s, a, i) {
-				var r = this.users.findIndex(e => e.id == this.theActiveUser.id),
-					o = this.theActiveUser.role_array.findIndex(e => e.group_id == t),
-					n = "false" == s ? "true" : "false";
-				if (this.theActiveUser.role_array[o].active_role = n, this.users[r].role_array[o].active_role = n, a) {
-					if (this.toggle_group_ids.push(t), i) {
-						var l = this.toggle_group_ids.join(";");
-						"true" == n && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(l), $(".BTN_UserManagement > a").click()), "false" == n && ($(".UM_EVENT_TYPE > input").val("REMOVE_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(l), $(".BTN_UserManagement > a").click())
-					}
-				} else "true" == n && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click()), "false" == n && ($(".UM_EVENT_TYPE > input").val("REMOVE_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click())
-			},
-			onActiveRoleNotificationsChange(e, t, s) {
-				var a = this.users.findIndex(e => e.id == this.theActiveUser.id),
-					i = this.theActiveUser.role_array.findIndex(e => e.group_id_noti == t),
-					r = "false" == s ? "true" : "false";
-				this.theActiveUser.role_array[i].active_role_noti = r, this.users[a].role_array[i].active_role_noti = r, "true" == r && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click()), "false" == r && ($(".UM_EVENT_TYPE > input").val("REMOVE_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click())
-			},
-			setTheActiveUserRoleChangeModal(e) {
-				this.theActiveUser = e, this.isEditUserRoles = !0, this.isVueModalOverlay = !0, $("body").css("overflow", "")
-			},
-			setTheEditUserModal(e, t) {
-				t ? this.isProfileClick = !0 : this.isProfileClick = !1, this.theActiveUser = e, this.isEditUser = !0, this.userform.name = e.name, this.userform.display_name = e.display_name, this.userform.user_init = e.user_init, this.userform.email = e.email, this.userform.sms_no = e.sms_no, this.isVueModalOverlay = !0, $("body").css("overflow", "")
-			},
-			resetEditUserForm() {
-				this.userform.name = "", this.userform.display_name = "", this.userform.email = "", this.userform.user_init = "", this.userform.sms_no = "", this.userform.new_password = "", this.userform.new_password_confirmed = ""
-			},
-			toggleRolesAcc(e) {
-				var t = this.theToggleRolesAcc.indexOf(e);
-				this.theToggleRolesAcc.indexOf(e) > -1 ? this.theToggleRolesAcc.splice(t, 1) : this.theToggleRolesAcc.push(e)
-			},
-			getIsInTheToggleRolesAcc(e) {
-				return this.theToggleRolesAcc.indexOf(e) > -1
-			},
-			closeVueModalOverlay() {
-				run_autoupdate = true;
-				this.run_autoupdate_func();
-				this.isVueModalOverlay = false;
-				this.theActiveUser = null;
-				this.isEditUserRoles = false;
-				this.isEditUser = false;
-				this.isProfileClick = false;
-				this.theActiveItem = null;
-				this.isCreateOnpModal = false;
-				this.resetEditUserForm();
-				$("body").css("overflow", "");
-				$("body").removeClass("no-scroll")
-				this.isSendingEmail = false;
-				this.formErrors = {};
-
-				this.onpForm.forEach((element, index) => {
-					element.value = "";
-					element.validated = true;
-				});
-
-				this.isNewOrderModal = false;
-				this.isOrderCustomerEmailValid = true;
-				this.orderCustomerEmail = "";
-				this.OnpSSIDDetails = [];
-				this.ssid = "";
-				this.theActiveDescExpanded = null;
-				this.isSSIDValid = true;
-				this.theActivePrevOrder = null;
-				this.theNewOrderSkaderItems = []
-				this.theActiveOrderType = '001'
-				this.isEndCustomerEmailConfigModal = false
-				this.isUpdatingEndCustomerEmailConfigForm = false
-				this.theEndCustomerEmailConfigForm.forEach(item => {
-					item.value = ''
-				})
-				this.isGhostUserCreating = false
-				this.isCreateGhostUser = false
-				this.theGhostUserSelectedPartner = null
-				this.theGhostUserSelectedPartnerUser = null
-			},
-			formValidation() {
-				this.userform.name.length < 1 ? Vue.set(this.formErrors, "name", "Skal mindst 1 tegn") : this.removeErrors("name"), this.userform.display_name.length < 1 ? Vue.set(this.formErrors, "display_name", "Skal mindst 1 tegn") : this.removeErrors("display_name"), this.userform.user_init.length < 1 ? Vue.set(this.formErrors, "user_init", "Skal mindst 1 tegn") : this.removeErrors("user_init"), this.validateEmail(this.userform.email) ? this.removeErrors("email") : Vue.set(this.formErrors, "email", "Skal v\xe6re en gyldig emailaddresse"), this.userform.sms_no.length < 8 ? Vue.set(this.formErrors, "sms_no", "Skal v\xe6re et gyldigt telefonnummer") : this.removeErrors("sms_no"), this.userform.sms_no.length < 8 ? Vue.set(this.formErrors, "sms_no", "Skal v\xe6re et gyldigt telefonnummer") : this.removeErrors("sms_no"), this.userform.new_password != this.userform.new_password_confirmed ? Vue.set(this.formErrors, "new_password_confirmed", "Kodeordene skal v\xe6re det ens") : this.removeErrors("new_password_confirmed")
-			},
-			validateEmail: e => /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(String(e).toLowerCase()),
-			removeErrors(e) {
-				this.$delete(this.formErrors, e)
-			},
-			onkeyup_user_init(e) {
-				this.$delete(this.formErrors, e), clearTimeout(this.debounce_user_init), this.debounce_user_init = setTimeout(() => {
-					$(".UM_USER_INIT > input").val(this.userform.user_init), Set_UM_USER_INIT = !1, $(".BTN_GetUserValidation > a").click(), $(".BTN_GetUserValidation_Result > input").val("N"), WAIT_FOR_UM_USERNAME_VALIDATION_ANSWER_VUE()
-				}, 600)
-			},
-			submitEditUserForm() {
-				if (!(Object.keys(this.formErrors).length > 0)) this.formValidation(), !(Object.keys(this.formErrors).length > 0) && ($(".UM_EVENT_TYPE > input").val("UPDATE_USER_DETAILS"), $(".UM_USER_ID > input").val(this.theActiveUser.id), $(".UM_USER_NAME > input").val(this.userform.name), $(".UM_DISPLAY_NAME > input").val(this.userform.display_name), $(".UM_MOBILE_NO > input").val(this.userform.sms_no), $(".UM_EMAIL > input").val(this.userform.email), $(".UM_USER_INIT > input").val(this.userform.user_init), this.userform.new_password.length > 0 && $(".UM_PASSWORD > input").val(this.userform.new_password), $(".UM_RESULT > div").html(""), $(document).trigger("vue::new_user"), $(".BTN_UserManagement > a").click(), this.closeVueModalOverlay())
-			},
-			submitDeleteUserForm() {
-				$(".UM_EVENT_TYPE > input").val("DELETE_USER"), $(".UM_USER_ID > input").val(this.theActiveUser.id), $(".UM_USER_NAME > input").val(this.userform.name), $(".UM_DISPLAY_NAME > input").val(this.userform.display_name), $(".UM_MOBILE_NO > input").val(this.userform.sms_no), $(".UM_EMAIL > input").val(this.userform.email), $(".UM_USER_INIT > input").val(this.userform.user_init), this.userform.new_password.length > 0 && $(".UM_PASSWORD > input").val(this.userform.new_password), $(".UM_RESULT > div").html(""), $(".BTN_UserManagement > a").click();
-				var e = this.users.findIndex(e => e.id == this.theActiveUser.id);
-				this.users.splice(e, 1), this.closeVueModalOverlay()
-			},
-			resetPasswordForUser(e) {
-				this.isSendingEmail = !0, $(".UM_EVENT_TYPE > input").val("RESET_PASSWORD"), $(".UM_USER_ID > input").val(this.theActiveUser.id), $(".BTN_UserManagement > a").click()
-			},
-			setIsViewRoles(e) {
-				this.theActiveRoleForFilter = this.allRoles[0] ? this.allRoles[0].group_id : "", this.isViewRoles = e
-			},
-			setTheActiveRoleForFilter(e) {
-				this.theActiveRoleForFilter = e
-			},
-			numberOfUsersWithRole(e) {
-				return this.users.filter(t => t.role_array.findIndex(t => t.group_id == e && "true" == t.active_role) > -1)
-			},
-			usersWithRole(e) {
-				return this.users.filter(t => t.role_array.findIndex(t => t.group_id == e && "true" == t.active_role) > -1)
-			},
-			setTheOSelect(e) {
-				setTimeout(t => {
-					this.theOSelect = e
-				}, 0)
-			},
-			onClickOutside(e) {
-				this.theOSelect && (this.theOSelect = null, this.oSelectQuery = "")
-			},
-			getIsTheOSelect(e) {
-				return this.theOSelect == e
-			},
-			selectUserForRole(e) {
-				var t = this.users.findIndex(t => t.id == e.id),
-					s = e.role_array.findIndex(e => e.group_id == this.theActiveRoleForFilter),
-					a = "true";
-				this.users[t].role_array[s].active_role = a, this.setTheOSelect(null), "true" == a && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(this.theActiveRoleForFilter), $(".BTN_UserManagement > a").click()), this.oSelectQuery = ""
-			},
-			readLatestUpdatedDocs() {
-				this.observeLatestDocsDiv && this.observeLatestDocsDiv.disconnect(), this.updateDocsTimer && clearTimeout(this.updateDocsTimer), this.funcObserveLatestDocs(), $(".BTN_GetListOfExtDocs_Last30Min > a").click()
-			},
-			readLatestUpdatedDocsByOthers() {
-				this.funcObserveLatestDocsByOthers(), $(".BTN_GetListOfExtDocs_LatestOther > a").click()
-			},
-			funcObserveLatestDocsByOthers() {
-				var e = this,
-					t = new MutationObserver(function (s) {
-						var a = $(".ETRAY_EXT_DOCS_RAW_JSON_LATEST_OTHER  > div").html();
-						e.setLatestDocs(a), t.disconnect()
-					});
-				t.observe(document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_LATEST_OTHER  > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveLatestDocs() {
-				var e = this,
-					t = $(".ETRAY_EXT_DOCS_RAW_JSON_LAST30MIN > div").html();
-				this.observeLatestDocsDiv = new MutationObserver(function (s) {
-					var a = $(".ETRAY_EXT_DOCS_RAW_JSON_LAST30MIN > div").html();
-					t != a ? (e.setLatestDocs(a), e.isNewAnnouncementLoading = !1, e.isUpdatedAnnouncementLoading = !1) : (e.isNewAnnouncementLoading || e.isUpdatedAnnouncementLoading) && (e.updateDocsTimer = setTimeout(function () {
-						e.readLatestUpdatedDocs()
-					}, 2500)), e.observeLatestDocsDiv.disconnect()
-				}), this.observeLatestDocsDiv.observe(document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_LAST30MIN > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			setLatestDocs(e) {
-				e.length > 2 && JSON.parse(e).forEach((e, t) => {
-					var s = this.items.findIndex(t => t.onid == e.onid);
-					s < 0 ? this.items.push(e) : Vue.set(this.items, s, e)
-				})
-			},
-			decode(e) {
-				var t = document.createElement("textarea");
-				return t.innerHTML = e, t.value
-			},
-			setLatestUser() {
-				var e = $(".UM_RESULT > div").html();
-				e.length > 2 && JSON.parse(this.decode(this.decode(e))).forEach((e, t) => {
-					var s = this.users.findIndex(t => t.id == e.id);
-					s < 0 ? this.users.push(e) : Vue.set(this.users, s, e)
-				})
-			},
-			funcObserveLatestUser() {
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					e.setLatestUser(), e.isNewUserLoading = !1, t.disconnect()
-				});
-				t.observe(document.querySelector(".UM_RESULT > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveOpenCases() {
-				var e = this,
-					t = new MutationObserver(function (s) {
-						e.setOpenCases(), e.casesIsLoading = !1, t.disconnect(), e.readClosedCases(e.startLength, e.endLength)
-					});
-				t.observe(document.querySelector(".ETRAY_JSON_LIST_OF_OPEN_CASES > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			setOpenCases() {
-				var openCasesHtml = $(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html();
-				//console.log('openCasesHtml',openCasesHtml)	
-				$(".js-o-cases__container").removeClass("o-cases__container--loading");
-				$(".o-page").removeClass("o-page--is-loading");
-
-				if (openCasesHtml.length >= 3) {
-					this.encodeCases(openCasesHtml);
-					// $(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html("");
-				}
-			},
-			readOpenCasesV2(e, t) {
-				$(".ETRAY_JSON_LIST_OF_OPEN_CASES_ROW_START > input").val(e), $(".ETRAY_JSON_LIST_OF_OPEN_CASES_ROW_END > input").val(t), this.observeOpenCasesV2 && this.observeOpenCasesV2.disconnect(), $(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div").html(""), this.funcObserveOpenCasesV2(), $(".BTN_GetListOfOpenCasesJSON_V2 > a").click()
-			},
-			funcObserveOpenCasesV2() {
-				var self = this;
-
-				self.observeOpenCasesV2 = new MutationObserver(function () {
-					// Disconnect the observer
-					self.observeOpenCasesV2.disconnect();
-
-					var openCasesHtml = $(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div").html();
-					//console.log('openCasesHtml')
-					var caseLength = 0;
-
-					// Check if openCasesHtml length is greater than 3
-					if (openCasesHtml.length > 3) {
-						caseLength = JSON.parse(openCasesHtml).length + 1;
-						self.encodeCases(openCasesHtml);
-					}
-
-					// Check if caseLength is greater or equal to open_addLength
-					if (caseLength >= self.open_addLength) {
-						self.open_startLength = self.open_endLength + 1;
-						self.open_endLength = self.open_endLength + self.open_addLength;
-
-						self.readOpenCasesV2(self.open_startLength, self.open_endLength);
-					} else {
-						self.casesIsLoading = false;
-
-						$(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div").html("");
-						self.readClosedCases(self.startLength, self.endLength);
-
-						// Remove loading status from the cases container and the page
-						$(".js-o-cases__container").removeClass("o-cases__container--loading");
-						$(".o-page").removeClass("o-page--is-loading");
-					}
-				});
-
-				// Start observing the target node for configured mutations
-				self.observeOpenCasesV2.observe(document.querySelector(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div"), {
-					characterData: true,
-					childList: true
-				});
-			}
-			,
-			readClosedCases(start, end) {
-				// Set input values
-				$(".ETRAY_JSON_LIST_OF_CLOSED_CASES_ROW_START > input").val(start);
-				$(".ETRAY_JSON_LIST_OF_CLOSED_CASES_ROW_END > input").val(end);
-
-				// Disconnect previous observer and clear the HTML
-				if (this.observeClosedCases) {
-					this.observeClosedCases.disconnect();
-				}
-				$(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html("");
-
-				// Start observing closed cases and trigger the click event
-				this.funcObserveClosedCases();
-				$(".BTN_GetListOfClosedCasesJSON > a").click();
-			},
-
-			funcObserveClosedCases() {
-				var self = this;
-				self.observeClosedCases = new MutationObserver(function (mutations) {
-					self.observeClosedCases.disconnect();
-
-					var html = $(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html();
-					var count = 0;
-
-					if (html.length > 3) {
-						count = JSON.parse(html).length + 1;
-						self.pushClosedCases();
-					}
-
-					if (count >= self.addLength) {
-						self.startLength = self.endLength + 1;
-						self.endLength = self.endLength + self.addLength;
-						self.readClosedCases(self.startLength, self.endLength);
-					} else {
-						self.isClosedCasesLoading = false;
-						run_autoupdate = true;
-						$(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html("");
-					}
-				});
-
-				self.observeClosedCases.observe(document.querySelector(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div"), {
-					characterData: true,
-					childList: true
-				});
-			},
-
-			pushClosedCases() {
-				var html = $(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html();
-				this.encodeCases(html);
-			},
-
-			encodeCases(html) {
-				const self = this
-				if (html.length >= 3) {
-					var cases = JSON.parse(html);
-
-					cases.forEach((caseItem, index) => {
-						Object.keys(caseItem).forEach(function (key, i) {
-							// START ADDED 26-11-23 For openByOtherEmp
-							if (key === 'openByOtherEmp' && $(".FROM_COMPANY > input").val() == "OpenNet") {
-								const openByOtherEmp_arr = caseItem['openByOtherEmp'].length > 0 ? caseItem['openByOtherEmp'] : []
-								const vOpenByOtherObj = openByOtherEmp_arr.map(name => {
-									const initials = name.split(' ').map(word => word.charAt(0)).join('');
-									return {
-										initials: initials,
-										name
-									}
-								})
-								Vue.set(caseItem, 'v_openByOtherEmp', vOpenByOtherObj)
-								// START ADDED 17-12-23
-							} else if (key === 'tags') {
-								const tags = caseItem['tags'].length > 0 ? caseItem['tags'] : [];
-								const filteredTags = tags.filter(item => item && typeof item === 'object' && item['value']);
-								Vue.set(caseItem, 'v_tags', filteredTags);
-							} else if (key === 'groups') {
-								const groups = caseItem['groups'].length > 0 ? caseItem['groups'] : [];
-								const filteredGroups = groups.filter(item => item && typeof item === 'object' && item['value']);
-								Vue.set(caseItem, 'v_groups', filteredGroups);
-							} else if (key === 'status') {
-								const initStatus = caseItem['status'].length > 0 ? caseItem['status'] : '';
-								const statusI18N = self.statusI18N[initStatus] ? self.statusI18N[initStatus] : ''
-								Vue.set(caseItem, 'v_status', statusI18N);
-							}
-							// END ADDED 17-12-23
-							else {
-								caseItem[key] = unescape(caseItem[key])
-							}
-							// END ADDED 26-11-23 For openByOtherEmp
-						});
-
-						if (this.theUser) {
-							if (caseItem.created_by_id && caseItem.created_by_id == this.theUser.id) {
-								Vue.set(caseItem, "filter_created_by_me", "true");
-								Vue.set(caseItem, "filter_my_cases", "true");
-							}
-
-							if (caseItem.assign_to_id && caseItem.assign_to_id == this.theUser.id) {
-								Vue.set(caseItem, "filter_assigned_me", "true");
-								Vue.set(caseItem, "filter_my_cases", "true");
-							}
-
-							if (caseItem.followed_by_list && caseItem.followed_by_list.split(";").indexOf(this.theUser.id) > -1) {
-								Vue.set(caseItem, "filter_followed_by_me", "true");
-								Vue.set(caseItem, "filter_my_cases", "true");
-							}
-						} else {
-							this.isEncodedHappenedBeforeUser = true;
-						}
-
-						var existingIndex = this.cases.findIndex(item => item.onid == caseItem.onid);
-
-						if (existingIndex < 0) {
-							this.cases.push(caseItem);
-						} else {
-							Vue.set(this.cases, existingIndex, caseItem);
-						}
-					});
-				}
-			},
-			readNewCase() {
-				this.funcObserveLatestCases(), $(".BTN_GetListOfUpdatedCasesJSON > a").click()
-			},
-			readLatestUpdatedCases() {
-				this.updateCasesTimer && clearTimeout(this.updateCasesTimer), this.funcObserveLatestCases(), $(".BTN_GetListOfUpdatedCasesJSON > a").click()
-			},
-			getDoesOnIdExist(e) {
-				if (!(e.length < 3)) {
-					var t = JSON.parse(e),
-						s = !1;
-					return t.forEach(e => {
-						Object.keys(e).forEach(function (t, s) {
-							e[t] = unescape(e[t])
-						}), 0 > this.cases.findIndex(t => t.onid == e.onid) && "true" == e.filter_created_by_me && (s = !0)
-					}), s
-				}
-			},
-			shallowEqual(e, t) {
-				let s = Object.keys(e),
-					a = Object.keys(t);
-				if (s.length !== a.length) return !1;
-				for (let i of s)
-					if ("last_updated_time" != i && e[i] !== t[i]) return !1;
-				return !0
-			},
-			getIsCaseWithIdUpdated(e) {
-				let t = this;
-				if (!(e.length < 3)) {
-					var s = JSON.parse(e),
-						a = !1;
-					return s.forEach(e => {
-						if (Object.keys(e).forEach(function (t, s) {
-							e[t] = unescape(e[t])
-						}), e.onid == t.theCaseUpdatingId) {
-							var s = this.cases.findIndex(t => t.onid == e.onid);
-							s > -1 && (a = !t.shallowEqual(this.cases[s], e))
-						}
-					}), a
-				}
-			},
-			funcObserveLatestCases() {
-				$(".ETRAY_JSON_LIST_OF_UPDATED_CASES > div").html("");
-				var e = this;
-				this.observeLatestCasesDiv = new MutationObserver(function (t) {
-					var s = $(".ETRAY_JSON_LIST_OF_UPDATED_CASES > div").html();
-					e.isNewCaseLoading ? e.getDoesOnIdExist(s) ? (e.setLatestCases(), e.isNewCaseLoading = !1) : e.isNewCaseLoading && (e.updateCasesTimer = setTimeout(function () {
-						e.readLatestUpdatedCases()
-					}, 2500)) : e.isCaseUpdating ? e.getIsCaseWithIdUpdated(s) ? (e.setLatestCases(), e.isCaseUpdating = !1, e.theCaseUpdatingId = null) : e.isCaseUpdating && (e.updateCasesTimer = setTimeout(function () {
-						e.readLatestUpdatedCases()
-					}, 2500)) : e.setLatestCases(), e.observeLatestCasesDiv.disconnect()
-				}), this.observeLatestCasesDiv.observe(document.querySelector(".ETRAY_JSON_LIST_OF_UPDATED_CASES > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			setLatestCases() {
-				var e = document.querySelector(".ETRAY_JSON_LIST_OF_UPDATED_CASES > div").innerHTML;
-				this.encodeCases(e)
-			},
-			funcObserveThisUser() {
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					e.setThisUser(), t.disconnect()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_USER_RAW_JSON > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			setThisUser() {
-				var e = $(".ETRAY_USER_PROFILE_USER_RAW_JSON > div").html();
-				if (!(e.length < 1)) {
-					var t = JSON.parse(e);
-					this.theUser = t[0], this.setUsers(e), $(".ETRAY_USER_PROFILE_USER_RAW_JSON > div").html("")
-				}
-			},
-			readUsers() {
-				this.usersIsLoading_1_75 = !0, this.funcObserveAllUsers_1_75(), $(".BTN_GetListOfUserProfiles_1_75 > a").click()
-			},
-			funcObserveAllUsers_1_75() {
-				$(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div").html();
-					e.setUsers_1_75(a), e.usersIsLoading_1_75 = !1, t.disconnect(), e.usersIsLoading_76_150 = !0, e.funcObserveAllUsers_76_150(), $(".BTN_GetListOfUserProfiles_76_150 > a").click()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveAllUsers_76_150() {
-				$(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div").html();
-					e.setUsers_76_150(a), e.usersIsLoading_76_150 = !1, t.disconnect(), e.usersIsLoading_151_225 = !0, e.funcObserveAllUsers_151_225(), $(".BTN_GetListOfUserProfiles_151_225 > a").click()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveAllUsers_151_225() {
-				$(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div").html();
-					e.setUsers_151_225(a), e.usersIsLoading_151_225 = !1, t.disconnect(), e.usersIsLoading_226_300 = !0, e.funcObserveAllUsers_226_300(), $(".BTN_GetListOfUserProfiles_226_300 > a").click()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveAllUsers_226_300() {
-				$(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div").html();
-					e.setUsers_226_300(a), e.usersIsLoading_226_300 = !1, t.disconnect(), e.usersIsLoading_301_375 = !0, e.funcObserveAllUsers_301_375(), $(".BTN_GetListOfUserProfiles_301_375 > a").click()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveAllUsers_301_375() {
-				$(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div").html();
-					e.setUsers_301_375(a), e.usersIsLoading_301_375 = !1, t.disconnect(), e.usersIsLoading_376_450 = !0, e.funcObserveAllUsers_376_450(), $(".BTN_GetListOfUserProfiles_376_450 > a").click()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveAllUsers_376_450() {
-				$(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div").html();
-					e.setUsers_376_450(a), e.usersIsLoading_376_450 = !1, t.disconnect(), e.usersIsLoading_451_525 = !0, e.funcObserveAllUsers_451_525(), $(".BTN_GetListOfUserProfiles_451_525 > a").click()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveAllUsers_451_525() {
-				$(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div").html();
-					e.setUsers_451_525(a), e.usersIsLoading_451_525 = !1, t.disconnect()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			run_autoupdate_func() {
-				this.isNewCaseLoading || this.isCaseUpdating || (clearJSONfields(), this.readLatestUpdatedCases()), this.isNewAnnouncementLoading || this.isUpdatedAnnouncementLoading || (clearJSONfields(), this.readLatestUpdatedDocsByOthers())
-			},
-			setUsers(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
-			},
-			setUsers_1_75(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				$(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
-			},
-			setUsers_76_150(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				$(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
-			},
-			setUsers_151_225(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				$(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
-			},
-			setUsers_226_300(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				$(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
-			},
-			setUsers_301_375(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				$(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
-			},
-			setUsers_376_450(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				$(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
-			},
-			setUsers_451_525(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				$(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
-			},
-			readOpenDocs() {
-				this.isOpenDocsLoading = !0, this.funcObserveDocsOpen(), $(".BTN_GetListOfExtDocs_Open > a").click()
-			},
-			readClosedDocs() {
-				this.isClosedDocsLoading = !0, this.funcObserveDocsClosed(), $(".BTN_GetListOfExtDocs_Closed > a").click()
-			},
-			funcObserveDocsOpen() {
-				$(".ETRAY_EXT_DOCS_RAW_JSON_OPEN > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_OPEN > div").innerHTML;
-					e.setDocs(a), e.isOpenDocsLoading = !1, t.disconnect(), e.readClosedDocs()
-				});
-				t.observe(document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_OPEN > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveDocsClosed() {
-				$(".ETRAY_EXT_DOCS_RAW_JSON_CLOSED > div").html("");
-				let self = this;
-				var observer = new MutationObserver(function (mutations) {
-					var html = document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_CLOSED > div").innerHTML;
-					self.setDocs(html);
-					self.isClosedDocsLoading = false;
-					observer.disconnect();
-				});
-				observer.observe(document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_CLOSED > div"), {
-					characterData: true,
-					childList: true
-				});
-			},
-
-			setDocs(html) {
-				setDocPagePostIDs();
-				if (html.length > 2) {
-					var docs = JSON.parse(html);
-					docs.forEach((doc, index) => {
-						if (this.items.findIndex(item => item.onid == doc.onid) < 0) {
-							this.items.push(doc);
-						}
-					});
-				}
-			},
-			setSearchInOldCases() {
-				this.isSearchingOldCases = !0, $(".ETRAY_JSON_LIST_OF_OLD_CASES > div").html(""), $(".SEARCH_FIELD > input").val(this.searchQuery), this.funcObserveSearchedServerCases(), $(".BTN_GetListOfOldCasesJSON > a").click()
-			},
-			funcObserveSearchedServerCases() {
-				var e = this,
-					t = new MutationObserver(function (s) {
-						e.setServerCases(), e.isSearchingOldCases = !1, t.disconnect()
-					});
-				t.observe(document.querySelector(".ETRAY_JSON_LIST_OF_OLD_CASES > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			setServerCases() {
-				var e = $(".ETRAY_JSON_LIST_OF_OLD_CASES > div").html();
-				!(e.length < 3) && (this.encodeCases(e), $(".ETRAY_JSON_LIST_OF_OLD_CASES > div").html(""))
-			},
-			setSearchInParnerCases() {
-				this.isSearchingPartnerCases = !0, $(".ETRAY_JSON_LIST_OF_OTHER_P_CASES > div").html(""), $(".SEARCH_FIELD > input").val(this.searchQuery), this.funcObservePartnerCases(), $(".BTN_GetListOfOtherPCasesJSON > a").click()
-			},
-			funcObservePartnerCases() {
-				var e = this,
-					t = new MutationObserver(function (s) {
-						e.setPartnerCases(), e.isSearchingPartnerCases = !1, t.disconnect()
-					});
-				t.observe(document.querySelector(".ETRAY_JSON_LIST_OF_OTHER_P_CASES > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			setPartnerCases() {
-				var e = $(".ETRAY_JSON_LIST_OF_OTHER_P_CASES > div").html();
-				!(e.length < 3) && (this.encodeCases(e), $(".ETRAY_JSON_LIST_OF_OTHER_P_CASES > div").html(""))
-			},
-			readEndCustomerConfigs() {
-				this.listenForDataChangesForONPKonfiguration("ONP_PENDING_PRODUCT_LIST")
-				this.listenForDataChangesForONPKonfigurationForm('ONP_TRANSACTION_LIST')
-				$(".ONP_BTN_GetInitialConfigData > a").click()
-			},
-			listenForDataChangesForONPKonfigurationForm(e, t, s) {
-				$("." + e + " > div").html("data__loading");
-				let interval = setInterval(() => {
-					let s = $("." + e + " > div").html();
-					if (s !== "data__loading") {
-						clearInterval(interval);
-						if (s.length > 1) {
-							this.onpFormData = JSON.parse(s)
-							this.setIsCreateOnpModalForm()
-						}
-					}
-				}, 1500);
-			},
-			listenForDataChangesForONPKonfiguration(e, t, s) {
-				this.isLoadingOnpProductList = true;
-				$("." + e + " > div").html("data__loading");
-
-				let interval = setInterval(() => {
-					let s = $("." + e + " > div").html();
-					if (s !== "data__loading") {
-						clearInterval(interval);
-						this.setEncodeData(s);
-						this.isLoadingOnpProductList = false;
-					}
-				}, 1500);
-			},
-			setEncodeData(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					let t = this.onpProductList.findIndex(t => t.REC_ID == e.REC_ID);
-					t < 0 ? this.onpProductList.push(e) : this.onpProductList[t] = e
-				})
-			},
-			listenForDataUpdates(e, t, s) {
-				this.isUpdatingOnpProductList = !0, $("." + e + "> div").html("data__loading"), a && clearInterval(a);
-				var a = setInterval(t => {
-					var s = $("." + e + "> div").html();
-					"data__loading" != s && (clearInterval(a), this.setEncodeData(s), this.isUpdatingOnpProductList = !1, this.closeVueModalOverlay())
-				}, 1500)
-			},
-			setActiveOnpProductListFilter(e) {
-				this.theActiveOnpProductListFilter = e
-			},
-			setIsCreateOnpModal(editItem) {
-				this.setIsCreateOnpModalForm(editItem)
-				this.isCreateOnpModal = true;
-				this.isVueModalOverlay = true;
-				$("body").css("overflow", "hidden");
-			},
-			setIsCreateOnpModalForm(editItem) {
-				const values = [];
-				this.onpFormData.forEach(standardFormItem => {
-					let value = standardFormItem['from_company'];
-					if (values.indexOf(value) < 0) {
-						values.push(value);
-					}
-				});
-				this.onpForm.forEach(formItem => {
-					if (formItem.id === 'FROM_COMPANY') {
-						formItem.options = values.sort();
-					} else {
-						this.$set(formItem, 'hide', true)
-					}
-				})
-				if (editItem && editItem.REC_ID) {
-					this.onpForm.forEach((formItem, s) => {
-						formItem.value = editItem[formItem.id]
-						this.setFormItemValidated(formItem)
-					})
-				}
-			},
-			submitOnpForm() {
-				let hasError = false;
-
-				this.onpForm.forEach((input, index) => {
-					if (!input.hide && input.value.length < 1) {
-						hasError = true;
-						input.validated = false;
-					}
-				});
-
-				if (!hasError) {
-					let formData = {};
-
-					this.onpForm.forEach((input, index) => {
-						formData[input.id] = input.value;
-					});
-					$(".ONP_INPUT_CONFIG_JSON > input").val(JSON.stringify([formData]));
-					this.listenForDataUpdates("ONP_UPDATED_PRODUCT_LIST");
-					$(".ONP_BTN_SetConfigData > a").click();
-				}
-			},
-			setTheEditOnp(editItem) {
-				console.log('setEdit', editItem)
-				this.setIsCreateOnpModal(editItem)
-			},
-			infinteScrollONPLoadMore() {
-				if ("end_customer_pricing_config" === this.activeCategory) {
-					if (this.onpProductListSearched.length < 50) {
-						this.infiniteScrollNumberONP = 50;
-						return
-					} !(this.infiniteScrollNumberONP > this.onpProductListSearched.length) && (this.infiniteScrollNumberONP += 50)
-				}
-			},
-			setTheActiveDescExpanded(e) {
-				this.theActiveDescExpanded === e ? this.theActiveDescExpanded = null : this.theActiveDescExpanded = e
-			},
-			findPrices() {
-				if (!this.validateSSID(this.ssid)) {
-					this.$refs.ssid_input.focus();
-					this.isSSIDValid = false;
-					return;
-				}
-				this.listenForDataChangesOnp("ONP_SSID_DETAILS", this.OnpSSIDDetails, "isSSIDLoading");
-				$(".ONP_INPUT_SSID > input").val(this.ssid);
-				$(".ONP_BTN_GetSSIDDetails > a").click();
-			},
-			setNewOrderSkaderItems() {
-				if (this.theNewOrderSkaderItems.length < 1) {
-					this.addNewOrderSkadeItem()
-				}
-			},
-			addNewOrderSkadeItem() {
-				if (this.theNewOrderSkaderItems.length > 0) {
-					const lastItemIdx = this.theNewOrderSkaderItems.length - 1
-					if (this.theNewOrderSkaderItems[lastItemIdx]['LABEL'].length < 1) {
-						const el = $('.o-cart__items > li:nth-last-child(2) > .o-input[type="text"]')
-						el.removeClass('animate-shake')
-						setTimeout(_ => {
-							el.addClass('animate-shake')
-						}, 250)
-						el.focus()
-						return
-					}
-				}
-				const obj = {
-					v_id: Date.now() + Math.random(),
-					v_count: 1,
-					TRANSACTION_CODE: '002',
-					LABEL: '',
-					PRICE: 0,
-					QUANTITY: 1,
-					UNIT_LABEL: '',
-					SSID: this.ssid
-				}
-				this.theNewOrderSkaderItems.push(obj)
-				this.$nextTick(_ => {
-					$('.o-cart__items > li:nth-last-child(2) > .o-input[type="text"]').focus()
-				})
-			},
-			deleteNewOrderSkadeItem(idx) {
-				console.log('deleteNewOrderSkadeItem', idx)
-				this.theNewOrderSkaderItems.splice(idx, 1)
-			},
-			validateSSID(e) {
-				let t = !isNaN(e);
-				return t && 10 === e.length
-			},
-			readEndCustomerOrders() {
-				this.listenForDataChangesOnp("ONP_PENDING_ORDERS", this.onpPendingOrders, "isLoadingOnpPendingOrders"), $(".ONP_BTN_GetPendingOrders > a").click()
-			},
-			setSpinner(e, t) {
-				"isLoadingOnpPendingOrders" === e && (this.isLoadingOnpPendingOrders = t), "isSSIDLoading" === e && (this.isSSIDLoading = t), "isSubmitOrderLoading" === e && (this.isSubmitOrderLoading = t), "isDeletingOrder" === e && (this.isDeletingOrder = t)
-			},
-			listenForDataChangesOnp(e, t, s) {
-				var a = this;
-				this.setSpinner(s, !0), $("." + e + "> div").html("data__loading"), i && clearInterval(i);
-				var i = setInterval(r => {
-					var o = $("." + e + "> div").html();
-					if ("data__loading" != o) {
-						if (clearInterval(i), "isDeletingOrder" === s) {
-							this.setEncodeDataPendingOrders(o, t), this.setSpinner(s, !1), a.setCancelOrderConfirmation(!1), a.closeVueModalOverlay();
-							return
-						}
-						if ("INVALID_SSID" == o) {
-							this.isSSIDLoading = !1, this.isSSIDValid = !1;
-							return
-						}
-						this.setEncodeDataPendingOrders(o, t), this.setSpinner(s, !1), "isSSIDLoading" === s && this.setIsNewOrderModal(!0), "isSubmitOrderLoading" === s && this.closeVueModalOverlay()
-					}
-				}, 1500)
-			},
-			setEncodeDataPendingOrders(e, t) {
-				function s(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				e.length > 2 && JSON.parse(s(s(e))).forEach(e => {
-					if (t == this.onpPendingOrders) var s = t.findIndex(t => t.id == e.id);
-					else var s = t.findIndex(t => t.REC_ID == e.REC_ID);
-					t == this.OnpSSIDDetails && this.$set(e, "v_count", 0), s < 0 ? t.push(e) : t[s] = e
-				})
-			},
-			setIsNewOrderModal(e) {
-				e && (this.isNewOrderModal = !0, this.isVueModalOverlay = !0, $("body").addClass("no-scroll"))
-			},
-			itemCountDecrement(e) {
-				0 != e.v_count && e.v_count--
-			},
-			itemCountIncrement(e) {
-				e.v_count++
-			},
-			validateOrderItem(e) {
-				(!e.v_count || isNaN(1 * e.v_count) || e.v_count < 0) && (e.v_count = 0)
-			},
-			submitOrder() {
-				console.log(this.dbOrder)
-				const self = this;
-				if (this.orderCustomerEmail.length === 0 && this.theActiveOrderType === '001') {
-					this.$refs.order_customer_email_input.focus();
-					clearTimeout(timeoutId);
-					self.isCustomerEmailInputEmpty = true;
-
-					var timeoutId = setTimeout(() => {
-						self.isCustomerEmailInputEmpty = false;
-					}, 1500);
-
-					return;
-				}
-				const isValidEmail = this.theActiveOrderType === '001' ? this.validateEmail(this.orderCustomerEmail) : true
-				if (isValidEmail) {
-					document.querySelector(".ONP_INPUT_SSID_DETAILS > input").value = JSON.stringify(this.dbOrder);
-					this.listenForDataChangesOnp("ONP_SSID_SubmitResult", this.onpPendingOrders, "isSubmitOrderLoading");
-					document.querySelector(".ONP_BTN_SSID_SubmitDetails > a").click();
-				} else {
-					this.isOrderCustomerEmailValid = false;
-				}
-			},
-			setActivePrevOrder(e) {
-				this.theActivePrevOrder = e, this.isVueModalOverlay = !0, $("body").addClass("no-scroll")
-			},
-			setCancelOrderConfirmation(e) {
-				e ? (this.isCancelOrderConfirmation = !0, this.isVueModalOverlayExtra = !0) : (this.isCancelOrderConfirmation = !1, this.isVueModalOverlayExtra = !1)
-			},
-			submitCancelOrder() {
-				$(".ONP_INPUT_DELETE_ORDER > input").val(this.theActivePrevOrder.id), this.listenForDataChangesOnp("ONP_DELETE_ORDER__CONFIRMATION", this.onpPendingOrders, "isDeletingOrder"), $(".ONP_BTN_DELETE_ORDER > a").click()
-			},
-			removeOrderFromOrders() {
-				var e = this.onpPendingOrders.findIndex(e => e.id == this.theActivePrevOrder.id);
-				this.onpPendingOrders.splice(e, 1)
-			},
-			infinteScrollONPOrdersLoadMore() {
-				if ("end_customer_orders" === this.activeCategory) {
-					if (this.onpPendingOrdersSearched.length < 50) {
-						this.infiniteScrollNumberONPOrders = 50;
-						return
-					} !(this.infiniteScrollNumberONPOrders > this.onpPendingOrdersSearched.length) && (this.infiniteScrollNumberONPOrders += 50)
-				}
-			},
-			setIsEndCustomerEmailConfigModal(bool) {
-				if (bool) {
-					$("body").css("overflow", "hidden");
-					//$('.OUTPUT_ONP_EndCustomerEmailConfigFORM > div').html('');
-					//$('.BUTTON_ONP_EndCustomerEmailConfigFORM > a').click();
-					this.isLoadingEndCustomerEmailConfigFormData = true
-					// Clear the interval if it's already running
-					if (a) {
-						clearInterval(a);
-					}
-
-					// Poll for data loading status and encode data when it's done
-					var a = setInterval(() => {
-						var str = $('.OUTPUT_ONP_EndCustomerEmailConfigFORM > div').html()
-						if (str.length > 4) {
-							clearInterval(a);
-							if (isJsonString(str)) {
-								const formData = JSON.parse(str)
-								formData.forEach(formInput => {
-									const idx = this.theEndCustomerEmailConfigForm.findIndex(item => item.id === formInput.id)
-									if (idx > -1) {
-										this.theEndCustomerEmailConfigForm[idx].value = decodeURI(formInput.value)
-									}
-								})
-							}
-							this.isLoadingEndCustomerEmailConfigFormData = false
-						}
-					}, 1500);
-				}
-
-				function isJsonString(str) {
-					try {
-						JSON.parse(str)
-					} catch (e) {
-						return false
-					}
-					return true
-				}
-				this.isEndCustomerEmailConfigModal = bool
-				this.isVueModalOverlay = bool
-			},
-			submitEndCustomerEmailConfigForm() {
-				this.isUpdatingEndCustomerEmailConfigForm = true
-				let formValue = this.theEndCustomerEmailConfigForm.map(item => {
-					return { id: item.id, value: encodeURI(item.value) };
-				});
-
-				$('.INPUT_ONP_EndCustomerEmailConfigFORM > input').val(JSON.stringify(formValue))
-				//console.log(JSON.stringify(formValue))
-				$('.BUTTON_ONP_EndCustomerEmailConfigFORM > a').click()
-
-				// Clear the interval if it's already running
-				if (a) {
-					clearInterval(a);
-				}
-
-				// Poll for data loading status and encode data when it's done
-				var a = setInterval(() => {
-					var s = $('.INPUT_ONP_EndCustomerEmailConfigFORM > input').val()
-					if (s === "modtaget") {
-						clearInterval(a);
-						this.closeVueModalOverlay()
-					}
-				}, 1500);
-			}
-		},
-		beforeMount() {
-			if ("undefined" != typeof Storage) {
-				var e = window.localStorage.getItem("sortSettingCases");
-				e && (this.theSortSettingCases = JSON.parse(e));
-				var t = window.localStorage.getItem("sortSettingDocs");
-				t && (this.theSortSettingDocs = JSON.parse(t))
-			}
-		},
-		mounted() {
-			var e = this
-			this.theActiveLoggedInCompany = $(".FROM_COMPANY > input").val()
-			/* START 17-12-23 */
-			this.$nextTick(_ => {
-				t = window.location.href
-				s = t.indexOf("&ID=");
-				if (0 > t.indexOf("&ID=&GUID")) {
-					var a = t.substring(s + 4, t.indexOf("&GUID="));
-					this.setActivecCategory("all_cases")
-					this.$refs.v_search_query.value = a
-					this.searchQuery = a
-				}
-				const getQueryParams = (url) => {
-					const urlObj = new URL(url);
-					const params = new URLSearchParams(urlObj.search);
-					const area = params.get('area');
-					const tab = params.get('tab');
-					return { area, tab }
-				}
-				const urlParams = getQueryParams(window.location)
-				if (urlParams.area && urlParams.tab) {
-					if (urlParams.area === 'openanalytics') {
-						this.setActivecCategory('OpenAnalytics')
-					}
-					if (urlParams.tab === 'data') {
-						this.setTheActiveFilter('OpenAnalytics_tab1')
-					}
-					if (urlParams.tab === 'datasubscriptions') {
-						this.setTheActiveFilter('OpenAnalytics_tab2')
-					}
-					if (urlParams.tab === '1') {
-						this.setTheActiveFilter('OpenAnalytics_tab1')
-					}
-					if (urlParams.tab === '2') {
-						this.setTheActiveFilter('OpenAnalytics_tab2')
-					}
-					if (urlParams.tab === 'hentfiler') {
-						this.setTheActiveFilter('OpenAnalytics_tab1')
-					}
-
-
-
-				}
-				$(document).trigger("trigger::vue_mounted")
-				const el = $('.updTagOrGroup_Output_mvp_groups > div')
-				if (el && el.length > 0) {
-					const arrOfPredifinedGroups = el.html() && el.html().length > 2 ? JSON.parse(el.html()) : [];
-					const modifiedArrOfPredifinedGroups = arrOfPredifinedGroups.map(group => {
-						return { ...group, v_sort: true };
-					});
-					this.thePredefinedGroups = modifiedArrOfPredifinedGroups;
-				}
-				this.getAllLocalStorageFilter()
-			})
-			/* END 17-12-23 */
-			"OpenNet" == $(".FROM_COMPANY > input").val() && $(".LOGIN_CUSTOMER_TYPE > input").val("ON"), this.theUserType = $(".LOGIN_CUSTOMER_TYPE > input").val(), "ON" == this.theUserType && $(".INQUIRY_TYPE_LEVEL0 > select").html($(".INQUIRY_TYPE_LEVEL0 > select").html().replace("SP</option>", "Til Infrastructure owner (IO)</option>").replace("IO</option>", "Til Service Provider (SP)</option>")), "ON" == this.theUserType ? ($(".js-click-case-edit-ref").removeClass("hidden_field"), $(".toggle-timeline-read-msg").removeClass("hidden_field"), readTimelineReadMsgCookie()) : ($("#js-checkbox__toogle-timeline_read_msg").prop("checked", !0), readTimelineReadMsgCookie()), document.querySelector("#o-page").addEventListener("click", function (t) {
-				e.onClickOutside(t)
-			}), e.funcObserveThisUser(), $(".BTN_GetListOfUserProfilesUser > a").click(), e.readOpenCasesV2(e.open_startLength, e.open_endLength), e.readOpenDocs(), $(document).on("vue::BILoadingTrigger", function (t, s) {
-				e.isLoadingBIReport = s
-			}), $(document).on("vue::BIChangeTrigger", function (t, s) {
-				e.theUnreadSelected = s
-			}), $(document).on("vue::new_ext_case", function () {
-				e.isNewAnnouncementLoading = !0, e.readLatestUpdatedDocs()
-			}), $(document).on("vue::update_ext_case", function () {
-				e.isUpdatedAnnouncementLoading = !0, e.readLatestUpdatedDocs()
-			}), $(document).on("vue::new_user", function () {
-				e.isNewUserLoading = !0, e.funcObserveLatestUser()
-			}), document.addEventListener("username_init_error", () => {
-				Vue.set(e.formErrors, "user_init", "Brugernavn er allerede taget")
-			}), document.addEventListener("username_init_no_error", () => {
-				e.removeErrors("user_init")
-			}), $(document).on("vue::new_case_created", function () {
-				e.isNewCaseLoading = !0, e.readLatestUpdatedCases()
-			}), $(document).on("vue::close_cases_modal", function () {
-				Object.keys(e.theActiveCaseUpdatedParams).length && (e.isCaseUpdating = !0, e.readLatestUpdatedCases(), e.theActiveCaseUpdatedParams = {}), e.run_autoupdate_func()
-			}), $(document).on("vue::update_case_prop", function (t, s, a) {
-				if (e.theCaseUpdatingId = s, a)
-					for (var i in a) e.theOrignalActiveCase[i] != a[i] ? Vue.set(e.theActiveCaseUpdatedParams, i, a[i]) : e.theActiveCaseUpdatedParams.hasOwnProperty(i) && delete e.theActiveCaseUpdatedParams[i]
-			}), this.$nextTick(t => {
-				$(window).on("scroll", function () {
-					var t = $(document).height(),
-						s = $(window).height() + $(window).scrollTop();
-					(t - 300 >= s) / t == 0 && (e.loadMoreCases(), e.infinteScrollONPLoadMore(), e.infinteScrollONPOrdersLoadMore())
-				})
-			}), setInterval(t => {
-				run_autoupdate && "roles" != this.activeCategory && e.run_autoupdate_func()
-			}, 3e4)
-		}
-	})
-}), $(window).scroll(function (e) {
-	var t = $(".o-header");
-	window.scrollY > 32 ? t.hasClass("o-header--fixed") || t.addClass("o-header--fixed") : t.removeClass("o-header--fixed")
-});
-// TRIGGER VUE_LOADED - END //
-
-// STEP 4 - TRIGGER VUE_MOUNTED - START //
-$(document).on("trigger::vue_mounted", function () {
-	//console.log("trigger::vue_mounted");
-
-	mediaQuery.matches && openBurgerMenu();
-
-	$("#webform").appendTo(".js-form-create-case");
-	addEtrayCreateFormEventListeners();
-
-	// Bind click event for menu toggle
-	$(".js-menu-toggle").off("click").on("click", function () {
-		$(this).hasClass("active") ? closeBurgerMenu() : openBurgerMenu();
-	});
-	// Bind click event for case creation button
-	$(".js-btn-create-case").off("click").on("click", function () {
-
-		run_autoupdate = false;
-		window.scroll(0, 0);
-		subCatChangeSelect("Create Case");
-
-		if (window.matchMedia("(max-width: 600px)").matches) {
-			closeBurgerMenu();
-		}
-
-		if ($(this).hasClass("active")) {
-			closeCreateCase();
-		} else {
-			$(this).addClass("active");
-			$(".o-bg-overlay").addClass("o-bg-overlay--active");
-			$(".js-o-modal__create-case").addClass("o-create-case--active");
-			$("body").css("overflow", "hidden");
-			$(".js-modal-create-title").text("Opret sag");
-		}
-	});
-
-	// Bind click event for menu overlay
-	$(".js-o-menu__overlay").off("click").on("click", function () {
-		$(".js-menu-toggle").removeClass("active");
-		$(".o-menu__items").removeClass("o-menu__items--active");
-		$(".o-menu__overlay").removeClass("o-menu__overlay--active");
-	});
-
-	// Bind click event for home navigation
-	$(".js-click-nav__home").off("click").on("click", function () {
-		$(".o-page").removeClass("o-page--docs");
-		$(".o-page").removeClass("o-page--all-cases");
-		$(".o-menu__items__inner li").each(function () {
-			$(this).removeClass("li--active");
-		});
-		$(this).addClass("li--active");
-		$(".js-page-title").text("Hjem / Mine sager");
-		$(".ETRAY_LIST_VIEWER_CASES_LEVEL_1 > input").val("");
-		$(".ETRAY_LIST_VIEWER_CASES_LEVEL_2 > input").val("");
-		$(".js-filter-level2__new_announcements").css("display", "");
-		showSpecificLevel3Filters([
-			".js-filter__sla",
-			".js-filter__created_by_me",
-			".js-filter__assigned_to_me",
-			".js-filter__follows"
-		]);
-		resetLevel2FiltersToInitialState();
-		if (window.matchMedia("(max-width: 600px)").matches) {
-			closeBurgerMenu();
-		}
-		window.scroll(0, 0);
-	});
-
-	// Bind click event for all cases navigation
-	$(".js-click-nav__all-cases").off("click").on("click", function () {
-		$(".o-page").removeClass("o-page--docs");
-		if (!$(".o-page").hasClass("o-page--all-cases")) {
-			$(".o-page").addClass("o-page--all-cases");
-		}
-		$(".o-menu__items__inner li").each(function () {
-			$(this).removeClass("li--active");
-		});
-		$(this).addClass("li--active");
-		$(".js-page-title").text("Alle sager");
-		$(".ETRAY_LIST_VIEWER_CASES_LEVEL_1 > input").val("all");
-		$(".js-filter-level2__new_announcements").css("display", "none");
-		showSpecificLevel3Filters([
-			".js-filter__sla",
-			".js-filter__new",
-			".js-filter__not_assigned",
-			".js-filter__follow-up",
-			".js-filter__assigned_to"
-		]);
-		resetLevel2FiltersToInitialState();
-		if (window.matchMedia("(max-width: 600px)").matches) {
-			closeBurgerMenu();
-		}
-		window.scroll(0, 0);
-	});
-});
-// TRIGGER VUE_MOUNTED - END //
-
-// STEP 5 - TRIGGER TRIGGER_AFTER_EXT_DOC_RENDERRING - START //
-$(document).on("TRIGGER_AFTER_EXT_DOC_RENDERRING", function () {
-	setTimeout(function () {
-		$(".EXT_DOCS_TYPE option").filter(function () {
-			return $(this).text() == $(".EXT_DOCS_TYPE_VAL > input").val()
-		}).prop("selected", !0), $(".UPDATE_EXT_FIELDS").removeClass("hidden_field"), $(".EXT_DOCS_LOADING").addClass("hidden_field");
-		var e = $(".EXT_RECIEVERS_JSON_UPDATE > div").html();
-		createTogglerForReceivers(e, document.querySelector(".EXT_DOCS_RECIEVERS_DISPLAY_UPDATE > div"))
-	}, 2e3)
-})
-// TRIGGER TRIGGER_AFTER_EXT_DOC_RENDERRING - END //
-
-// Variables - START //
-
-var observerAllCases, singleCaseLoadedObserver, mediaQuery = window.matchMedia("(min-width: 1000px)");
-var offset = 250;
-var duration = 550;
-var report = null;
-var run_autoupdate = !1;
-var $form = $(".js-case-drop-files");
-var droppedFiles = !1;
-var Set_UM_USER_INIT = !0;
-var openAnalyticsSecret = 'your_secret_value_here_global';
-var current_iframeHeight = 10;
-var current_iframeWidth = 10;
-var isPurifyLoadedToPage = false
-console.log(openAnalyticsSecret)
-// Variables - START //
-
-// FUNCTIONS - START //
-
-function setDocPagePostIDs() {
-	$(".BTN_SetDocPagePostIDs_Step1 > a").click();
-	setTimeout(() => {
-		$(".BTN_SetDocPagePostIDs_Step2 > a").click();
-	}, 2000); // 2000 milliseconds = 2 seconds
-}
-
-function openBurgerMenu() {
-	// If the page does not have the 'o-page--menu-open' class, add it
-	if (!$(".o-page").hasClass("o-page--menu-open")) {
-		$(".o-page").addClass("o-page--menu-open");
-	}
-
-	// If the menu toggle does not have the 'active' class, add it
-	//console.log('js-menu-toggle',$(".js-menu-toggle"));	
-	if (!$(".js-menu-toggle").hasClass("active")) {
-		$(".js-menu-toggle").addClass("active");
-	}
-
-	// If the menu items do not have the 'o-menu__items--active' class, add it
-	if (!$(".o-menu__items").hasClass("o-menu__items--active")) {
-		$(".o-menu__items").addClass("o-menu__items--active");
-	}
-
-	// If the menu overlay does not have the 'o-menu__overlay--active' class, add it
-	if (!$(".o-menu__overlay").hasClass("o-menu__overlay--active")) {
-		$(".o-menu__overlay").addClass("o-menu__overlay--active");
-	}
-}
-
-function addPurifyFromCDN() {
-	if (isPurifyLoadedToPage) {
-		return
-	}
-	// Sanitizing user-generated content is crucial for preventing XSS (Cross-Site Scripting) attacks
-	$.getScript("https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js", function (e, t, s) {
-		console.log('purify loaded')
-		isPurifyLoadedToPage = true
-	})
-}
-
-
-/* START 17-12-23 */
-addPopperFromCDN()
-
-function addPopperFromCDN() {
-	// Create a <link> element for the CSS file
-	const link = document.createElement('link')
-	link.rel = 'stylesheet'
-	link.href = 'https://unpkg.com/vue-virtual-scroller/dist/vue-virtual-scroller.css'
-	document.head.appendChild(link)
-
-	// Create a <script> element for the Vue Multiselect script
-	$.getScript("https://unpkg.com/@popperjs/core@2", function (e, t, s) {
-		console.log('popper loaded')
-		$(document).trigger("trigger::vue__virtual_scroller_loaded")
-	})
-}
-/* END 17-12-23 */
-function closeBurgerMenu() {
-	$(".js-menu-toggle").removeClass("active"), $(".o-page").removeClass("o-page--menu-open"), $(".o-menu__items").removeClass("o-menu__items--active"), $(".o-menu__overlay").removeClass("o-menu__overlay--active")
-}
-
-function closeCreateCase() {
-	run_autoupdate = !0, $(".js-btn-create-case").removeClass("active"), $(".o-create-case").removeClass("o-create-case--active"), $("body").css("overflow", "initial"), $(".o-bg-overlay").removeClass("o-bg-overlay--active")
-}
-
-function addEtrayCreateFormEventListeners() {
-	$('.Web_InnerControl_RADIOBUTTONS > div > input[type="radio"] + div').click(function () {
-		$(this).prev('input[type="radio"]').click()
-	}), $('.Web_MainControl_checkbox > input[type="checkbox"] + .CheckboxLabel').click(function () {
-		$(this).prev('input[type="checkbox"]').click()
-	})
-}
-
-function CreateUser() {
-	!0 == submit_validation_logic() && (subCatChangeSelect("Create User"), $(".UM_EVENT_TYPE > input").val("CREATE_USER"), "" != $(".UM_COPY_OF > select").val() && $(".UM_USER_ID > input").val($(".UM_COPY_OF > select").val()), clearJSONfields(), $(".UM_RESULT > div").html(""), $(document).trigger("vue::new_user"), $(".BTN_UserManagement > a").click(), clear_fields_after_submit(), closeCreateCase())
-}
-
-function CreateExtCase() {
-	!0 == submit_validation_logic() && (subCatChangeSelect("Create ext docs"), clearJSONfields(), $(".EXT_DOCS_PAGE_IDS > input").val(""), $(".EXT_DOCS_EVENT_TYPE > input").val("NEW"), $(".webformCreateMore").click(), clear_fields_after_submit(), closeCreateCase(), setTimeout(function () {
-		$(document).trigger("vue::new_ext_case")
-	}, 500))
-}
-
-function RemoveExtDocfile(e) {
-	var t = $(".EXT_DOCS_PAGE_IDS > input").val();
-	"-1" == $(".EXT_DOCS_PAGE_IDS > input").val().indexOf(e + ";", 0) && ($(".EXT_DOCS_PAGE_IDS > input").val(t + e + ";"), $(".remove_file_" + e).addClass("hidden_field"))
-}
-
-function UpdateExtCase(e) {
-	!0 == submit_validation_logic() && (subCatChangeSelect("Edit ext docs"), "CLOSE" == e && $(".EXT_DOCS_EVENT_TYPE > input").val("CANCEL"), "EDIT" == e && $(".EXT_DOCS_EVENT_TYPE > input").val("UPDATE"), $(".webformCreateMore").click(), clear_fields_after_submit(), closeCreateCase(), setTimeout(function () {
-		$(document).trigger("vue::update_ext_case")
-	}, 500))
-}
-
-function CreateCaseAndClose() {
-	// Set input value to true
-	$(".CLOSE_ON_CREATE > input").val('true');
-	$(".FROM_COMPANY_STATUS > input").val('Closed');
-	console.log("FROM_COMPANY_STATUS", $(".FROM_COMPANY_STATUS > input").val());
-
-
-	// If validation logic returns true, execute the following logic
-	if (submit_validation_logic()) {
-		subCatChangeSelect("Create Case");
-		clearJSONfields();
-		$(".webformCreateMore").click();
-		clear_fields_after_submit();
-		closeCreateCase();
-
-		// Trigger an event after a short delay
-		setTimeout(function () {
-			$(document).trigger("vue::new_case_created");
-		}, 1000);
-	}
-}
-
-function CreateCase() {
-	!0 == submit_validation_logic() && (subCatChangeSelect("Create Case"), clearJSONfields(), $(".webformCreateMore").click(), clear_fields_after_submit(), closeCreateCase(), setTimeout(function () {
-		$(document).trigger("vue::new_case_created")
-	}, 1e3))
-}
-
-function clear_fields_after_submit() {
-	$(".js-clear_on_submit > textarea").val(""), $(".js-clear_on_submit > input").val(""), $(".js-clear_on_submit > div > div > :radio").prop("checked", !1), $(".js-clear_on_submit > select").prop("selectedIndex", 0), $(".INQUIRY_TYPE_LEVEL2 > select").change(), setTimeout(function () {
-		$(".Web_MainControl_upload > .UploadPanel > div > a").click()
-	}, 3e3)
-}
-
-function submit_validation_logic() {
-	clearJSONfields();
-	var e = 0;
-	return $(".Web_MainControl").each(function () {
-		if ("none" !== $(this).css("display")) {
-			if ($(".NEW_PASSWORD_YES_NO  > .Web_InnerControl > div > input:checked").val() && $(".NEW_PASSWORD > input").val() != $(".NEW_PASSWORD2 > input").val() ? ($(".NEW_PASSWORD > input").addClass("js-input--error"), $(".NEW_PASSWORD2 > input").addClass("js-input--error"), e++) : ($(".NEW_PASSWORD > input").removeClass("js-input--error"), $(".NEW_PASSWORD2 > input").removeClass("js-input--error")), $(".USER_ADMIN_NEW_PASSWORD_YES_NO  > .Web_InnerControl > div > input:checked").val() && $(".USER_ADMIN_NEW_PASSWORD > input").val() != $(".USER_ADMIN_NEW_PASSWORD2 > input").val() ? ($(".USER_ADMIN_NEW_PASSWORD > input").addClass("js-input--error"), $(".USER_ADMIN_NEW_PASSWORD2 > input").addClass("js-input--error"), e++) : ($(".USER_ADMIN_NEW_PASSWORD > input").removeClass("js-input--error"), $(".USER_ADMIN_NEW_PASSWORD2 > input").removeClass("js-input--error")), $(this).find(".Web_Error").length) {
-				var t = $(this).find(".Web_Error");
-				"" != t.html() ? (e++, $(this).addClass("js-input--error")) : $(this).removeClass("js-input--error")
-			}
-			if ($(this).find(".Web_Required + a").length) {
-				var t = $(this).find(".Web_Required + a");
-				t.next("div").next(".UploadPanel").html().length < 1 ? (e++, $(this).addClass("js-input--error")) : $(this).removeClass("js-input--error")
-			}
-			if ($(this).find('.Web_Required + input[type="checkbox"]').length) {
-				var t = $(this).find('.Web_Required + input[type="checkbox"]');
-				$(t).is(":checked") ? $(this).removeClass("js-input--error") : (e++, $(this).addClass("js-input--error"))
-			}
-			if ($(this).find(".Web_Required + .Web_InnerControl > div > input").length) {
-				var t = $(this).find(".Web_Required + .Web_InnerControl > div > input");
-				$(t).is(":checked") ? $(this).removeClass("js-input--error") : (e++, $(this).addClass("js-input--error"))
-			}
-			if ($(this).find(".Web_Required + input").length) {
-				var t = $(this).find(".Web_Required + input");
-				$(t).val() ? $(t).val() && $(t).removeClass("js-input--error") : (e++, $(t).addClass("js-input--error"))
-			}
-			if ($(this).find(".Web_Required + textarea").length) {
-				var t = $(this).find(".Web_Required + textarea");
-				$(t).val() ? $(t).val() && $(t).removeClass("js-input--error") : (e++, $(t).addClass("js-input--error"))
-			}
-			if ($(this).find(".Web_Required + select").length) {
-				var t = $(this).find(".Web_Required + select");
-				$(t).val() ? $(t).val() && $(t).removeClass("js-input--error") : (e++, $(t).addClass("js-input--error"))
-			}
-		}
-	}), !(e > 0) || (console.log(e), !1)
-}
-
-function setProgressPath() {
-	// Get the progress indicator path and its total length
-	var progressPath = document.querySelector(".progress_indicator path");
-	if (!progressPath) {
-		return
-	}
-	var pathLength = progressPath.getTotalLength();
-
-	// Set initial styles for the progress indicator path
-	progressPath.style.transition = progressPath.style.WebkitTransition = "none";
-	progressPath.style.strokeDasharray = pathLength + " " + pathLength;
-	progressPath.style.strokeDashoffset = pathLength;
-	progressPath.getBoundingClientRect();
-
-	// Animate the progress indicator path when scrolling
-	progressPath.style.transition = progressPath.style.WebkitTransition = "stroke-dashoffset 10ms linear";
-	var updateProgress = function () {
-		// Get the current scroll position and document height
-		var scrollTop = $(window).scrollTop();
-		var documentHeight = $(document).height() - $(window).height();
-
-		// Update the stroke dash offset of the progress indicator path
-		progressPath.style.strokeDashoffset = pathLength - scrollTop * pathLength / documentHeight;
-	};
-
-	// Call the updateProgress function on page load and when scrolling
-	updateProgress();
-	$(window).on("scroll", updateProgress);
-}
-
-function showSpecificLevel3Filters(e) {
-	$(".js-filter-level3").each(function () {
-		$(this).css("display", "none")
-	}), $(".js-filter__assigned_to").css("display", "none"), removeActiveFiltersLevel3();
-	for (var t = 0; t < e.length; t++) $(e[t]).css("display", "")
-}
-
-function resetLevel2FiltersToInitialState() {
-	$(".js-filter-level2").each(function () {
-		$(this).removeClass("o-filters__filter--active")
-	}), $(".js-filter__open-cases").addClass("o-filters__filter--active"), $(".ETRAY_LIST_VIEWER_CASES_LEVEL_2 > input").val("")
-}
-
-function removeActiveFiltersLevel3() {
-	$(".ETRAY_LIST_VIEWER_CASES_LEVEL_3 > input").val(""), $(".ETRAY_LIST_VIEWER_CASES_LEVEL_4 > input").val(""), $(".ETRAY_LIST_VIEWER_CASES_LEVEL_5 > input").val(""), $(".js-filter-level3").each(function () {
-		$(this).removeClass("o-btn__filter---active")
-	}), $(".o-body__list-of-cases .js-filter__categories.js-o-dropdown").removeClass("o-dropdown--has-selection"), $(".o-body__list-of-cases .js-filter__categories.js-o-dropdown").find(".o-dropdown__selected p").text("Alle kategorier"), $(".o-body__list-of-cases .js-o-dropdown").find(".o-dropdown__selected p").attr("id", ""), $(".o-body__list-of-cases .js-filter__assigned_to.js-o-dropdown").removeClass("o-dropdown--has-selection"), $(".o-body__list-of-cases .js-filter__assigned_to.js-o-dropdown").find(".o-dropdown__selected p").text("Alle brugere"), $(".o-body__list-of-cases .js-filter__assigned_to.js-o-dropdown").find(".o-dropdown__selected p").attr("id", "")
-}
-
-function readAllNotifications() { }
-
-function readNotification(e) {
-	var t = $(".ETRAY_NOTIFICATIONS__" + e + " > input").val();
-	$(".js-filter__" + e + "> .js-filter__notifications").text(t), (!t || t < 1) && $(".js-filter__" + e + "> .js-filter__notifications").hide()
-}
-
-function readAllNumberOfCases() { }
-
-function observeInputValue(e, t, s, a = 0) {
-	let i = Object.getPrototypeOf(e);
-	if (i.hasOwnProperty(t)) {
-		let r = Object.getOwnPropertyDescriptor(i, t);
-		Object.defineProperty(e, t, {
-			get: function () {
-				return r.get.apply(this, arguments)
-			},
-			set: function () {
-				let e = this[t];
-				r.set.apply(this, arguments);
-				let i = this[t];
-				return "function" == typeof s && setTimeout(s.bind(this, e, i), a), i
-			}
-		})
+    .o - page input[type = "search"].o - search - cases.o - search - cases--active,
+    .o - page input[type = "search"]: focus.o - search - cases {
+		width: 300px;
 	}
 }
 
-function addEventListenerOnSingleCases() { }
+.o - search - group__clear {
+	position: absolute;
+	right: 6px;
+	top: 6px;
+	cursor: pointer;
+	pointer - events: none;
+	opacity: 0;
+	-webkit - transform: scale(.65);
+	-ms - transform: scale(.65);
+	transform: scale(.65);
+	-webkit - transition: opacity 0.25s, -webkit - transform 0.25s;
+	transition: opacity 0.25s, -webkit - transform 0.25s;
+	-o - transition: opacity 0.25s, transform 0.25s;
+	transition: opacity 0.25s, transform 0.25s;
+	transition: opacity 0.25s, transform 0.25s, -webkit - transform 0.25s;
+}
 
-// START ADDED 26-11-23 For openByOtherEmp
-var isSeeCaseOpenByOthers = false
-var intervalSeeCaseOpenByOthersTimer = null
-var intervalObserveCaseOpenChanges = null
-// END ADDED 26-11-23 For openByOtherEmp
+.o - search - group__clear >.tio {
+	font - size: 1.5rem;
+	color: var(--grey);
+	opacity: 0.7;
+	-webkit - transition: opacity 0.25s;
+	-o - transition: opacity 0.25s;
+	transition: opacity 0.25s;
+}
 
-function closeCasesModal() {
-	run_autoupdate = true;
-	$(".o-bg-overlay").removeClass("o-bg-overlay--active");
-	$(".o-modal__case").removeClass("o-modal--active");
-	$("#js-case-element__inserted").remove();
-	$("body").css("overflow", "");
-	if (!$('.js-modal__single-case .o-modal__body').hasClass('o-modal__body--loading')) {
-		$('.js-modal__single-case .o-modal__body').addClass('o-modal__body--loading');
+.o - search - group__clear: hover >.tio {
+	opacity: 1;
+}
+
+.o - page input[type = "search"].o - search - cases.o - search - cases--active +.o - search - group__clear {
+	opacity: 1;
+	-webkit - transform: scale(1);
+	-ms - transform: scale(1);
+	transform: scale(1);
+	pointer - events: initial;
+}
+
+.o - filters {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: stretch;
+	-webkit - box - align: stretch;
+	align - items: stretch;
+	width: 100 %;
+}
+
+.o - filters__filter {
+	-ms - flex: 1;
+	-webkit - box - flex: 1;
+	flex: 1;
+	position: relative;
+	padding: 1rem 0.25rem;
+	cursor: pointer;
+	border: 1px solid var(--borderColor);
+	-webkit - transition: color 0.25s, border - color 0.25s ease - out;
+	-o - transition: color 0.25s, border - color 0.25s ease - out;
+	transition: color 0.25s, border - color 0.25s ease - out;
+	font - size: 0.65rem;
+	font - weight: bold;
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - direction: column - reverse;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: reverse;
+	flex - direction: column - reverse;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	color: var(--grey);
+	border - bottom: 2px solid transparent;
+	margin - bottom: -1px;
+	text - align: center;
+}
+
+.o - filters__filter__hint - container {
+	-ms - flex: 1;
+	-webkit - box - flex: 1;
+	flex: 1;
+}
+
+.o - filters__filter:hover {
+	color: var(--lightBlue);
+}
+
+.o - filters__filter.o - filters__filter--active {
+	color: var(--lightBlue);
+	border - bottom: 2px solid var(--lightBlue);
+}
+
+.o - page--all - cases.o - filters__filter__title__my - cases,
+.o - filters__filter__title__all - cases {
+	display: none;
+}
+
+.o - page--all - cases.o - filters__filter__title__all - cases {
+	display: block;
+}
+
+.o - badge {
+	position: relative;
+	background: rgb(108 122 135 / 15 %);
+	color: var(--grey);
+	display: block;
+	padding: 2px 8px;
+	border - radius: 12px;
+	font - size: 12px;
+	font - weight: bold;
+	-webkit - transition: background - color 0.5s;
+	-o - transition: background - color 0.5s;
+	transition: background - color 0.5s;
+	margin: 0 0 0.5rem 0;
+}
+
+.o - badge.o - badge--loading::before {
+	content: '';
+	position: absolute;
+	z - index: 1;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background: #e8ebed;
+	border - radius: 50 %
+}
+
+.o - badge.o - badge--loading::after {
+	content: '';
+	position: absolute;
+	z - index: 2;
+	left: 0;
+	right: 0;
+	margin: auto;
+	top: 0;
+	bottom: 0;
+	background: transparent;
+	border: 2px solid var(--borderBlue);
+	border - radius: 50 %;
+	border - top: 2px solid var(--primary);
+	height: 10px;
+	width: 10px;
+	-webkit - animation: spin 0.8s linear infinite;
+	animation: spin 0.8s linear infinite;
+}
+
+.o - message {
+	position: absolute;
+	top: -10px;
+	left: 5px;
+	width: 1.2rem;
+	height: 1.2rem;
+	border - radius: 50 %;
+	background: var(--red);
+	color: #ffffff;
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	-ms - flex - pack: center;
+	-webkit - box - pack: center;
+	justify - content: center;
+	font - size: 10px;
+	font - weight: bold;
+	border: 1px solid #ffffff;
+}
+
+.o - filters__filter.o - filters__filter--active.o - badge {
+	background: rgb(85 105 220 / 33 %);
+	color: #5569DC;
+}
+
+.o - filters__filter.o - filters__filter--red {
+	background: var(--red);
+	border - color: var(--red);
+	color: #ffffff;
+}
+
+.o - input - group__checkbox {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	cursor: pointer;
+}
+
+.o - input - group input[type = "checkbox"] {
+	margin: 0;
+}
+
+.o - label {
+	font - size: 0.75rem;
+	color: var(--grey);
+	margin - bottom: 0;
+	padding - right: 0.5rem;
+	cursor: pointer;
+	-webkit - transition: color 0.25s;
+	-o - transition: color 0.25s;
+	transition: color 0.25s;
+	-webkit - user - select: none;
+	-moz - user - select: none;
+	-ms - user - select: none;
+	user - select: none;
+}
+
+.o - label:hover {
+	color: var(--fontColor);
+}
+
+.o - modal__create -case.o - create -case --active {
+	-webkit - transform: scale(1);
+	-ms - transform: scale(1);
+	transform: scale(1);
+	opacity: 1;
+	pointer - events: initial;
+}
+
+.o - modal__create - case__body {
+	max - width: 100 %;
+	margin: 0px auto;
+}
+
+/* ETRAY CSS */
+
+#webform.Web_MainControl {
+	margin - bottom: 24px;
+	margin - right: 0;
+	margin - left: 0;
+}
+
+#webform select,
+	#webform input[type = "text"],
+		#webform textarea,
+.o - form input[type = "text"],
+.o - form input[type = "password"],
+.o - select__options,
+.o - textarea {
+	width: 100 % !important;
+	border: 1px solid var(--borderColor)!important;
+	padding: 12px 24px!important;
+	border - radius: 4px;
+	-webkit - transition: border - color 0.25s;
+	-o - transition: border - color 0.25s;
+	transition: border - color 0.25s;
+}
+
+#webform select,
+.o - select__options {
+	position: relative;
+	cursor: pointer;
+	-webkit - appearance: none;
+	-moz - appearance: none;
+	appearance: none;
+	background: #ffffff url("https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/br_down.png") no - repeat right 16px center;
+	background - size: 12px;
+}
+
+#webform select: focus,
+	#webform input[type = "text"]: focus,
+		#webform textarea: focus,
+.o - form input[type = "text"]: focus,
+.o - form input[type = "password"]: focus,
+.o - select__options: focus,
+.o - textarea:focus {
+	border - color: var(--primary)!important;
+}
+
+#webform.Web_TextLabel,
+.o - form label {
+	font - weight: 500;
+	color: #333;
+	font - size: 14px;
+}
+
+#webform.Web_InnerControl_RADIOBUTTONS {
+	width: 100 % !important;
+}
+
+#webform.Web_InnerControl_RADIOBUTTONS > div {
+	position: relative;
+}
+
+#webform.Web_InnerControl_RADIOBUTTONS > div > input[type = "radio"] {
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0;
+	height: 0;
+	width: 0;
+	visibility: hidden;
+}
+
+#webform.Web_InnerControl_RADIOBUTTONS > div > input[type = "radio"] + div {
+	background: #ffffff!important;
+	padding: 16px;
+	margin - bottom: 8px;
+	margin - left: 0;
+	margin - top: 0;
+	border - radius: 4px;
+	border: 2px solid var(--borderColor);
+	cursor: pointer;
+	font - weight: 500;
+	-webkit - transition: border - color 0.25s;
+	-o - transition: border - color 0.25s;
+	transition: border - color 0.25s;
+}
+
+#webform.Web_InnerControl_RADIOBUTTONS > div > input[type = "radio"] + div:hover {
+	border - color: var(--primary);
+}
+
+#webform.Web_InnerControl_RADIOBUTTONS > div > input[type = "radio"]: checked + div {
+	border - color: var(--primary);
+	background: rgba(10, 55, 170, 0.05)!important;
+	color: var(--primary)
+}
+
+
+#webform button, #webform.UploadButton {
+	display: inline - block;
+	cursor: pointer;
+	font - weight: 400;
+	color: #212529;
+	text - align: center;
+	vertical - align: middle;
+	-webkit - user - select: none;
+	-moz - user - select: none;
+	-ms - user - select: none;
+	user - select: none;
+	border: 1px solid #edeef1;
+	padding: 11.2px 24.8px;
+	font - size: 15px;
+	line - height: 1.5;
+	border - radius: 8px;
+	-webkit - transition: all .15s ease -in -out;
+	-o - transition: all .15s ease -in -out;
+	transition: all .15s ease -in -out;
+	-webkit - transform: scale(1) translateZ(0);
+	transform: scale(1) translateZ(0);
+	background - color: #ffffff;
+	float: right;
+	margin: 0;
+}
+
+#webform button: hover,
+	#webform.UploadButton:hover {
+	opacity: 0.9;
+}
+
+#webform button: active, #webform.UploadButton:active {
+	-webkit - transform: scale(0.95);
+	-ms - transform: scale(0.95);
+	transform: scale(0.95);
+}
+
+#webform.submit_btn {
+	background - color: var(--primary);
+	color: #ffffff;
+	font - size: 15px;
+	padding: 11.2px 24.8px;
+	float: right;
+	margin - left: 16px;
+}
+
+#webform.UploadButton {
+	font - size: 13px;
+	float: initial;
+}
+
+#webform.Web_MainControl_checkbox {
+	position: relative;
+}
+
+#webform.Web_MainControl_checkbox > input[type = "checkbox"] {
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0;
+	height: 0;
+	width: 0;
+	visibility: hidden;
+	cursor: pointer;
+}
+
+#webform.Web_MainControl_checkbox > input[type = "checkbox"] +.CheckboxLabel {
+	padding - left: 24px;
+	-webkit - user - select: none;
+	-moz - user - select: none;
+	-ms - user - select: none;
+	user - select: none;
+	cursor: pointer;
+}
+
+#webform.Web_MainControl_checkbox > input[type = "checkbox"] +.CheckboxLabel:hover {
+	color: var(--primary);
+}
+
+#webform.Web_MainControl_checkbox > input[type = "checkbox"] +.CheckboxLabel:before {
+	content: '';
+	width: 16px;
+	height: 16px;
+	border: 1px solid var(--borderColor);
+	background - color: #ffffff;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border - radius: 4px;
+}
+
+#webform.Web_MainControl_checkbox > input[type = "checkbox"] +.CheckboxLabel:after {
+	content: '';
+	width: 4px;
+	height: 8px;
+	border: 2px solid white;
+	border - width: 0 2px 2px 0;
+	background - color: transparent;
+	position: absolute;
+	top: 3px;
+	left: 6px;
+	-webkit - transition: backgroundColor 0.25s, -webkit - transform 0.4s;
+	transition: backgroundColor 0.25s, -webkit - transform 0.4s;
+	-o - transition: transform 0.4s, backgroundColor 0.25s;
+	transition: transform 0.4s, backgroundColor 0.25s;
+	transition: transform 0.4s, backgroundColor 0.25s, -webkit - transform 0.4s;
+	-webkit - transform: rotate(0deg);
+	-ms - transform: rotate(0deg);
+	transform: rotate(0deg);
+}
+
+#webform.Web_MainControl_checkbox > input[type = "checkbox"]: checked +.CheckboxLabel:before {
+	background - color: var(--primary);
+}
+
+#webform.Web_MainControl_checkbox > input[type = "checkbox"]: checked +.CheckboxLabel:after {
+	-webkit - transform: rotate(40deg);
+	-ms - transform: rotate(40deg);
+	transform: rotate(40deg);
+}
+
+#webform.UPLOAD_LINK {
+	margin - top: -8px;
+}
+
+.o - cases {
+	background - color: var(--bgLigthBlue);
+	overflow: hidden;
+	border - radius: 0 0 12px 12px;
+	padding: 1rem 0;
+}
+
+.o - cases__container {
+	min - height: 100vh;
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - pack: center;
+	-webkit - box - pack: start;
+	justify - content: flex - start;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	-ms - flex - direction: column;
+	flex - direction: column;
+}
+
+.o - cases__container >.o - spinner: not(.vue - spinner),
+.o - cases__container.o - cases__container--loading >.js - list - of - cases {
+	display: none;
+}
+
+.o - cases__container >.js - list - of - cases,
+.o - cases__container.o - cases__container--loading >.o - spinner {
+	display: block;
+}
+
+.o - body.table tbody tr:hover {
+	background - color: initial;
+	color: initial;
+}
+
+.o - body.table > thead > tr > th,
+.o - body.table > tbody > tr > th,
+.o - body.table > tfoot > tr > th,
+.o - body.table > thead > tr > td,
+.o - body.table > tbody > tr > td,
+.o - body.table > tfoot > tr > td {
+	padding: 0!important;
+	border - top: 0!important;
+}
+
+
+.case_element {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - direction: column - reverse;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: reverse;
+	flex - direction: column - reverse;
+	-webkit - box - shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	box - shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	margin - bottom: 16px;
+	background: #ffffff;
+	border - radius: 4px;
+	-webkit - transition: -webkit - transform 0.25s;
+	transition: -webkit - transform 0.25s;
+	-o - transition: transform 0.25s;
+	transition: transform 0.25s;
+	transition: transform 0.25s, -webkit - transform 0.25s;
+	cursor: pointer;
+	/* START ADDED 26-11-23 For openByOtherEmp */
+	position: relative;
+	/* END ADDED 26-11-23 For openByOtherEmp */
+}
+
+/* START ADDED 17-12-23 */
+.o - cases__case_element__header {
+	font - size: 11px;
+	font - weight: bold;
+	border - bottom: 1px solid var(--borderColor);
+	color: var(--grey);
+}
+
+.o - cases__case_element__header__row {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - wrap: wrap;
+	flex - wrap: wrap;
+	-ms - flex - align: stretch;
+	-webkit - box - align: stretch;
+	align - items: stretch;
+	-ms - flex - pack: justify;
+	-webkit - box - pack: justify;
+	justify - content: space - between;
+}
+
+.o - cases__case_element__header__row > div {
+	width: 50 %;
+	border: 1px solid var(--borderColor);
+	border - width: 1px 1px 0 0;
+	padding: 1rem;
+	margin - right: 0;
+}
+
+/* END ADDED 17-12-23 */
+
+.o - cases__case_element__body {
+	font - size: 14px;
+	padding: 16px;
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - direction: column;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	flex - direction: column;
+	-ms - flex - pack: justify;
+	-webkit - box - pack: justify;
+	justify - content: space - between;
+}
+
+.o - cases__case - group {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-webkit - box - orient: horizontal;
+	-webkit - box - direction: normal;
+	flex - direction: row;
+	-ms - flex - direction: column;
+	flex - direction: column;
+}
+
+.o - cases__case - group label {
+	width: 150px;
+	font - weight: bold;
+}
+
+.o - cases__case_element__body__arrow {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	color: var(--primary);
+}
+
+.o - cases__case_element__body__arrow.tio {
+	font - size: 24px;
+	-webkit - transition: margin 0.25s;
+	-o - transition: margin 0.25s;
+	transition: margin 0.25s;
+}
+
+.case_element:hover {
+	-webkit - transform: translateY(-4px);
+	-ms - transform: translateY(-4px);
+	transform: translateY(-4px);
+}
+
+.case_element.case_element--unclickable:hover {
+	-webkit - transform: translateY(0)!important;
+	-ms - transform: translateY(0)!important;
+	transform: translateY(0)!important;
+	cursor: default ;
+}
+
+.case_element: not(.case_element--unclickable): hover.o - cases__case_element__body__input +.o - cases__case_element__body__arrow.tio {
+	margin - right: -4px;
+	margin - left: 4px;
+}
+
+.o - pill {
+	display: inline - block;
+	background: #f1f5f9;
+	color: #6d727c;
+	font - weight: bold;
+	padding: 4px 12px;
+	border - radius: 12px;
+	margin - left: 8px;
+}
+
+.o - pill.o - pill--yellow {
+	background - color: #fdf7b2;
+	color: #855529;
+}
+
+.o - pill.o - pill--red {
+	background - color: #fdf1f2;
+	color: #9f374f;
+}
+
+.o - pill.o - pill--green {
+	background: rgb(32 118 86 / 10 %);
+	color: #207656;
+}
+
+.o - pill.o - pill--pad {
+	padding: 4px 12px!important
+}
+
+.o - modal {
+	position: fixed;
+	z - index: 30;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+	min - height: 100vh;
+	background - color: var(--bgLigthBlue);
+	height: calc(100vh - (4rem + 4rem));
+	font - size: 16px;
+	-webkit - box - shadow: var(--boxShadow);
+	box - shadow: var(--boxShadow);
+	-webkit - transform: scale(0.85);
+	-ms - transform: scale(0.85);
+	transform: scale(0.85);
+	-webkit - transition: -webkit - transform 0.35s;
+	transition: -webkit - transform 0.35s;
+	-o - transition: transform 0.35s;
+	transition: transform 0.35s;
+	transition: transform 0.35s, -webkit - transform 0.35s;
+	padding: 0;
+	overflow: hidden;
+	opacity: 0;
+	pointer - events: none;
+	border - radius: 4px;
+}
+
+.o - modal--alwaysactive {
+	position: fixed;
+	z - index: 30;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+	min - height: 100vh;
+	background - color: var(--bgLigthBlue);
+	height: calc(100vh - (4rem + 4rem));
+	font - size: 16px;
+	-webkit - box - shadow: var(--boxShadow);
+	box - shadow: var(--boxShadow);
+	padding: 0;
+	overflow: hidden;
+	border - radius: 4px;
+}
+
+.o - modal--alwaysactive.o - modal--alwaysactive--second {
+	top: 4rem;
+}
+
+.o - modal.o - modal--active {
+	-webkit - transform: scale(1);
+	-ms - transform: scale(1);
+	transform: scale(1);
+	opacity: 1;
+	pointer - events: initial;
+}
+
+.o - modal.o - modal--small {
+	margin - top: 2rem;
+	min - height: calc(100vh - 2rem);
+	z - index: 32;
+}
+
+.o - bg - small - modal - overlay {
+	position: fixed;
+	z - index: 31;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgb(10 55 170 / 10 %);
+	display: none;
+}
+
+.o - bg - small - modal - overlay.o - bg - small - modal - overlay--active {
+	display: block;
+}
+
+.o - modal.o - modal--small.o - modal.o - modal--small--active {
+	-webkit - transform: scale(1);
+	-ms - transform: scale(1);
+	transform: scale(1);
+	opacity: 1;
+	pointer - events: initial;
+}
+
+.o - modal__header {
+	position: absolute;
+	z - index: 33;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 65px;
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	-ms - flex - pack: justify;
+	-webkit - box - pack: justify;
+	justify - content: space - between;
+	font - size: 2rem;
+	cursor: pointer;
+	-webkit - backdrop - filter: saturate(1) blur(20px)!important;
+	backdrop - filter: saturate(1) blur(20px)!important;
+	padding: 1rem;
+	border - bottom: 1px solid var(--borderColor);
+}
+
+.o - modal__case.o - modal__body {
+	padding: calc(1rem + 65px) 0 0;
+}
+
+.o - modal__body {
+	position: relative;
+	z - index: 32;
+	height: calc(100 %);
+	overflow - y: auto;
+	padding: calc(1rem + 65px) 1rem 1rem;
+	overscroll - behavior: contain;
+}
+
+.o - modal__body:before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	background: #ffffff;
+	width: 100 %;
+	height: 65px;
+}
+
+.o - modal__body.o - modal__body--loading.o - modal__case,
+.o - modal__body.o - modal__case.o - modal__case__spinner {
+	display: none;
+}
+
+.o - modal__body.o - modal__body--loading.o - modal__case.o - modal__case__spinner {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	-ms - flex - pack: center;
+	-webkit - box - pack: center;
+	justify - content: center;
+}
+
+#js -case -element__inserted {
+	-webkit - box - shadow: none;
+	box - shadow: none;
+	border: 1px solid var(--borderColor);
+	border - radius: 12px;
+	-webkit - transform: translateY(0)!important;
+	-ms - transform: translateY(0)!important;
+	transform: translateY(0)!important;
+}
+
+#js -case -element__inserted.o - cases__case_element__body__arrow {
+	display: none;
+}
+
+.o - modal__case__commentary {
+	width: 100 %;
+}
+
+.o - modal__case__commentary textarea {
+	position: relative;
+	width: 100 %;
+	border: 1px solid var(--borderColor);
+	border - radius: 4px;
+	padding: 16px;
+	min - height: 80px;
+	outline: none;
+}
+
+.o - modal__case__commentary textarea:focus {
+	border - color: var(--primary);
+}
+
+.o - modal__case__actions {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - direction: column;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	flex - direction: column;
+	-ms - flex - align: stretch;
+	-webkit - box - align: stretch;
+	align - items: stretch;
+	list - style - type: none;
+	margin: 0;
+	margin - left: 0;
+	padding: 1rem 0;
+}
+
+
+.o - modal__case__actions li.o - btn {
+	border - radius: 4px;
+	margin - bottom: 0.5rem;
+	padding: 0.6rem 1.4rem;
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+}
+
+.o - modal__case__actions li.o - btn > i {
+	color: var(--grey);
+	margin - right: 0.5rem;
+	font - size: 1.1rem;
+}
+
+
+.o - modal__case__actions li: nth - child(6).o - btn {
+	border - radius: 8px;
+	background: transparent;
+}
+
+.o - modal__case__commentary__actions {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: start;
+	-webkit - box - align: start;
+	align - items: flex - start;
+	-ms - flex - pack: justify;
+	-webkit - box - pack: justify;
+	justify - content: space - between;
+	width: 100 %;
+}
+
+.o - modal__case__timeline {
+	position: relative;
+	border: 1px solid var(--borderColor);
+	background: #ffffff;
+	border - radius: 4px;
+	margin: 0 0 2rem 0;
+	padding: 0 1rem;
+	font - size: 0.85rem;
+}
+
+.timeline_element {
+	margin: 2rem 0;
+}
+
+.timeline_element.timeline_header {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	color: var(--fontGray);
+	font - size: 14px;
+}
+
+.timeline_text {
+	padding: 1rem 2rem;
+	border - radius: 12px;
+	background: rgb(0 0 0 / 10 %);
+}
+
+.timeline_opennet.timeline_text {
+	background: rgb(10 55 170 / 10 %);
+}
+
+.timeline_internal_note.timeline_text {
+	background: rgb(255 240 89 / 33 %);
+}
+
+.timeline_by, .timeline_time {
+	margin - right: 0.5rem;
+	font - size: 11px;
+	color: var(--grey);
+	font - weight: bold;
+}
+
+.timeline_system, .timeline_case {
+	margin - right: 20 %;
+}
+
+.timeline_element {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+}
+
+.timeline_conversation_to {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - direction: column;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	flex - direction: column;
+	-ms - flex - align: end;
+	-webkit - box - align: end;
+	align - items: flex - end;
+	width: 100 %;
+	margin - left: 20 %;
+}
+
+.timeline_conversation_to.timeline_text {
+	background: var(--bgLigthBlue);
+}
+
+.timeline_opennet.timeline_header,
+.timeline_opennet.timeline_text {
+	display: -ms - inline - flexbox;
+	display: -webkit - inline - box;
+	display: inline - flex;
+}
+
+.o - select {
+	width: 100 %;
+	position: relative;
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	min - height: 30px;
+}
+
+.o - select.o - select--active.o - select__input__lookalike {
+	border - radius: 4px 4px 0 0;
+	border - color: var(--primary);
+}
+
+.o - select__container {
+	width: 100 %;
+	position: relative;
+}
+
+.o - select__container.tio {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	font - size: 1.2rem;
+	color: var(--grey);
+}
+
+.o - select__container.tio.clear_circle {
+	right: 2.5rem;
+	cursor: pointer;
+	display: none;
+	opacity: 0.7;
+	-webkit - transition: opacity 0.25s;
+	-o - transition: opacity 0.25s;
+	transition: opacity 0.25s;
+}
+
+.o - select__container.tio.clear_circle:hover {
+	opacity: 1;
+}
+
+.o - select.o - select--item - selected.o - select__container.tio.clear_circle {
+	display: block;
+}
+
+.o - select__input__lookalike {
+	cursor: text;
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - wrap: wrap;
+	flex - wrap: wrap;
+	width: 100 %;
+	outline: none!important;
+	border: 1px solid #edf2f7;
+	font - size: .85rem;
+	-webkit - appearance: none!important;
+	background: #fff;
+	-webkit - box - shadow: 0 2px 5px - 1px rgb(50 50 93 / 25 %), 0 1px 3px - 1px rgb(0 0 0 / 30 %);
+	box - shadow: 0 2px 5px - 1px rgb(50 50 93 / 25 %), 0 1px 3px - 1px rgb(0 0 0 / 30 %);
+	-webkit - box - sizing: border - box!important;
+	box - sizing: border - box!important;
+	-webkit - transition: background - color .24s, -webkit - box - shadow .24s;
+	transition: background - color .24s, -webkit - box - shadow .24s;
+	-o - transition: background - color .24s, box - shadow .24s;
+	transition: background - color .24s, box - shadow .24s;
+	transition: background - color .24s, box - shadow .24s, -webkit - box - shadow .24s;
+	border - radius: 4px;
+	min - height: 34px;
+}
+
+.o - select__input__lookalike__selected - item {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	padding - left: 1rem;
+}
+
+.o - select.o - select--active.o - select__input__lookalike__selected - item {
+	opacity: 0.6;
+}
+
+.o - select.o - select--searchable.o - select__input__lookalike__selected - item {
+	opacity: 0
+}
+
+.o - select.o - select__input {
+	border: none!important;
+	width: 250px;
+	-webkit - box - shadow: none!important;
+	box - shadow: none!important;
+	padding: .5rem 1rem;
+}
+
+.o - select.o - select--active.o - select__input {
+	width: 250px;
+}
+
+.o - select.o - select--item - selected.o - select__input:: -webkit - input - placeholder {
+	opacity: 0;
+}
+
+.o - select__dropdown {
+	position: absolute;
+	z - index: 10000;
+	background - color: #fff;
+	padding: 0;
+	width: 100 %;
+	top: 100 %;
+	left: 0;
+	right: 0;
+	border - width: 1px;
+	border: 1px solid var(--primary);
+	border - top: 0 solid var(--primary);
+	border - radius: 0 0 4px 4px;
+	-webkit - box - shadow: 0 4px 14px 0 rgb(0 0 0 / 20 %), 0 0 0 1px rgb(0 0 0 / 5 %);
+	box - shadow: 0 4px 14px 0 rgb(0 0 0 / 20 %), 0 0 0 1px rgb(0 0 0 / 5 %);
+	pointer - events: none;
+	display: none;
+	font - size: 14px;
+	max - height: 250px;
+	overflow - y: auto;
+}
+
+.o - select__dropdown ul {
+	list - style - type: none;
+	padding: 0;
+	margin: 0;
+}
+
+.o - select__dropdown ul li {
+	padding: 4px 16px;
+	width: 100 %;
+	cursor: pointer;
+}
+
+.o - select__dropdown ul li:hover {
+	background: var(--primary);
+	color: #ffffff;
+}
+
+.o - select.o - select--active.o - select__dropdown {
+	display: block;
+	pointer - events: initial;
+}
+
+.o - modal--small.o - modal__case__commentary {
+	margin - top: 1rem;
+}
+
+#webform.Web_InnerControl_CHECKBOXLIST > div,
+	#webform.Web_InnerControl_RADIOBUTTONS > div {
+	width: auto;
+	margin - right: 1rem;
+}
+
+.webform_pagerButton {
+	border: 1px solid var(--borderColor);
+	background: #ffffff;
+	height: 32px;
+	width: 32px;
+}
+
+.webform_pagerBar.webform_pagerButton: nth - child(1) {
+	background: #ffffff!important;
+}
+
+
+.js - follow -case .js - follow - case__follow,
+.js - follow -case.js - is - following -case .js - follow - case__following {
+	display: block;
+}
+
+.js - follow -case.js - is - following -case .js - follow - case__follow,
+.js - follow -case .js - follow - case__following {
+	display: none;
+}
+
+.webform_pagerButton > span {
+	display: none;
+}
+
+.webform_pagerBar >.btn {
+	position: relative;
+}
+
+.webform_pagerBar >.btn: after,
+.webform_pagerBar >.btn:before {
+	content: "\e9b2";
+	font - size: 20px;
+	line - height: 28px;
+	font - family: 'The-Icon-of';
+	src: url('../fonts/The-Icon-of.eot'),
+		url('../fonts/The-Icon-of.woff2') format('woff2');
+	font - weight: normal;
+	font - style: normal;
+	font - display: block;
+	/* use !important to prevent issues with browser extensions that change fonts */
+	font - family: 'The-Icon-of'!important;
+	speak: none;
+	font - style: normal;
+	font - weight: normal;
+	font - variant: normal;
+	text - transform: none;
+	/* Enable Ligatures ================ */
+	letter - spacing: 0;
+	-ms - font - feature - settings: "liga"1;
+	-webkit - font - feature - settings: "liga";
+	font - feature - settings: "liga";
+	-webkit - font - variant - ligatures: discretionary - ligatures;
+	font - variant - ligatures: discretionary - ligatures;
+
+	/* Better Font Rendering =========== */
+	-webkit - font - smoothing: antialiased;
+	-moz - osx - font - smoothing: grayscale;
+}
+
+.webform_pagerBar >.btn[id ^= "webtablenextbutton"]:after {
+	content: "\e9b3";
+}
+
+.webform_pagerBar >.btn:before {
+	display: none;
+}
+
+.webform_pagerBar >.btn[id ^= "webtablefirstbutton"]:after {
+	content: '\e9b2';
+	margin - right: -6px;
+}
+
+.webform_pagerBar >.btn[id ^= "webtablefirstbutton"]:before {
+	display: inline - block;
+	content: '\e9b2';
+	position: absolute;
+	left: 1px;
+	top: 1px;
+}
+
+.webform_pagerBar >.btn[id ^= "webtablelastbutton"]:after {
+	content: '\e9b3';
+	margin - left: -6px;
+}
+
+.webform_pagerBar >.btn[id ^= "webtablelastbutton"]:before {
+	display: inline - block;
+	content: '\e9b3';
+	position: absolute;
+	right: 1px;
+	top: 1px;
+}
+
+.webform_pagerBar >.webform_pagerNumber {
+	margin: 0 1rem;
+}
+
+.o - datepicker input[type = "date"],
+.o - datepicker input[type = "datetime-local"] {
+	width: 100 %;
+}
+
+/* ALL CASES */
+
+.o - modal__case__timeline {
+	position: relative;
+	z - index: 0;
+}
+
+.o - modal__case__timeline.o - modal__case__timeline--loading:before {
+	content: '';
+	font - size: 1.5rem;
+	padding - top: 20px;
+	text - align: center;
+	position: absolute;
+	z - index: 1;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgb(10 55 170 / 15 %);
+	border - radius: 4px;
+}
+
+.o - modal__case__timeline.o - modal__case__timeline--loading:after {
+	content: '';
+	position: absolute;
+	z - index: 2;
+	top: 0;
+	left: 50 %;
+	right: 50 %;
+	margin: 0 auto;
+	display: block;
+	border: 3px solid var(--borderColor);
+	border - radius: 50 %;
+	border - top: 3px solid var(--primary);
+	height: 24px;
+	width: 24px;
+	-webkit - animation: spin 0.8s linear infinite;
+	animation: spin 0.8s linear infinite;
+	margin - top: 2rem;
+}
+
+input.datetimepicker {
+	width: 308px;
+	min - height: 34px;
+	border - radius: 4px;
+	border: 1px solid #edf2f7;
+	font - size: .85rem;
+	-webkit - appearance: none!important;
+	background: #fff;
+	-webkit - box - shadow: 0 2px 5px - 1px rgb(50 50 93 / 25 %), 0 1px 3px - 1px rgb(0 0 0 / 30 %);
+	box - shadow: 0 2px 5px - 1px rgb(50 50 93 / 25 %), 0 1px 3px - 1px rgb(0 0 0 / 30 %);
+	margin - bottom: 3px;
+}
+
+.o - modal.o - modal--small.js - o - modal--small__create - note,
+.o - modal.o - modal--small.js - o - modal--small__follow - up {
+	min - height: 560px;
+}
+
+.textarea - container {
+	position: relative;
+	z - index: 3;
+}
+
+.textarea - container__upload - area {
+	position: absolute;
+	z - index: 2;
+	background: #ffffff;
+	top: 1px;
+	left: 1px;
+	right: 1px;
+	bottom: 7px;
+	border - radius: 4px;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	-ms - flex - pack: center;
+	-webkit - box - pack: center;
+	justify - content: center;
+	display: none;
+	pointer - events: none;
+	color: var(--grey);
+}
+
+.textarea - container.is - dragover.textarea - container__upload - area {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+}
+
+.textarea - container.is - dragover - element.textarea - container__upload - area {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	color: var(--primary);
+}
+
+.textarea - container__upload - area >.tio {
+	font - size: 1.5rem;
+	margin - right: 0.5rem;
+}
+
+.o - body {
+	will - change: margin;
+	-webkit - transition: margin - right cubic - bezier(0.4, 0, 0.2, 1) 0.4s!important;
+	-o - transition: margin - right cubic - bezier(0.4, 0, 0.2, 1) 0.4s!important;
+	transition: margin - right cubic - bezier(0.4, 0, 0.2, 1) 0.4s!important;
+}
+
+.o - body__list - of - cases__left__filters {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	-ms - flex - direction: column;
+	flex - direction: column;
+}
+
+@media only screen and(min - width: 1000px) {
+    .o - menu__overlay {
+		display: none;
 	}
-	$(document).trigger("vue::close_cases_modal");
-	// START ADDED 26-11-23 For openByOtherEmp
-	$('.updCaseIdSession_Type > input').val('REMOVE')
-	$('.updCaseIdSession_BTN > a').click()
-	isSeeCaseOpenByOthers = false
-	clearInterval(intervalSeeCaseOpenByOthersTimer)
-	clearInterval(intervalObserveCaseOpenChanges)
-	// END ADDED 26-11-23 For openByOtherEmp
-}
 
-function readEtrayCase(e, t) {
-	$(".ETRAY_READ_CASE_TOKEN_ID > input").val(e), $(".ETRAY_READ_CASE_ID > input").val(t), clearJSONfields(), $(".ETRAY_READ_CASE > a").click(), readEtrayCaseComments()
-}
-
-function disable_all_btns() {
-	$(".o-btn").css("pointer-events", "none"), $(".o-btn").css("cursor", "wait"), document.body.style.cursor = "wait"
-}
-
-function enable_all_btns() {
-	$(".o-btn").css("pointer-events", ""), $(".o-btn").css("cursor", ""), document.body.style.cursor = ""
-}
-
-function readEtrayCaseComments() {
-	$(".o-modal__case__timeline").hasClass("o-modal__case__timeline--loading") || $(".o-modal__case__timeline").addClass("o-modal__case__timeline--loading"), $(document).one("etray::single-case-comments-loaded", function () {
-		$(".js-o-modal__case__timeline").html("");
-		var e = '<div class="timeline_body">' + $(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").text() + "</div>";
-		$(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").html(e), $(".js-o-modal__case__timeline").prepend($(".ETRAY_CASE_TIMELINE_PARRENT > div").html()), $(".o-modal__case__timeline").removeClass("o-modal__case__timeline--loading"), enable_all_btns()
-	})
-}
-
-function readEtrayCaseComments() {
-	// Check if the timeline is currently loading, if not, add the loading class
-	if (!$(".o-modal__case__timeline").hasClass("o-modal__case__timeline--loading")) {
-		$(".o-modal__case__timeline").addClass("o-modal__case__timeline--loading");
-	}
-
-	// Set up a one-time event listener for when the single case comments are loaded
-	$(document).one("etray::single-case-comments-loaded", function () {
-		// Clear the existing timeline content
-		$(".js-o-modal__case__timeline").html("");
-
-		// Construct the new timeline body with content from ETRAY_CASE_TIMELINE
-		var timelineContent = '<div class="timeline_body">' +
-			$(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").text() +
-			"</div>";
-
-		// Update the ETRAY_CASE_TIMELINE with the new content
-		$(".ETRAY_CASE_TIMELINE_PARRENT > div > .ETRAY_CASE_TIMELINE").html(timelineContent);
-
-		// Prepend the new timeline content to the modal
-		$(".js-o-modal__case__timeline").prepend($(".ETRAY_CASE_TIMELINE_PARRENT > div").html());
-
-		// Remove the loading class from the timeline
-		$(".o-modal__case__timeline").removeClass("o-modal__case__timeline--loading");
-
-		// Re-enable all buttons
-		enable_all_btns();
-	});
-}
-
-
-
-
-function addMutationObserverOnCommentFiles() {
-	var e = new MutationObserver(function (t) {
-		var s = "";
-		$(".ETRAY_COMMENT_UPLOAD #uploadedPanel > div").each(function () {
-			var e = $(this).find("span").text(),
-				t = $(this).find("a").attr("deleteurl");
-			s = s + ('<div class="cloned-uploads__file"><span>' + e + '</span><a style="margin-left:5px;cursor:pointer" class="link-text js-file-remove-link" data-id="') + t + '">Fjern</a></div>'
-		});
-		var a = '<div class="cloned-uploads">' + s + "</div>";
-		$(".js-case__comment-files-listed").html(a), addClickEventListenersOnCommentFileUploads(), e.disconnect()
-	});
-	e.observe($(".ETRAY_COMMENT_UPLOAD #uploadedPanel")[0], {
-		characterData: !0,
-		childList: !0
-	})
-}
-
-function addClickEventListenersOnCommentFileUploads() {
-	$(".js-file-remove-link").off("click"), addMutationObserverOnCommentFiles(), $(".js-file-remove-link").click(function (e) {
-		e.preventDefault();
-		var t = $(this).attr("data-id");
-		$("a[deleteurl='" + t + "']").click()
-	})
-}
-
-function handleFiles(e) {
-	[...e].forEach(uploadFile)
-}
-
-function uploadFile() { }
-
-function openSmallModal(e) {
-	var t = $("." + e);
-	$(t).hasClass("o-modal--small--active") || ($(t).addClass("o-modal--small--active"), $(t).find(".js-o-modal-small__inner").css("display", "block")), $(".o-bg-small-modal-overlay").hasClass("o-bg-small-modal-overlay--active") || $(".o-bg-small-modal-overlay").addClass("o-bg-small-modal-overlay--active")
-}
-
-function closeSmallModal() {
-	$(".o-modal--small").removeClass("o-modal--small--active"), $(".o-bg-small-modal-overlay").removeClass("o-bg-small-modal-overlay--active"), $(".o-modal--small").find(".js-o-modal-small__inner").css("display", "block"), $(".datetimepicker").val("")
-}
-
-function oSelectPreselect(e, t) {
-	var s = $("." + e + " .o-select__dropdown ul").find("#" + t).text();
-	$("." + e).find(".o-select__container").find(".js-o-select-selected-item-name").text(s), $("." + e).find(".o-select__container").find(".js-o-select-selected-item-id").val(t);
-	var a = $("." + e).find(".o-select");
-	a.hasClass("o-select--item-selected") || a.addClass("o-select--item-selected")
-}
-
-function resetOSelectPreSelected(e) {
-	$("." + e).find(".o-select__container").find(".js-o-select-selected-item-name").text(""), $("." + e).find(".o-select__container").find(".js-o-select-selected-item-id").val(""), $("." + e).find(".o-select").removeClass("o-select--item-selected")
-}
-
-function oSelect() {
-	$(".js-o-select-input-lookalike").on("click", function (e) {
-		var t = $(this).closest(".o-select");
-		t.hasClass("o-select--active") || t.addClass("o-select--active"), $(this).children('input[type="search"]').focus(), e.stopPropagation()
-	}), $(".o-modal--small").on("click", function () {
-		$(".o-select").removeClass("o-select--active"), $('input[type="search"]').blur(), closeOSelect()
-	}), $(".o-select__dropdown ul li").on("click", function () {
-		$(this).closest(".o-select__dropdown").prev(".o-select__container").find(".js-o-select-selected-item-name").text($(this).text()), $(this).closest(".o-select__dropdown").prev(".o-select__container").find(".js-o-select-selected-item-id").val($(this).attr("id"));
-		var e = $(this).closest(".o-select");
-		e.hasClass("o-select--item-selected") || e.addClass("o-select--item-selected"), closeOSelect()
-	}), $(".o-search-input").on("input", function () {
-		var e = $(this).closest(".o-select");
-		e.hasClass("o-select--active") || e.addClass("o-select--active"), $(this).val().length > 0 ? e.hasClass("o-select--searchable") || e.addClass("o-select--searchable") : e.removeClass("o-select--searchable")
-	}), $(".o-select__input").on("keyup", function () {
-		var e = $(this).val().toUpperCase();
-		$(this).closest(".o-select__container").siblings(".o-select__dropdown").children(".js-o-select-items").children("li").each(function () {
-			$(this).text().toUpperCase().indexOf(e) > -1 ? $(this).show() : $(this).hide()
-		})
-	}), $(".js-o-select-search-clear").on("click", function () {
-		$(".o-search-input").val(""), $(this).siblings(".js-o-select-selected-item-name").text(""), $(this).siblings(".js-o-select-selected-item-id").val(""), $(this).closest(".o-select").removeClass("o-select--item-selected")
-	})
-}
-
-function closeOSelect() {
-	$(".o-select--active").removeClass("o-select--active"), $(".o-select").removeClass("o-select--searchable"), $(".o-search-input").val(""), $(".o-search-input").blur(), $(".o-items > li").each(function () {
-		$(this).css("display", "")
-	})
-}
-
-function setDateTimePicker() {
-	$(".datetimepicker").datetimepicker("destroy"), $(".datetimepicker").datetimepicker({
-		onGenerate: function (e) {
-			jQuery(this).find(".xdsoft_date.xdsoft_day_of_week6").addClass("xdsoft_disabled"), jQuery(this).find(".xdsoft_date.xdsoft_day_of_week0").addClass("xdsoft_disabled"), $(".datetimepicker").show()
-		},
-		lang: "da",
-		dayOfWeekStart: 1,
-		minDate: 0,
-		inline: !0,
-		timepicker: !0,
-		scrollMonth: !1,
-		scrollInput: !1,
-		format: "d-m-Y H:i:s",
-		defaultTime: "12:00",
-		defaultDate: new Date,
-		closeOnDateSelect: !0,
-		onChangeDateTime: function (e, t) { }
-	})
-}
-
-function appendEtrayCases() {
-	$(".ETRAY_LIST_OF_CASES").css("display", ""), $(".ETRAY_LIST_OF_CASES").appendTo(".js-list-of-cases"), addEventListenerOnSingleCases()
-}
-
-function subCatChangeSelect(e) {
-	$(".sub_cat option").filter(function () {
-		return $(this).text() == e
-	}).prop("selected", !0), $(".sub_cat > select").trigger("change")
-}
-
-function createTogglerForReceivers(e, t) {
-	$(".d-receivers").length > 0 && $(".d-receivers").remove();
-	var s = [];
-	e.length > 3 && (s = JSON.parse(e));
-	var a = {};
-	s.forEach(e => {
-		a[e.TYPE_OF_RECIEVER] ? a[e.TYPE_OF_RECIEVER].push(e) : a[e.TYPE_OF_RECIEVER] = [e]
-	});
-	var i = document.createElement("div");
-	i.classList.add("d-receivers");
-	var r = [];
-	for (let o in a) {
-		var n = "o-toggle o-toggle--activated",
-			l = document.createElement("div");
-		l.classList.add("d-receivers__type");
-		var d = document.createElement("div");
-		d.classList.add("d-receivers__type__receivers"), a[o].forEach(e => {
-			var t = "o-toggle";
-			"true" == e.SELECTED ? (r.push(e.VALUE), t = "o-toggle o-toggle--activated") : n = "o-toggle";
-			var s = '<div class="' + t + '" data-receiver-id="' + e.VALUE + '" data-receiver-type="' + e.TYPE_OF_RECIEVER + '"></div>';
-			d.innerHTML += '<div class="d-receivers__receiver" data-receiver-id="' + e.VALUE + '" data-receiver-type="' + e.TYPE_OF_RECIEVER + '">' + e.DISPLAY_NAME + " " + s + "</div>"
-		}), l.innerHTML += '<div class="d-receivers__header js-d-receivers__header" data-master-type="' + o + '"><div class="' + n + '" data-master-type="' + o + '"></div><h4>' + o + "</h4></div>", l.appendChild(d), i.appendChild(l)
-	}
-
-	function c(e) {
-		var t = $(e).data("receiver-id"),
-			s = r.indexOf(t);
-		$(".o-toggle[data-receiver-id='" + t + "']").hasClass("o-toggle--activated") ? ($(".o-toggle[data-receiver-id='" + t + "']").removeClass("o-toggle--activated"), r.splice(s, 1)) : ($(".o-toggle[data-receiver-id='" + t + "']").addClass("o-toggle--activated"), r.push(t)), $(".EXT_DOCS_RECIEVERS > input").val(r.join(";"))
-	}
-	$(".EXT_DOCS_RECIEVERS > input").val(r.join(";")), t.appendChild(i), $(".d-receivers__receiver").off("click"), $(".d-receivers__receiver").on("click", function () {
-		c($(this));
-		var e = $(this).data("receiver-type");
-		let t = !0;
-		$(".o-toggle[data-receiver-type='" + e + "']").each(function () {
-			$(this).hasClass("o-toggle--activated") || (t = !1)
-		});
-		let s = $(".o-toggle[data-master-type='" + e + "']");
-		t ? s.hasClass("o-toggle--activated") || s.addClass("o-toggle--activated") : s.removeClass("o-toggle--activated")
-	}), $(".js-d-receivers__header").off("click"), $(".js-d-receivers__header").on("click", function () {
-		var e = $(this).data("master-type"),
-			t = $(this).find(".o-toggle"),
-			s = t.hasClass("o-toggle--activated");
-		$(".o-toggle[data-receiver-type='" + e + "']").each(function () {
-			s ? c($(this)) : $(this).hasClass("o-toggle--activated") || c($(this))
-		}), t.toggleClass("o-toggle--activated")
-	})
-}
-
-function addMutationOberserverToAllCases() {
-	(observerAllCases = new MutationObserver(function (e) {
-		$(document).trigger("etray::cases_loaded"), observerAllCases.disconnect()
-	})).observe($(".ETRAY_LIST_OF_CASES")[0], {
-		characterData: !0,
-		childList: !0
-	})
-}
-
-function addMutationOberserverToSingleCase() {
-	disable_all_btns(), (singleCaseLoadedObserver = new MutationObserver(function (e) {
-		$(".ETRAY_CASE_TIMELINE_PARRENT > div").html().length > 0 && ($(document).trigger("etray::single-case-loaded"), $(document).trigger("etray::single-case-comments-loaded"), singleCaseLoadedObserver.disconnect(), "Afsluttet" == $("#js-case-element__inserted > div > .etray_case_status span").html() ? ($(".js-case__save-commentary").html("Gem kommentar og gen\xe5ben sag"), $(".js-case-save-close").addClass("display_none"), $(".js-case-save-reopen").removeClass("display_none")) : ($(".js-case__save-commentary").html("Gem kommentar"), $(".js-case-save-close").removeClass("display_none"), $(".js-case-save-reopen").addClass("display_none")))
-	})).observe($(".ETRAY_CASE_TIMELINE_PARRENT > div")[0], {
-		characterData: !0,
-		childList: !0
-	})
-}
-
-function addMutationOberserverToNumberOfCasesInput() {
-	observeInputValue(document.querySelector(".ETRAY_NO_OF_OPEN_CASES > input"), "value", function (e, t) {
-		if (t.length > 0) {
-			if ($(".js-filter__number-of-cases").removeClass("o-badge--loading"), $(".o-page").hasClass("o-page--all-cases")) {
-				$(".js-filter__open-cases .js-filter__number-of-cases").text($(".ETRAY_NO_OF_OPEN_CASES > input").val()), $(".js-filter__closed-cases .js-filter__number-of-cases").text($(".ETRAY_NO_OF_CLOSED_CASES > input").val());
-				var s = 0;
-				s = "closed_cases" == $(".ETRAY_LIST_VIEWER_CASES_LEVEL_2 > input").val() ? $(".ETRAY_NO_OF_CLOSED_EXCEEDED_SLA > input").val() : $(".ETRAY_NO_OF_OPEN_EXCEEDED_SLA > input").val(), $(".js-filter__sla .js-filter__number-of-cases").text(s), $(".js-filter__follow-up > .js-filter__number-of-cases").text($(".ETRAY_NO_OF_OPEN_FOLLOW_UP > input").val()), $(".js-filter__new .js-filter__number-of-cases").text($(".ETRAY_NO_OF_OPEN_NEW > input").val()), $(".js-filter__not_assigned .js-filter__number-of-cases").text($(".ETRAY_NO_OF_OPEN_NOT_ASSIGNED > input").val())
-			} else {
-				$(".js-filter__open-cases .js-filter__number-of-cases").text($(".ETRAY_NO_OF_MY_OPEN_CASES > input").val()), $(".js-filter__closed-cases .js-filter__number-of-cases").text($(".ETRAY_NO_OF_MY_CLOSED_CASES > input").val()), $(".js-filter__created_by_me .js-filter__number-of-cases").text($(".ETRAY_NO_OF_MY_OPEN_CREATED > input").val()), $(".js-filter__assigned_to_me .js-filter__number-of-cases").text($(".ETRAY_NO_OF_MY_OPEN_ASSIGNED > input").val()), $(".js-filter__follows .js-filter__number-of-cases").text($(".ETRAY_NO_OF_MY_OPEN_FOLLOWS > input").val());
-				var s = 0;
-				s = "closed_cases" == $(".ETRAY_LIST_VIEWER_CASES_LEVEL_2 > input").val() ? $(".ETRAY_NO_OF_MY_CLOSED_EXCEEDED_SLA > input").val() : $(".ETRAY_NO_OF_MY_OPEN_EXCEEDED_SLA > input").val(), $(".js-filter__sla .js-filter__number-of-cases").text(s)
-			}
-		}
-	})
-}
-
-function UM_USERNAME_VALIDATION(e) {
-	!0 == Set_UM_USER_INIT && ($(".UM_USER_INIT > input").val(e), $(".BTN_GetUserValidation > a").click(), $(".BTN_GetUserValidation_Result > input").val("N"), WAIT_FOR_UM_USERNAME_VALIDATION_ANSWER_ETRAY())
-}
-
-function WAIT_FOR_UM_USERNAME_VALIDATION_ANSWER_ETRAY() {
-	"N" == $(".BTN_GetUserValidation_Result > input").val() ? setTimeout(WAIT_FOR_UM_USERNAME_VALIDATION_ANSWER_ETRAY, 100) : "true" == $(".UM_USER_INIT_USED > input").val() ? ($(".UM_USER_INIT > .Web_Error").html("Brugernavn er allerede anvendt"), $(".UM_USER_INIT > .Web_Error").show()) : $(".UM_USER_INIT > input").val().length > 20 ? ($(".UM_USER_INIT > .Web_Error").html("Brugernavn m\xe5 maks v\xe6re 20 cifre"), $(".UM_USER_INIT > .Web_Error").show()) : ($(".UM_USER_INIT > .Web_Error").html(""), $(".UM_USER_INIT > .Web_Error").hide())
-}
-
-function WAIT_FOR_UM_USERNAME_VALIDATION_ANSWER_VUE() {
-	"N" == $(".BTN_GetUserValidation_Result > input").val() ? setTimeout(WAIT_FOR_UM_USERNAME_VALIDATION_ANSWER_VUE, 100) : "true" == $(".UM_USER_INIT_USED > input").val() ? $(".UM_USER_INIT > input").val() != $(".LOGIN_USER_INIT  > input").val() && document.dispatchEvent(new Event("username_init_error")) : document.dispatchEvent(new Event("username_init_no_error"))
-}
-
-function escapeRegExp(e) {
-	return e.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-}
-
-function replaceAll(e, t, s) {
-	return e.replace(RegExp(escapeRegExp(t), "g"), s)
-}
-
-function clearJSONfields() {
-	$(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html(""), $(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html(""), $(".ETRAY_JSON_LIST_OF_UPDATED_CASES > div").html(""), $(".ETRAY_EXT_DOCS_RAW_JSON > div").html(""), $(".ETRAY_EXT_DOCS_RAW_JSON_CLOSED > div").html(""), $(".ETRAY_EXT_DOCS_RAW_JSON_OPEN > div").html(""), $(".ETRAY_EXT_DOCS_RAW_JSON_LATEST_OTHER > div").html(""), $(".ETRAY_USER_PROFILE_RAW_JSON > div").html(""), $(".ETRAY_USER_PROFILE_USER_RAW_JSON > div").html(""), $(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div").html(""), $(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div").html(""), $(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div").html(""), $(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div").html(""), $(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div").html(""), $(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div").html(""), $(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div").html(""), $(".UM_RESULT > div").html(""), $(".ETRAY_CASE_TIMELINE_PARRENT > div").html(""), $(".ETRAY_LIST_OF_USERS > div").html("")
-}
-
-function readTimelineReadMsgCookie() {
-	localStorage.getItem("on_case_timeline_hide_msg") ? hideTimelineReadMsg() : $("#js-checkbox__toogle-timeline_read_msg").prop("checked", !0)
-}
-
-function hideTimelineReadMsg() {
-	$(".js-modal__single-case").hasClass("js-hide__timeline_read_msg") || $(".js-modal__single-case").addClass("js-hide__timeline_read_msg"), localStorage.setItem("on_case_timeline_hide_msg", !0)
-}
-
-function showTimelineReadMsg() {
-	$(".js-modal__single-case").removeClass("js-hide__timeline_read_msg"), localStorage.removeItem("on_case_timeline_hide_msg")
-}
-
-function download_file(e) {
-	"PROD" === $(".ENV > input").val() && (e = "https://portal.prod.aws.opennet.dk/eTrayPortal/N/search/download.aspx?epath=" + e), "TEST" === $(".ENV > input").val() && (e = "https://portal.test.aws.opennet.dk/eTrayPortal/N/search/download.aspx?epath=" + e), "DEV" === $(".ENV > input").val() && (e = "https://portal.dev.aws.opennet.dk/eTrayPortal/N/search/download.aspx?epath=" + e), e += "&webform=" + $("title").html(), e += "&portalName=" + $("#webform").attr("form"), e += "&loginKey=" + eTrayWebportal.User.Key, window.open(e)
-}
-
-// PowerBI report funcs - START
-function RunReport(e, t) {
-	if ($(document).trigger("vue::BILoadingTrigger", !0), $(document).trigger("vue::BIChangeTrigger", t), report && report.off("rendered"), "V\xe6lg" === t) {
-		$(document).trigger("vue::BILoadingTrigger", !1);
-		return
-	}
-	try {
-		$.ajax({
-			type: "POST",
-			url: "https://pbiembeddedopennet.azurewebsites.net/api/PowerBIEmbeddedToken?code=US0sk5xiqoVMLU2tcl2oR1Jg0zt49Vj80ZjcM0bHCzPRAzFuAME4fg==",
-			data: JSON.stringify({
-				reportId: e
-			}),
-			contentType: "application/json; charset=utf-8",
-			dataType: "json",
-			success: successFunc,
-			error: errorFunc
-		})
-	} catch (s) {
-		console.log(s), handleError("RunReport", s)
+    .o - page.o - page--menu - open.o - body {
+		margin - right: 350px;
 	}
 }
 
-function successFunc(e, t) {
-	try {
-		if ("success" == t) {
-			var s = e.EmbedToken,
-				a = e.EmbedUrl,
-				i = e.ReportId,
-				r = $(".PBI_sharedSecret > input").val();
-			console.log("v_sharedSecret", r);
-			var o = window["powerbi-client"].models;
-			let n = {
-				$schema: "http://powerbi.com/product/schema#basic",
-				target: {
-					table: "v_POWERBI_EMBEDDED_RLS",
-					column: "sharedSecret"
-				},
-				operator: "In",
-				values: ["RBXvFBpyVUllMTsBynhzsLVEZcpzqNFcvQqLidwVVXhJkeGhMmnWPwTqeNuwOuaRlbwvwoWTKPJdqcmmOdWFKYSZelHxXWmGzdFgScBXBwzFYFctqQBYTtrPMDsULJaJsOJIEoKQaVKjevTUBJWrQeVLhxAdmbhtLJNdtmJQmMHxpKkONOLbnvVaMKmqPrKmfYMXicloVdpFoFauMMFaXDUYTAUJeTCRkUVYnVDisBgcBwVZXrRnveKzZhgNwoGGyLdbaddEOlCYApxrslwayNQKCCljJJorMKEcaydldTMvTIqRTdnuBXQANOLknSvavHBanbcVFJVSWHbVgYeLhFraZPMOQZMZaNWHkTmYmJMXesWtnpvUXnAVWOoDBpugWrZGaOuTiriLxNTNFIioNNuxbLLlIhEJAmdFGQMWgegVBUicWXrOCodyDkrjwycjdMQEegjmnPJOicayjDzLWiHEXVoCPpFKrxafBROKnBdkRDwmnruShknBhFHtWowfMjujtoJWEcwnmEqLMjVwZsLZChYXFKpAlXULsFIsUrGUpdMuocqwgHEPRSHzzzWpAQzfKzDgabROVXTrKOTmSuPCqbKrEfiUHFzzdQaOEHLCfYGchbmRtmsqsJWPfmAihQOzouGPWeoxTWfXCwJyRbKAPWPICbxlXZBTTMrDFaPNIYOvGgOwNLiwmdHqWDBuEqRniXbIXZMZzYvWCdEPmfiKDIKqQsyKRgBqvpEeFaWMjeSpHLGJijFHzbdyQaTpGNQuOzAHDacWKAAKURzzcDSQIepLPXTLnmHyeTxLmjftkFSTtdysdlFOsGGeWUTrNjUoTyVHAfsMJkkCInDtIZagtNcBnQCATAhDDoauIqEmWqRAuKXfutXGxwpHPYHUfZQMZLwReIfeQrgnXAgiKaHQxXKSMiOoQVzvBNRYSDKKlEtUxWpZzOkdwbfluKGuefaRFyLqDqsvfAlutAsLxzSMwfhvYYSxjkcqCFLBMiVePWXqbYxrKYHaKIMdWdnb"]
-			};
-			var l = {
-				type: "report",
-				tokenType: o.TokenType.Embed,
-				accessToken: s,
-				embedUrl: a,
-				id: i,
-				permissions: o.Permissions.All,
-				filters: [n],
-				settings: {
-					filterPaneEnabled: !1,
-					navContentPaneEnabled: !1
-				}
-			},
-				d = $("#embedContainer")[0];
-			(report = powerbi.embed(d, l)).setFilters([n]), report && report.on("rendered", function (e) {
-				$(document).trigger("vue::BILoadingTrigger", !1)
-			})
-		} else alert("The report could not be embedded.  Please reload the page and try again.")
-	} catch (c) {
-		console.log(c), handleError("successFunc", c)
+@media only screen and(min - width: 600px) {
+    .o - content {
+		margin - top: 2rem;
+	}
+
+    .o - body__subheader {
+		position: initial;
+	}
+
+    .o - filters__filter {
+		-ms - flex: 0 1 auto;
+		-webkit - box - flex: 0;
+		flex: 0 1 auto;
+		font - size: 0.85rem;
+		padding: 1rem;
+		margin - right: 1rem;
+		border - radius: 8px 8px 0 0;
+		-ms - flex - direction: row;
+		-webkit - box - orient: horizontal;
+		-webkit - box - direction: normal;
+		flex - direction: row;
+		text - align: left;
+	}
+
+    .o - filters__filter__hint - container {
+		-ms - flex: 0 1 auto;
+		-webkit - box - flex: 0;
+		flex: 0 1 auto;
+	}
+
+    .o - wrapper,
+    .o - body__subheader.o - wrapper {
+		padding: 0 32px;
+	}
+
+    .o - badge {
+		margin: 0 0 0 0.5rem;
+	}
+
+    .progress_indicator {
+		z - index: 1000;
+		right: 50px;
+		bottom: 50px;
+	}
+
+    .o - body__list - of - cases__right > div: first - child {
+		margin: 0;
+	}
+
+    .case_element {
+		display: -ms - flexbox;
+		display: -webkit - box;
+		display: flex;
+		-ms - flex - direction: column;
+		-webkit - box - orient: vertical;
+		-webkit - box - direction: normal;
+		flex - direction: column;
+	}
+
+    .o - cases__case_element__header__row {
+		padding: 1rem;
+		-ms - flex - align: center;
+		-webkit - box - align: center;
+		align - items: center;
+	}
+
+    .o - cases__case_element__header__row > div {
+		width: auto;
+		border: none;
+		padding: 0rem;
+		margin - right: 0.5rem;
+	}
+
+    .o - cases__case_element__body {
+		-ms - flex - direction: row;
+		-webkit - box - orient: horizontal;
+		-webkit - box - direction: normal;
+		flex - direction: row;
+		-ms - flex - align: center;
+		-webkit - box - align: center;
+		align - items: center;
+	}
+
+    .o - cases__case - group {
+		-ms - flex - direction: row;
+		-webkit - box - orient: horizontal;
+		-webkit - box - direction: normal;
+		flex - direction: row;
+	}
+
+    .o - cases__case - group p {
+		width: calc(100 % - 150px);
+	}
+
+    .o - cases__case_element__body__arrow {
+		padding - left: 1rem;
+	}
+
+    .o - modal {
+		width: 96 %;
+		min - height: auto;
+		max - width: 1000px;
+		margin - left: auto;
+		margin - right: auto;
+		margin - top: 2rem;
+		bottom: 2rem;
+		top: 2rem;
+	}
+
+    .o - modal--alwaysactive {
+		width: 96 %;
+		min - height: auto;
+		max - width: 1000px;
+		margin - left: auto;
+		margin - right: auto;
+		margin - top: 2rem;
+		bottom: 2rem;
+		top: 2rem;
+	}
+
+    .o - modal__case.o - modal__body {
+		padding: calc(1rem + 65px) 1rem 1rem;
+	}
+
+    .o - modal__create - case__body {
+		max - width: 80 %;
+	}
+
+    .o - modal__case__actions {
+		-ms - flex - direction: row;
+		-webkit - box - orient: horizontal;
+		-webkit - box - direction: normal;
+		flex - direction: row;
+	}
+
+    .o - modal__case__actions li.o - btn {
+		margin - bottom: 0;
+		border - radius: 0;
+	}
+
+    .o - modal__case__actions li: nth - child(1).o - btn {
+		border - radius: 8px 0 0 8px;
+	}
+
+    .o - modal__case__actions li: nth - child(5).o - btn {
+		border - radius: 0 8px 8px 0;
+		margin - right: 1rem;
+	}
+
+    .o - modal.o - modal--small {
+		margin - top: 8rem;
+		min - height: auto;
+		max - width: 500px;
+		max - height: 400px;
+	}
+
+    .o - modal__case__timeline {
+		padding: 2rem;
+	}
+
+    .o - menu__items {
+		height: calc(100vh - 4rem)
+	}
+
+    .o - menu__items__inner__header {
+		padding: 1rem;
+	}
+
+    .o - menu__items__inner > li > div > h4 {
+		margin: 8px 0;
+	}
+
+    .o - body__list - of - cases {
+		-ms - flex - direction: row;
+		-webkit - box - orient: horizontal;
+		-webkit - box - direction: normal;
+		flex - direction: row;
+		-ms - flex - align: start;
+		-webkit - box - align: start;
+		align - items: flex - start;
+	}
+
+    .o - body__list - of - cases__left {
+		-ms - flex - direction: row;
+		-webkit - box - orient: horizontal;
+		-webkit - box - direction: normal;
+		flex - direction: row;
+	}
+
+    .o - body__list - of - cases__left__filters {
+		display: -ms - flexbox;
+		display: -webkit - box;
+		display: flex;
+		-ms - flex - wrap: wrap;
+		flex - wrap: wrap;
+		-webkit - box - orient: horizontal;
+		-webkit - box - direction: normal;
+		-ms - flex - direction: row;
+		flex - direction: row;
+	}
+
+    .o - body__list - of - cases__left.tio {
+		margin - top: 10px;
+	}
+
+    .o - btn.o - btn__filter {
+		width: auto;
+		margin: 0 0 0.5rem 0.5rem;
 	}
 }
 
-function errorFunc() {
-	try {
-		alert("The report could not be embedded.  Please reload the page and try again.")
-	} catch (e) {
-		console.log(e), handleError("errorFunc", e)
+.webformButtonPanel.ng - scope {
+	display: none;
+}
+
+.webform_pagerBar {
+	display: none!important;
+}
+
+.empty_list {
+	padding - left: 80px;
+	padding - right: 80px;
+	padding - top: 20px;
+	color: white;
+	padding - bottom: 20px;
+	background - color: #161933;
+	border - radius: 8px;
+	text - align: center;
+
+}
+
+.o - body__intro_area {
+	padding: 40px;
+}
+
+.intro_area_text {
+	width: 50 %;
+}
+
+img.intro_img {
+	width: 100 %;
+}
+
+.o - body__intro_area {
+	display: none;
+}
+
+
+li.o - btn.js -case -click - close_case {
+	background: #9f374f;
+	color: #fdf1f2;
+}
+
+/* ETRAY LOGIN CSS */
+
+.loginContent {
+	position: relative;
+	width: 100 % !important;
+	max - width: 500px!important;
+	float: none!important;
+	background: #fff;
+	border - radius: 12px;
+	padding: 4rem 1rem;
+	margin: 0.5rem auto!important
+}
+
+.loginContent * {
+	float: none!important;
+}
+
+	.loginContent:before {
+	content: '';
+	position: absolute;
+	top: 32px;
+	right: 0;
+	left: 0;
+	margin: 0 auto;
+	width: calc(130px * 1.2);
+	height: calc(51px * 1.2);
+	background - image: url('https://cdn.jsdelivr.net/gh/sorenaakjaer/ON@latest/web_content/img/logo-clean.png');
+	background - size: cover;
+}
+
+.loginContent h2 {
+	text - align: center;
+	padding: 2rem 0;
+	font - weight: 500;
+}
+
+.loginPanelOne,
+.loginButtonPanel {
+	width: 100 % !important;
+	max - width: 650px!important;
+	float: none!important;
+}
+
+.loginContent input[type = "username"],
+.loginContent input[type = "password"] {
+	width: 100 % !important;
+	border: 1px solid var(--borderColor)!important;
+	padding: 12px 24px!important;
+	border - radius: 4px;
+	-webkit - transition: border - color 0.25s;
+	-o - transition: border - color 0.25s;
+	transition: border - color 0.25s;
+}
+
+.loginContent input[type = "username"]: focus,
+.loginContent input[type = "password"]:focus {
+	border - color: var(--primary)!important;
+}
+
+.usernameLabel,
+.passwordLabel {
+	font - weight: 500!important;
+	color: #333!important;
+	font - size: 14px!important;
+}
+
+.passwordLabel {
+	margin - top: 1.5rem!important
+}
+
+.loginButtonPanel > div {
+	margin - top: 1.5rem!important;
+}
+
+.loginButtonPanel > div > div {
+	margin - left: 0!important;
+}
+
+a.loginButton {
+	float: none!important;
+	background - color: var(--primary)!important;
+	width: 100 % !important;
+	height: auto!important;
+	color: #ffffff!important;
+	line - height: 1.5!important;
+	border: none!important;
+	display: inline - block;
+	cursor: pointer;
+	font - weight: 400;
+	color: #212529;
+	text - align: center;
+	vertical - align: middle;
+	-ms - user - select: none;
+	-webkit - user - select: none;
+	-moz - user - select: none;
+	user - select: none;
+	background - color: #ffffff;
+	border: 1px solid #edeef1;
+	padding: 0.85rem 1.8rem;
+	border - radius: 8px;
+	-webkit - transition: all .15s ease -in -out;
+	-o - transition: all .15s ease -in -out;
+	transition: all .15s ease -in -out;
+	-webkit - transform: scale(1) translateZ(0);
+	transform: scale(1) translateZ(0);
+	font - size: 15px;
+	position: relative;
+	font - size: 15px;
+}
+
+a.loginButton:hover {
+	background: #f7f8fa;
+	opacity: 0.8;
+}
+
+a.loginButton:active {
+	-webkit - transform: scale(0.95);
+	-ms - transform: scale(0.95);
+	transform: scale(0.95);
+}
+
+.errorText {
+	text - align: center;
+	margin - top: 0.5rem!important;
+}
+
+
+@media only screen and(min - width: 600px) {
+    .loginContent {
+		margin: 100px auto!important;
+		padding: 4rem 2rem;
 	}
 }
 
-function handleError(e, t) {
-	alert("Error in : " + e), alert("Exception: " + t.message)
+.o - page - loading {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	position: fixed;
+	z - index: 999999999;
+	top: 0;
+	left: 0;
+	width: 100 %;
+	height: 100 %;
+	background - color: #161933;
+	overflow: hidden;
+	-ms - flex - direction: column;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	flex - direction: column;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	-ms - flex - pack: center;
+	-webkit - box - pack: center;
+	justify - content: center;
+	-webkit - transition: opacity 0.6s;
+	-o - transition: opacity 0.6s;
+	transition: opacity 0.6s;
+	opacity: 0;
+	pointer - events: none;
 }
 
-// PowerBI report funcs - START
+.o - page--is - loading.o - page - loading {
+	opacity: 1;
+	pointer - events: none!important;
+}
+
+.o - logo--fade -in {
+    - webkit - animation: text - focus -in 1.5s cubic - bezier(0.55, 0.085, 0.68, 0.53) both!important;
+animation: text - focus -in 1.5s cubic - bezier(0.55, 0.085, 0.68, 0.53) both!important;
+}
+
+@-webkit - keyframes text - focus -in {
+	0% {
+        - webkit - filter: blur(12px);
+        filter: blur(12px);
+	opacity: 0;
+}
+
+100 % {
+        - webkit - filter: blur(0px);
+filter: blur(0px);
+opacity: 1;
+    }
+}
+
+@keyframes text - focus -in {
+	0% {
+        - webkit - filter: blur(12px);
+        filter: blur(12px);
+	opacity: 0;
+}
+
+100 % {
+        - webkit - filter: blur(0px);
+filter: blur(0px);
+opacity: 1;
+    }
+}
+
+.o - dropdown {
+	position: relative;
+	background: #fff;
+	height: 37px;
+	padding: 0 1rem 0 0;
+	margin: 0 0 0.5rem 0;
+	font - size: 0.85rem;
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	border: 1px solid var(--borderColor);
+	border - radius: 4px;
+	font - weight: normal;
+	width: 100 %;
+	min - width: 150px;
+	font - size: 13px;
+	cursor: pointer;
+}
+
+.o - dropdown.o - dropdown--has - selection {
+	border - color: var(--primary);
+	background: rgb(10 55 170 / 10 %);
+}
+
+.o - dropdown.o - dropdown--active {
+	border - radius: 4px;
+	border - color: var(--primary);
+}
+
+.o - dropdown__selected {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	padding: 0 1rem;
+}
+
+.o - dropdown__selected > p {
+	line - height: 0;
+	margin: 0;
+}
+
+.o - dropdown.o - dropdown--has - selection.o - dropdown__selected > p {
+	font - weight: bold;
+}
+
+.o - dropdown__selected {
+	width: 100 %;
+}
+
+.o - dropdown__selected.tio {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	font - size: 1.2rem;
+	color: var(--grey);
+	margin - top: 0;
+}
+
+.o - dropdown__dropdown {
+	position: absolute;
+	z - index: 10000;
+	background - color: #fff;
+	padding: 0;
+	width: 400px;
+	top: calc(100 % + 0.5rem);
+	left: -1px;
+	border - width: 1px;
+	border: 1px solid var(--primary);
+	border - radius: 4px;
+	-webkit - box - shadow: 0 4px 14px 0 rgb(0 0 0 / 20 %), 0 0 0 1px rgb(0 0 0 / 5 %);
+	box - shadow: 0 4px 14px 0 rgb(0 0 0 / 20 %), 0 0 0 1px rgb(0 0 0 / 5 %);
+	pointer - events: none;
+	display: none;
+	font - size: 14px;
+	max - height: 250px;
+	overflow - y: auto;
+	cursor: pointer;
+}
+
+.o - dropdown__dropdown ul {
+	list - style - type: none;
+	padding: 0;
+	margin: 0;
+}
+
+.o - dropdown__dropdown ul li {
+	padding: 0.5rem 1rem;
+	width: 100 %;
+	cursor: pointer;
+}
+
+.o - dropdown__dropdown ul li:hover {
+	background: var(--primary);
+	color: #ffffff;
+}
+
+.o - dropdown.o - dropdown--active.o - dropdown__dropdown {
+	display: block;
+	pointer - events: initial;
+}
+
+.o - dropdown:hover {
+	border - color: var(--primary);
+}
+
+h3 {
+	font - size: 24px;
+}
+
+@media only screen and(min - width: 600px) {
+    .o - dropdown {
+		width: auto;
+		margin: 0 0 0.5rem 0.5rem;
+	}
+}
+
+.UPLOAD_LINK a.Web_InnerControl_UPLOAD.text:before {
+	content: '';
+}
+
+.uploadedPanel {
+	margin - top: 0.5rem;
+}
+
+#uploadedPanel > div {
+	font - size: 13px;
+}
+
+.o - list - of - cases__footer {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	-ms - flex - direction: column;
+	flex - direction: column;
+	width: 100 %;
+	margin: 0 auto;
+	max - width: 980px;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	-webkit - box - pack: center;
+	-ms - flex - pack: center;
+	justify - content: center;
+}
+
+.o - page.o - page--docs.o - list - of - cases__footer {
+	display: none;
+}
+
+.o - cases__container.table {
+	table - layout: fixed;
+	width: 100 %;
+	max - width: 980px;
+}
+
+button.cancel_btn {
+	display: none!important;
+}
+
+.text--explainer {
+	font - size: 0.85rem;
+	font - style: italic;
+	margin - top: 0.5rem;
+}
+
+.js - go - to - top {
+	cursor: pointer;
+}
+
+.js - go - to - top:hover {
+	color: var(--primary);
+}
+
+.cloned - uploads {
+	display: -webkit - inline - box;
+	display: -ms - inline - flexbox;
+	display: inline - flex;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	-ms - flex - direction: column;
+	flex - direction: column;
+}
+
+.cloned - uploads__file {
+	position: relative;
+	background: #fff;
+	border: 1px solid var(--borderColor);
+	font - size: 0.85rem;
+	padding: 2px 0.5rem 2px 1.5rem;
+	border - radius: 12px;
+	display: -webkit - inline - box;
+	display: -ms - inline - flexbox;
+	display: inline - flex;
+	margin - bottom: 0.25rem;
+}
+
+.cloned - uploads__file:before {
+	content: "\ea92";
+	font - family: 'The-Icon-of'!important;
+	speak: none;
+	font - style: normal;
+	font - weight: normal;
+	font - variant: normal;
+	text - transform: none;
+	line - height: 1;
+	letter - spacing: 0;
+	-ms - font - feature - settings: "liga"1;
+	-webkit - font - feature - settings: "liga";
+	font - feature - settings: "liga";
+	-webkit - font - variant - ligatures: discretionary - ligatures;
+	font - variant - ligatures: discretionary - ligatures;
+	-webkit - font - smoothing: antialiased;
+	-moz - osx - font - smoothing: grayscale;
+	position: absolute;
+	top: 5px;
+	left: 8px;
+}
+
+.cloned - uploads__file a:hover {
+	text - decoration: underline;
+}
+
+.timeline_read_msg {
+	width: 100 %;
+	text - align: center;
+	margin - top: -0.5rem;
+	margin - bottom: -0.5rem;
+}
+
+.timeline_read_msg.timeline_text {
+	background: transparent;
+	padding: 0;
+}
+
+
+.timeline_element.timeline_read_msg.timeline_header {
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	-webkit - box - pack: center;
+	-ms - flex - pack: center;
+	justify - content: center;
+}
+
+.timeline_read_msg.timeline_by, .timeline_read_msg.timeline_time {
+	width: auto;
+}
+
+.timeline_element.timeline_internal_note.timeline_header {
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	-webkit - box - pack: center;
+	-ms - flex - pack: center;
+	margin - bottom: 5px;
+	justify - content: center;
+}
+
+.timeline_internal_note {
+	width: 100 %;
+	text - align: center;
+	margin - left: 25 %;
+	margin - right: 25 %;
+}
+
+.msg_type_internal {
+	background - color: #fffac8;
+	/* padding: 2px; */
+	/* margin-bottom: 5px; */
+	font - size: 11px;
+	color: var(--grey);
+	padding: 4px 12px;
+	border - radius: 12px;
+}
+
+.msg_type_open {
+	background - color: var(--grey);
+	font - size: 11px;
+	color: white;
+	padding: 4px 12px;
+	border - radius: 12px;
+}
+
+.xjs -case -element {
+	-webkit - box - shadow: none;
+	box - shadow: none;
+	-webkit - transform: translateY(0)!important;
+	-ms - transform: translateY(0)!important;
+	transform: translateY(0)!important;
+}
+
+
+.xjs -case -element.o - cases__case_element__body.new_case_proces {
+	-webkit - box - pack: center;
+	-ms - flex - pack: center;
+	justify - content: center;
+}
+
+.xjs -case -element.o - cases__case - group {
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	-ms - flex - direction: column;
+	flex - direction: column;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+}
+
+.xjs -case -element.o - spinner {
+	margin - bottom: 1rem;
+}
+
+.xjs -case -element.new_case_proces_text {
+	font - weight: bold;
+	font - style: italic;
+}
+
+.timeline_text {
+	line -break: normal;
+	word - wrap: break-word;
+}
+
+.timeline_conversation_from {
+	max - width: 100 %;
+}
+
+.timeline_conversation_to {
+	max - width: 100 %;
+}
+
+
+/* NEW CSS */
+
+.o - page--docs.js - filter - level2,
+.o - page--docs.js - filter - level3,
+.o - page--docs.o - body__list - of - cases__left__filters.js - o - dropdown {
+	display: none!important
+}
+
+.o - page.vue - list - of - cases {
+	display: none;
+}
+
+.o - page.o - page--docs.vue - list - of - cases {
+	display: block;
+}
+
+.o - page.vue - subheader - filters {
+	display: none;
+}
+
+.o - page.o - page--docs.vue - subheader - filters {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+}
+
+.o - page.o - page--docs.js - subheader - filters {
+	display: none;
+}
+
+.vue - list - complete__element {
+	-webkit - transition: all 0.45s;
+	-o - transition: all 0.45s;
+	transition: all 0.45s;
+}
+
+.list - complete - enter, .list - complete - leave - to
+
+/* .list-complete-leave-active below version 2.1.8 */
+{
+	opacity: 0;
+	-webkit - transform: translateY(30px);
+	-ms - transform: translateY(30px);
+	transform: translateY(30px);
+}
+
+.list - complete - leave - active {
+	position: absolute;
+	left: 32px;
+	right: 32px;
+}
+
+.pos - relative {
+	position: relative;
+}
+
+.case_element--unclickable.o - cases__case_element__body {
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	-ms - flex - direction: column;
+	flex - direction: column;
+	-webkit - box - align: start;
+	-ms - flex - align: start;
+	align - items: flex - start;
+}
+
+.case_element--unclickable.o - cases__case_element__body__input, .case_element--view_files_in_list.o - cases__case_element__body__input {
+	width: 100 %;
+}
+
+.item - files {
+	width: 100 %
+}
+
+
+.item - files li {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	border: 1px solid var(--borderColor);
+	border - width: 1px 1px 0 1px;
+}
+
+.item - files li:hover {
+	background: var(--bgLigthBlue);
+}
+
+.item - files li: first - child {
+	border - radius: 8px 8px 0 0
+}
+
+.item - files li: last - child {
+	border - width: 1px 1px 1px 1px;
+	border - radius: 0 0 8px 8px;
+}
+
+.item - files li: only - child {
+	border - width: 1px;
+	border - radius: 8px;
+}
+
+.item - files li i {
+	padding - right: 0.5rem;
+}
+
+.item - files li a {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - pack: justify;
+	-ms - flex - pack: justify;
+	justify - content: space - between;
+	cursor: pointer;
+	width: 100 %;
+	padding: 0 1rem;
+}
+
+.item - files li a > div: first - child {
+	width: 100 %;
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+}
+
+.item - files li p {
+	margin: 0.5rem 0
+}
+
+.case_element.item - files li a: hover.o - cases__case_element__body__arrow.tio {
+	margin - right: -4px;
+	margin - left: 4px;
+}
+
+.case_element__document.o - pill {
+	margin - left: 0
+}
+
+.modalFadeIn - enter - active, .modalFadeIn - leave - active {
+	-webkit - transition: all .25s;
+	-o - transition: all .25s;
+	transition: all .25s;
+}
+
+.modalFadeIn - enter, .modalFadeIn - leave - to
+
+/* .fade-leave-active below version 2.1.8 */
+{
+	opacity: 0;
+	-webkit - transform: scale(0.85);
+	-ms - transform: scale(0.85);
+	transform: scale(0.85);
+}
+
+.text - explainer {
+	font - style: italic;
+}
+
+.vue - spinner.o - spinner {
+	display: block;
+}
+
+.o - modal__body__header - actions {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	-webkit - box - pack: end;
+	-ms - flex - pack: end;
+	justify - content: flex - end;
+	margin - bottom: 1rem;
+}
+
+.o - btn--with-icon {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+}
+
+.o - btn--with-icon i {
+	margin - right: 0.5rem;
+}
+
+[v - cloak] {
+	display: none
+}
+
+.ANNOUCEMENT_RECIEVERS >.Web_TextDesc {
+	font - weight: bold;
+}
+
+.ANNOUCEMENT_RECIEVERS {
+	font - size: 14px;
+}
+
+
+.o - page--docs.js - list - of - cases {
+	display: none;
+}
+
+.o - card {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	-ms - flex - direction: column;
+	flex - direction: column;
+	-webkit - box - shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	box - shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	margin - bottom: 16px;
+	background: #ffffff;
+	border - radius: 4px;
+	padding: 1rem;
+}
+
+.o - users__list > li {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - pack: justify;
+	-ms - flex - pack: justify;
+	justify - content: space - between;
+}
+
+.o - users__list__table thead {
+	font - size: 12px;
+	font - weight: bold;
+	border - bottom: 1px solid var(--borderColor);
+	color: var(--grey);
+	height: 32px;
+}
+
+.o - users__list__table tbody tr {
+	height: 50px;
+	border: 1px solid var(--borderColor);
+	border - width: 1px 0;
+	font - size: 14px;
+}
+
+.o - users__list__table tbody tr:hover {
+	background: var(--backgroundColor);
+}
+
+.link - text {
+	color: var(--primary);
+	cursor: pointer;
+}
+
+.link - text:hover {
+	text - decoration: underline;
+}
+
+.o - toggle {
+	position: relative;
+	background: #e4e7eb;
+	width: 34px;
+	height: 18px;
+	border - radius: 16px;
+	cursor: pointer;
+	-webkit - transition: background 0.25s;
+	-o - transition: background 0.25s;
+	transition: background 0.25s;
+}
+
+.o - toggle:before {
+	content: '';
+	position: absolute;
+	top: 2px;
+	left: 3px;
+	width: 14px;
+	height: 14px;
+	background: #fff;
+	border - radius: 50 %;
+	-webkit - transition: -webkit - transform 0.25s;
+	transition: -webkit - transform 0.25s;
+	-o - transition: transform 0.25s;
+	transition: transform 0.25s;
+	transition: transform 0.25s, -webkit - transform 0.25s;
+}
+
+.o - toggle.o - toggle--activated {
+	background: var(--primary);
+}
+
+.o - toggle.o - toggle--activated:before {
+	-webkit - transform: translateX(100 %);
+	-ms - transform: translateX(100 %);
+	transform: translateX(100 %);
+}
+
+.list - of - roles -in -groups {
+	font - size: 14px;
+	padding: 0;
+}
+
+.list - of - roles -in -groups h4 {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+}
+
+.list - of - roles -in -groups ul li {
+	border: 1px solid var(--bgLigthBlue);
+	border - radius: 4px;
+}
+
+.list - of - roles -in -groups ul li: first - child {
+	border - radius: 4px 4px 0 0;
+	border - bottom: 0;
+}
+
+.list - of - roles -in -groups ul li: not(: first - child) {
+	border - radius: 0;
+}
+
+.list - of - roles -in -groups table {
+	width: 100 %;
+}
+
+.list - of - roles -in -groups table thead {
+	font - size: 12px;
+	font - weight: bold;
+	border: 1px solid var(--borderColor);
+	border - width: 1px 0;
+	color: var(--grey);
+	padding: 1rem;
+}
+
+.list - of - roles -in -groups table tbody tr: nth - child(even) {
+	background: rgb(10 55 170 / 2 %);
+}
+
+.list - of - roles -in -groups table tbody tr {
+	cursor: pointer;
+	-webkit - transition: background 0.15s;
+	-o - transition: background 0.15s;
+	transition: background 0.15s;
+}
+
+.list - of - roles -in -groups table tbody tr:hover {
+	background: rgb(10 55 170 / 5 %);
+}
+
+.list - of - roles -in -groups table tbody tr td: first - child {
+	padding: 0.25rem 1rem 0.25rem 1.5rem;
+	width: 450px;
+}
+
+.list - of - roles -in -groups table tr td: not(: first - child),
+.list - of - roles -in -groups table tr th: not(: first - child) {
+	padding: 0 1rem;
+}
+
+
+.o - list - of - roles__headline {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	color: #222;
+	padding: 0.5rem;
+	font - size: 15px;
+}
+
+.o - list - of - roles__headline > div {
+	margin - right: 0.5rem;
+}
+
+.pos - relative {
+	position: relative;
+}
+
+.o - list - of - roles__acc - chevron {
+	position: absolute;
+	right: 0px;
+	top: 7px;
+	height: 25px;
+	width: 25px;
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	font - size: 1.5rem;
+	display: flex;
+	align - items: center;
+	-webkit - box - pack: center;
+	-ms - flex - pack: center;
+	justify - content: center;
+}
+
+.o - table__tr - acc {
+	cursor: pointer;
+	-webkit - transition: background 0.25s;
+	-o - transition: background 0.25s;
+	transition: background 0.25s;
+}
+
+.o - table__tr - acc:hover {
+	background: rgb(10 55 170 / 5 %);
+}
+
+table.o - table--tbody - closed.o - table__tr - acc th: not(: first - child) {
+	display: none;
+}
+
+table.o - table--tbody - closed tbody {
+	display: none;
+}
+
+.o - table__tr - acc.tio {
+	-webkit - transition: 0.25s;
+	-o - transition: 0.25s;
+	transition: 0.25s;
+	-webkit - transform: rotate(-180deg);
+	-ms - transform: rotate(-180deg);
+	transform: rotate(-180deg);
+}
+
+table.o - table--tbody - closed.o - table__tr - acc.tio {
+	-webkit - transform: rotate(0deg);
+	-ms - transform: rotate(0deg);
+	transform: rotate(0deg);
+}
+
+.o - user - profile__link {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	opacity: 0.8;
+	cursor: pointer;
+	-webkit - transition: opacity 0.25s;
+	-o - transition: opacity 0.25s;
+	transition: opacity 0.25s;
+}
+
+.o - user - profile__link >.tio {
+	margin - right: 0.5rem;
+}
+
+.o - user - profile__link: hover >.tio: nth - child(1),
+.o - user - profile__link >.tio: nth - child(2) {
+	display: none;
+}
+
+.o - user - profile__link: hover >.tio: nth - child(2) {
+	display: block;
+}
+
+.o - user - profile__link:hover {
+	opacity: 1
+}
+
+.o - form label {
+	font - weight: bold;
+	width: 100 %;
+}
+
+.o - form.o - group {
+	margin - bottom: 1rem;
+}
+
+.o - group.o - group__submit {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	-webkit - box - pack: end;
+	-ms - flex - pack: end;
+	justify - content: flex - end;
+}
+
+.o - group.o - group__submit.o - btn {
+	margin - left: 0.5rem;
+}
+
+.text - link {
+	font - size: 14px;
+	color: var(--primary);
+	cursor: pointer;
+	display: inline - block;
+}
+
+.text - link:hover {
+	text - decoration: underline;
+}
+
+.marg - 1 - bottom {
+	margin - bottom: 1rem;
+}
+
+.text - fade - enter - active, .text - fade - leave - active {
+	-webkit - transition: all .3s ease;
+	-o - transition: all .3s ease;
+	transition: all .3s ease;
+}
+
+.text - fade - leave - to {
+	-webkit - transform: translateX(10px);
+	-ms - transform: translateX(10px);
+	transform: translateX(10px);
+	opacity: 0;
+}
+
+.text - fade - enter {
+	-webkit - transform: translateX(-10px);
+	-ms - transform: translateX(-10px);
+	transform: translateX(-10px);
+	opacity: 0;
+}
+
+.o - roles__view {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+}
+
+.o - roles__view__second {
+	border: 1px solid var(--borderColor);
+}
+
+.o - roles__view > div {
+	-webkit - box - flex: 1;
+	-ms - flex: 1;
+	flex: 1;
+}
+
+.o - roles - tables__role--active {
+	background: var(--primary)!important;
+	color: #fff;
+}
+
+.o - roles__view__second li,
+.o - roles__view__second p {
+	font - size: 14px;
+	padding: 0.25rem 1rem 0.25rem 1.5rem;
+}
+
+.o - roles__view__second li: nth - child(even) {
+	background: rgb(10 55 170 / 2 %);
+}
+
+
+.o - roles__view h4 {
+	margin: 0;
+	padding: 0.5rem 1rem 0.5rem 1.5rem;
+	border: 1px solid var(--borderColor);
+}
+
+.o - roles__view.o - roles__view__first h4 {
+	border - width: 1px 0 0 1px;
+}
+
+.o - roles__view.o - roles__view__second h4 {
+	border - width: 0 0 1px 0;
+}
+
+.o - roles__view.list - of - roles -in -groups.o - roles__view__first ul li {
+	border: 0;
+}
+
+.o - roles__view.list - of - roles -in -groups.o - roles__view__first ul {
+	border: 1px solid var(--borderColor);
+	border - width: 0 0 1px 1px;
+}
+
+.o - roles__view__add - user {
+	margin: 0;
+	padding: 0.5rem 1rem 0.5rem 1.5rem;
+	border - bottom: 1px solid var(--borderColor);
+}
+
+.hover {
+	-webkit - transition: background 0.25s;
+	-o - transition: background 0.25s;
+	transition: background 0.25s;
+	cursor: pointer;
+}
+
+.hover:hover {
+	background: rgb(10 55 170 / 5 %);
+}
+
+.o - roles - tables__role--no - users {
+	color: red;
+}
+
+.o - roles - tables__role--active.o - roles - tables__role--no - users {
+	color: #fff;
+}
+
+.EXT_DOCS_FILES {
+	font - size: 12px;
+}
+
+input[type = "text"].o - input--error,
+	input[type = "password"].o - input--error,
+		select.o - input--error {
+	border: 1px solid red!important;
+}
+
+.o - input - error__explainer {
+	font - size: 14px;
+	color: red;
+	font - style: italic;
+}
+
+.o - spinner__text {
+	margin: 0.5rem 0 1rem;
+}
+
+.XcreateAnnouncement_btn {
+	display: none;
+}
+
+.XeditAnnouncementBTN {
+	display: none;
+}
+
+
+.blockUI.undefined.blockPage {
+	display: none;
+}
+
+p {
+	word -break: break-all;
+}
+
+.undefined {
+	display: none!important;
+}
+
+.o - cases__case - group p {
+	white - space: pre - wrap;
+}
+
+.filters__filter--inactive {
+	cursor: not - allowed!important;
+	pointer - events: none!important
+}
+
+[class*= hint--] {
+	position: relative;
+}
+
+[class*= hint--]: after, [class*= hint--]:before {
+	position: absolute;
+	-webkit - transform: translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0);
+	visibility: hidden;
+	opacity: 0;
+	z - index: 1000000;
+	pointer - events: none;
+	-webkit - transition: .3s ease;
+	-o - transition: .3s ease;
+	transition: .3s ease;
+	-webkit - transition - delay: 0s;
+	-o - transition - delay: 0s;
+	transition - delay: 0s
+}
+
+[class*= hint--]: hover: after, [class*= hint--]: hover:before {
+	visibility: visible;
+	opacity: 1;
+	-webkit - transition - delay: .1s;
+	-o - transition - delay: .1s;
+	transition - delay: .1s
+}
+
+[class*= hint--]:before {
+	content: '';
+	position: absolute;
+	background: 0 0;
+	border: 6px solid transparent;
+	z - index: 1000001
+}
+
+[class*= hint--]:after {
+	background: #383838;
+	color: #fff;
+	padding: 8px 10px;
+	font - size: 12px;
+	font - family: "Helvetica Neue", Helvetica, Arial, sans - serif;
+	line - height: 12px;
+	white - space: nowrap;
+	text - shadow: 0 - 1px 0 #000;
+	-webkit - box - shadow: 4px 4px 8px rgba(0, 0, 0, .3);
+	box - shadow: 4px 4px 8px rgba(0, 0, 0, .3)
+}
+
+[class*= hint--][aria - label]:after {
+	content: attr(aria - label)
+}
+
+[class*= hint--][data - hint]:after {
+	content: attr(data - hint)
+}
+
+[aria - label='']: after, [aria - label='']: before, [data - hint='']: after, [data - hint='']:before {
+	display: none!important
+}
+
+.hint--top - left: before, .hint--top - right: before, .hint--top:before {
+	border - top - color: #383838
+}
+
+.hint--bottom - left: before, .hint--bottom - right: before, .hint--bottom:before {
+	border - bottom - color: #383838
+}
+
+.hint--top: after, .hint--top:before {
+	bottom: 100 %;
+	left: 50 %
+}
+
+.hint--top:before {
+	margin - bottom: -11px;
+	left: calc(50 % - 6px)
+}
+
+.hint--top:after {
+	-webkit - transform: translateX(-50 %);
+	-ms - transform: translateX(-50 %);
+	transform: translateX(-50 %)
+}
+
+.hint--top: focus: before, .hint--top: hover:before {
+	-webkit - transform: translateY(-8px);
+	-ms - transform: translateY(-8px);
+	transform: translateY(-8px)
+}
+
+.hint--top: focus: after, .hint--top: hover:after {
+	-webkit - transform: translateX(-50 %) translateY(-8px);
+	-ms - transform: translateX(-50 %) translateY(-8px);
+	transform: translateX(-50 %) translateY(-8px)
+}
+
+.hint--left:before {
+	border - left - color: #383838;
+	margin - right: -11px;
+	margin - bottom: -6px;
+}
+
+.hint--left:after {
+	margin - bottom: -14px;
+}
+
+.hint--left: before, .hint--left:after {
+	right: 100 %;
+	bottom: 50 %;
+}
+
+.hint--left: hover:before {
+	-webkit - transform: translateX(-8px);
+	-ms - transform: translateX(-8px);
+	transform: translateX(-8px);
+}
+
+.hint--left: hover:after {
+	-webkit - transform: translateX(-8px);
+	-ms - transform: translateX(-8px);
+	transform: translateX(-8px);
+}
+
+.vue - spinner__container {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	-ms - flex - direction: column;
+	flex - direction: column;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	-webkit - box - pack: center;
+	-ms - flex - pack: center;
+	justify - content: center;
+}
+
+.pointer - not - allowed {
+	cursor: not - allowed!important;
+}
+
+.delete_user_btn {
+	background - color: #E62338!important;
+}
+
+.col_6_12 {
+	width: calc(100 % / 2) !important;
+}
+
+.loginPanelTwo {
+	width: 100 % !important;
+}
+
+.d - receivers {
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	-ms - flex - direction: column;
+	flex - direction: column;
+	-webkit - box - shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	box - shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	margin - bottom: 16px;
+	background: #ffffff;
+	border - radius: 4px;
+	font - size: 14px
+}
+
+.d - receivers__header {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	font - size: 12px;
+	font - weight: bold;
+	border - bottom: 1px solid var(--borderColor);
+	color: var(--grey);
+	height: 32px;
+	display: flex;
+	align - items: center;
+	color: #222;
+	padding: 0.5rem;
+	font - weight: bold;
+	border: 1px solid var(--borderColor);
+	border - width: 1px 0;
+	color: var(--grey);
+}
+
+.d - receivers__header.o - toogle {
+	margin - right: 0.5rem;
+}
+
+.d - receivers__header h4 {
+	font - size: 15px;
+	margin - left: 0.5rem;
+}
+
+.d - receivers__receiver {
+	height: 28px;
+	cursor: pointer;
+	-webkit - transition: background 0.15s;
+	-o - transition: background 0.15s;
+	transition: background 0.15s;
+	font - size: 14px;
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - pack: justify;
+	-ms - flex - pack: justify;
+	justify - content: space - between;
+	padding: 0.25rem 1rem 0.25rem 1.5rem;
+}
+
+.d - receivers__receiver: nth - child(even) {
+	background: rgb(10 55 170 / 2 %);
+}
+
+.d - receivers__receiver:hover {
+	background: rgb(10 55 170 / 5 %);
+}
+
+.EXT_DOCS_LOADING > div {
+	border: 3px solid var(--borderBlue);
+	border - radius: 50 %;
+	border - top: 3px solid var(--primary);
+	height: 32px;
+	width: 32px!important;
+	-webkit - animation: spin 0.8s linear infinite;
+	animation: spin 0.8s linear infinite;
+	margin: 1rem auto;
+	float: none!important;
+}
+
+.EXT_DOCS_RECIEVERS_DISPLAY_UPDATE > div {
+	width: 100 %;
+}
+
+.o - sort - setting.o - dropdown {
+	width: 35px;
+	min - width: 35px;
+	padding: 0;
+	margin: 0 0 0 0.5rem;
+	background: transparent;
+}
+
+.o - sort - setting.o - dropdown__dropdown {
+	left: auto;
+	right: -1px;
+}
+
+.o - sort - setting__setting--selected {
+	background: rgb(10 55 170 / 10 %);
+}
+
+.o - sort - setting__setting {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	-webkit - box - pack: justify;
+	-ms - flex - pack: justify;
+	justify - content: space - between;
+}
+
+.o - sort - setting__setting p {
+	margin: 0;
+}
+
+.o - sort - setting__setting.tio {
+	font - size: 1.1rem
+}
+
+.no - cases - matches {
+	text - align: center;
+}
+
+.no - cases - matches__btn {
+	margin - top: 1rem;
+}
+
+i.tio.star_icon {
+	color: rgba(230, 35, 56, 1);
+}
+
+.ETRAY_SUBMIT_BTN_AREA >.Web_InnerControl {
+	float: none;
+}
+
+.EXT_DOCS_RECIEVERS_DISPLAY_NEW.Web_TextDesc {
+	width: 100 %;
+	float: none;
+}
+
+
+input[type = text], input[type = password] {
+
+	background - image: none!important;
+	background - attachment: none!important;
+	padding - right: 0!important;
+}
+
+div[id ^= __lpform_] {
+	display: none;
+}
+
+.o - menu__items__inner > li > div > p {
+	word -break: break-word;
+}
+
+.timeline_conversation_to {
+	word -break: break-word;
+}
+
+.timeline_conversation_from {
+	word -break: break-word;
+}
+
+.timeline_text > a {
+	/* min-width: 100% !important; */
+	margin - right: 10px;
+}
+
+a.forgot - pass {
+	text - align: center;
+	float: right!important;
+	width: 100 % !important;
+	margin - top: 20px;
+	font - size: 12px;
+}
+
+
+.o - modal__case__actions li.o - btn {
+	font - size: 14px;
+}
+
+.timeline_element {
+	margin: 0!important;
+}
+
+.timeline_element > div {
+	margin: 0.75rem 0;
+}
+
+.js - modal__single -case.js - hide__timeline_read_msg.timeline_read_msg {
+	display: none;
+}
+
+
+.o - modal__case__timeline__header {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - pack: justify;
+	-ms - flex - pack: justify;
+	justify - content: space - between;
+	-webkit - box - align: end;
+	-ms - flex - align: end;
+	align - items: flex - end;
+}
+
+.toggle - timeline - read - msg {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+}
+
+.toggle - timeline - read - msg label {
+	font - size: 11px;
+	margin - bottom: 0;
+	cursor: pointer;
+	-webkit - user - select: none;
+	-moz - user - select: none;
+	-ms - user - select: none;
+	user - select: none;
+}
+
+.toggle - timeline - read - msg #js - checkbox__toogle - timeline_read_msg {
+	margin: 0 0 0 5px!important;
+	cursor: pointer;
+}
+
+
+.o - table {
+	-webkit - box - shadow: 0 1px 3px 0 rgb(0 0 0 / 10 %), 0 1px 2px 0 rgb(0 0 0 / 6 %);
+	box - shadow: 0 1px 3px 0 rgb(0 0 0 / 10 %), 0 1px 2px 0 rgb(0 0 0 / 6 %);
+	margin - bottom: 16px;
+	background: #ffffff;
+	border - radius: 4px;
+	width: 100 %
+}
+
+.o - table thead {
+	font - size: 12px;
+	font - weight: bold;
+	border - bottom: 1px solid var(--borderColor);
+	color: var(--grey);
+	height: 32px;
+	background - color: #f6f9fc;
+}
+
+.o - table tbody {
+	font - size: 14px;
+}
+
+.o - table tr td,
+.o - table tr th {
+	padding: 1rem 0.5rem
+}
+
+.o - table.o - table__number {
+	text - align: right;
+}
+
+.o - table tr: nth - child(even) {
+	background - color: #f6f9fc;
+}
+
+.o - unit - label {
+	font - size: 14px;
+	margin - right: 0.25rem;
+	color: #5f5f5f;
+}
+
+.o - btn--primary--loading.o - spinner {
+	margin - top: 0;
+	width: 22px;
+	height: 22px;
+}
+
+.o - table__edit - button {
+	width: 30px;
+	height: 20px;
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	-webkit - box - pack: center;
+	-ms - flex - pack: center;
+	justify - content: center;
+	cursor: pointer;
+}
+
+.o - table__edit - button:hover {
+	-webkit - box - shadow: rgb(0 0 0 / 0 %) 0px 0px 0px 0px, rgb(0 0 0 / 0 %) 0px 0px 0px 0px, rgb(0 0 0 / 12 %) 0px 1px 1px 0px, rgb(64 68 82 / 16 %) 0px 0px 0px 1px, rgb(0 0 0 / 0 %) 0px 0px 0px 0px, rgb(0 0 0 / 0 %) 0px 0px 0px 0px, rgb(64 68 82 / 8 %) 0px 2px 5px 0px;
+	box - shadow: rgb(0 0 0 / 0 %) 0px 0px 0px 0px, rgb(0 0 0 / 0 %) 0px 0px 0px 0px, rgb(0 0 0 / 12 %) 0px 1px 1px 0px, rgb(64 68 82 / 16 %) 0px 0px 0px 1px, rgb(0 0 0 / 0 %) 0px 0px 0px 0px, rgb(0 0 0 / 0 %) 0px 0px 0px 0px, rgb(64 68 82 / 8 %) 0px 2px 5px 0px;
+	border - radius: 4px;
+	background - color: rgb(255, 255, 255);
+	color: var(--grey);
+}
+
+.o - table__edit - button:hover {
+	color: var(--primary);
+}
+
+.o - input {
+	border: 1px solid var(--borderColor);
+	border - radius: 4px;
+	line - height: 1.5;
+	padding: 0.5rem 1rem;
+	-webkit - transition: border - color 0.25s, width 0.25s;
+	-o - transition: border - color 0.25s, width 0.25s;
+	transition: border - color 0.25s, width 0.25s;
+	width: 100 %;
+}
+
+.o - input:focus {
+	border - color: var(--primary);
+}
+
+.input -with-button {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	-ms - flex - direction: column;
+	flex - direction: column;
+	-webkit - box - pack: end;
+	-ms - flex - pack: end;
+	justify - content: flex - end;
+}
+
+@media only screen and(max - width: 768px) {
+    .o - body__header {
+		-webkit - box - orient: vertical;
+		-webkit - box - direction: normal;
+		-ms - flex - direction: column;
+		flex - direction: column;
+	}
+
+    .o - body__header > div {
+		width: 100 %
+    }
+}
+
+.input -with-button > input.o - input {
+	border - color: rgb(209 213 219)
+}
+
+.input -with-button > input.o - input:focus {
+	border - color: var(--primary);
+}
+
+.input -with-button >.o - btn.o - btn--primary {
+	border - radius: 8px;
+	border - color: var(--primary);
+	width: 100 %;
+	margin: 1rem 0;
+}
+
+.o - cart {
+	background: #fff;
+	padding: 1rem;
+	border - radius: 4px;
+}
+
+.o - cart__items > li: first - child {
+	border - radius: 8px 8px 0 0;
+	border - width: 1px;
+}
+
+.o - cart__items > li: last - child {
+	border - radius: 0 0 8px 8px;
+}
+
+.o - cart__items > li {
+	border: 1px solid var(--borderColor);
+	border - width: 0 1px 1px 1px;
+}
+
+.o - cart__items__item {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - pack: justify;
+	-ms - flex - pack: justify;
+	justify - content: space - between;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	padding: 0.75rem 1rem;
+}
+
+.o - item - counter {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+}
+
+.o - item - counter:after {
+	content: attr(data - unit - label);
+}
+
+.o - item - counter__btn {
+	height: 2.5rem;
+	width: 2.5rem;
+	padding: 0;
+}
+
+.o - item - counter__minus {
+	border - radius: 8px 0 0 8px!important;
+}
+
+.o - item - counter__plus {
+	border - radius: 0 8px 8px 0!important;
+}
+
+.o - item - counter >.o - input {
+	width: 75px;
+	text - align: center;
+	border - radius: 0;
+	border - width: 1px 0;
+}
+
+.o - item - counter__btn--disabled {
+	background - color: var(--grey)!important;
+	cursor: not - allowed!important;
+	-webkit - transform: scale(1)!important;
+	-ms - transform: scale(1)!important;
+	transform: scale(1)!important;
+}
+
+.o - cart__summary {
+	background: #f9fafc;
+	padding: 1rem;
+	border - radius: 8px;
+}
+
+.o - cart__summary__item {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - pack: justify;
+	-ms - flex - pack: justify;
+	justify - content: space - between;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	border - bottom: 1px solid var(--borderColor);
+	padding: 0.5rem 0;
+}
+
+.o - cart__summary__item.o - cart__summary__item__sum {
+	border - bottom: none;
+}
+
+.o - cart__summary__item p {
+	margin - bottom: 0;
+}
+
+.o - cart__items__item__right {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+}
+
+.o - cart__items__item__label - unit {
+	margin: 0;
+	font - size: 13px;
+	color: var(--grey);
+	margin - right: 1rem;
+}
+
+.o - cart__summary__item__left {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	-ms - flex - direction: column;
+	flex - direction: column;
+}
+
+.o - cart__summary__item__labels {
+	margin: 0;
+	font - size: 13px;
+	color: var(--grey);
+}
+
+.animate - shake {
+	-webkit - animation: shake 0.82s cubic - bezier(.36, .07, .19, .97) both;
+	animation: shake 0.82s cubic - bezier(.36, .07, .19, .97) both;
+	-webkit - transform: translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0);
+	-webkit - backface - visibility: hidden;
+	backface - visibility: hidden;
+	-webkit - perspective: 1000px;
+	perspective: 1000px;
+}
+
+@-webkit - keyframes shake {
+	10 %, 90 % {
+        - webkit - transform: translate3d(-1px, 0, 0);
+	transform: translate3d(-1px, 0, 0);
+}
+
+20 %, 80 % {
+        - webkit - transform: translate3d(2px, 0, 0);
+transform: translate3d(2px, 0, 0);
+    }
+
+30 %, 50 %, 70 % {
+        - webkit - transform: translate3d(-4px, 0, 0);
+transform: translate3d(-4px, 0, 0);
+    }
+
+40 %, 60 % {
+        - webkit - transform: translate3d(4px, 0, 0);
+transform: translate3d(4px, 0, 0);
+    }
+}
+
+@keyframes shake {
+	10 %, 90 % {
+        - webkit - transform: translate3d(-1px, 0, 0);
+	transform: translate3d(-1px, 0, 0);
+}
+
+20 %, 80 % {
+        - webkit - transform: translate3d(2px, 0, 0);
+transform: translate3d(2px, 0, 0);
+    }
+
+30 %, 50 %, 70 % {
+        - webkit - transform: translate3d(-4px, 0, 0);
+transform: translate3d(-4px, 0, 0);
+    }
+
+40 %, 60 % {
+        - webkit - transform: translate3d(4px, 0, 0);
+transform: translate3d(4px, 0, 0);
+    }
+}
+
+.no - scroll {
+	overflow: hidden!important;
+}
+
+.o - table.o - table__orders,
+.o - table.o - table__orders th,
+.o - table.o - table__orders td {
+	max - width: 100 %;
+	white - space: nowrap;
+	padding: 0.75rem;
+}
+
+.o - table.o - table.o - table__orders tbody tr:hover {
+	cursor: pointer;
+	background - color: var(--bgLigthBlue)!important;
+}
+
+.o - table.o - table.o - table__orders tr: nth - child(even) {
+	border - width: 1px 0;
+	border: 1px solid #eee;
+	background - color: transparent;
+}
+
+.o - table__orders.o - pill,
+.o - pill.o - pill--small {
+	font - size: 12px;
+	line - height: 12px;
+}
+
+.o - table__orders__price {
+	font - weight: bold
+}
+
+.marg - 1 - top {
+	margin - top: 1rem
+}
+
+.vue - modal.vue - modal--small {
+	margin - top: 2rem;
+	min - height: 200px;
+	max - height: 200px;
+	z - index: 32;
+	max - width: 500px;
+}
+
+.vue - modal.vue - modal--small.o - modal__body:before {
+	height: 0;
+}
+
+.vue - modal.vue - modal--small.o - modal__body {
+	padding: 2rem;
+}
+
+.vue - modal.vue - modal--small.o - modal__body h4 {
+	margin - bottom: 2rem;
+}
+
+.o - btn.o - btn--danger {
+	position: relative;
+	cursor: pointer;
+	text - decoration: none!important;
+	overflow: hidden;
+	background: var(--red)!important;
+	color: #ffffff;
+	margin - left: 1rem;
+}
+
+.o - btn.o - btn--danger.o - btn--loading:before {
+	background: var(--red);
+}
+
+.o - btn.o - btn--danger.o - btn--loading:after {
+	border: 3px solid #ef7b87;
+	border - top: 3px solid #ffffff;
+}
+
+.o - btn.o - btn--danger: hover:before {
+	-webkit - transform: scaleY(1);
+	-ms - transform: scaleY(1);
+	transform: scaleY(1);
+}
+
+.o - modal__body__actions {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - pack: end;
+	-ms - flex - pack: end;
+	justify - content: flex - end;
+}
+
+.input -with-button__error - message {
+	position: absolute;
+	left: 0;
+	bottom: 100 %;
+}
+
+.o - read - more {
+	margin: 0;
+	font - size: 13px;
+	color: var(--primary);
+	cursor: pointer;
+	margin: 0;
+	-webkit - user - select: none;
+	-moz - user - select: none;
+	-ms - user - select: none;
+	user - select: none;
+}
+
+.o - read - more--active {
+	border: 1px solid var(--borderColor);
+	border - width: 1px 1px 0 1px;
+	padding: 0.25rem 0.5rem;
+	border - radius: 8px 8px 0 0;
+	margin - left: -0.5rem;
+}
+
+.o - cart__items__item__left {
+	max - width: 75 %
+}
+
+.o - cart__items__item__desc {
+	font - size: 14px;
+	padding: 0.5rem 0.75rem;
+	border - radius: 0 8px 8px 8px;
+	border: 1px solid var(--borderColor);
+	margin - left: -0.5rem;
+}
+
+.o - btn.o - btn--small__delete {
+	display: -webkit - inline - box;
+	display: -ms - inline - flexbox;
+	display: inline - flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	line - height: 1;
+}
+
+.o - btn--small__delete i {
+	color: var(--grey);
+	font - size: 15px;
+	margin - right: 0.25rem;
+}
+
+@media only screen and(min - width: 768px) {
+    .input -with-button {
+		-webkit - box - orient: horizontal;
+		-webkit - box - direction: normal;
+		-ms - flex - direction: row;
+		flex - direction: row;
+		-webkit - box - pack: end;
+		-ms - flex - pack: end;
+		justify - content: flex - end;
+	}
+
+    .input -with-button > input.o - input {
+		max - width: 350px;
+		border - radius: 4px 0 0 4px;
+	}
+
+    .input -with-button >.o - btn.o - btn--primary {
+		border - radius: 0 4px 4px 0;
+		width: 240px;
+		margin: 0;
+	}
+
+    .input -with-button__error - message {
+		top: 100 %;
+		bottom: auto;
+	}
+}
+
+@media only screen and(max - width: 768px) {
+
+	/* Force table to not be like tables anymore */
+	table.o - table__orders, .o - table__orders thead, .o - table__orders tbody, .o - table__orders tr, .o - table__orders th, .o - table__orders td {
+		display: block;
+	}
+
+	table.o - table.o - table__orders {
+		padding: 0;
+	}
+
+    .o - table__orders thead {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+
+    .o - table__orders tr {
+		border: none!important;
+		padding: 1rem 0;
+		border - bottom: 1px solid var(--borderColor)!important;
+	}
+
+    .o - table__orders td {
+		/* Behave  like a "row" */
+		border: none;
+		position: relative;
+	}
+
+	table.o - table.o - table__orders td {
+		padding: 0.15rem 1rem;
+		font - weight: bold;
+		color: var(--grey);
+	}
+
+	table.o - table.o - table__orders td: nth - child(1),
+		table.o - table.o - table__orders td: nth - child(2) {
+		display: inline - block;
+	}
+
+	table.o - table.o - table__orders td: nth - child(1) {
+		padding - right: 0;
+	}
+
+	table.o - table.o - table__orders td: nth - child(2) {
+		padding - left: 0
+	}
+
+    .o - table.o - table__orders.o - table__number {
+		text - align: left;
+	}
+
+    .o - table__orders td.o - table__orders__edit - btn {
+		display: none;
+	}
+
+    .o - table.o - table__orders.o - pill {
+		margin - left: 0;
+	}
+
+    .o - table__orders__created_by {
+		margin - top: 0.5rem;
+		padding - bottom: 0!important;
+	}
+
+    .o - table__orders__created_by,
+    .o - table__orders__created_at {
+		font - size: 12px;
+		font - weight: normal!important;
+	}
+
+    .vue - modal__new - order.o - cart__items__item {
+		-webkit - box - orient: vertical;
+		-webkit - box - direction: normal;
+		-ms - flex - direction: column;
+		flex - direction: column;
+	}
+
+    .vue - modal__new - order.o - cart__items__item__right {
+		-webkit - box - orient: vertical;
+		-webkit - box - direction: normal;
+		-ms - flex - direction: column;
+		flex - direction: column;
+		margin - top: 1rem;
+	}
+
+    .vue - modal__new - order.o - cart__items__item__label - unit {
+		margin - right: 0
+	}
+}
+
+.o - read - more - btn {
+	border: 1px solid var(--borderColor);
+	border - radius: 8px;
+	font - size: 12px;
+	color: var(--primary);
+	padding: 0.25rem 0.5rem;
+}
+
+.the - read - more - onp - td {
+	width: 200px;
+}
+
+.the - read - more - onp - td__price {
+	min - width: 85px;
+}
+
+.o - cart__summary.o - input - error__explainer {
+	text - align: right;
+	margin - right: 1rem;
+}
+
+.alert_evergreen {
+	color: #856404;
+	background - color: #fff3cd;
+	border - color: #ffeeba;
+	position: relative;
+	padding: 0.75rem 1.25rem;
+	margin - bottom: 1rem;
+	border: 1px solid transparent;
+	border - radius: 0.25rem;
+	margin - top: 1rem;
+}
+
+@media only screen and(max - width: 768px) {
+    .o - content table.o - table.o - table__orders td {
+		padding: 1rem;
+		font - weight: normal;
+		color: var(--grey);
+		position: relative;
+		padding - left: 35 %;
+		border: 1px solid var(--grey);
+		border - width: 1px 1px 0 1px;
+		margin: 0 1rem;
+		overflow: hidden;
+	}
+
+    .o - content table.o - table.o - table__orders tr td: first - child {
+		border - radius: 4px 4px 0 0;
+	}
+
+    .o - content table.o - table.o - table__orders tr td: nth - last - child(2) {
+		border - radius: 0 0 4px 4px;
+		border - width: 1px;
+	}
+
+    .o - content table.o - table.o - table__orders td: nth - child(even) {
+		background - color: #f6f9fc;
+	}
+
+    .o - content table.o - table.o - table__orders td: nth - child(1),
+    .o - content table.o - table.o - table__orders td: nth - child(2) {
+		display: block;
+	}
+
+    .o - content table.o - table.o - table__orders td:before {
+		content: attr(aria - label);
+		font - size: 12px;
+		font - weight: bold;
+		color: var(--grey);
+		font - weight: bold;
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 3px;
+		bottom: 0;
+		display: -webkit - box;
+		display: -ms - flexbox;
+		display: flex;
+		-webkit - box - align: center;
+		-ms - flex - align: center;
+		align - items: center;
+		left: 0;
+		width: 45 %;
+		padding: 0 0 0 1rem;
+		white - space: nowrap;
+		text - transform: uppercase;
+	}
+
+    .o - content table.o - table.o - table__orders td.o - table__orders__created_by,
+    .o - content table.o - table.o - table__orders td.o - table__orders__created_at {
+		font - size: 14px;
+		margin - top: 0;
+		padding - bottom: 1rem!important;
+	}
+
+}
+
+@media only screen and(max - width: 375px) {
+    .o - content table.o - table.o - table__orders td {
+		padding: 2rem 1rem 0.5rem 1rem!important;
+	}
+
+    .o - content table.o - table.o - table__orders td:before {
+		top: 0.5rem!important;
+		-webkit - box - align: start!important;
+		-ms - flex - align: start!important;
+		align - items: flex - start!important;
+	}
+}
+
+li.o - btn.js - click -case -edit - ref {
+	background - color: white!important;
+}
+
+input.o - modal__case__commentary__textarea {
+	position: relative;
+	width: 100 %;
+	min - height: 80px;
+	border: 1px solid var(--borderColor);
+	border - radius: 4px;
+	padding: 16px;
+	outline: none;
+	margin - bottom: 10px;
+}
+
+.PowerBI_Container {
+	max - width: 1200px!important;
+}
+
+.PowerBI_Container > iframe {
+	border: none;
+	min - height: 720px!important;
+	min - width: 1280px!important;
+}
+
+.hidePowerBi {
+	opacity: 0
+}
+
+.env_top {
+	background - color: #9f374f;
+	text - align: center;
+	color: white;
+}
+
+.vue - modal__new - order.o - filters__filter.o - filters__filter--active {
+	background: #fff;
+}
+
+.o - cart__summary.o - input__group {
+	margin - bottom: 1rem;
+}
+
+.o - cart__summary.o - input__group > input[type = "date"] {
+	width: 100 %;
+	border: 1px solid rgb(209 213 219);
+	border - radius: 4px;
+	line - height: 1.5;
+	padding: 0.5rem 1rem;
+	transition: border - color 0.25s, width 0.25s;
+	width: 100 %;
+}
+
+.o - cart__summary.o - input__group > input[type = "date"]:focus {
+	border - color: var(--primary);
+}
+
+.o - input__group__submit button {
+	width: 100 %;
+}
+
+.o - cart__items__item.o - cart__items__item--form {
+	display: flex;
+	flex - direction: row;
+	align - items: center;
+}
+
+.o - cart__items__item--form.o - cart__items__item--form__number {
+	width: 100px;
+	margin - left: 1rem;
+}
+
+.o - cart__items__item--form__add {
+	color: var(--primary);
+}
+
+.o - cart__items__item--form__add > p {
+	padding: 1rem;
+	margin: 0;
+	cursor: pointer;
+	display: inline - block;
+}
+
+.o - cart__items__item--form.bg - icon - hover {
+	min - width: 32px;
+	height: 32px;
+	display: flex;
+	align - items: center;
+	justify - content: center;
+	margin - right: -1rem;
+}
+
+#btnEndCustomerEmailConfig {
+	margin - bottom: 0.5rem;
+}
+
+.o - modal - form__o - spinner__container {
+	display: flex;
+	align - items: center;
+	justify - content: center;
+	margin - top: 50px;
+}
+
+.o - filters__form - container {
+	display: flex;
+	flex - direction: column;
+	align - items: center;
+	padding: 1rem;
+	border - radius: 0 0.25rem 0.25rem 0.25rem;
+	border: 1px solid var(--borderColor);
+	background: #fff9;
+}
+
+.o - filters__form - container >.o - form {
+	flex: 1;
+}
+
+.o - modal__body.o - filters__filter.o - filters__filter--active {
+	background: #fff9;
+}
+
+.o - form__preview {
+	position: relative;
+	width: 100 %;
+	max - width: 330px;
+	flex: 1;
+	margin: 1rem;
+	background: #fff;
+	border: 4px;
+	border: 1px solid #ccc;
+	border - radius: 4px;
+	font - size: 10px;
+}
+
+.o - form__preview >.o - label {
+	position: absolute;
+	top: -20px;
+	left: 0;
+	right: 0;
+	font - style: italic;
+	text - align: center;
+	cursor: default !important;
+	color: var(--grey)!important;
+}
+
+.o - form__preview__body {
+	padding: 0 1rem;
+}
+
+.o - form__preview__header {
+	padding: 0.5rem 0 0.25rem 0;
+	border - bottom: 1px solid #eee;
+	margin: 0 1rem;
+}
+
+.o - form__preview__head {
+	background - color: #fff;
+	height: 1rem;
+	border - bottom: 1px solid #ccc;
+	border - radius: 4px 4px 0 0;
+	position: relative;
+}
+
+.o - form__preview__head::after {
+	content: '';
+	background - color: #f2f2f2;
+	position: absolute;
+	height: 60 %;
+	width: 80 %;
+	top: 20 %;
+	left: 10 %;
+	border - radius: 2px;
+}
+
+.o - form__preview__email >.o - form__preview__head {
+	border - bottom: none;
+}
+
+.o - form__preview__email >.o - form__preview__head::after {
+	content: '';
+	border - bottom: 1px solid #f2f2f2;
+	background - color: transparent;
+}
+
+.o - form__preview__email.o - form__preview__header {
+	border - bottom: 0;
+	padding: 1rem 0 0.25rem 0;
+}
+
+.o - form__preview__body__order {
+	background - color: var(--bgLigthBlue);
+	overflow: hidden;
+	border - radius: 12px;
+	padding: 0.25rem 1rem;
+	display: flex;
+	flex - direction: column;
+	align - items: flex - end;
+	margin - bottom: 0.5rem;
+}
+
+.o - form__preview__body__order > div {
+	height: 6px;
+	width: 100 %;
+	background: #eee;
+	border - radius: 4px;
+	margin - bottom: 0.25rem;
+}
+
+.o - form__preview__body__order > div.o - form__preview__body__order__bttn {
+	width: 10 %;
+	background: rgb(10 55 170 / 50 %);
+	height: 15px;
+}
+
+.o - form__preview__body__order > h5 {
+	width: 100 %;
+	font - size: 9px;
+	margin: 5px 0;
+}
+
+.o - form__preview__header > img {
+	width: 50px;
+}
+
+.o - form__preview__body > h4 {
+	font - size: 13px;
+	margin: 0.25rem 0;
+}
+
+.o - form__preview.o - form__preview__email {
+	text - align: center;
+}
+
+.o - form__preview.o - form__preview__email >.o - form__preview__header,
+.o - form__preview.o - form__preview__email >.o - form__preview__body > h4 {
+	text - align: center;
+}
+
+.o - form__preview__body__email__link {
+	text - decoration: underline;
+	color: var(--primary);
+}
+
+.o - form__preview__body__by {
+	margin - bottom: 0;
+	font - weight: bold;
+}
+
+@media only screen and(min - width: 768px) {
+	#btnEndCustomerEmailConfig {
+		margin - left: 1rem;
+	}
+
+    .o - cart__summary.o - input__group {
+		display: flex;
+		align - items: center;
+		justify - content: flex - end;
+	}
+
+    .o - cart__summary.o - input__group > input[type = "date"] {
+		max - width: 160px;
+	}
+
+    .o - input__group__submit {
+		display: flex;
+		justify - content: flex - end;
+	}
+
+    .o - input__group__submit button {
+		max - width: 240px;
+	}
+
+    .o - filters__form - container {
+		flex - direction: row;
+	}
+
+    .o - form__preview {
+		max - width: 40 %;
+	}
+}
+
+.SSID_DESC {
+	margin - top: -20px!important;
+	font - size: 12px;
+}
+
+.SSID {
+	position: relative;
+}
+
+.o - icon - on - input {
+	position: absolute;
+	top: 34px;
+	right: 12px;
+	font - size: 1.5rem;
+	color: #991c1a
+}
+
+.o - icon - on - input.o - icon - on - input--success {
+	color: #176434
+}
+
+.submit_and_close_btn {
+	background - color: #6c7a87!important;
+}
+
+/* START ADDED 26-11-23 For openByOtherEmp */
+
+ul.o -case -active - users {
+	position: absolute;
+	top: -12px;
+	left: 1rem;
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	padding: 0;
+	margin: 0;
+}
+
+li.o -case -active - users__user {
+	width: 26px;
+	height: 26px;
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	-webkit - box - pack: center;
+	-ms - flex - pack: center;
+	justify - content: center;
+	background: #c7cef4;
+	color: #5569DC;
+	border - radius: 50 %;
+	border: 2px solid #5569DC;
+	;
+	font - size: 11px;
+	font - weight: normal;
+	-webkit - transition: border 0.15s;
+	-o - transition: border 0.15s;
+	transition: border 0.15s;
+}
+
+li.o -case -active - users__user:hover {
+	font - weight: bold;
+	color: #222;
+}
+
+li.o -case -active - users__user: not(: first - child) {
+	margin - left: -5px;
+}
+
+li.o -case -active - users__user: nth - child(6) {
+	background: #fff;
+	font - weight: bold;
+}
+
+li.o -case -active - users__user.hint--bottom:after {
+	font - weight: bold;
+}
+
+.hint--bottom:before {
+	margin - top: -11px;
+}
+
+.hint--bottom: before, .hint--bottom:after {
+	top: 100 %;
+	left: 50 %;
+}
+
+.hint--bottom:before {
+	left: calc(50 % - 6px);
+}
+
+.hint--bottom:after {
+	-webkit - transform: translateX(-50 %);
+	-ms - transform: translateX(-50 %);
+	transform: translateX(-50 %);
+}
+
+.hint--bottom: hover:before {
+	-webkit - transform: translateY(8px);
+	-ms - transform: translateY(8px);
+	transform: translateY(8px);
+}
+
+.hint--bottom: hover:after {
+	-webkit - transform: translateX(-50 %) translateY(8px);
+	-ms - transform: translateX(-50 %) translateY(8px);
+	transform: translateX(-50 %) translateY(8px);
+}
+
+/* END ADDED 26-11-23 For openByOtherEmp */
+
+/* START ADDED 17-12-23 */
+.o - cases__case_element__header__row__tags {
+	display: flex;
+	align - items: center;
+	gap: 0.5rem;
+	padding: 0.25rem 1rem;
+	position: relative;
+	width: 100 % !important;
+	border - top: 1px solid #eee;
+}
+
+.o - cases__case_element__header__row__tags__container {
+	display: flex;
+	flex - wrap: wrap;
+	gap: 0.5rem;
+	align - items: center;
+	width: 100 %;
+	padding: 0.25rem;
+	border - radius: 4px;
+}
+
+.o - cases__case_element__header__row__tags__container:hover {
+	background: rgb(10 55 170 / 15 %);
+}
+
+.tags - selector__bg {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z - index: 1212;
+	background: transparent;
+	transition: background 0.25s;
+}
+
+.tags - selector__bg--dark {
+	background: rgb(10 55 170 / 15 %);
+	z - index: 121213;
+}
+
+.tags - selector__container {
+	position: absolute;
+	top: 0;
+	z - index: 121212;
+	left: 85px;
+	width: 300px;
+	box - shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+	border - radius: 4px;
+	background: #fff;
+}
+
+.tags - selector__search {
+	padding: 0.5rem;
+	position: relative;
+}
+
+.tags - selector input[type = "search"] {
+	width: 100 %;
+	padding: 8px;
+	border: 1px solid #ccc;
+	border - radius: 4px;
+	box - sizing: border - box;
+}
+
+.tags - selector input[type = "search"]:focus {
+	border - color: var(--primary);
+}
+
+ul.tags - selector__dropdown {
+	width: 100 %;
+	background - color: #fff;
+	border: 1px solid #ccc;
+	border - width: 1px 0;
+	max - height: calc(200px + 1rem);
+	overflow - y: auto;
+	list - style: none;
+	padding: 0.5rem!important;
+	overscroll - behavior: contain;
+}
+
+.tags - selector__tag - item {
+	padding: 0.5rem;
+	cursor: pointer;
+	background - color: #fff;
+	border - radius: 4px;
+	position: relative;
+	display: flex;
+	align - items: center;
+	justify - content: space - between;
+}
+
+.tags - selector__tag - item:hover {
+	background - color: var(--primary);
+	color: #fff!important;
+}
+
+.tags - selector__tag - item.tags - selector__tag - item--loading {
+	pointer - events: none;
+	cursor: default ;
+}
+
+.tags - selector__tag - item__right {
+	display: flex;
+	gap: 0.25rem;
+	align - items: center;
+}
+
+ul.tags - selector__dropdow__create {
+	color: var(--primary);
+	padding: 0.5rem;
+	font - weight: bold;
+	font - size: 13px;
+}
+
+.tag - item__no - match {
+	padding: 0.5rem;
+	font - style: italic;
+	cursor: default !important;
+	font - size: 14px;
+}
+
+.item - tag {
+	color: #fff;
+	border - radius: 4px;
+	padding: 2px 4px;
+	font - size: 11px;
+	font - weight: bold;
+	pointer - events: none;
+}
+
+.tags - selector__tag - item__edit - bttn {
+	width: 22px;
+	height: 22px;
+	display: flex;
+	align - items: center;
+	justify - content: center;
+	border - radius: 4px;
+	opacity: 0;
+}
+
+.tags - selector__tag - item: hover.tags - selector__tag - item__edit - bttn {
+	opacity: 1;
+}
+
+.tags - selector__tag - item__edit - bttn:hover {
+	background: rgb(255 255 255 / 20 %);
+}
+
+.tags - selector__form__header {
+	font - size: 15px;
+	margin: 0;
+	padding: 0.75rem;
+	border - bottom: 1px solid #ccc;
+	background: #f1f5f9;
+	color: #6d727c;
+}
+
+.tags - selector__form__header h4 {
+	font - size: 14px;
+	margin: 0;
+}
+
+.tags - selector__form__footer {
+	margin: 0;
+	padding: 0.75rem;
+	border - bottom: 1px solid #ccc;
+	background: #f1f5f9;
+	color: #6d727c;
+	display: flex;
+	justify - content: space - between;
+	align - items: center;
+}
+
+.tags - selector__form__body.o - form {
+	padding: 0.75rem;
+}
+
+.tags - selector__form__colors {
+	display: flex;
+	flex - wrap: wrap;
+	align - items: center;
+	gap: 0.25rem;
+}
+
+.tags - selector__form__colors__color {
+	width: 24px;
+	height: 24px;
+	border - radius: 50 %;
+	cursor: pointer;
+	border: 2px solid #fff;
+}
+
+.tags - selector__form__colors__color: hover,
+.tags - selector__form__colors__color--selected {
+	box - shadow: 0 0 0px 2px #22222242;
+}
+
+.tags - selector__form.o - form.o - group input[type = "text"] {
+	padding: 0.75rem!important;
+}
+
+.o - cases__case_element__header__row__tags > label {
+	min - width: 60px;
+	margin - bottom: 0;
+	font - weight: bold;
+}
+
+.itemcase - tags__add {
+	padding: 0.25rem 0.5rem;
+	border - radius: 4px;
+	border: 1px dashed #ececed;
+	background - color: #fff;
+	pointer - events: none;
+}
+
+.o - btn.o - btn--small.o - btn--loading:after {
+	top: 7px;
+	height: 16px;
+	width: 16px;
+}
+
+.o - spinner.o - spinner--small {
+	width: 18px;
+	height: 18px;
+	margin - top: 0;
+}
+
+.tag - input - error - text {
+	font - size: 13px;
+	color: red;
+}
+
+
+.tags - selector__dropdow__create.tags - selector__tag - item {
+	margin - bottom: 0.5rem;
+}
+
+.tags - selector__dropdow__create__submit {
+	display: flex;
+	justify - content: flex - end;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	background: #f1f5f9;
+	margin: 0 - 0.5rem - 0.5rem;
+}
+
+.tags - selector.vue - modal.vue - modal--small {
+	z - index: 121214;
+}
+
+.tags - selector.o - modal__body__actions {
+	gap: 0.5rem;
+}
+
+.o - navbar__left {
+	display: flex;
+	flex - direction: column;
+	gap: 0;
+}
+
+.o - navbar__right {
+	display: flex;
+	flex - direction: column - reverse;
+	align - items: flex - end;
+	gap: 1rem;
+}
+
+.o - body.o - body__container {
+	padding: 12rem 0 0;
+}
+
+
+.o - multi - select {
+	position: relative;
+	width: 100 %;
+}
+
+.o - multi - select.tags - selector__tag - item {
+	font - size: 14px;
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+}
+
+.o - multi - select.tags - selector__tag - item.tags - selector__tag - item--selected {
+	background: rgb(10 55 170 / 10 %);
+	font - weight: bold;
+	color: var(--primary);
+}
+
+.o - multi - select.tags - selector__tag - item.tags - selector__tag - item--selected:hover {
+	background - color: var(--red)!important;
+}
+
+
+.o - multi - select.tags - selector__tag - item.tio {
+	margin - top: 0;
+}
+
+.tags - selector__selected {
+	position: relative;
+	background: #fff;
+	height: 37px;
+	padding: 0 1rem 0 0;
+	margin: 0;
+	font - size: 0.85rem;
+	display: -ms - flexbox;
+	display: -webkit - box;
+	display: flex;
+	-ms - flex - align: center;
+	-webkit - box - align: center;
+	align - items: center;
+	border: 1px solid var(--borderColor);
+	border - radius: 4px;
+	font - weight: normal;
+	width: 100 %;
+	min - width: 150px;
+	font - size: 13px;
+	cursor: pointer;
+	display: flex;
+	align - items: center;
+	-webkit - box - pack: justify;
+	-ms - flex - pack: justify;
+	justify - content: space - between;
+	padding: 0 1rem;
+}
+
+.tags - selector__selected.tags - selector__selected--has - selection {
+	border - color: var(--primary);
+	background: rgb(10 55 170 / 10 %);
+	font - weight: bold;
+}
+
+.tags - selector__selected.tags - selector__selected--active {
+	border - radius: 4px;
+	border - color: var(--primary);
+}
+
+.tags - selector__selected p {
+	margin - bottom: 0;
+	text - wrap: nowrap;
+}
+
+.tags - selector__selected.tio {
+	font - size: 1.2rem;
+	color: var(--grey);
+	margin - top: 0;
+}
+
+.o - dropdown.o - dropdown--has - selection.o - dropdown__selected > p {
+	font - weight: bold;
+}
+
+.o - dropdown__selected {
+	width: 100 %;
+}
+
+.o - dropdown__selected.tio {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	font - size: 1.2rem;
+	color: var(--grey);
+	margin - top: 0;
+}
+
+.o - multi - select.tags - selector__container {
+	top: calc(100 % + 0.5rem);
+	left: -1px;
+	border - width: 1px;
+	border: 1px solid var(--primary);
+	border - radius: 4px;
+	z - index: 10000;
+}
+
+.o - multi - select ul.tags - selector__dropdown {
+	border - radius: 4px;
+}
+
+.vue - subheader - filters__flex {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	-ms - flex - direction: column;
+	flex - direction: column;
+}
+
+.vue - subheader - filters__flex__row {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	gap: 0.5rem;
+	flex - direction: column;
+}
+
+.vue - subheader - filters__flex__row.o - btn.o - btn__filter {
+	margin: 0;
+}
+
+.vue - subheader - filters__flex__row__space {
+	-webkit - box - pack: justify;
+	-ms - flex - pack: justify;
+	justify - content: space - between;
+	width: 100 %;
+}
+
+.vue - o - right - items {
+	font - size: 13px;
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - orient: vertical;
+	-webkit - box - direction: normal;
+	-ms - flex - direction: column;
+	flex - direction: column;
+	-webkit - box - align: end;
+	-ms - flex - align: end;
+	align - items: flex - end;
+	margin - top: 0.5rem;
+}
+
+.vue - o - right - items p {
+	margin: 0;
+	color: var(--grey);
+	font - style: italic;
+}
+
+.vue - o - right - items a {
+	margin - top: 0.25rem;
+	color: var(--red);
+	font - style: italic;
+}
+
+.vue - o - right - items a:hover {
+	color: var(--red);
+	text - decoration: underline;
+}
+
+.vue - subheader - filters__flex__row.vue - dropdown {
+	margin: 0;
+}
+
+.tags - selector__tag - item__no - tags {
+	font - style: italic;
+}
+
+.o - btn.o - btn__filter.vue - filter - 2.vue - filter - 2--active {
+	border - color: var(--primary);
+	background: rgb(10 55 170 / 10 %);
+	font - weight: bold;
+}
+
+.tags - selector__modal__close {
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
+	font - size: 1.5rem;
+}
+
+.tags - selector.o - modal__body {
+	display: flex;
+	flex - direction: column;
+	justify - content: space - between;
+}
+
+
+.tags - selector__search >.o - search - group__clear {
+	top: calc(0.5rem + 4px);
+	right: calc(0.5rem + 4px);
+}
+
+.tags - selector__search--filled.tags - selector__search >.o - search - group__clear {
+	opacity: 0.8;
+	-webkit - transform: scale(0.85);
+	-ms - transform: scale(0.85);
+	transform: scale(0.85);
+	pointer - events: initial;
+}
+
+.vue2 - remove - all - filter - icon {
+	background - color: #fdf1f2!important;
+}
+
+.vue2 - remove - all - filter - icon.tio {
+	color: #9f374f;
+}
+
+.vue2 - remove - all - filter - icon:hover {
+	border - color: #9f374f!important;
+}
+
+.o - page.o - page--docs.vue - subheader - filters.vue - subheader - filters__flex {
+	gap: 0.5rem;
+}
+
+.tags - selector__tag - item__icon {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+}
+
+.tags - selector__tag - item__icon >.tio {
+	margin - right: 5px;
+}
+
+.tags - selector__container__header {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - pack: end;
+	-ms - flex - pack: end;
+	justify - content: flex - end;
+	font - size: 11px;
+	padding: 0.5rem 0.5rem 0 0.5rem;
+}
+
+.tags - selector__container__header__remove - all {
+	color: var(--grey);
+	margin - bottom: 0;
+	cursor: pointer;
+}
+
+.tags - selector__container__header__remove - all:hover {
+	color: var(--red);
+}
+
+@media only screen and(min - width: 600px) {
+
+    .o - navbar__left {
+		-webkit - box - orient: horizontal;
+		-webkit - box - direction: normal;
+		-ms - flex - direction: row;
+		flex - direction: row;
+		-webkit - box - align: center;
+		-ms - flex - align: center;
+		align - items: center;
+		gap: 1rem;
+	}
+
+    .o - body.o - body__container {
+		padding: 6rem 0 0;
+	}
+
+    .o - navbar__right {
+		display: -webkit - box;
+		display: -ms - flexbox;
+		display: flex;
+		-webkit - box - orient: horizontal;
+		-webkit - box - direction: normal;
+		-ms - flex - direction: row;
+		flex - direction: row;
+		-webkit - box - align: center;
+		-ms - flex - align: center;
+		align - items: center;
+		gap: 3rem;
+	}
+
+    .o - multi - select {
+		width: auto;
+	}
+
+    .vue - subheader - filters__flex__row {
+		-webkit - box - orient: horizontal;
+		-webkit - box - direction: normal;
+		-ms - flex - direction: row;
+		flex - direction: row;
+	}
+
+    .o - body__list - of - cases__right {
+		margin - bottom: 0;
+	}
+}
+
+@media only screen and(max - width: 600px) {
+    .vue - subheader - filters__flex__row {
+		width: 100 %;
+	}
+}
+
+.o - cases--is - open - analytics {
+	position: relative;
+}
+
+.o - iframe - container {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: #eee;
+	z - index: 123;
+
+}
+
+.o - iframe - container iframe {
+	width: 100 %;
+	height: 100 %;
+	border: none;
+}
+
+.o - iframe - container--loader {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: #fff;
+	z - index: 1234;
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: start;
+	-ms - flex - align: start;
+	align - items: start;
+	-webkit - box - pack: center;
+	-ms - flex - pack: center;
+	justify - content: center;
+	padding - top: 80px;
+}
+
+.fadeOut - leave - active {
+	transition: opacity 0.5s ease;
+}
+
+.fadeOut - leave - to {
+	opacity: 0;
+}
+
+.o - toggle - group {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	-webkit - box - pack: justify;
+	-ms - flex - pack: justify;
+	justify - content: space - between;
+	cursor: pointer;
+	-webkit - transition: background 0.15s;
+	-o - transition: background 0.15s;
+	transition: background 0.15s;
+	padding: 0.5rem;
+	margin: -0.5rem;
+	border - radius: 4px;
+}
+
+.o - toggle - group:hover {
+	background: rgb(10 55 170 / 5 %);
+}
+
+.o - spinner - container {
+	display: -webkit - box;
+	display: -ms - flexbox;
+	display: flex;
+	-webkit - box - align: center;
+	-ms - flex - align: center;
+	align - items: center;
+	-webkit - box - pack: center;
+	-ms - flex - pack: center;
+	justify - content: center;
+	margin: 2rem 0;
+}
+
+.toast {
+	position: fixed;
+	top: 20px;
+	left: 50 %;
+	-webkit - transform: translateX(-50 %);
+	-ms - transform: translateX(-50 %);
+	transform: translateX(-50 %);
+	padding: 10px;
+	background - color: black;
+	color: white;
+	border - radius: 5px;
+	z - index: 123123123;
+	-webkit - transition: all 0.5s ease;
+	-o - transition: all 0.5s ease;
+	transition: all 0.5s ease;
+	/* Transition effect */
+	opacity: 1;
+	/* Fully visible */
+}
+
+/* Transition classes for Vue's transition wrapper */
+.fade - enter - active, .fade - leave - active {
+	-webkit - transition: opacity 0.5s ease, -webkit - transform 0.5s;
+	transition: opacity 0.5s ease, -webkit - transform 0.5s;
+	-o - transition: opacity 0.5s ease, transform 0.5s;
+	transition: opacity 0.5s ease, transform 0.5s;
+	transition: opacity 0.5s ease, transform 0.5s, -webkit - transform 0.5s;
+}
+
+.fade - enter, .fade - leave - to {
+	opacity: 0;
+	-webkit - transform: translateX(-50 %) translateY(-20px);
+	-ms - transform: translateX(-50 %) translateY(-20px);
+	transform: translateX(-50 %) translateY(-20px);
+}
+
+.o - card__ghost - form {
+	padding: 1rem 0;
+}
+
+.o - card__ghost - form > select {
+	margin - bottom: 1rem;
+}
+
+.o - card__ghost - form.o - btn--primary {
+	width: 100 %;
+}
+
+.OpenAnalytics_tab0 {
+	padding: 30px!important;
+}
+
+.OpenAnalytics_full_width {
+	margin: 0 10px;
+}
+
+.OpenAnalytics_tab_content.OpenAnalytics_tab_iframe.o - iframe - container {
+	position: initial;
+	width: calc(100vw - 60px);
+}
+
+.OpenAnalytics_tab_content: not(.OpenAnalytics_tab_iframe) {
+	padding: 0 60px
+}
+
+.o - ann - receivers {
+	border: 1px solid var(--bgLigthBlue);
+	border - radius: 0 0 4px 4px;
+}
+
+.o - ann - receivers li {
+	display: flex;
+	justify - content: space - between;
+	align - items: center;
+	padding: 0.5rem;
+	cursor: pointer;
+	transition: background 0.15s;
+	font - size: 14px;
+	border - bottom: 1px solid white;
+}
+
+.o - ann - receivers li: first - child {
+	border - radius: 4px 4px 0 0;
+}
+
+.o - ann - receivers li: last - child {
+	border - radius: 0 0 4px 4px;
+	border - bottom: none;
+}
+
+.o - ann - receivers li.o - ann - receivers__receiver--selected {
+	background: var(--borderBlue)!important;
+}
+
+.o - ann - receivers li: nth - child(even) {
+	background: rgb(10 55 170 / 2 %);
+}
+
+.o - ann - receivers li:hover {
+	background: rgb(10 55 170 / 5 %);
+}
+
+.o - ann - form {
+	background: #fff;
+	overflow: hidden;
+	padding - bottom: 2rem;
+}
+
+.o - ann__card__highlighted {
+	position: relative;
+	padding: 1rem;
+	background: #f5f6f8;
+	border: 1px solid var(--borderColor);
+	border - radius: var(--radius);
+}
+
+#o_create_new_master_link {
+	position: absolute;
+	bottom: 0.5rem;
+	font - size: 12px;
+}
+
+.o - ann - form__container {
+	max - width: 700px;
+	margin: 0 auto;
+	width: 100 %;
+	display: flex;
+	flex - direction: column;
+	gap: 1rem;
+	padding: 1rem;
+}
+
+.o - ann - form.o - group {
+	margin: 0 0 1rem 0;
+}
+
+.o - ann - form.o - label {
+	color: var(--grey);
+	cursor: default ;
+	user - select: auto;
+}
+
+.o - select,
+.o - ann - form a {
+	cursor: pointer;
+}
+
+.o - ann - form.o - select {
+	border: 1px solid rgb(209 213 219);
+	border - radius: 4px;
+	height: 38px;
+	padding: 0.25rem 0.5rem;
+	background - image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+	background - position: right 0.5rem center;
+	background - repeat: no - repeat;
+	background - size: 1.5em 1.5em;
+	padding - right: 2.5rem;
+	-webkit - print - color - adjust: exact;
+	print - color - adjust: exact;
+	-webkit - appearance: none;
+	-moz - appearance: none;
+	appearance: none;
+	background - color: #fff;
+	box - shadow: inset 0 0 0 0px #fff, inset 0 0 0 1px rgb(209 213 219 / 0 %), 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.o - ann - form.o - input {
+	box - shadow: inset 0 0 0 0px #fff, inset 0 0 0 1px rgb(209 213 219 / 0 %), 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.o - ann - form input[type = "date"].o - input {
+	line - height: 1.5;
+}
+
+.o - ann - form.o - select:focus {
+	border - color: var(--primary);
+}
+
+.o - ann - form a {
+	color: var(--primary);
+	font - size: 14px;
+}
+
+.o - ann - form__group {
+	border - radius: 4px;
+	margin - bottom: 1rem;
+	max - width: 600px;
+	margin: 0 auto 1rem;
+}
+
+.o - ann - form a:hover {
+	text - decoration: underline;
+}
+
+.o - ann - form__header select: first - child {
+	width: 200px;
+}
+
+.o - group__sub {
+	display: flex;
+	align - items: center;
+	gap: 1rem;
+}
+
+.o - group__flex {
+	display: flex;
+	flex - wrap: wrap;
+	gap: 1rem;
+	align - items: flex - end;
+	margin - bottom: 1rem;
+}
+
+.o - group__flex > div {
+	flex: 0 0 calc((100 % - 2rem) / 3);
+	margin - bottom: 0!important;
+}
+
+.o - group__flex.o - group__flex - 2 > div {
+	flex: 0 0 calc((100 % - 2rem) / 2);
+	margin - bottom: 0!important;
+}
+
+.o - group__flex >.o - toggle - group {
+	height: 38px;
+	border: 1px solid #eee;
+}
+
+.o - ann - form.o - toggle - group.o - label {
+	cursor: pointer;
+}
+
+.o - ann - form.o - toggle - group {
+	max - width: calc((100 % - 2rem) / 3);
+	border: 1px solid rgb(209 213 219);
+	height: 38px;
+	box - shadow: inset 0 0 0 0px #fff, inset 0 0 0 1px rgb(209 213 219 / 0 %), 0 1px 2px 0 rgb(0 0 0 / 0.05);
+	margin: 0;
+}
+
+.o - ann - form.o - group__flex.o - toggle - group {
+	max - width: 100 %;
+}
+
+.o - ann - receivers__header {
+	display: flex;
+	justify - content: space - between;
+	align - items: center;
+	border: 1px solid var(--bgLigthBlue);
+	border - width: 1px 1px 0 1px;
+	border - radius: 4px 4px 0 0;
+	padding: 0 0.5rem;
+}
+
+.o - ann - receivers__header.o - toggle - group {
+	border: none;
+	box - shadow: none;
+}
+
+.o - ann - form__editor__tabs {
+	display: flex;
+}
+
+.o - ann - form__editor__tabs__tab {
+	padding: 0.5rem;
+	border - radius: 4px 4px 0 0;
+	cursor: pointer;
+	margin - bottom: -1px;
+	position: relative;
+	z - index: 1;
+	font - size: 15px;
+}
+
+.o - ann - form__editor__tabs__tab--selected {
+	border - width: 1px 1px 0 1px;
+	border - color: var(--borderColor);
+	border - style: solid;
+	background: #f5f6f8;
+}
+
+.o - editor {
+	background: #f5f6f8;
+	position: relative;
+	border: 1px solid var(--borderColor);
+	padding: 1rem;
+}
+
+.o - editor - toolbar {
+	padding: 0.25rem;
+	border: 1px solid #ccc;
+	margin: 0;
+	border - bottom: 0;
+	display: flex;
+	align - items: center;
+	gap: 0.25rem;
+}
+
+.o - editor - toolbar button {
+	-webkit - appearance: none;
+	border: 0;
+	font - size: 22px;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	align - items: center;
+	cursor: pointer;
+	line - height: 0;
+	padding: 0.15rem;
+	border - radius: 2px;
+	background: #fff;
+}
+
+.o - editor - toolbar button:hover {
+	background: #eee;
+}
+
+.o - editor - toolbar button.style--active {
+	background: aliceblue;
+	color: var(--primary)
+}
+
+.o - text - editor {
+	border: 1px solid #ccc;
+	min - height: 200px;
+	padding: 0.5rem;
+	font - size: 14px;
+}
+
+.o - text - editor:focus {
+	border: 1px solid var(--primary);
+	box - shadow: 2px 2px 3px rgba(0, 0, 0, .1) inset;
+}
+
+.o - ann__body {
+	padding: 0 0 4rem 0;
+	background - color: var(--bgLigthBlue);
+}
+
+.o - editor__textarea {
+	width: 100 %;
+	border: 1px solid #ccc;
+	min - height: 200px;
+	padding: 0.5rem;
+	font - size: 14px;
+	border - radius: 4px;
+}
+
+.o - editor__textarea:focus {
+	border - color: var(--primary);
+}
+
+.o - ann - form__footer {
+	display: flex;
+	justify - content: flex - end;
+	margin: 1rem;
+}
+
+#sandbox {
+	width: 100 %;
+	border: 1px solid var(--borderColor);
+}
+
+.o - card__email - preview__header {
+	width: 100 %;
+	margin: 0 auto;
+	font - size: 13px;
+}
+
+.o - card__email - preview__header > p {
+	margin - bottom: 0;
+}
+
+.o - card__email - preview {
+	margin - bottom: 0;
+	background: #fff;
+	border: 1px solid var(--borderColor);
+	border - bottom: 0;
+	padding: 0.5rem;
+	box - shadow: 0 10px 15px - 3px rgb(0 0 0 / 0.1), 0 4px 6px - 4px rgb(0 0 0 / 0.1);
+}
+
+.o - ann__body__header {
+	padding: 2rem;
+	display: flex;
+	align - items: center;
+	justify - content: space - between;
+}
+
+.o - ann__body__header__right {
+	display: flex;
+	align - items: center;
+	gap: 1rem;
+}
+
+.o - center {
+	text - align: center;
+}
+
+.o - ann__body__header__left {
+	display: flex;
+	align - items: center;
+	gap: 0.5rem;
+}
+
+.o - cases__case_element__body__ann {
+	padding: 1rem;
+}
+
+.o - ann__email - container {
+	position: relative;
+}
+
+.o - ann__email - container__html {
+	padding: 1rem;
+}
+
+.o - ann__email - container >.tio {
+	font - size: 26px;
+	position: absolute;
+	top: calc(-42px / 2);
+	background: #fff;
+	left: 3rem;
+	padding: 0.5rem;
+}
+
+.o - ann__elements - list {
+	position: relative;
+	display: flex;
+	flex - direction: column;
+	gap: 1rem;
+}
+
+.o - ann__element {
+	display: flex;
+	flex - direction: column;
+	box - shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	background: #ffffff;
+	border - radius: 4px;
+	transition: all 0.45s;
+}
+
+.o - ann__element.o - cases__case_element__body__arrow.tio {
+	transition: transform 0.25s;
+}
+
+.o - ann__element.o - ann__element--open.o - cases__case_element__body__arrow.tio {
+	transform: rotate(90deg);
+}
+
+.o - ann__element.o - cases__case_element__body {
+	cursor: pointer;
+}
+
+.o - ann__element label {
+	font - weight: bold;
+	font - size: 14px;
+}
+
+.o - ann - receivers {
+	max - height: 500px;
+	overflow - y: auto;
+}
+
+.o - ann - receivers__header__right {
+	display: flex;
+	gap: 0.5rem;
+	align - items: center;
+}
+
+.o - ann - receivers__header__right >.o - toggle - group {
+	max - width: 100 %;
+}
+
+.o - ann - form__editor {
+	position: relative;
+}
+
+.o - popover {
+	position: absolute;
+	top: 10px;
+	right: 0px;
+	transition: background - color 0.35s;
+	border - radius: 50 %;
+	padding: 0.25rem;
+}
+
+.o - popover:hover {
+	background: rgb(10 55 170 / 15 %);
+}
+
+.o - popover - icon {
+	font - size: 20px;
+	line - height: 0;
+	cursor: help;
+}
+
+.o - popover__menu {
+	opacity: 0;
+	pointer - events: none;
+	transform: translateY(20px);
+	transition: transform 0.25s, opacity 0.25s;
+	position: absolute;
+	right: calc(100 % - 20px);
+	top: calc(100 % - 2px);
+	z - index: 12312312;
+	background: #fff;
+	font - size: 13px;
+	padding: 1rem;
+	border - radius: 4px;
+	box - shadow: 0 10px 15px - 3px rgb(0 0 0 / 0.1), 0 4px 6px - 4px rgb(0 0 0 / 0.1);
+}
+
+.o - popover: hover.o - popover__menu {
+	opacity: 1;
+	pointer - events: initial;
+	transform: translateY(0);
+}
+
+.o - popover__menu p {
+	word -break: normal;
+}
+
+.o - popover__menu ul {
+	list - style: disc;
+	padding - left: 15px;
+}
+
+.text - grey {
+	color: var(--grey);
+}
+
+.o - modal--alwaysactive.vue - modal.vue - modal--fullscreen {
+	width: 100 %;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	margin: 0;
+	max - width: 100 %;
+	height: 100 %;
+}
+
+.o - modal__header__left,
+.o - modal__header__right {
+	display: flex;
+	align - items: center;
+	gap: 1rem;
+}
+
+.vue - modal--fullscreen__close {
+	font - size: 1.65rem;
+}
+
+.o - divider {
+	height: 16px;
+	width: 1px;
+	background - color: rgb(209 213 219);
+}
+
+.o - ann - modal.o - modal__body {
+	padding: 65px 0 0 0;
+	display: flex;
+	align - items: stretch;
+}
+
+.o - ann - modal.o - modal__body >.o - modal - form {
+	flex: 1;
+	background - color: #fff;
+	max - width: 50 %;
+}
+
+.o - ann__preview - container {
+	max - width: 825px;
+	position: relative;
+	z - index: unset;
+	margin: unset;
+	padding: 40px;
+	flex: 1;
+	margin: 0 auto;
+}
+
+.o - ann - form input[type = "datetime-local"].o - input {
+	line - height: 1.5;
+}
+
+.o - hr {
+	margin: 40px 0;
+}
+
+.o - ann--modal__confirm.o - modal__body {
+	flex - direction: column;
+}
+
+.o - cases__case_element__body__ann__edit {
+	display: flex;
+	justify - content: flex - end;
+	margin - bottom: 1rem;
+}
+
+.o - ann__see - more - container {
+	display: flex;
+	justify - content: center;
+	margin - bottom: 2rem;
+}
+
+.o - btn.o - btn--disabled {
+	opacity: 0.5!important;
+	cursor: not - allowed!important;
+}
+
+.o - ann__element.pp - label, .pp - label {
+	font - size: 11px;
+	color: var(--grey);
+	margin - bottom: 0;
+}
+
+.pp - label--row {
+	width: 100px;
+}
+
+.o - ann__element__header {
+	display: flex;
+	align - items: center;
+	justify - content: space - between;
+	padding: 0.5rem 1rem;
+	border: 1px solid #eee;
+	border - radius: 4px 4px 0 0;
+	background - color: #f9fafb;
+}
+
+.o - ann__element__sender__img {
+	width: 100px;
+}
+
+.o - ann__element__header__left h3 {
+	margin - top: 0;
+	margin - bottom: 1rem;
+}
+
+.o - ann__element__header__left {
+	display: inline - block;
+}
+
+.o - inline - block {
+	display: inline - block;
+}
+
+.o - ann__element__row--border {
+	display: flex;
+	align - items: center;
+	gap: 0.5rem;
+	padding: 0.25rem 1rem;
+	position: relative;
+	border - bottom: 1px solid #eee;
+	margin: 0;
+}
+
+.o - ann__element__row--border p {
+	font - size: 12px;
+	margin - bottom: 0;
+}
+
+.pp - see - more - link {
+	color: var(--primary)!important;
+	font - size: 14px;
+	padding: 1rem 0;
+	font - weight: bold;
+}
+
+.o - ann__element--open.o - ann__element__row--border__email,
+.o - ann__element__row--border__email:hover {
+	background - color: aliceblue;
+}
+
+.o - ann__element__row--border__email.o - ann__element__row--border__email__icon {
+	width: 100px;
+	font - size: 20px;
+	color: var(--grey);
+	display: flex;
+	align - items: center;
+}
+
+.o - ann__element--open.o - ann__element__row--border__email__icon,
+.o - ann__element__row--border__email: hover.o - ann__element__row--border__email__icon {
+	color: var(--primary);
+}
+
+.o - ann__element__row--border__email.tio.chevron_right {
+	font - size: 20px;
+	color: var(--primary);
+	transition: margin 0.25s, transform 0.25s;
+}
+
+.o - ann__element--open.o - ann__element__row--border__email.tio.chevron_right {
+	transform: rotate(90deg);
+}
+
+.o - ann__element--open.o - ann__element__row--border__email.tio.chevron_right,
+.o - ann__element__row--border__email: hover.tio.chevron_right {
+	margin - left: 0.25rem;
+}
+
+.o - ann__element__row--border__email {
+	cursor: pointer;
+}
+
+.o - ann__element__row--border__email__inner {
+	display: flex;
+	align - items: center;
+	justify - content: space - between;
+	width: 100 %;
+	padding - left: 0.5rem;
+}
+
+.o - ann__element__row--border__email__inner > div {
+	display: flex;
+	align - items: center;
+	gap: 0.5rem;
+}
+
+.o - ann__see - more__old - emails {
+	background: #eee;
+	padding: 3rem;
+	display: flex;
+	flex - direction: column;
+	gap: 3rem;
+}
+
+.o - ann__see - more__old - emails.o - ann__email - container {
+	background: #fff;
+}
+
+.o - ann__email - container__header {
+	padding - top: 1.5rem;
+	background: #fff;
+	border - radius: 4px 4px 0 0;
+}
+
+.o - ann__email {
+	border: 1px solid #ccc;
+	border - radius: 4px;
+	position: relative;
+}
+
+.o - ann__email__icon {
+	position: absolute;
+	top: calc(-31px / 2);
+	left: 6px;
+	background: #fff;
+	font - size: 24px;
+	display: -ms - flexbox;
+	display: flex;
+	-ms - flex - align: center;
+	align - items: center;
+	padding: 2px 4px;
+	border - radius: 4px;
+	gap: 0.5rem;
+	z - index: 1;
+}
+
+.o - ann__email__icon.o - ann__email__icon--right {
+	left: auto;
+	right: 1rem;
+	top: -10px;
+}
+
+.o - ann__see - more__old - emails.o - ann__email__icon {
+	font - size: 24px;
+}
+
+.o - ann__email__icon.tio {
+	color: var(--grey);
+}
+
+.o - announcements - metrics {
+	display: flex;
+	justify - content: space - between;
+}
+
+.o - metrics {
+	display: flex;
+	background: #fff;
+	border: 1px solid #eee;
+	border - radius: 4px;
+}
+
+.o - metrics__metric {
+	display: flex;
+	align - items: center;
+	min - width: 175px;
+	gap: 1rem;
+	padding: 1rem;
+}
+
+.o - metrics >.o - metrics__metric: first - child {
+	border - radius: 4px 0 0 4px;
+}
+
+.o - metrics >.o - metrics__metric: last - child {
+	border - radius: 0 4px 4px 0;
+	border - right: 0;
+}
+
+.o - metrics__metric {
+	border - right: 1px solid #eee;
+}
+
+.o - metrics__metric__icon {
+	background: #f1f5f9;
+	color: #6d727c;
+	height: 50px;
+	width: 50px;
+	font - size: 1.5rem;
+	border - radius: 50 %;
+	display: flex;
+	align - items: center;
+	justify - content: center;
+}
+
+.o - metrics__metric__icon.o - metrics__metric__icon--red {
+	background - color: #fdf1f2;
+	color: #9f374f;
+}
+
+.o - metrics__metric__icon.o - metrics__metric__icon--yellow {
+	background - color: #fdf7b2;
+	color: #855529;
+}
+
+.o - metrics__metric__icon p {
+	font - size: 20px;
+	font - weight: bold;
+	margin - bottom: 0;
+}
+
+.o - metrics__metric__number {
+	font - weight: bold;
+	font - size: 24px;
+	margin - bottom: 0;
+}
+
+.o - metrics__metric__container {
+	line - height: 1.1;
+}
+
+.o - metrics__container {
+	border - radius: 4px;
+}
+
+.o - metrics__container h5 {
+	font - size: 13px;
+	color: var(--grey);
+	margin - bottom: 0.5rem;
+	font - weight: bold;
+	text - transform: uppercase;
+}
+
+.o - ann__email - iframe {
+	width: 100 %;
+	border: none;
+	min - height: 200px;
+}

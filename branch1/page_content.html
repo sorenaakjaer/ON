@@ -2053,7 +2053,7 @@
                     <button class="o-btn o-btn--primary" @click="setIsCreateAnnouncementModal(true)" v-if="the_user_type === 'IO' || the_user_type === 'ON'"><span v-if="active_area === 'News'">Opret nyhed</span><span v-else>Opret udmelding</span></button>
                 </div>
             </div>
-            <h4 class="text-explainer o-center" v-if="!isLoadingAnnouncements && searchedAnnouncements.length === 0">Ingen udmeldinger matcher din søgning</h4>
+            <h4 class="text-explainer o-center" v-if="!isLoadingAnnouncements && searchedAnnouncements.length === 0">Ingen <template v-if="active_area === 'News'">nyheder</template><template v-else>udmeldinger</template> matcher din søgning</h4>
             <div class="o-spinner-container" v-if="isLoadingAnnouncements">
                 <div class="o-spinner"></div>
             </div>
@@ -2248,9 +2248,12 @@
                                                 <li v-pre>{{{pp_mergecode:placeholder1}}} op til 10</li>
                                                 <li v-pre>{{{pp_mergecode:from}}}</li>
                                                 <li v-pre>{{{pp_mergecode:user_name}}}</li>
-                                                <li v-pre>{{{pp_hasdata:history_placeholder1}}}</li>
+                                                <li v-pre>{{{pp_mergecode:teaser}}}</li>
+                                                <li v-pre>{{{pp_mergecode:service_window_start}}}</li>
+                                                <li v-pre>{{{pp_mergecode:service_window_end}}}</li>
                                                 <li v-pre>{{{pp_mergecode:history_placeholder1}}}</li>
-                                                <li v-pre>{{{end:pp_mergecode:history_placeholder1}}}</li>
+                                                <li v-pre>{{{pp_hasdata:history_placeholder1}}}</li>
+                                                <li v-pre>{{{end:pp_hasdata:history_placeholder1}}}</li>
                                             </ul>
                                         </div>
                                     </div>
