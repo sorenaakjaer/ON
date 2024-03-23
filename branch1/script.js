@@ -1178,34 +1178,59 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			contentReplacement() {
 				if (this.formTypeIsMaster) {
-					return {}
+					return {};
 				}
-				let replacements = {}
-				if (this.theSelectedType) {
-					const selectedType = this.filteredTypes.find(oType => oType.value === this.theSelectedType)
-					replacements['type'] = selectedType && selectedType.display ? selectedType.display : this.theSelectedType
+
+				let replacements = {
+					...this.theSelectedType ? {
+						type: this.filteredTypes.find(oType => oType.value === this.theSelectedType)?.display || this.theSelectedType
+					} : {},
+					...this.theEmailSubject ? { subject: this.theEmailSubject } : {},
+					...this.theEmailFromCompany ? { from: this.theEmailFromCompany } : {},
+					...this.theEmailFromUser ? { user_name: this.theEmailFromUser } : {},
+					...this.theEmailTeaser ? { teaser: this.theEmailTeaser } : {},
+					...Object.fromEntries(this.activePlaceholders.map(place => [`placeholder${place.num}`, place.text])),
+					...Array.from({ length: 10 }, (_, i) => i + 1).reduce((acc, num) => {
+						const history = this.replaceHistoryPlaceholderWithTable(`placeholder${num}`);
+						if (history) {
+							acc[`history_placeholder${num}`] = history;
+						}
+						return acc;
+					}, {})
+				};
+
+				return replacements;
+			},
+			emailHistoryPlaceholders() {
+				let arr = []
+				if (!this.placeholderHist) {
+					return arr
 				}
-				if (this.theEmailSubject.length > 0) {
-					replacements['subject'] = this.theEmailSubject
-				}
-				if (this.theEmailFromCompany.length > 0) {
-					replacements['from'] = this.theEmailFromCompany
-				}
-				if (this.theEmailFromUser.length > 0) {
-					replacements['user_name'] = this.theEmailFromUser
-				}
-				if (this.theEmailTeaser.length > 0) {
-					replacements['teaser'] = this.theEmailTeaser
-				}
-				this.activePlaceholders.forEach(place => {
-					const key = 'placeholder' + place['num']
-					replacements[key] = place.text
-				})
-				return replacements
+
+				Object.keys(this.placeholderHist).forEach(prop => {
+					if (this.placeholderHist[prop] && this.placeholderHist[prop].length > 0) {
+						arr.push(prop)
+					}
+				});
+				return arr
 			},
 			emailHTMLReplaced() {
-				const html = this.newMasterHTMLSanitized ? this.newMasterHTMLSanitized : ''
-				return this.replacePlaceholders(html, this.contentReplacement);
+				const placeholderToRemove = ['placeholder1', 'placeholder2', 'placeholder3', 'placeholder4', 'placeholder5', 'placeholder6', 'placeholder7', 'placeholder8', 'placeholder9', 'placeholder10']
+				let html = this.newMasterHTMLSanitized ? this.newMasterHTMLSanitized : ''
+				if (this.emailHistoryPlaceholders.length > 0) {
+					this.emailHistoryPlaceholders.forEach(placeholderName => {
+						const idx = placeholderToRemove.indexOf(placeholderName)
+						if (idx > -1) {
+							placeholderToRemove.splice(idx, 1)
+						}
+						html = this.removeFilledHistoryPlaceholderLabels(html, 'history_' + placeholderName)
+					})
+				}
+				placeholderToRemove.forEach(placeholderName => {
+					html = this.removeEmptyHistoryPlaceholder(html, 'history_' + placeholderName)
+				})
+				const placeholderHTML = this.replacePlaceholders(html, this.contentReplacement);
+				return placeholderHTML
 			},
 			iframeContent() {
 				let htmlContent = this.emailHTMLReplaced
@@ -1334,6 +1359,24 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			replaceHistoryPlaceholderWithTable(historyPlaceholderName) {
+				if (!this.placeholderHist || this.placeholderHist.length < 1) {
+					return null;
+				}
+				let str = '';
+				if (this.placeholderHist[historyPlaceholderName]) {
+					this.placeholderHist[historyPlaceholderName].forEach(obj => {
+						let date = obj['time'] ? obj['time'] : '';
+						if (date.length > 0) {
+							date = dayjs ? dayjs(date).format('LLL') : date
+						}
+						const text = obj['text'] ? obj['text'] : '';
+						str += '<tr><td style="border: 1px solid #eee;padding: 10px 20px;">' + date + '</td><td style="border: 1px solid #eee;padding: 10px 20px;">' + text + '</td></tr>';
+					});
+				}
+				const tableHTML = '<table style="border-collapse: collapse;"><thead></thead><tbody>' + str + '</tbody></table>';
+				return tableHTML;
+			},
 			getIsFormInvalid() {
 				const errors = {}
 				if (this.formTypeIsMaster) {
@@ -1407,6 +1450,43 @@ $(document).one("trigger::vue_loaded", function () {
 					html = html.replace(regex, value)
 				});
 				return html
+			},
+			removeFilledHistoryPlaceholderLabels(html, placeholderName) {
+				if (this.formTypeIsMaster) {
+					return html
+				}
+				var startMarker = '{{{pp_hasdata:' + placeholderName + '}}}';
+				var endMarker = '{{{end:pp_hasdata:' + placeholderName + '}}}';
+
+				var startIndex = html.indexOf(startMarker);
+				var endIndex = html.indexOf(endMarker, startIndex);
+
+				if (startIndex !== -1 && endIndex !== -1) {
+					html = html.replace(startMarker, '')
+					html = html.replace(endMarker, '')
+					return html
+				} else {
+					return html
+				}
+			},
+			removeEmptyHistoryPlaceholder(html, placeholderName) {
+				if (this.formTypeIsMaster) {
+					return html
+				}
+				var startMarker = '{{{pp_hasdata:' + placeholderName + '}}}';
+				var endMarker = '{{{end:pp_hasdata:' + placeholderName + '}}}';
+
+				var startIndex = html.indexOf(startMarker);
+				var endIndex = html.indexOf(endMarker, startIndex);
+
+				if (startIndex !== -1 && endIndex !== -1) {
+					// Adjust endIndex to include the length of the endMarker, so it gets removed as well
+					endIndex += endMarker.length;
+					// Remove the section from startIndex to endIndex
+					return html.slice(0, startIndex) + html.slice(endIndex);
+				} else {
+					return html
+				}
 			},
 			createMasterTemplate() {
 				const myHeaders = new Headers();
