@@ -914,7 +914,6 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			onAddMasterTemplate(succesObj) {
-				console.log('onAddMasterTemplate', succesObj)
 				const arr = succesObj.success
 				const updatedTemplateId = succesObj.updatedTemplateId
 				arr.forEach(newMasterTemp => {
@@ -926,7 +925,10 @@ $(document).one("trigger::vue_loaded", function () {
 						this.masterTemplates.splice(idx, 1, newMasterTemp)
 					}
 					if (updatedTemplateId) {
-						this.theNewMasterTemplateId = updatedTemplateId
+						this.theNewMasterTemplateId = null
+						setTimeout(_ => {
+							this.theNewMasterTemplateId = updatedTemplateId
+						}, 500)
 					}
 				})
 			},
@@ -1453,39 +1455,35 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			removeFilledHistoryPlaceholderLabels(html, placeholderName) {
 				if (this.formTypeIsMaster) {
-					return html
+					return html;
 				}
-				var startMarker = '{{{pp_hasdata:' + placeholderName + '}}}';
-				var endMarker = '{{{end:pp_hasdata:' + placeholderName + '}}}';
+				// Updated regex to allow for optional spaces around "end:"
+				var startMarkerRegex = new RegExp(`\\{\\{\\{\\s*pp_hasdata:${placeholderName}\\}\\}\\}`, 'g');
+				var endMarkerRegex = new RegExp(`\\{\\{\\{\\s*end\\s*:\\s*pp_hasdata:${placeholderName}\\s*\\}\\}\\}`, 'g');
 
-				var startIndex = html.indexOf(startMarker);
-				var endIndex = html.indexOf(endMarker, startIndex);
-
-				if (startIndex !== -1 && endIndex !== -1) {
-					html = html.replace(startMarker, '')
-					html = html.replace(endMarker, '')
-					return html
-				} else {
-					return html
-				}
+				// Use regex to replace the start and end markers with an empty string
+				html = html.replace(startMarkerRegex, '');
+				html = html.replace(endMarkerRegex, '');
+				return html;
 			},
+
 			removeEmptyHistoryPlaceholder(html, placeholderName) {
 				if (this.formTypeIsMaster) {
-					return html
+					return html;
 				}
-				var startMarker = '{{{pp_hasdata:' + placeholderName + '}}}';
-				var endMarker = '{{{end:pp_hasdata:' + placeholderName + '}}}';
+				// Updated regex to include optional spaces around "end:"
+				var startMarkerRegex = new RegExp(`\\{\\{\\{\\s*pp_hasdata:${placeholderName}\\}\\}\\}`, 'g');
+				var endMarkerRegex = new RegExp(`\\{\\{\\{\\s*end\\s*:\\s*pp_hasdata:${placeholderName}\\s*\\}\\}\\}`, 'g');
 
-				var startIndex = html.indexOf(startMarker);
-				var endIndex = html.indexOf(endMarker, startIndex);
+				var startIndex = html.search(startMarkerRegex);
+				var match = html.match(endMarkerRegex);
 
-				if (startIndex !== -1 && endIndex !== -1) {
-					// Adjust endIndex to include the length of the endMarker, so it gets removed as well
-					endIndex += endMarker.length;
+				if (startIndex !== -1 && match) {
+					var endIndex = html.indexOf(match[0], startIndex) + match[0].length;
 					// Remove the section from startIndex to endIndex
 					return html.slice(0, startIndex) + html.slice(endIndex);
 				} else {
-					return html
+					return html;
 				}
 			},
 			createMasterTemplate() {
