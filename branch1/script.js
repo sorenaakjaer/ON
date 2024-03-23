@@ -1011,6 +1011,19 @@ $(document).one("trigger::vue_loaded", function () {
 				type: Boolean,
 				default: false
 			}
+		},
+		computed: {
+			sanitizedHtml() {
+				return this.email.html
+			}
+		},
+		methods: {
+			adjustIframeHeight() {
+				const iframe = this.$refs.iframe;
+				if (iframe.contentWindow.document.body) {
+					iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + 'px';
+				}
+			}
 		}
 	})
 	Vue.component('o-announcements-metrics', {

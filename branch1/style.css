@@ -11278,3 +11278,9 @@ ul.tags-selector__dropdow__create {
     font-weight: bold;
     text-transform: uppercase;
 }
+
+.o-ann__email-iframe {
+    width: 100%;
+    border: none;
+    min-height: 200px;
+}
