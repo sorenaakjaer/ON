@@ -1884,16 +1884,35 @@ $(document).one("trigger::vue_loaded", function () {
 			handleMutations(mutations) {
 				mutations.forEach(mutation => {
 					mutation.addedNodes.forEach(node => {
-						if (node.nodeType === 1) {
-							const clonedNode = node.cloneNode(true);
+						if (node.nodeType === 1) { // Checks if the node is an element node
+							const clonedNode = node.cloneNode(true); // Deep clone the node
+
+							// Add event listener to all links with a 'deleteurl' attribute within the cloned node
 							const links = clonedNode.querySelectorAll('a[deleteurl]');
 							links.forEach(link => {
 								link.addEventListener('click', this.handleCloneClick);
 							});
+
+							// First clone destination
 							const elId = `${this.formType}_cloneDestination`;
-							document.getElementById(elId).appendChild(clonedNode);
+							const destinationElement = document.getElementById(elId);
+							if (destinationElement) {
+								destinationElement.appendChild(clonedNode);
+							} else {
+								console.warn(`Element with ID '${elId}' not found.`);
+							}
+
+							// Second clone destination
+							const secondClonedNode = node.cloneNode(true); // Clone again for the second destination
+							const secondElId = 'second_cloneDestination'; // Change this ID to your second destination's ID
+							const secondDestinationElement = document.getElementById(secondElId);
+							if (secondDestinationElement) {
+								secondDestinationElement.appendChild(secondClonedNode);
+							} else {
+								console.warn(`Element with ID '${secondElId}' not found.`);
+							}
 						}
-					})
+					});
 				});
 			},
 			handleCloneClick(event) {
