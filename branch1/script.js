@@ -533,51 +533,26 @@ $(document).one("trigger::vue_loaded", function () {
 			document.body.removeEventListener("click", e.clickOutsideEvent)
 		}
 	})
-	Vue.component('o-editor', {
-		template: '#o-editor-template',
-		data() {
-			return {
-				theActiveTab: 'editor',
-				activeStyles: {
-					bold: false,
-					italic: false,
-					underline: false
-				}
-			}
-		},
-		methods: {
-			setTheActiveTab(tab) {
-				this.theActiveTab = tab
-				if (tab === 'html') {
-					this.$nextTick(_ => {
-						this.$refs.o_editor_textarea.focus()
-					})
-				}
-				if (tab === 'editor') {
-					this.$nextTick(_ => {
-						this.$refs.o_text_editor.focus()
-					})
-				}
-			},
-			applyStyle(style, target) {
-				this.focusTextEditor();
-				this.toggleStyleActive(style);
-				document.execCommand(style, false);
-			},
-			createLink() {
-				const url = prompt('Enter the URL');
-				if (url) {
-					document.execCommand('createLink', false, url);
-				}
-			},
-			focusTextEditor() {
-				this.$refs.o_text_editor.focus()
-			},
-			toggleStyleActive(style) {
-				this.activeStyles[style] = !this.activeStyles[style];
-			}
-		}
+	addVueFlatPickerFromCDN()
+	function addVueFlatPickerFromCDN() {
+		const cssLink = document.createElement('link');
+		cssLink.rel = 'stylesheet';
+		cssLink.href = 'https://cdn.jsdelivr.net/npm/flatpickr@4/dist/flatpickr.min.css';
+		document.head.appendChild(cssLink);
+
+		$.getScript("https://cdn.jsdelivr.net/npm/flatpickr@4/dist/flatpickr.min.js", function () {
+			$.getScript("https://cdn.jsdelivr.net/npm/vue-flatpickr-component@8", function () {
+
+				$(document).trigger("trigger::vue__flat_picker_loaded");
+				console.log('Vue-Flatpickr component loaded');
+			});
+		});
+	}
+
+	$(document).on('trigger::vue__flat_picker_loaded', () => {
+		Vue.component('flat-pickr', VueFlatpickr)
 	})
+
 	Vue.component('o-announcements', {
 		template: '#o-announcements-template',
 		props: {
@@ -1229,8 +1204,8 @@ $(document).one("trigger::vue_loaded", function () {
 				placeholderHist: null,
 				activeTab: 'placeholders',
 				isServiceWindow: false,
-				serviceWindowStart: this.formatDate(new Date()),
-				serviceWindowEnd: this.formatDate(new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000)), // Adding 7 days,
+				serviceWindowStartFlatPicker: new Date(),
+				serviceWindowEndFlatPicker: new Date(),
 				theEditMasterTemplate: null,
 				isDeleting: false,
 				isConfirmation: false,
@@ -1250,7 +1225,14 @@ $(document).one("trigger::vue_loaded", function () {
 					['{{{pp_hasdata:history_placeholder1}}}',
 						'{{{end:pp_hasdata:history_placeholder1}}}'
 					]
-				]
+				],
+				flatPickerConfig: {
+					enableTime: true, // Enable time picker functionality
+					dateFormat: 'd/m/Y H:i', // Custom date and time format
+					time_24hr: true, // Use 24-hour format for time picker
+					minuteIncrement: 30 // Set the increment for time selection to 30 minutes
+				},
+				quillInstances: {}
 			}
 		},
 		computed: {
@@ -1271,6 +1253,14 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			newMasterHTMLSanitized() {
 				return this.theEmailHTML
+			},
+			serviceWindowStart() {
+				const dateString = this.serviceWindowStartFlatPicker
+				return flatpickr.parseDate(dateString, 'd/m/Y H:i'); // JS dateObject
+			},
+			serviceWindowEnd() {
+				const dateString = this.serviceWindowEndFlatPicker
+				return flatpickr.parseDate(dateString, 'd/m/Y H:i'); // JS dateObject
 			},
 			emailServiceWindowStart() {
 				return this.isServiceWindow ? dayjs(this.serviceWindowStart).format('LLL') : ''
@@ -1440,6 +1430,14 @@ $(document).one("trigger::vue_loaded", function () {
 					this.setMasterTemplate(val)
 				}
 			},
+			'activeMasterTemplateId': {
+				immediate: true, // Run the handler immediately, not just when it changes
+				handler(newValue, oldValue) {
+					this.$nextTick(() => {
+						this.initializeQuillEditors();
+					});
+				}
+			},
 			theEmailHTML(val) {
 				// Find number of placeholders
 				if (!this.theEmailHTML) {
@@ -1463,6 +1461,19 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			setInitialServiceWindowDates() {
+				// Set the start of the service window to the next whole hour
+				const now = new Date();
+				now.setHours(now.getHours() + 1);
+				now.setMinutes(0);
+				now.setSeconds(0);
+				now.setMilliseconds(0);
+				this.serviceWindowStartFlatPicker = now;
+
+				// Set the end of the service window to 7 days from now
+				const sevenDaysLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+				this.serviceWindowEndFlatPicker = sevenDaysLater;
+			},
 			async copyTextToClipboard(text) {
 				try {
 					await navigator.clipboard.writeText(text);
@@ -1987,8 +1998,8 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				if (this.edit_announcement['serviceWindow']) {
 					this.isServiceWindow = this.edit_announcement['serviceWindow'] != 'false'
-					this.serviceWindowStart = this.edit_announcement['serviceWindowStart']
-					this.serviceWindowEnd = this.edit_announcement['serviceWindowEnd']
+					this.serviceWindowStartFlatPicker = this.edit_announcement['serviceWindowStart']
+					this.serviceWindowEndFlatPicker = this.edit_announcement['serviceWindowEnd']
 				}
 				if (this.edit_announcement['shortDesc'] && this.edit_announcement['shortDesc'].length > 0) {
 					this.theEmailTeaser = this.edit_announcement['shortDesc']
@@ -2002,6 +2013,7 @@ $(document).one("trigger::vue_loaded", function () {
 				if (masterTemp) {
 					this.theEmailHTML = masterTemp['html']
 				}
+				console.log('this.edit_announcement', this.edit_announcement)
 				// Placeholder history
 				let newHistPlaceholder = {}
 				const currentHist = this.edit_announcement['placeholder_hist']
@@ -2025,6 +2037,43 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 				}
 				this.placeholderHist = newHistPlaceholder
+			},
+			initializeQuillEditors() {
+				this.$nextTick(() => {
+					if (window.Quill) {
+						const toolbarOptions = [['bold', 'italic', 'underline']];
+						const editors = this.$el.querySelectorAll('.o-editor__quill');
+
+						editors.forEach((editor, key) => {
+							if (editor.hasAttribute('data-quill')) {
+								return;
+							}
+
+							const quill = new Quill(editor, {
+								modules: { toolbar: toolbarOptions },
+								matchVisual: false,
+								theme: 'snow'
+							});
+
+							editor.setAttribute('data-quill', 'true');
+							const id = editor.id;
+							this.quillInstances[id] = quill
+							if (key === 0) {
+								quill.focus()
+							}
+							quill.on('text-change', () => {
+								const idSuffix = editor.id.split('placeholder_')[1];
+								let val = quill.root.innerHTML
+								// remove default wrap into p tags https://github.com/quilljs/quill/issues/1745
+								val = val.replaceAll(/<\/?p[^>]*>/g, '').replace('<br>', '')
+								const idx = this.placeholders.findIndex(oPlace => oPlace.num == idSuffix)
+								this.placeholders[idx]['text'] = val
+							});
+						});
+					} else {
+						console.error("Quill is not loaded yet!");
+					}
+				});
 			}
 		},
 		beforeDestroy() {
@@ -2036,7 +2085,13 @@ $(document).one("trigger::vue_loaded", function () {
 				this.resetFilesOnClose()
 			})
 		},
+		beforeMount() {
+			this.setInitialServiceWindowDates()
+		},
 		mounted() {
+			this.$nextTick(_ => {
+				this.initializeQuillEditors()
+			})
 			window.addEventListener('message', this.handleFrameMessage);
 			if (this.edit_announcement) {
 				this.setInitialFormElements()
@@ -2069,7 +2124,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.setActiveTab('placeholders')
 				setTimeout(_ => {
 					if ($('.o-placeholders__placeholder').length > 0) {
-						$('.o-placeholders__placeholder .o-input')[0].focus()
+						// $('.o-placeholders__placeholder .o-input')[0].focus()
 					}
 				}, 250)
 			}
@@ -5382,6 +5437,7 @@ var openAnalyticsSecret = 'your_secret_value_here_global';
 var current_iframeHeight = 10;
 var current_iframeWidth = 10;
 var isPurifyLoadedToPage = false
+var isQuillLoadedToPage = false
 console.log(openAnalyticsSecret)
 // Variables - START //
 
@@ -5417,6 +5473,27 @@ function openBurgerMenu() {
 	}
 }
 
+
+addQuillFromCDN();
+function addQuillFromCDN() {
+	if (isQuillLoadedToPage) {
+		return
+	}
+	const quillCss = document.createElement('link');
+	quillCss.rel = 'stylesheet';
+	quillCss.href = 'https://cdn.quilljs.com/1.3.6/quill.snow.css';
+	document.head.appendChild(quillCss);
+
+	const quillScript = document.createElement('script');
+	quillScript.src = 'https://cdn.quilljs.com/1.3.6/quill.js';
+	quillScript.onload = function () {
+		console.log('quill is here')
+		$(document).trigger('quill::loaded');
+		isQuillLoadedToPage = true
+	};
+	document.body.appendChild(quillScript);
+}
+
 function addPurifyFromCDN() {
 	if (isPurifyLoadedToPage) {
 		return
@@ -5427,7 +5504,6 @@ function addPurifyFromCDN() {
 		isPurifyLoadedToPage = true
 	})
 }
-
 
 /* START 17-12-23 */
 addPopperFromCDN()

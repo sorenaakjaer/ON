@@ -2292,11 +2292,10 @@
                                             <p class="text-explainer text-grey" v-if="activePlaceholders.length === 0">Ingen aktive placeholders</p>
                                         <ul class="o-placeholders" v-if="activePlaceholders.length > 0">
                                             <li class="marg-1-bottom o-placeholders__placeholder" v-for="(oPlaceholder, key) in activePlaceholders" :key="oPlaceholder.id">
-                                                <label class="o-label">Placerholder {{ oPlaceholder.num }}</label>
-                                                <!--
-                                                <o-editor></o-editor>
-                                                -->
-                                                <input type="text" class="o-input" :placeholder="oPlaceholder.placeholder" v-model="oPlaceholder.text">
+                                                <label class="pp-label">{{ oPlaceholder.placeholder }}</label>
+                                                <div class="o-editor__quill" :id="'placeholder_' + oPlaceholder.num"></div>
+                                                <!-- 
+                                                <input type="text" class="o-input" :placeholder="oPlaceholder.placeholder" v-model="oPlaceholder.text"> -->
                                             </li>
                                         </ul>
                                     </template>
@@ -2354,11 +2353,11 @@
                                     </div>
                                     <div class="o-group" v-show="isServiceWindow">
                                         <label class="o-label">Start</label>
-                                        <input type="datetime-local" class="o-input" v-model="serviceWindowStart" />
+                                        <flat-pickr v-model="serviceWindowStartFlatPicker" :config="flatPickerConfig"></flat-pickr>
                                     </div>
                                     <div class="o-group" v-show="isServiceWindow">
                                         <label class="o-label">Slut</label>
-                                        <input type="datetime-local" class="o-input" v-model="serviceWindowEnd" />
+                                        <flat-pickr v-model="serviceWindowEndFlatPicker" :config="flatPickerConfig"></flat-pickr>
                                     </div>
                                 </div>
                                 <div class="o-group__flex">
@@ -2461,18 +2460,6 @@
         </div>
     </div>
 </script>
-
-<script type="text/x-template" id="o-editor-template">
-        <div class="o-ann-form__editor">
-                <div class="o-editor-toolbar">
-                    <button @click="applyStyle('bold')" :class="{'style--active': activeStyles['bold']}"><i class="tio">bold</i></button>
-                    <button @click="applyStyle('italic')" :class="{'style--active': activeStyles['italic']}"><i class="tio">italic</i></button>
-                    <button @click="applyStyle('underline')" :class="{'style--active': activeStyles['underline']}"><i class="tio">underline</i></button>
-                    <button @click="createLink"><i class="tio">link</i></button>
-                </div>
-                <div contenteditable="true" class="o-text-editor" ref="o_text_editor"></div>
-        </div>
-    </script>
 
 <!-- START 17-12-23 -->
 <script type="text/x-template" id="o-multi-select-template">
