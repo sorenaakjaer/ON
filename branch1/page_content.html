@@ -2444,6 +2444,15 @@
                 <label class="pp-label pp-label--row">Beskrivelse:</label>
                 <p>{{email.shortDesc}}</p>
             </div>
+            <div class="o-ann__element__row o-ann__element__row--border" v-if="email.attachments">
+                <label class="pp-label pp-label--row">Vedhæftede fil(er):</label>
+                <ul class="o-ann__email__files">
+                    <li v-for="file in email.v_attachments" @click="downloadFile(file)">
+                        <i class="tio">attachment</i>
+                        {{ file.fileName }}
+                    </li>
+                </ul>
+            </div>
         </div>
         <div class="o-ann__email-container" >
             <div class="o-ann__email-container__html">

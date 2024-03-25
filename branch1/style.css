@@ -11377,3 +11377,28 @@ ul.tags-selector__dropdow__create {
     padding: 5px;
     line-height: 0;
 }
+
+.o-ann__email__files {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.o-ann__email__files li {
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    border: 1px solid var(--borderColor);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    color: var(--primary);
+    font-size: 13px;
+    gap: 0.25rem;
+    cursor: pointer;
+}
+
+.o-ann__email__files li:hover {
+    background: var(--bgLigthBlue);
+}

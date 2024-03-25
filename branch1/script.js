@@ -607,6 +607,14 @@ $(document).one("trigger::vue_loaded", function () {
 					{
 						value: ['2024-03-24', '2024-03-24'],
 						text: 'I dag'
+					},
+					{
+						value: ['2024-03-22', '2024-03-24'],
+						text: 'Seneste 2 dage'
+					},
+					{
+						value: ['2024-03-20', '2024-03-24'],
+						text: 'Seneste 4 dage'
 					}
 				],
 				theAnnActiveItem: null,
@@ -644,7 +652,8 @@ $(document).one("trigger::vue_loaded", function () {
 					v_id: `${ann.onid}_${ann.version}`,
 					v_receivers: changeIdsToNames(ann),
 					v_timeFromNow: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).fromNow() : ann.createdTime,
-					v_createTimeFormatted: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).format('LLL') : ann.createdTime
+					v_createTimeFormatted: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).format('LLL') : ann.createdTime,
+					v_attachments: ann.attachments ? JSON.parse(ann.attachments) : []
 				}))
 			},
 			announcementsInVersionsArr() {
@@ -1056,6 +1065,30 @@ $(document).one("trigger::vue_loaded", function () {
 				if (iframe.contentWindow.document.body) {
 					iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + 'px';
 				}
+			},
+			downloadFile(file) {
+				const fileId = file.fileId;
+				const fileToken = file.fileToken;
+				const PP_userKEY = eTrayWebportal.User.Key; // Assuming this correctly obtains the PP_userKEY
+				const myHeaders = new Headers();
+				myHeaders.append("PP_USER_KEY", PP_userKEY);
+				const requestOptions = {
+					method: "GET",
+					headers: myHeaders,
+					redirect: "follow"
+				};
+				const url = `https://dev-portal.opennet.dk/ppServices/api/general/ePath?fileId=${fileId}&fileToken=${fileToken}`;
+
+				fetch(url, requestOptions)
+					.then(response => response.json())
+					.then(result => {
+						if (result.ePath) {
+							download_file(result.ePath); // Assuming download_file is a method in this Vue component
+						} else {
+							console.error('ePath not found in the result');
+						}
+					})
+					.catch(error => console.error(error));
 			}
 		}
 	})
