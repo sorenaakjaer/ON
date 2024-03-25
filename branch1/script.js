@@ -607,13 +607,6 @@ $(document).one("trigger::vue_loaded", function () {
 					{
 						value: ['2024-03-24', '2024-03-24'],
 						text: 'I dag'
-					},
-					{
-						value: ['2024-03-22', '2024-03-24'],
-						text: 'Seneste 2 dage'
-					},
-						value: ['2024-03-20', '2024-03-24'],
-						text: 'Seneste 4 dage'
 					}
 				],
 				theAnnActiveItem: null,
