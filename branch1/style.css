@@ -11459,3 +11459,13 @@ ul.tags-selector__dropdow__create {
 #second_cloneDestination>div>a {
     display: none;
 }
+
+.o-ann__see-more-container .o-btn.o-btn--small {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.o-ann__see-more-container .o-btn.o-btn--small .tio {
+    font-size: 18px;
+}

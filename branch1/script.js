@@ -1653,10 +1653,11 @@ $(document).one("trigger::vue_loaded", function () {
 					});
 			},
 			createAnnouncement() {
-				let timeoutTimer = 2500
+				let timeoutTimer = 0
 				let attachmentToken = null
 				const lengthOfAttachedFiles = $('.ppUPLOAD #uploadedPanel > div') ? $('.ppUPLOAD #uploadedPanel > div').length : 0
 				if (lengthOfAttachedFiles > 0) {
+					timeoutTimer = 4000
 					clearJSONfields()
 					attachmentToken = Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2)
 					$(".ppUPLOAD_TOKEN > input").val(attachmentToken)

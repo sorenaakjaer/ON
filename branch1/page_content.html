@@ -2030,7 +2030,7 @@
                     <div class="o-slider__wrapper" v-if="active_area === 'News'">
                         <label class="pp-label">
                             <template v-if="theActiveFilterPeriodDays > 1">Viser nyheder for de seneste <span>{{ theActiveFilterPeriodDays }}</span> dage</template>
-                            <template v-else>Viser nyheder for det senste døgn</template>
+                            <template v-else>Viser nyheder for det seneste døgn</template>
                         </label>
                         <div class="o-slider__container">
                             <div class="o-slider-indicator" :style="{'width': ((300 / 90) * theActiveFilterPeriodDays) + 'px'}"></div>
@@ -2125,10 +2125,10 @@
                             </div>
                             <div v-if="item.v_earlierVersions.length > 0">
                                     <div class="o-ann__see-more-container" v-if="theActiveSeeMoreCase !== item.onid">
-                                        <button class="o-btn o-btn--small" @click.stop="theActiveSeeMoreCase = item.onid">Se tidligere emails</button>
+                                        <button class="o-btn o-btn--small" @click.stop="theActiveSeeMoreCase = item.onid">Se tidligere emails <i class="tio">chevron_down</i></button>
                                     </div>
                                     <div class="o-ann__see-more-container" v-else>
-                                        <button class="o-btn o-btn--small" @click.stop="theActiveSeeMoreCase = null">Skjul tidligere emails</button>
+                                        <button class="o-btn o-btn--small" @click.stop="theActiveSeeMoreCase = null">Skjul tidligere emails <i class="tio">chevron_up</i></button>
                                     </div>
                                     <div class="o-ann__see-more__old-emails" v-if="theActiveSeeMoreCase === item.onid">
                                         <o-email :email="email" :is_earlier_version="true" v-for="email in item.v_earlierVersions" :key="email.v_id" v-if="email.html && email.html.length > 0"></o-email>
@@ -2391,7 +2391,7 @@
                                 <div class="o-ann__element__row o-ann__element__row--border"><label class="pp-label pp-label--row">Til</label> <p>{{ receiverNames }}</p></div>
                                 <div class="o-ann__element__row o-ann__element__row--border"><label class="pp-label pp-label--row">Fra</label> <p>{{ theEmailFromCompany }}</p></div>
                                 <div class="o-ann__element__row o-ann__element__row--border"><label class="pp-label pp-label--row">Emne</label> <p>{{ theEmailSubject }}</p></div>
-                                <div class="o-ann__element__row o-ann__element__row--border"><label class="pp-label pp-label--row">Vedhæftede fil(er)</label> <p id="second_cloneDestination"></p></div>
+                                <div class="o-ann__element__row o-ann__element__row--border" v-if="formType !== 'master'"><label class="pp-label pp-label--row">Vedhæftede fil(er)</label> <p id="second_cloneDestination"></p></div>
                             </div>
                             <div class="o-preview-iframe-container"> 
                                 <iframe id="sandbox" v-if="!formTypeIsMaster" :srcdoc="iframeContent" ref="o_preview_iframe"></iframe>
