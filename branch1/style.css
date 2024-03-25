@@ -4771,7 +4771,7 @@ body, .o-page {
 
 .o-header {
     position: absolute;
-    z-index: 2;
+    z-index: 3;
     left: 0;
     right: 0;
     width: 96%;
@@ -10717,6 +10717,8 @@ ul.tags-selector__dropdow__create {
     display: flex;
     align-items: center;
     gap: 0.25rem;
+    background-color: #fff;
+    border-radius: 4px 4px 0 0;
 }
 
 .o-editor-toolbar button {
@@ -10745,9 +10747,11 @@ ul.tags-selector__dropdow__create {
 
 .o-text-editor {
     border: 1px solid #ccc;
-    min-height: 200px;
+    min-height: 20px;
     padding: 0.5rem;
     font-size: 14px;
+    background: #fff;
+    border-radius: 0 0 4px 4px;
 }
 
 .o-text-editor:focus {
@@ -10904,8 +10908,13 @@ ul.tags-selector__dropdow__create {
     top: 10px;
     right: 0px;
     transition: background-color 0.35s;
-    border-radius: 50%;
+    border-radius: 0 4px 4px 0;
     padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    gap: 0.25rem;
+    font-style: italic;
 }
 
 .o-popover:hover {
@@ -10921,32 +10930,31 @@ ul.tags-selector__dropdow__create {
 .o-popover__menu {
     opacity: 0;
     pointer-events: none;
-    transform: translateY(20px);
+    transform: translateX(20px);
     transition: transform 0.25s, opacity 0.25s;
     position: absolute;
-    right: calc(100% - 20px);
-    top: calc(100% - 2px);
+    right: 100%;
+    top: -200px;
     z-index: 12312312;
     background: #fff;
     font-size: 13px;
-    padding: 1rem;
     border-radius: 4px;
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    border: 1px solid var(--borderColor);
 }
 
 .o-popover:hover .o-popover__menu {
     opacity: 1;
     pointer-events: initial;
-    transform: translateY(0);
+    transform: translateX(0);
 }
 
 .o-popover__menu p {
     word-break: normal;
-}
-
-.o-popover__menu ul {
-    list-style: disc;
-    padding-left: 15px;
+    border-bottom: 1px solid #eee;
+    margin: 0;
+    padding: 1rem;
+    border-radius: 4px 4px 0 0;
 }
 
 .text-grey {
@@ -11283,4 +11291,89 @@ ul.tags-selector__dropdow__create {
     width: 100%;
     border: none;
     min-height: 200px;
+}
+
+.o-slider__container {
+    position: relative;
+}
+
+.o-slider-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 12px;
+    z-index: 1;
+    width: 20px;
+    border-radius: 4px 0 0 4px;
+    background-color: var(--primary);
+}
+
+.o-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 12px;
+    background: #fff;
+    outline: none;
+    opacity: 1;
+    transition: opacity .2s;
+    border-radius: 4px;
+    border: 1px solid var(--borderColor);
+    position: relative;
+}
+
+.o-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 25px;
+    border-radius: 4px;
+    background: var(--primary);
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+}
+
+.o-slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: var(--primary);
+    cursor: pointer;
+}
+
+.o-slider__wrapper {
+    width: 300px;
+    position: relative;
+}
+
+.o-slider__wrapper>.pp-label {
+    margin-bottom: 0.5rem;
+}
+
+.o-popover__menu ul.o-popover__menu__shortcuts {
+    list-style: none;
+    background: var(--bgLigthBlue);
+    padding: 1rem;
+    display: flex;
+    margin: 0;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.o-popover__menu__shortcuts li {
+    background: #fff;
+    padding: 0.25rem 0.5rem;
+    font-weight: normal;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.o-popover__menu__shortcuts .o-btn.o-btn--small {
+    font-size: 16px;
+    padding: 5px;
+    line-height: 0;
 }

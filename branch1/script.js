@@ -601,6 +601,21 @@ $(document).one("trigger::vue_loaded", function () {
 				debounce: null,
 				theActiveFilterStatuses: [],
 				theActiveFilterTypes: [],
+				theActiveFilterPeriod: [new Date(), new Date()],
+				theActiveFilterPeriodDays: 30,
+				theFilterPeriods: [
+					{
+						value: ['2024-03-24', '2024-03-24'],
+						text: 'I dag'
+					},
+					{
+						value: ['2024-03-22', '2024-03-24'],
+						text: 'Seneste 2 dage'
+					},
+						value: ['2024-03-20', '2024-03-24'],
+						text: 'Seneste 4 dage'
+					}
+				],
 				theAnnActiveItem: null,
 				standardOptions: {},
 				isLoadingStandardOptions: false,
@@ -681,11 +696,29 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 				}
 			},
+			vAnnouncementsFilteredWithPeriod() {
+				if (this.active_area !== 'News') {
+					return this.vAnnouncementsFilteredWithType
+				}
+				if (this.theActiveFilterPeriod.length === 2) {
+					const startDate = new Date(this.theActiveFilterPeriod[0]);
+					const endDate = new Date(this.theActiveFilterPeriod[1]);
+					console.log({ startDate, endDate })
+					return this.vAnnouncementsFilteredWithType.filter(itemCase => {
+						const createdTime = new Date(itemCase.createdTime);
+						// Check if createdTime is between or equal to the start and end dates.
+						return createdTime >= startDate && createdTime <= endDate;
+					});
+				} else {
+					// If the filter period is not set or invalid, return all filteredWithType items.
+					return this.vAnnouncementsFilteredWithType;
+				}
+			},
 			vAnnouncementsFilteredWithStatus() {
 				if (this.theActiveFilterStatuses.length < 1) {
-					return this.vAnnouncementsFilteredWithType;
+					return this.vAnnouncementsFilteredWithPeriod;
 				} else {
-					return this.vAnnouncementsFilteredWithType.filter(itemCase => {
+					return this.vAnnouncementsFilteredWithPeriod.filter(itemCase => {
 						const hasNoSelectedStatus = this.theActiveFilterStatuses.includes('v_no_selected');
 						if (hasNoSelectedStatus && (!itemCase.status || itemCase.status === '')) {
 							return true;
@@ -748,6 +781,12 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			setTheActiveFilterPeriod() {
+				const today = new Date();
+				today.setDate(today.getDate() - this.theActiveFilterPeriodDays); // Add 30 days to the current date
+				const newStartDate = today
+				this.theActiveFilterPeriod = [newStartDate, new Date()]
+			},
 			onEditAnnouncementDone() {
 				this.setEditAnnouncement(null)
 			},
@@ -995,6 +1034,7 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		beforeMount() {
 			this.addDayJSFromCDN();
+			this.setTheActiveFilterPeriod()
 		},
 		mounted() {
 			this.fetchData()
@@ -1169,7 +1209,22 @@ $(document).one("trigger::vue_loaded", function () {
 				isDeleting: false,
 				isConfirmation: false,
 				attachFilesObserver: null,
-				theEmailTeaser: ''
+				theEmailTeaser: '',
+				shortcuts: [
+					['{{{pp_mergecode:subject}}}',
+						'{{{pp_mergecode:type}}}',
+						'{{{pp_mergecode:from}}}',
+						'{{{pp_mergecode:user_name}}}',
+						'{{{pp_mergecode:teaser}}}',
+						'{{{pp_mergecode:service_window_start}}}',
+						'{{{pp_mergecode:service_window_end}}}'
+					],
+					['{{{pp_mergecode:placeholder1}}}'],
+					['{{{pp_mergecode:history_placeholder1}}}'],
+					['{{{pp_hasdata:history_placeholder1}}}',
+						'{{{end:pp_hasdata:history_placeholder1}}}'
+					]
+				]
 			}
 		},
 		computed: {
@@ -1324,7 +1379,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			receiverNames() {
 				const names = [];
-				const potentialReceivers = [{ id: 'ALL', name: 'All' }, { id: 'ALL_SPs', name: 'All SPs' }, { id: 'ALL_IOs', name: 'All IOs' }].concat(this.filteredReceivers)
+				const potentialReceivers = [{ id: 'ALL', name: 'Alle' }, { id: 'ALL_SPs', name: 'Alle SPs' }, { id: 'ALL_IOs', name: 'Alle IOs' }].concat(this.filteredReceivers)
 				Object.keys(this.selectedReceivers).forEach(key => {
 					const idx = potentialReceivers.findIndex(user => user.id === key);
 					if (idx > -1) {
@@ -1343,9 +1398,9 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 				} else {
 					if (!this.edit_master_template) {
-						return 'Opret nyt master template'
+						return 'Opret nyt template'
 					} else {
-						return 'Rediger master template'
+						return 'Rediger template'
 					}
 				}
 			},
@@ -1382,6 +1437,15 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			async copyTextToClipboard(text) {
+				try {
+					await navigator.clipboard.writeText(text);
+					this.$emit('onCopy', 'Kopieret ' + text)
+				} catch (err) {
+					this.$emit('onCopy', 'Kunne ikke kopiere')
+					console.error('Failed to copy text: ', err);
+				}
+			},
 			replaceHistoryPlaceholderWithTable(historyPlaceholderName) {
 				if (!this.placeholderHist || this.placeholderHist.length < 1) {
 					return null;
@@ -1563,6 +1627,7 @@ $(document).one("trigger::vue_loaded", function () {
 					});
 			},
 			createAnnouncement() {
+				let timeoutTimer = 2500
 				let attachmentToken = null
 				const lengthOfAttachedFiles = $('.ppUPLOAD #uploadedPanel > div') ? $('.ppUPLOAD #uploadedPanel > div').length : 0
 				if (lengthOfAttachedFiles > 0) {
@@ -1653,25 +1718,27 @@ $(document).one("trigger::vue_loaded", function () {
 				if (this.edit_announcement) {
 					url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg?action=PATCH'
 				}
-				fetch(url, requestOptions)
-					.then(response => {
-						console.log('createAnnouncement', { response })
-						if (!response.ok) {
-							throw new Error('Network response was not ok');
-						}
-						return response.json();
-					})
-					.then(success => {
-						console.log({ success })
-						this.$emit('addAnnouncements', success)
-					})
-					.catch(error => {
-						console.error('Error creating new announcement:', error);
-					})
-					.finally(() => {
-						this.isSubmitting = false
-						this.setIsCreateModal(false)
-					});
+				setTimeout(() => {
+					fetch(url, requestOptions)
+						.then(response => {
+							console.log('createAnnouncement', { response })
+							if (!response.ok) {
+								throw new Error('Network response was not ok');
+							}
+							return response.json();
+						})
+						.then(success => {
+							console.log({ success })
+							this.$emit('addAnnouncements', success)
+						})
+						.catch(error => {
+							console.error('Error creating new announcement:', error);
+						})
+						.finally(() => {
+							this.isSubmitting = false
+							this.setIsCreateModal(false)
+						});
+				}, timeoutTimer)
 			},
 			onSubmit() {
 				if (this.getIsFormInvalid()) {

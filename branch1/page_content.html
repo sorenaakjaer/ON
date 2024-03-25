@@ -215,7 +215,7 @@
                         <div class="o-filters__filter vue-filter-level2"
                             :class="{'o-filters__filter--active': !isShowOperationStatusErrorReports}"
                             @click="setIsShowOperationStatusErrorReports(false)">
-                            Operating announcements
+                            Udmeldinger
                         </div>
                         <div class="o-filters__filter vue-filter-level2"
                             :class="{'o-filters__filter--active': isShowOperationStatusErrorReports}"
@@ -226,7 +226,7 @@
                 </div>
             </div>
             <o-announcements v-if="!isShowOperationStatusErrorReports" :the_user="theUser" :the_user_type="theUserType"
-                :active_area="activeCategory" @emit_announcements="onEmitAnnouncements">
+                :active_area="activeCategory" @emit_announcements="onEmitAnnouncements" @on_copy="showToast($event)">
             </o-announcements>
         </div>
         <div class="o-list-of-cases" v-if="!isViewNewsOrOperationStatus || isShowOperationStatusErrorReports">
@@ -2027,9 +2027,24 @@
         <div class="o-ann__body">
             <div class="o-ann__body__header o-wrapper">
                 <div class="o-ann__body__header__left">
+                    <div class="o-slider__wrapper" v-if="active_area === 'News'">
+                        <label class="pp-label">
+                            <template v-if="theActiveFilterPeriodDays > 1">Viser nyheder for de seneste <span>{{ theActiveFilterPeriodDays }}</span> dage</template>
+                            <template v-else>Viser nyheder for det senste døgn</template>
+                        </label>
+                        <div class="o-slider__container">
+                            <div class="o-slider-indicator" :style="{'width': ((300 / 90) * theActiveFilterPeriodDays) + 'px'}"></div>
+                            <input type="range" v-model="theActiveFilterPeriodDays" @change="setTheActiveFilterPeriod" min="1" max="90" value="30" class="o-slider">
+                        </div>
+                    </div>
+                      <!--
+                    <select class="tags-selector__selected" v-model="theActiveFilterPeriod">
+                        <option v-for="period in theFilterPeriods" :value="period.value">{{ period.text }}</option>
+                    </select>
+                    -->
                     <o-multi-select :items="filterStatuses" :selected_items="theActiveFilterStatuses"
-                    @toggle_item="toggleFilterStatus" select_title="Vælg status"></o-multi-select>
-                    <o-multi-select :items="filterTypes" :selected_items="theActiveFilterTypes"
+                    @toggle_item="toggleFilterStatus" select_title="Vælg status" v-if="active_area === 'OperationsStatus'"></o-multi-select>
+                    <o-multi-select :items="filterTypes" :selected_items="theActiveFilterTypes" v-if="active_area === 'OperationsStatus'"
                     @toggle_item="toggleFilterTypes" select_title="Vælg Type"></o-multi-select>
                 </div>
                 <div class="o-ann__body__header__right">
@@ -2155,7 +2170,8 @@
                 formTitle="Create Master New Template"
                 @deleteMasterTemplate="onDeleteMasterTemplate"
                 @addMasterTemplate="onAddMasterTemplate"
-                @close="setIsCreateNewMaster(false)">
+                @close="setIsCreateNewMaster(false)"
+                @onCopy="$emit('on_copy', $event)">
             </o-announcements-modal>
         </transition>
         <!-- OVERLAY -->
@@ -2172,8 +2188,8 @@
                         <h4>{{ theFormTitle }}</h4>
                     </div>
                     <div class="o-modal__header__right">
-                        <button v-if="formTypeIsMaster && edit_master_template" class="o-btn o-btn--small" @click="setIsDeleteConfirmation(true)">Slet master</button>
-                        <button class="o-btn o-btn--small o-btn--primary" :class="[{'o-btn--loading': isSubmitting}, {'o-btn--disabled': !isSaveButtonValid}]" @click="onSubmit"><template v-if="formTypeIsMaster && !edit_master_template">Gem master</template><template v-if="formTypeIsMaster && edit_master_template">Opdater master</template><template v-if="!formTypeIsMaster">Send ny udmelding</template></button>
+                        <button v-if="formTypeIsMaster && edit_master_template" class="o-btn o-btn--small" @click="setIsDeleteConfirmation(true)">Slet template</button>
+                        <button class="o-btn o-btn--small o-btn--primary" :class="[{'o-btn--loading': isSubmitting}, {'o-btn--disabled': !isSaveButtonValid}]" @click="onSubmit"><template v-if="formTypeIsMaster && !edit_master_template">Gem template</template><template v-if="formTypeIsMaster && edit_master_template">Opdater template</template><template v-if="!formTypeIsMaster">Send ny udmelding</template></button>
                     </div>
                 </div>
                 <div class="o-modal__body">
@@ -2183,26 +2199,26 @@
                                 <div class="o-ann__card">
                                     <div class="o-ann__card__highlighted" v-if="!formTypeIsMaster">
                                         <div class="o-group">
-                                            <label class="o-label">Select Master Template</label>
+                                            <label class="o-label">Vælg et template</label>
                                                 <div class="o-group__sub">
                                                     <select class="o-select" 
                                                     @change="setMasterTemplate($event.target.value)" v-model="activeMasterTemplateId">
-                                                        <option disabled value="">Choose a template</option>
+                                                        <option disabled value="">Vælg et template</option>
                                                         <option v-for="masterTemplate in sortedMasterTemplates" 
                                                         :value="masterTemplate.template_id">
                                                         {{ masterTemplate.name }}
                                                     </option>
                                                     </select>
-                                                    <a @click.prevent="setEditMasterTemplate(activeMasterTemplateId)" v-if="activeMasterTemplateId">Edit</a>
+                                                    <a @click.prevent="setEditMasterTemplate(activeMasterTemplateId)" v-if="activeMasterTemplateId">Redigér</a>
                                                 </div>
-                                                <a @click.prevent="setEditMasterTemplate(null)" id="o_create_new_master_link">Create new master</a>
+                                                <a @click.prevent="setEditMasterTemplate(null)" id="o_create_new_master_link">Opret nyt template</a>
                                         </div>
                                     </div>
                                 </div>
                             <div class="o-ann__card">
                                 <div class="o-group__flex o-group__flex-2">
                                     <div class="o-group" v-if="formTypeIsMaster">
-                                        <label class="o-label">Template name</label>
+                                        <label class="o-label">Template navn</label>
                                         <input type="text" class="o-input" ref="new_template_title_input" v-model="newMasterTitle" />
                                     </div>
                                     <div class="o-group" v-if="!formTypeIsMaster">
@@ -2221,15 +2237,15 @@
                                     </div>
                                 </div>
                                 <div class="o-group">
-                                    <label class="o-label">Fra firma (Shown in email sender)</label>
+                                    <label class="o-label">Fra firma (Vises som emailens afsender)</label>
                                     <input type="text" v-model="theEmailFromCompany" class="o-input" />
                                 </div>
                                 <div class="o-group">
-                                    <label class="o-label">Subject email</label>
+                                    <label class="o-label">Emnefelt</label>
                                     <input type="text" v-model="theEmailSubject" class="o-input" />
                                 </div>
                                 <div class="o-group" v-if="active_area === 'News'">
-                                    <label class="o-label">Teaser</label>
+                                    <label class="o-label">Beskrivelse</label>
                                     <textarea v-model="theEmailTeaser" class="o-input"></textarea>
                                 </div>
                                 <hr class="o-hr">
@@ -2237,23 +2253,33 @@
                                 <h4>Email indhold</h4>
                                 <div class="o-ann-form__editor">
                                     <div class="o-popover" v-if="getIsActiveTab('html')">
+                                        Placeholders
                                         <div class="o-popover-icon">
                                             <i class="tio">help</i>
                                         </div>
                                         <div class="o-popover__menu">
                                             <p><b>Indsæt en af flg. koder, og få automatisk indsat variabler fra formularen</b></p>
-                                            <ul>
-                                                <li v-pre>{{{pp_mergecode:subject}}}</li>
-                                                <li v-pre>{{{pp_mergecode:type}}}</li>
-                                                <li v-pre>{{{pp_mergecode:placeholder1}}} op til 10</li>
-                                                <li v-pre>{{{pp_mergecode:from}}}</li>
-                                                <li v-pre>{{{pp_mergecode:user_name}}}</li>
-                                                <li v-pre>{{{pp_mergecode:teaser}}}</li>
-                                                <li v-pre>{{{pp_mergecode:service_window_start}}}</li>
-                                                <li v-pre>{{{pp_mergecode:service_window_end}}}</li>
-                                                <li v-pre>{{{pp_mergecode:history_placeholder1}}}</li>
-                                                <li v-pre>{{{pp_hasdata:history_placeholder1}}}</li>
-                                                <li v-pre>{{{end:pp_hasdata:history_placeholder1}}}</li>
+                                            <ul class="o-popover__menu__shortcuts">
+                                                <label class="pp-label">Generelle koder</label>
+                                                <li v-for="shortcut in shortcuts[0]">
+                                                    {{ shortcut }} 
+                                                    <button class="o-btn o-btn--small" @click="copyTextToClipboard(shortcut)"><i class="tio">copy</i></button>
+                                                </li>
+                                                <label class="pp-label">Der kan indsættes placeholder 1 - 10</label>
+                                                <li v-for="shortcut in shortcuts[1]">
+                                                    {{ shortcut }} 
+                                                    <button class="o-btn o-btn--small" @click="copyTextToClipboard(shortcut)"><i class="tio">copy</i></button>
+                                                </li>
+                                                <label class="pp-label">Der kan indsættes historik fra placeholders 1 - 10</label>
+                                                <li v-for="shortcut in shortcuts[2]">
+                                                    {{ shortcut }} 
+                                                    <button class="o-btn o-btn--small" @click="copyTextToClipboard(shortcut)"><i class="tio">copy</i></button>
+                                                </li>
+                                                <label class="pp-label">Indsæt disse koder, hvis noget indhold kun skal vises, hvis der er indhold i historik placeholder 1 - 10</label>
+                                                <li v-for="shortcut in shortcuts[3]">
+                                                    {{ shortcut }} 
+                                                    <button class="o-btn o-btn--small" @click="copyTextToClipboard(shortcut)"><i class="tio">copy</i></button>
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -2267,7 +2293,9 @@
                                         <ul class="o-placeholders" v-if="activePlaceholders.length > 0">
                                             <li class="marg-1-bottom o-placeholders__placeholder" v-for="(oPlaceholder, key) in activePlaceholders" :key="oPlaceholder.id">
                                                 <label class="o-label">Placerholder {{ oPlaceholder.num }}</label>
-                                                <!-- <o-editor></o-editor> -->
+                                                <!--
+                                                <o-editor></o-editor>
+                                                -->
                                                 <input type="text" class="o-input" :placeholder="oPlaceholder.placeholder" v-model="oPlaceholder.text">
                                             </li>
                                         </ul>
@@ -2284,15 +2312,15 @@
                                             <label class="o-label">{{ selectedReceiversLength }} modtager{{ selectedReceiversLength !== 1 ? 'e' : '' }} valgt</label>
                                             <div class="o-ann-receivers__header__right">
                                             <div class="o-toggle-group" @click="setSelectedReceiver('ALL')">
-                                                <label class="o-label">All</label>
+                                                <label class="o-label">Alle</label>
                                                 <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected('ALL')}"></div>
                                             </div>
                                             <div class="o-toggle-group" @click="setSelectedReceiver('ALL_SPs')">
-                                                <label class="o-label">All SP's</label>
+                                                <label class="o-label">Alle SP's</label>
                                                 <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected('ALL_SPs')}"></div>
                                             </div>
                                             <div class="o-toggle-group" @click="setSelectedReceiver('ALL_IOs')">
-                                                <label class="o-label">All IO’s</label>
+                                                <label class="o-label">Alle IO’s</label>
                                                 <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected('ALL_IOs')}"></div>
                                             </div>
                                         </div>
@@ -2329,13 +2357,13 @@
                                         <input type="datetime-local" class="o-input" v-model="serviceWindowStart" />
                                     </div>
                                     <div class="o-group" v-show="isServiceWindow">
-                                        <label class="o-label">End</label>
+                                        <label class="o-label">Slut</label>
                                         <input type="datetime-local" class="o-input" v-model="serviceWindowEnd" />
                                     </div>
                                 </div>
                                 <div class="o-group__flex">
                                     <div class="o-toggle-group" @click="isUpdateSubscription = !isUpdateSubscription">
-                                        <label class="o-label">Get update notifikation</label>
+                                        <label class="o-label">Tilmeld notifikationer</label>
                                         <div class="o-toggle" :class="{'o-toggle--activated': isUpdateSubscription}"></div>
                                     </div>
                                     <div class="o-group" v-show="isUpdateSubscription">
@@ -2345,7 +2373,7 @@
                                         </select>
                                     </div>
                                     <div class="o-group" v-show="isUpdateSubscription && filteredAssignUpdatesToList.length > 0">
-                                        <label class="o-label">Users to notify</label>
+                                        <label class="o-label">Send til</label>
                                         <select class="o-select" v-model="updateSubscriptionUserId">
                                             <option v-for="item in filteredAssignUpdatesToList" :value="item.Id">{{ item.Name }}</option>
                                         </select>
@@ -2357,13 +2385,13 @@
                         </form>
                     </div>
                     <div class="o-ann__preview-container">
-                        <h4>Preview</h4>
+                        <h4>Forhåndsvisning</h4>
                         <div class="o-card__email-preview">
                             <div class="o-card__email-preview__header">
-                                <p><b>To: </b>{{ receiverNames }}</p>
-                                <p><b>From: </b>{{ theEmailFromCompany }}</p>
-                                <p><b>Subject: </b>{{ theEmailSubject }}</p>
-                                <p><b>Attachment(s): </b></p>
+                                <p><b>Til: </b>{{ receiverNames }}</p>
+                                <p><b>Fra: </b>{{ theEmailFromCompany }}</p>
+                                <p><b>Emne: </b>{{ theEmailSubject }}</p>
+                                <p><b>Vedhæftet fil(er): </b></p>
                             </div>
                             <div class="o-preview-iframe-container"> 
                                 <iframe id="sandbox" v-if="!formTypeIsMaster" :srcdoc="iframeContent" ref="o_preview_iframe"></iframe>
@@ -2375,7 +2403,7 @@
                 <transition name="modalFadeIn">
                     <div class="o-modal--alwaysactive vue-modal vue-modal--small o-ann--modal__confirm" v-if="isConfirmation" v-cloak>
                         <div class="o-modal__body">
-                            <h4>Er du sikker på, at du vil slette dette master template?</h4>
+                            <h4>Er du sikker på, at du vil slette dette template?</h4>
                             <div class="o-modal__body__actions">
                                 <button class="o-btn js-click-modal-small-cancel" @click="setIsDeleteConfirmation(false)">
                                     Annuller
@@ -2427,11 +2455,6 @@
 
 <script type="text/x-template" id="o-editor-template">
         <div class="o-ann-form__editor">
-            <ul class="o-ann-form__editor__tabs">
-                <li class="o-ann-form__editor__tabs__tab" :class="{'o-ann-form__editor__tabs__tab--selected': theActiveTab === 'editor'}" @click="setTheActiveTab('editor')">Editor</li>
-                <li class="o-ann-form__editor__tabs__tab" :class="{'o-ann-form__editor__tabs__tab--selected': theActiveTab === 'html'}" @click="setTheActiveTab('html')">HTML</li>
-            </ul>
-            <div class="o-editor" v-if="theActiveTab === 'editor'">
                 <div class="o-editor-toolbar">
                     <button @click="applyStyle('bold')" :class="{'style--active': activeStyles['bold']}"><i class="tio">bold</i></button>
                     <button @click="applyStyle('italic')" :class="{'style--active': activeStyles['italic']}"><i class="tio">italic</i></button>
@@ -2439,10 +2462,6 @@
                     <button @click="createLink"><i class="tio">link</i></button>
                 </div>
                 <div contenteditable="true" class="o-text-editor" ref="o_text_editor"></div>
-            </div>
-            <div class="o-editor" v-else>
-                <textarea class="o-editor__textarea" ref="o_editor_textarea" v-model="userHtml" placeholder="Enter HTML here"></textarea>
-            </div>
         </div>
     </script>
 
