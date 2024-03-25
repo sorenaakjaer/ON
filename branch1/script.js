@@ -1922,10 +1922,19 @@ $(document).one("trigger::vue_loaded", function () {
 					if (originalLink) {
 						originalLink.click();
 					}
-
 					const wrapperDiv = event.target.closest('div');
 					if (wrapperDiv) {
 						wrapperDiv.remove();
+					}
+					const secondContainer = document.getElementById('second_cloneDestination');
+					if (secondContainer) {
+						const correspondingAnchor = secondContainer.querySelector(`a[deleteurl="${deleteUrl}"]`);
+						if (correspondingAnchor) {
+							const correspondingWrapperDiv = correspondingAnchor.closest('div');
+							if (correspondingWrapperDiv) {
+								correspondingWrapperDiv.remove();
+							}
+						}
 					}
 				}
 				event.preventDefault();

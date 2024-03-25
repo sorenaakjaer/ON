@@ -11442,3 +11442,20 @@ ul.tags-selector__dropdow__create {
     color: var(--red);
     font-size: 12px;
 }
+
+#second_cloneDestination {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-wrap: nowrap;
+}
+
+#second_cloneDestination>div {
+    border: 1px solid var(--borderColor);
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+
+#second_cloneDestination>div>a {
+    display: none;
+}
