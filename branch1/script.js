@@ -961,6 +961,7 @@ $(document).one("trigger::vue_loaded", function () {
 				})
 			},
 			onAddAnnouncements(arr) {
+				console.log('onAddAnnouncements', arr, this.announcements)
 				arr.forEach(obj => {
 					const idx = this.announcements.findIndex(announcement => announcement.onid === obj.onid && +announcement.version === +obj.version)
 					if (idx < 0) {
@@ -2038,12 +2039,12 @@ $(document).one("trigger::vue_loaded", function () {
 				this.theSelectedStatus = this.edit_announcement['status']
 				this.theEmailFromCompany = this.edit_announcement['from']
 				this.theEmailSubject = this.edit_announcement['subject']
-				if (this.edit_announcement['updateSubscription']) {
+				if (this.edit_announcement['updateSubscription'] && this.edit_announcement['updateSubscription'] != 'false') {
 					this.isUpdateSubscription = this.edit_announcement['updateSubscription'] != 'false'
 					this.updateSubscriptionInterval = this.edit_announcement['updateSubscriptionInterval']
 					this.updateSubscriptionUserId = this.edit_announcement['updateSubscriptionUserId']
 				}
-				if (this.edit_announcement['serviceWindow']) {
+				if (this.edit_announcement['serviceWindow'] && this.edit_announcement['serviceWindow'] != 'false') {
 					this.isServiceWindow = this.edit_announcement['serviceWindow'] != 'false'
 					this.serviceWindowStartFlatPicker = this.edit_announcement['serviceWindowStart']
 					this.serviceWindowEndFlatPicker = this.edit_announcement['serviceWindowEnd']

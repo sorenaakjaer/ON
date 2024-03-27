@@ -2223,7 +2223,7 @@
                     </div>
                     <div class="o-modal__header__right">
                         <button v-if="formTypeIsMaster && edit_master_template" class="o-btn o-btn--small" @click="setIsDeleteConfirmation(true)">Slet template</button>
-                        <button class="o-btn o-btn--small o-btn--primary" :class="[{'o-btn--loading': isSubmitting}, {'o-btn--disabled': !isSaveButtonValid}]" @click="onSubmit"><template v-if="formTypeIsMaster && !edit_master_template">Gem template</template><template v-if="formTypeIsMaster && edit_master_template">Opdater template</template><template v-if="!formTypeIsMaster">Send ny udmelding</template></button>
+                        <button class="o-btn o-btn--small o-btn--primary" :class="[{'o-btn--loading': isSubmitting}, {'o-btn--disabled': !isSaveButtonValid}]" @click="onSubmit"><template v-if="formTypeIsMaster && !edit_master_template">Gem template</template><template v-if="formTypeIsMaster && edit_master_template">Opdater template</template><template v-if="!formTypeIsMaster && this.active_area === 'News'">Send nyhed</template><template v-if="!formTypeIsMaster && this.active_area !== 'News'">Send ny udmelding</template></button>
                     </div>
                 </div>
                 <div class="o-modal__body">
