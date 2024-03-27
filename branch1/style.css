@@ -11682,3 +11682,19 @@ ul.tags-selector__dropdow__create {
 .marg-1-right {
     margin-right: 1rem;
 }
+
+.pp-pill--unread {
+    font-size: 12px;
+    line-height: 1;
+    border-radius: 4px;
+    background-color: #fdf7b2;
+    color: #855529;
+    padding: 4px 8px;
+}
+
+.o-ann__elements-cards__card__header .pp-pill--unread {
+    position: absolute;
+    left: 1rem;
+    top: 0.45rem;
+    padding: 2px 4px;
+}

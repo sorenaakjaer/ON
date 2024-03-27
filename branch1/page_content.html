@@ -2083,6 +2083,7 @@
                         :key="item.v_id"
                         @click="setActiveItem(item)">
                         <div class="o-ann__elements-cards__card__header">
+                            <div class="pp-pill--unread" v-if="item.unread && item.unread != 'false'">Ulæst</div>
                             <label class="o-ann__elements-cards__card__header__onid">
                                 ONID: {{ item.onid }} ({{ item.version }}. version) 
                             </label>
@@ -2112,6 +2113,7 @@
                         <div class="o-ann__email__icon">
                             <i class="tio">email_outlined</i>
                             <label class="pp-label">{{item.v_timeFromNow}} ({{item.v_createTimeFormatted}})</label>
+                            <div class="pp-pill--unread" v-if="item.unread && item.unread != 'false'">Ulæst</div>
                         </div>
                         <label class="pp-label" v-if="item.is_earlier_version">{{ item.version }}. version</label>
                         <label class="pp-label">
