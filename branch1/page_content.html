@@ -2327,7 +2327,7 @@
                                         <ul class="o-placeholders" v-if="activePlaceholders.length > 0">
                                             <li class="marg-1-bottom o-placeholders__placeholder" v-for="(oPlaceholder, key) in activePlaceholders" :key="oPlaceholder.id">
                                                 <label class="pp-label">{{ oPlaceholder.placeholder }}</label>
-                                                <div class="o-editor__quill" :id="'placeholder_' + oPlaceholder.num"></div>
+                                                <div class="o-editor__quill" :data-placeholder-num="oPlaceholder.num" :id="'placeholder_' + oPlaceholder.num"></div>
                                                 <!-- 
                                                 <input type="text" class="o-input" :placeholder="oPlaceholder.placeholder" v-model="oPlaceholder.text"> -->
                                             </li>

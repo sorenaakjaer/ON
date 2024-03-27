@@ -1254,12 +1254,15 @@ $(document).one("trigger::vue_loaded", function () {
 					]
 				],
 				flatPickerConfig: {
-					enableTime: true, // Enable time picker functionality
-					dateFormat: 'd/m/Y H:i', // Custom date and time format
-					time_24hr: true, // Use 24-hour format for time picker
-					minuteIncrement: 30 // Set the increment for time selection to 30 minutes
+					enableTime: true,
+					dateFormat: 'd/m/Y H:i',
+					time_24hr: true,
+					minuteIncrement: 30
 				},
-				quillInstances: {}
+				quillInstances: {},
+				versionHistPlaceholder: {},
+				changedPlaceholders: {},
+				attachmentToken: null
 			}
 		},
 		computed: {
@@ -1691,16 +1694,36 @@ $(document).one("trigger::vue_loaded", function () {
 					});
 			},
 			createAnnouncement() {
-				let timeoutTimer = 0
-				let attachmentToken = null
-				const lengthOfAttachedFiles = $('.ppUPLOAD #uploadedPanel > div') ? $('.ppUPLOAD #uploadedPanel > div').length : 0
-				if (lengthOfAttachedFiles > 0) {
-					timeoutTimer = 4000
-					clearJSONfields()
-					attachmentToken = Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2)
-					$(".ppUPLOAD_TOKEN > input").val(attachmentToken)
-					$(".webformCreateMore").click()
+				this.attachmentToken = null;
+				const uploadedPanel = document.querySelector('.ppUPLOAD #uploadedPanel');
+				const initialLengthOfAttachedFiles = uploadedPanel ? uploadedPanel.children.length : 0;
+				console.log('createAnnouncement:initialLengthOfAttachedFiles')
+				if (initialLengthOfAttachedFiles > 0) {
+					clearJSONfields();
+					this.attachmentToken = Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2);
+					$(".ppUPLOAD_TOKEN > input").val(this.attachmentToken);
+					$(".webformCreateMore").click();
+
+					const observer = new MutationObserver((mutations) => {
+						mutations.forEach((mutation) => {
+							if (mutation.type === "childList") {
+								const currentLengthOfAttachedFiles = mutation.target.children.length;
+								if (currentLengthOfAttachedFiles !== initialLengthOfAttachedFiles) {
+									observer.disconnect(); // Stop observing
+									this.proceedWithAnnouncement(); // Proceed with the rest of the method
+								}
+							}
+						});
+					});
+					const config = { childList: true };
+					observer.observe(uploadedPanel, config);
+				} else {
+					// Directly proceed if no files need to be uploaded
+					this.proceedWithAnnouncement();
 				}
+			},
+			proceedWithAnnouncement() {
+				console.log('proceedWithAnnouncement::')
 				const myHeaders = new Headers();
 				myHeaders.append("Content-Type", "application/json");
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
@@ -1738,7 +1761,7 @@ $(document).one("trigger::vue_loaded", function () {
 					"updateSubscriptionInterval": !this.isUpdateSubscription ? null : this.updateSubscriptionInterval,
 					"updateSubscriptionUserId": !this.isUpdateSubscription ? null : this.updateSubscriptionUserId,
 					"receivers": Object.keys(this.selectedReceivers).map(key => key).join(';'),
-					"attachments": attachmentToken ? [attachmentToken] : null,
+					"attachments": this.attachmentToken ? [this.attachmentToken] : null,
 					"html": this.emailHTMLAllPlaceholdersReplaced,
 					"placeholder_1": null,
 					"placeholder_2": null,
@@ -1766,7 +1789,6 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				if (this.edit_announcement) {
 					dbObj['onid'] = this.edit_announcement.onid
-					console.log('placeholder_hist', JSON.stringify(fncConvertNullsToEmptyArrays(this.placeholderHist)))
 					dbObj['placeholder_hist'] = JSON.stringify(fncConvertNullsToEmptyArrays(this.placeholderHist))
 				}
 				console.log({ dbObj })
@@ -1783,27 +1805,25 @@ $(document).one("trigger::vue_loaded", function () {
 				if (this.edit_announcement) {
 					url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg?action=PATCH'
 				}
-				setTimeout(() => {
-					fetch(url, requestOptions)
-						.then(response => {
-							console.log('createAnnouncement', { response })
-							if (!response.ok) {
-								throw new Error('Network response was not ok');
-							}
-							return response.json();
-						})
-						.then(success => {
-							console.log({ success })
-							this.$emit('addAnnouncements', success)
-						})
-						.catch(error => {
-							console.error('Error creating new announcement:', error);
-						})
-						.finally(() => {
-							this.isSubmitting = false
-							this.setIsCreateModal(false)
-						});
-				}, timeoutTimer)
+				fetch(url, requestOptions)
+					.then(response => {
+						console.log('createAnnouncement', { response })
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(success => {
+						console.log({ success })
+						this.$emit('addAnnouncements', success)
+					})
+					.catch(error => {
+						console.error('Error creating new announcement:', error);
+					})
+					.finally(() => {
+						this.isSubmitting = false
+						this.setIsCreateModal(false)
+					});
 			},
 			onSubmit() {
 				if (this.getIsFormInvalid()) {
@@ -2049,21 +2069,30 @@ $(document).one("trigger::vue_loaded", function () {
 					newHistPlaceholder = historyObj
 				} catch {
 				}
+				this.placeholderHist = newHistPlaceholder
+				// Save current placeholders to history if the current is being changed
+				this.setHistoryPlaceholders()
+				// Set placeholders 
 				for (let i = 1; i < 11; i++) {
 					const currentPlaceholder = this.edit_announcement['placeholder_' + i]
-					// Den kan være null
-					const historyPlaceholder = newHistPlaceholder['placeholder' + i]
-					// tjek om den generelt er null , hvis den er, så dropper du den
-					if (historyPlaceholder == null && currentPlaceholder == null) {
-					} else if (currentPlaceholder && historyPlaceholder == null) {
-						// Hvis den har tekst, og den oprindelige var null
-						newHistPlaceholder['placeholder' + i] = [{ time: this.edit_announcement['createdTime'], text: currentPlaceholder }]
-					} else if (currentPlaceholder && historyPlaceholder) {
-						// Hvis den har tekst, og den oprindelige også har noget
-						newHistPlaceholder['placeholder' + i].push({ time: this.edit_announcement['createdTime'], text: currentPlaceholder })
+					// Set the current placeholders to the edit_placeholders
+					if (currentPlaceholder != null) {
+						const idx = this.placeholders.findIndex(place => place.num == i)
+						if (idx > -1) {
+							this.placeholders[idx]['text'] = currentPlaceholder
+						}
 					}
 				}
-				this.placeholderHist = newHistPlaceholder
+			},
+			setHistoryPlaceholders() {
+				const newHistPlaceholder = {}
+				for (let i = 1; i < 11; i++) {
+					const currentPlaceholder = this.edit_announcement['placeholder_' + i]
+					if (currentPlaceholder != null) {
+						newHistPlaceholder['placeholder' + i] = { time: this.edit_announcement['createdTime'], text: currentPlaceholder }
+					}
+				}
+				this.versionHistPlaceholder = newHistPlaceholder
 			},
 			initializeQuillEditors() {
 				this.$nextTick(() => {
@@ -2071,30 +2100,53 @@ $(document).one("trigger::vue_loaded", function () {
 						const toolbarOptions = [['bold', 'italic', 'underline']];
 						const editors = this.$el.querySelectorAll('.o-editor__quill');
 
-						editors.forEach((editor, key) => {
+						editors.forEach((editor) => {
 							if (editor.hasAttribute('data-quill')) {
 								return;
 							}
 
 							const quill = new Quill(editor, {
 								modules: { toolbar: toolbarOptions },
-								matchVisual: false,
-								theme: 'snow'
+								theme: 'snow',
 							});
 
 							editor.setAttribute('data-quill', 'true');
-							const id = editor.id;
-							this.quillInstances[id] = quill
-							if (key === 0) {
-								quill.focus()
+
+							const idSuffix = editor.id.split('placeholder_')[1];
+
+							this.quillInstances[editor.id] = quill;
+
+							if (Object.keys(this.quillInstances).length === 1) {
+								quill.focus();
 							}
+							const placeholder = this.placeholders.find(p => p.num == idSuffix);
+							if (placeholder && placeholder.text) {
+								quill.clipboard.dangerouslyPasteHTML(placeholder.text);
+							}
+
 							quill.on('text-change', () => {
 								const idSuffix = editor.id.split('placeholder_')[1];
 								let val = quill.root.innerHTML
 								// remove default wrap into p tags https://github.com/quilljs/quill/issues/1745
 								val = val.replaceAll(/<\/?p[^>]*>/g, '').replace('<br>', '')
-								const idx = this.placeholders.findIndex(oPlace => oPlace.num == idSuffix)
-								this.placeholders[idx]['text'] = val
+
+								const idx = this.placeholders.findIndex(p => p.num == idSuffix);
+								if (idx !== -1) {
+									this.placeholders[idx].text = val;
+								}
+								// Not an edit
+								if (!this.placeholderHist) {
+									return
+								}
+								const placeholderId = 'placeholder' + idSuffix
+								if (!this.changedPlaceholders[placeholderId]) {
+									this.changedPlaceholders[placeholderId] = true
+									if (this.placeholderHist[placeholderId]) {
+										this.placeholderHist[placeholderId].unshift(this.versionHistPlaceholder[placeholderId]);
+									} else {
+										this.placeholderHist[placeholderId] = [this.versionHistPlaceholder[placeholderId]]
+									}
+								}
 							});
 						});
 					} else {
@@ -2149,11 +2201,6 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 				}
 				this.setActiveTab('placeholders')
-				setTimeout(_ => {
-					if ($('.o-placeholders__placeholder').length > 0) {
-						// $('.o-placeholders__placeholder .o-input')[0].focus()
-					}
-				}, 250)
 			}
 		}
 	})
