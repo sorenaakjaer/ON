@@ -1720,11 +1720,6 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			proceedWithAnnouncement() {
-				if (ISLOCALHOST) {
-					this.$emit('addAnnouncements', NEWNEWS)
-					this.setIsCreateModal(false)
-					return
-				}
 				const myHeaders = new Headers();
 				myHeaders.append("Content-Type", "application/json");
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
