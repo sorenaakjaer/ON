@@ -2111,9 +2111,9 @@
                     <div class="o-ann__email__header">
                         <div class="o-ann__email__icon">
                             <i class="tio">email_outlined</i>
-                            <label class="pp-label">{{item.v_createTimeFormatted}} ({{item.v_timeFromNow}} )</label>
+                            <label class="pp-label">{{item.v_timeFromNow}} ({{item.v_createTimeFormatted}})</label>
                         </div>
-                        <label class="pp-label" v-if="is_earlier_version">{{ item.version }}. version</label>
+                        <label class="pp-label" v-if="item.is_earlier_version">{{ item.version }}. version</label>
                         <label class="pp-label">
                             <div class="o-pill marg-1-right">{{ item.status }} </div>
                             ONID: {{ item.onid }} ({{ item.version }}. version) 
@@ -2124,7 +2124,6 @@
                         <img :src="item.v_logo" class="o-ann__element__sender__img"/>
                         <h4>{{item.subject}}</h4>
                     </div>
-                        
                         <p class="o-ann__element__link">Se mere <i class="tio">chevron_right</i></p>
                     </div>
                 </div>
