@@ -564,13 +564,18 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			the_user_type: {
 				default: '' // IO, SP, ON etc.
+			},
+			prop_is_create_announcement_modal: {
+				type: Boolean,
+				default: false
 			}
 		},
 		data() {
 			return {
+				isListView: false,
 				isLoadingAnnouncements: false,
 				announcements: [],
-				isCreateAnnouncementModal: false,
+				dataIsCreateAnnouncementModal: false,
 				isNewMasterModal: false,
 				searchQuery: '',
 				debounce: null,
@@ -578,20 +583,6 @@ $(document).one("trigger::vue_loaded", function () {
 				theActiveFilterTypes: [],
 				theActiveFilterPeriod: [new Date(), new Date()],
 				theActiveFilterPeriodDays: 30,
-				theFilterPeriods: [
-					{
-						value: ['2024-03-24', '2024-03-24'],
-						text: 'I dag'
-					},
-					{
-						value: ['2024-03-22', '2024-03-24'],
-						text: 'Seneste 2 dage'
-					},
-					{
-						value: ['2024-03-20', '2024-03-24'],
-						text: 'Seneste 4 dage'
-					}
-				],
 				theAnnActiveItem: null,
 				standardOptions: {},
 				isLoadingStandardOptions: false,
@@ -605,8 +596,14 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		computed: {
+			isCreateAnnouncementModal() {
+				return this.dataIsCreateAnnouncementModal || this.prop_is_create_announcement_modal
+			},
 			activeAnnouncements() {
 				return this.announcements.filter(announcement => announcement.area === this.active_area)
+			},
+			standardOptionsPartners() {
+				return this.standardOptions && this.standardOptions['extMsg_Partners'] ? this.standardOptions['extMsg_Partners'] : []
 			},
 			activeAnnouncementsWithVProps() {
 				const potentialReceivers = [{ id: 'ALL', name: 'All' }, { id: 'ALL_SPs', name: 'All SPs' }, { id: 'ALL_IOs', name: 'All IOs' }].concat(this.filteredReceivers)
@@ -628,7 +625,8 @@ $(document).one("trigger::vue_loaded", function () {
 					v_receivers: changeIdsToNames(ann),
 					v_timeFromNow: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).fromNow() : ann.createdTime,
 					v_createTimeFormatted: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).format('LLL') : ann.createdTime,
-					v_attachments: ann.attachments ? JSON.parse(ann.attachments) : []
+					v_attachments: ann.attachments ? JSON.parse(ann.attachments) : [],
+					v_logo: this.standardOptionsPartners.find(partner => partner.id === ann.from) ? this.standardOptionsPartners.find(partner => partner.id === ann.from)['logo'] : 'https://opennet.dk/assets/img/logo-clean.png'
 				}))
 			},
 			announcementsInVersionsArr() {
@@ -750,6 +748,9 @@ $(document).one("trigger::vue_loaded", function () {
 					if (a.type > b.type) return 1;
 					return a.name.localeCompare(b.name);
 				})
+			},
+			theActiveAnnouncement() {
+				return this.theAnnActiveItem ? this.vAnnouncements.find(ann => ann.v_id === this.theAnnActiveItem) : null
 			}
 		},
 		watch: {
@@ -758,6 +759,9 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			setIsListView(bool) {
+				this.isListView = !this.isListView
+			},
 			setTheActiveFilterPeriod() {
 				const today = new Date();
 				today.setDate(today.getDate() - this.theActiveFilterPeriodDays); // Add 30 days to the current date
@@ -773,11 +777,18 @@ $(document).one("trigger::vue_loaded", function () {
 					this.setIsCreateAnnouncementModal(true)
 				}
 			},
+			setTheActiveSeeMoreCase(item) {
+				this.theActiveSeeMoreCase = item
+			},
 			getisTheActiveCase(item) {
 				return this.theAnnActiveItem === item.v_id
 			},
 			setActiveItem(item) {
 				this.theActiveSeeMoreCase = null
+				if (item == null) {
+					this.theAnnActiveItem = null
+					return
+				}
 				if (this.theAnnActiveItem !== item.v_id) {
 					this.theAnnActiveItem = item.v_id
 				} else {
@@ -843,9 +854,10 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			setIsCreateAnnouncementModal(bool) {
 				if (bool) {
-					this.isCreateAnnouncementModal = true
+					this.dataIsCreateAnnouncementModal = true
 				} else {
-					this.isCreateAnnouncementModal = false
+					this.$emit('on_close_create_announcement_modal', false)
+					this.dataIsCreateAnnouncementModal = false
 				}
 			},
 			setIsCreateNewMaster(bool) {
@@ -1123,6 +1135,21 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		}
 	})
+	Vue.component('o-announcement-view-modal', {
+		template: '#o-announcement-view-modal-template',
+		props: {
+			announcement: {
+				default: () => { }
+			},
+			the_user_type: {
+				default: null
+			},
+			the_active_see_more_case: {
+				default: null
+			}
+		}
+	})
+
 	Vue.component('o-announcements-modal', {
 		template: '#o-announcements-modal-form-template',
 		props: {
@@ -2465,6 +2492,7 @@ $(document).one("trigger::vue_loaded", function () {
 	new Vue({
 		el: "#o-app",
 		data: {
+			isCreateAnnouncementModal: false,
 			announcements: [],
 			isShowOperationStatusErrorReports: true,
 			isShowNewOperationStatus: true,
@@ -3294,6 +3322,9 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			setIsCreateAnnouncementModal(bool) {
+				this.isCreateAnnouncementModal = bool
+			},
 			onEmitAnnouncements(payload) {
 				this.announcements = payload
 			},

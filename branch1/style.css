@@ -10828,7 +10828,6 @@ ul.tags-selector__dropdow__create {
 .o-ann__body__header__right {
     display: flex;
     align-items: center;
-    gap: 1rem;
 }
 
 .o-center {
@@ -10869,14 +10868,101 @@ ul.tags-selector__dropdow__create {
     gap: 1rem;
 }
 
-/*
-.o-ann__elements-list {
+.o-ann__elements-cards {
     position: relative;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1rem;
+    gap: 2rem;
 }
-*/
+
+.o-ann__elements-cards__card {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    background: #ffffff;
+    border-radius: 4px;
+    transition: transform 0.25s;
+    cursor: pointer;
+    position: relative;
+}
+
+
+.o-ann__elements-cards__card:hover {
+    transform: translateY(-4px);
+}
+
+.o-ann__elements-cards__card__header {
+    background: var(--fontColor);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    padding: 1rem;
+    color: #fff;
+    height: 146px;
+    text-align: center;
+}
+
+.o-ann__elements-cards__card__header__email {
+    background-color: #fff;
+    height: calc(130px - 1rem);
+    width: 60%;
+    margin: 16px auto 0;
+    border-radius: 4px 4px 0 0;
+}
+
+.o-ann__elements-cards__card__header__email__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0 10% !important;
+}
+
+.o-ann__elements-cards__card__header__email__list li {
+    background: #eee;
+    height: 3px;
+    border-radius: 2px;
+}
+
+.o-ann__elements-cards__card__header__email__list li:first-child {
+    height: 7px;
+    width: 60%;
+}
+
+.o-ann__elements-cards__card__body__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.o-ann__elements-cards__card__body__header .o-ann-card__status {
+    font-size: 11px;
+    margin-bottom: 0;
+}
+
+.o-ann__elements-cards__card__body__short-desc {
+    font-size: 13px;
+}
+
+.o-ann__elements-cards__card__body__header .o-date-tag {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 4px;
+    font-size: 11px;
+    margin-bottom: 0;
+    color: var(--grey);
+    font-weight: bold;
+}
+
+.o-ann__elements-cards__card__header__onid {
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    font-size: 10px;
+    color: #9da6af;
+}
+
+.o-ann__elements-cards__card__body {
+    padding: 1rem;
+}
 
 .o-ann__element {
     display: flex;
@@ -10885,6 +10971,15 @@ ul.tags-selector__dropdow__create {
     background: #ffffff;
     border-radius: 4px;
     transition: all 0.45s;
+    cursor: pointer;
+}
+
+.o-ann__element__body {
+    font-size: 13px;
+}
+
+.o-ann__element:hover {
+    transform: translateY(-4px);
 }
 
 .o-ann__element .o-cases__case_element__body__arrow .tio {
@@ -11050,9 +11145,7 @@ ul.tags-selector__dropdow__create {
 }
 
 .o-ann__see-more-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 2rem;
+    margin: 2rem 0;
 }
 
 .o-btn.o-btn--disabled {
@@ -11171,11 +11264,21 @@ ul.tags-selector__dropdow__create {
 }
 
 .o-ann__see-more__old-emails {
-    background: #eee;
-    padding: 3rem;
     display: flex;
     flex-direction: column;
     gap: 3rem;
+    position: relative;
+}
+
+.o-ann__see-more__old-emails::before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    top: -2rem;
+    left: 1.2rem;
+    bottom: 0;
+    background: #d8dee4;
 }
 
 .o-ann__see-more__old-emails .o-ann__email-container {
@@ -11183,41 +11286,32 @@ ul.tags-selector__dropdow__create {
 }
 
 .o-ann__email-container__header {
-    padding-top: 1.5rem;
     background: #fff;
     border-radius: 4px 4px 0 0;
 }
 
 .o-ann__email {
-    border: 1px solid #ccc;
+    border: 1px solid var(--borderColor);
     border-radius: 4px;
     position: relative;
+    background: #fff;
+}
+
+.o-ann__email__header {
+    background: #f9fafb;
+    border-bottom: 1px solid var(--borderColor);
+    padding: 0.5rem;
+    border-radius: 4px 4px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .o-ann__email__icon {
-    position: absolute;
-    top: calc(-31px / 2);
-    left: 6px;
-    background: #fff;
-    font-size: 24px;
-    display: -ms-flexbox;
+    font-size: 20px;
     display: flex;
-    -ms-flex-align: center;
     align-items: center;
-    padding: 2px 4px;
-    border-radius: 4px;
     gap: 0.5rem;
-    z-index: 1;
-}
-
-.o-ann__email__icon.o-ann__email__icon--right {
-    left: auto;
-    right: 1rem;
-    top: -10px;
-}
-
-.o-ann__see-more__old-emails .o-ann__email__icon {
-    font-size: 24px;
 }
 
 .o-ann__email__icon .tio {
@@ -11259,7 +11353,7 @@ ul.tags-selector__dropdow__create {
 
 .o-metrics__metric__icon {
     background: #f1f5f9;
-    color: #6d727c;
+    color: var(--grey);
     height: 50px;
     width: 50px;
     font-size: 1.5rem;
@@ -11505,4 +11599,86 @@ ul.tags-selector__dropdow__create {
     border-radius: 0 0 4px 4px;
     background: #fff;
     box-shadow: inset 0 0 0 0px #fff, inset 0 0 0 1px rgb(209 213 219 / 0%), 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+/* moving */
+.o-grid-cards-move {
+    transition: all 200ms ease-in-out 50ms;
+}
+
+/* appearing */
+.o-grid-cards-enter-active {
+    transition: all 400ms ease-out;
+}
+
+/* disappearing */
+.o-grid-cards-leave-active {
+    transition: all 100ms ease-in;
+    z-index: 0;
+}
+
+/* appear at / disappear to */
+.o-grid-cards-enter,
+.o-grid-cards-leave-to {
+    transform: scale(0.5) translateY(-10px);
+}
+
+.o-ann-view-button {
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    padding: 0;
+    font-size: 1.3rem;
+    color: var(--grey);
+    background: transparent;
+    border-radius: 4px;
+    font-weight: normal;
+    margin: 0;
+    border: 1px solid var(--borderColor);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.o-ann-view-button.o-ann-view-button--active {
+    border: 1px solid var(--primary);
+    background: aliceblue;
+}
+
+.marg-1-left {
+    margin-left: 1rem;
+}
+
+.o-ann__element__body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 1rem;
+}
+
+.o-ann__element__link {
+    margin-bottom: 0;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    line-height: 0;
+    gap: 0.25rem;
+}
+
+.o-ann__element__link>.tio {
+    font-size: 20px;
+}
+
+.o-ann__element__body__subject {
+    display: flex;
+    align-items: center;
+}
+
+.o-ann__element__body__subject h4 {
+    margin: 0 0 0 50px;
+}
+
+.marg-1-right {
+    margin-right: 1rem;
 }
