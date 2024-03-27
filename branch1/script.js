@@ -676,13 +676,12 @@ $(document).one("trigger::vue_loaded", function () {
 					return this.vAnnouncementsFilteredWithType
 				}
 				if (this.theActiveFilterPeriod.length === 2) {
-					const startDate = new Date(this.theActiveFilterPeriod[0]);
+					// const startDate = new Date(this.theActiveFilterPeriod[0]);
 					const endDate = new Date(this.theActiveFilterPeriod[1]);
-					console.log({ startDate, endDate })
 					return this.vAnnouncementsFilteredWithType.filter(itemCase => {
 						const createdTime = new Date(itemCase.createdTime);
 						// Check if createdTime is between or equal to the start and end dates.
-						return createdTime >= startDate && createdTime <= endDate;
+						return createdTime <= endDate;
 					});
 				} else {
 					// If the filter period is not set or invalid, return all filteredWithType items.
@@ -961,7 +960,6 @@ $(document).one("trigger::vue_loaded", function () {
 				})
 			},
 			onAddAnnouncements(arr) {
-				console.log('onAddAnnouncements', arr, this.announcements)
 				arr.forEach(obj => {
 					const idx = this.announcements.findIndex(announcement => announcement.onid === obj.onid && +announcement.version === +obj.version)
 					if (idx < 0) {
@@ -1698,7 +1696,6 @@ $(document).one("trigger::vue_loaded", function () {
 				this.attachmentToken = null;
 				const uploadedPanel = document.querySelector('.ppUPLOAD #uploadedPanel');
 				const initialLengthOfAttachedFiles = uploadedPanel ? uploadedPanel.children.length : 0;
-				console.log('createAnnouncement:initialLengthOfAttachedFiles')
 				if (initialLengthOfAttachedFiles > 0) {
 					clearJSONfields();
 					this.attachmentToken = Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2);
@@ -1724,7 +1721,6 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			proceedWithAnnouncement() {
-				console.log('proceedWithAnnouncement::')
 				const myHeaders = new Headers();
 				myHeaders.append("Content-Type", "application/json");
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
@@ -2061,7 +2057,6 @@ $(document).one("trigger::vue_loaded", function () {
 				if (masterTemp) {
 					this.theEmailHTML = masterTemp['html']
 				}
-				console.log('this.edit_announcement', this.edit_announcement)
 				// Placeholder history
 				let newHistPlaceholder = {}
 				const currentHist = this.edit_announcement['placeholder_hist']
