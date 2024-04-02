@@ -2126,6 +2126,7 @@
                         <div class="o-ann__elements-cards__card__body">
                             <div class="o-ann__elements-cards__card__body__header">
                                 <div class="o-date-tag hint--top" :aria-label="item.v_createTimeFormatted">{{ item.v_timeFromNow }}</div>
+                                <div class="o-ann-card__status o-pill">{{ item.type}} </div>
                                 <div class="o-ann-card__status o-pill">{{ item.status }} </div>
                             </div>
                             <h4>{{item.subject}}</h4>
@@ -2153,7 +2154,6 @@
                     <div class="o-ann__element__body">
                     <div class="o-ann__element__body__subject">
                         <img :src="item.v_logo" class="o-ann__element__sender__img"/>
-                        <p>//{{item.type}}</p>
                         <h4>{{item.subject}}</h4>
                     </div>
                         <p class="o-ann__element__link">Se mere <i class="tio">chevron_right</i></p>
