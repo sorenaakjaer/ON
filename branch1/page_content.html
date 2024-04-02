@@ -2045,6 +2045,16 @@
                             <input type="range" v-model="theActiveFilterPeriodDays" @change="setTheActiveFilterPeriod" min="1" max="90" value="30" class="o-slider">
                         </div>
                     </div>
+                    <div class="o-slider__wrapper" v-if="active_area === 'OperationsStatus'">
+                        <label class="pp-label">
+                            <template v-if="theActiveFilterPeriodDays > 1">Viser udmelding for de seneste <span>{{ theActiveFilterPeriodDays }}</span> dage</template>
+                            <template v-else>Viser udmelding for det seneste døgn</template>
+                        </label>
+                        <div class="o-slider__container">
+                            <div class="o-slider-indicator" :style="{'width': ((300 / 90) * theActiveFilterPeriodDays) + 'px'}"></div>
+                            <input type="range" v-model="theActiveFilterPeriodDays" @change="setTheActiveFilterPeriod" min="1" max="90" value="30" class="o-slider">
+                        </div>
+                    </div>
                     <o-multi-select :items="filterStatuses" :selected_items="theActiveFilterStatuses"
                     @toggle_item="toggleFilterStatus" select_title="Vælg status" v-if="active_area === 'OperationsStatus'"></o-multi-select>
                     <o-multi-select :items="filterTypes" :selected_items="theActiveFilterTypes" v-if="active_area === 'OperationsStatus'"
@@ -2233,11 +2243,11 @@
                                 <div class="o-ann__card">
                                     <div class="o-ann__card__highlighted" v-if="!formTypeIsMaster">
                                         <div class="o-group">
-                                            <label class="o-label">Vælg et template</label>
+                                            <label class="o-label">Vælg en skabelon</label>
                                                 <div class="o-group__sub">
                                                     <select class="o-select" 
                                                     @change="setMasterTemplate($event.target.value)" v-model="activeMasterTemplateId">
-                                                        <option disabled value="">Vælg et template</option>
+                                                        <option disabled value="">Vælg en skabelon</option>
                                                         <option v-for="masterTemplate in sortedMasterTemplates" 
                                                         :value="masterTemplate.template_id">
                                                         {{ masterTemplate.name }}
