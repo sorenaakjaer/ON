@@ -418,7 +418,7 @@
                     :class="{'vue-subheader-filters__flex': isNewDesignActive}" v-cloak
                     v-if="!isViewRoles && (!isViewNewsOrOperationStatus || isShowOperationStatusErrorReports)">
                     <!-- START 17-12-23 -->
-                    <template v-if="isNewDesignActive && (isCases || isShowOperationStatusErrorReports)">
+                    <template v-if="isNewDesignActive && (isCases || isShowOperationStatusErrorReports || isShowNewsCases)">
                         <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__space">
                             <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__left">
                                 <o-multi-select :items="allCaseCategories" :selected_items="theActiveFilterCategories"
