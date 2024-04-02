@@ -1672,7 +1672,7 @@ $(document).one("trigger::vue_loaded", function () {
 				myHeaders.append("Content-Type", "application/json");
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
 
-				console.log('newMasterHTMLSanitized',newMasterHTMLSanitized)
+				console.log('newMasterHTMLSanitized',this.newMasterHTMLSanitized)
 
 				let dbObj = {
 					template_id: null,
