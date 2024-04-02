@@ -579,6 +579,7 @@ $(document).one("trigger::vue_loaded", function () {
 				isNewMasterModal: false,
 				searchQuery: '',
 				debounce: null,
+				theActiveFilterFrom: [],				
 				theActiveFilterStatuses: [],
 				theActiveFilterTypes: [],
 				theActiveFilterPeriod: [new Date(), new Date()],
@@ -699,6 +700,19 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 				}
 			},
+			vAnnouncementsFilteredWithFrom() {
+				if (this.theActiveFilterFrom.length < 1) {
+					return this.vAnnouncementsFilteredWithPeriod;
+				} else {
+					return this.vAnnouncementsFilteredWithPeriod.filter(itemCase => {
+						const hasNoSelectedFrom = this.theActiveFilterFrom.includes('v_no_selected');
+						if (hasNoSelectedFrom && (!itemCase.from || itemCase.from === '')) {
+							return true;
+						}
+						return this.theActiveFilterFrom.includes(itemCase.from);
+					})
+				}
+			},			
 			searchedAnnouncements() {
 				if (!this.searchQuery.trim()) {
 					return this.vAnnouncementsFilteredWithStatus;
@@ -710,6 +724,20 @@ $(document).one("trigger::vue_loaded", function () {
 					});
 				});
 			},
+			filterFrom() {
+				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden fra', v_sort: true }]
+				this.activeAnnouncements.forEach(ann => {
+					const annFrom = ann['from']
+					if (annFrom) {
+						const idx = uniqueTags.findIndex(allTag => allTag.value === annFrom)
+						if (idx < 0) {
+							const tag = { value: annFrom, label: annFrom}
+							uniqueTags.push(tag)
+						}
+					}
+				})
+				return uniqueTags;
+			},			
 			filterStatuses() {
 				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden status', v_sort: true }]
 				this.activeAnnouncements.forEach(ann => {
@@ -792,6 +820,9 @@ $(document).one("trigger::vue_loaded", function () {
 					this.theAnnActiveItem = null
 				}
 			},
+			toggleFilterFrom(item) {
+				this.toggleFilter('theActiveFilterFrom', item);
+			},			
 			toggleFilterStatus(item) {
 				this.toggleFilter('theActiveFilterStatuses', item);
 			},
