@@ -2568,6 +2568,8 @@ $(document).one("trigger::vue_loaded", function () {
 		data: {
 			isCreateAnnouncementModal: false,
 			announcements: [],
+			isShowNewsCases: true,
+			isShowNews: true,			
 			isShowOperationStatusErrorReports: true,
 			isShowNewOperationStatus: true,
 			toast: {
@@ -2891,6 +2893,9 @@ $(document).one("trigger::vue_loaded", function () {
 			isViewOperationStatus() {
 				return this.activeCategory == 'OperationsStatus'
 			},
+			isViewNews() {
+				return this.activeCategory == 'News'
+			},			
 			isViewNewsOrOperationStatus() {
 				return this.activeCategory == 'OperationsStatus' || this.activeCategory == 'News'
 			},
@@ -2903,7 +2908,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			/* START 17-12-23 */
 			isAnyFiltersActive() {
-				return this.theActiveFilterTags.length > 0 || this.theActiveFilterGroups.length > 0 || this.theActiveFilterStatus.length > 0 || this.activeType || (this.theActiveFilterCategories.length > 0 && !this.isShowOperationStatusErrorReports)
+				return this.theActiveFilterTags.length > 0 || this.theActiveFilterGroups.length > 0 || this.theActiveFilterStatus.length > 0 || this.activeType || (this.theActiveFilterCategories.length > 0 && !this.isShowOperationStatusErrorReports) || (this.theActiveFilterCategories.length > 0 && !this.isShowNewsCases)
 			},
 			isUserOpennetOrSP() {
 				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet']
@@ -3066,10 +3071,22 @@ $(document).one("trigger::vue_loaded", function () {
 				const errorIncidentFilters = ['Fremrykning']
 				return allIncidentCases.filter(itemCase => errorIncidentFilters.indexOf(itemCase.filter_category) > -1)
 			},
+			NewsCases() {
+				// Kun return når begge er loaded
+				if (this.isErrorReportsLoading) {
+					return []
+				}
+				const allIncidentCases = this.casesOpen.concat(this.casesClosed)
+				const NewsCasesFilters = ['Igangværende ordre']
+				return allIncidentCases.filter(itemCase => NewsCasesFilters.indexOf(itemCase.filter_category) > -1)
+			},			
 			casesFiltered2() {
 				if (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) {
 					return this.errorReports
 				}
+				if (this.activeCategory == 'News' && this.isShowNewsCases) {
+					return this.NewsCases
+				}				
 				if (this.theActiveFilter === "active") {
 					return this.casesOpen
 				} else {
@@ -3109,7 +3126,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			caseFilteredWithCategories() {
-				if (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) {
+				if (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) || (this.activeCategory == 'News' && this.isShowNewsCases) {
 					return this.caseFilteredWithStatus
 				}
 				if (this.theActiveFilterCategories.length < 1) {
@@ -3215,7 +3232,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return "" !== this.activeCategory && "roles" !== this.activeCategory && "all_cases" !== this.activeCategory && "my_cases" !== this.activeCategory && "end_customer_pricing_config" !== this.activeCategory && "end_customer_orders" !== this.activeCategory
 			},
 			isCases() {
-				return "all_cases" == this.activeCategory || "my_cases" == this.activeCategory || (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports)
+				return "all_cases" == this.activeCategory || "my_cases" == this.activeCategory || (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) || (this.activeCategory == 'News' && this.isShowNewsCases) 
 			},
 			allCategories() {
 				let e = [];
@@ -3409,6 +3426,13 @@ $(document).one("trigger::vue_loaded", function () {
 					this.isShowOperationStatusErrorReports = false
 				}
 			},
+			setIsShowNewsCases(bool) {
+				if (bool) {
+					this.isShowNewsCases = true
+				} else {
+					this.isShowNewsCases = false
+				}
+			},			
 			showToast(message) {
 				this.toast.message = message;
 				this.toast.visible = true;
@@ -4010,6 +4034,7 @@ $(document).one("trigger::vue_loaded", function () {
 					$(".js-o-cases__container").removeClass("o-cases__container--loading"), $(".o-page").removeClass("o-page--all-cases"), $(".o-page").hasClass("o-page--docs") || $(".o-page").addClass("o-page--docs");
 					var s = "";
 					this.setIsShowOperationStatusErrorReports(false)
+					this.setIsShowNewsCases(false)
 					switch (e) {
 						case "my_cases":
 							s = "Hjem / Mine sager";
