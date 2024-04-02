@@ -231,6 +231,24 @@
                     </div>
                 </div>
             </div>
+            <div class="o-body__subheader" v-if="isViewNews">
+                <div class="o-wrapper">
+                    <div class="o-filters">
+                        <div class="o-filters__filter vue-filter-level2"
+                            :class="{'o-filters__filter--active': !isShowOperationStatusErrorReports}"
+                            @click="setIsShowOperationStatusErrorReports(false)">
+                            Nyheder
+                        </div>
+                        <div class="o-filters__filter vue-filter-level2"
+                            :class="{'o-filters__filter--active': isShowOperationStatusErrorReports}"
+                            @click="setIsShowOperationStatusErrorReports(true)">
+                            Spørgsmål (Sager)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <o-announcements v-if="!isShowOperationStatusErrorReports" :the_user="theUser" :the_user_type="theUserType"
                 :prop_is_create_announcement_modal="isCreateAnnouncementModal" :active_area="activeCategory"
                 @emit_announcements="onEmitAnnouncements" @on_copy="showToast($event)"
@@ -2044,7 +2062,7 @@
                         @toggle_item="toggleFilterTypes" select_title="Vælg Type"></o-multi-select>
 
                         <o-multi-select :items="filterFrom" :selected_items="theActiveFilterFrom"
-                        @toggle_item="toggleFilterFrom" select_title="Vælg status" v-if="active_area === 'News'"></o-multi-select>                    
+                        @toggle_item="toggleFilterFrom" select_title="Vælg fra" v-if="active_area === 'News'"></o-multi-select>                    
                         <o-multi-select :items="filterStatuses" :selected_items="theActiveFilterStatuses"
                         @toggle_item="toggleFilterStatus" select_title="Vælg status" v-if="active_area === 'News'"></o-multi-select>
                         <o-multi-select :items="filterTypes" :selected_items="theActiveFilterTypes" v-if="active_area === 'News'"
