@@ -2085,7 +2085,7 @@
                         <div class="o-ann__elements-cards__card__header">
                             <div class="pp-pill--unread" v-if="item.unread && item.unread != 'false'">Ulæst</div>
                             <label class="o-ann__elements-cards__card__header__onid">
-                                ONID: {{ item.onid }} ({{ item.version }}. version) 
+                                ONID: {{ item.onid }} ({{ item.version }}. udgave) 
                             </label>
                             <div class="o-ann__elements-cards__card__header__email">
                                 <img :src="item.v_logo" class="o-ann__element__sender__img"/>
@@ -2115,10 +2115,10 @@
                             <label class="pp-label">{{item.v_timeFromNow}} ({{item.v_createTimeFormatted}})</label>
                             <div class="pp-pill--unread" v-if="item.unread && item.unread != 'false'">Ulæst</div>
                         </div>
-                        <label class="pp-label" v-if="item.is_earlier_version">{{ item.version }}. version</label>
+                        <label class="pp-label" v-if="item.is_earlier_version">{{ item.version }}. udgave</label>
                         <label class="pp-label">
                             <div class="o-pill marg-1-right">{{ item.status }} </div>
-                            ONID: {{ item.onid }} ({{ item.version }}. version) 
+                            ONID: {{ item.onid }} ({{ item.version }}. udgave) 
                         </label>
                     </div>
                     <div class="o-ann__element__body">
@@ -2192,17 +2192,17 @@
                 <h4>ONID: {{ announcement.onid }}</h4>
             </div>
             <div class="o-modal__header__right">
-                <button class="o-btn o-btn--primary o-btn--small" @click.stop="$emit('setEditAnnouncement', announcement)" v-if="the_user_type === 'IO' || the_user_type === 'ON'">Redigèr/ny version</button>
+                <button class="o-btn o-btn--primary o-btn--small" @click.stop="$emit('setEditAnnouncement', announcement)" v-if="the_user_type === 'IO' || the_user_type === 'ON'">Redigèr/ny udgave</button>
             </div>
         </div>
         <div class="o-modal__body">
             <o-email :email="announcement"></o-email>
             <div v-if="announcement.v_earlierVersions.length > 0">
                 <div class="o-ann__see-more-container" v-if="the_active_see_more_case !== announcement.onid">
-                    <button class="o-btn o-btn--small" @click.stop="$emit('setTheActiveSeeMoreCase', announcement.onid)"><i class="tio">chevron_down</i> Se tidligere emails</button>
+                    <button class="o-btn o-btn--small" @click.stop="$emit('setTheActiveSeeMoreCase', announcement.onid)"><i class="tio">chevron_down</i> Se tidligere udgaver</button>
                 </div>
                 <div class="o-ann__see-more-container" v-else>
-                    <button class="o-btn o-btn--small" @click.stop="$emit('setTheActiveSeeMoreCase', null)"><i class="tio">chevron_up</i>Skjul tidligere emails</button>
+                    <button class="o-btn o-btn--small" @click.stop="$emit('setTheActiveSeeMoreCase', null)"><i class="tio">chevron_up</i>Skjul tidligere udgaver</button>
                 </div>
                 <div class="o-ann__see-more__old-emails" v-if="the_active_see_more_case === announcement.onid">
                     <o-email :email="email" :is_earlier_version="true" v-for="email in announcement.v_earlierVersions" :key="email.v_id" v-if="email.html && email.html.length > 0"></o-email>
@@ -2222,8 +2222,8 @@
                         <h4>{{ theFormTitle }}</h4>
                     </div>
                     <div class="o-modal__header__right">
-                        <button v-if="formTypeIsMaster && edit_master_template" class="o-btn o-btn--small" @click="setIsDeleteConfirmation(true)">Slet template</button>
-                        <button class="o-btn o-btn--small o-btn--primary" :class="[{'o-btn--loading': isSubmitting}, {'o-btn--disabled': !isSaveButtonValid}]" @click="onSubmit"><template v-if="formTypeIsMaster && !edit_master_template">Gem template</template><template v-if="formTypeIsMaster && edit_master_template">Opdater template</template><template v-if="!formTypeIsMaster && this.active_area === 'News'">Send nyhed</template><template v-if="!formTypeIsMaster && this.active_area !== 'News'">Send ny udmelding</template></button>
+                        <button v-if="formTypeIsMaster && edit_master_template" class="o-btn o-btn--small" @click="setIsDeleteConfirmation(true)">Slet skabelon</button>
+                        <button class="o-btn o-btn--small o-btn--primary" :class="[{'o-btn--loading': isSubmitting}, {'o-btn--disabled': !isSaveButtonValid}]" @click="onSubmit"><template v-if="formTypeIsMaster && !edit_master_template">Gem skabelon</template><template v-if="formTypeIsMaster && edit_master_template">Opdater template</template><template v-if="!formTypeIsMaster && this.active_area === 'News'">Send nyhed</template><template v-if="!formTypeIsMaster && this.active_area !== 'News'">Send ny udmelding</template></button>
                     </div>
                 </div>
                 <div class="o-modal__body">
@@ -2245,7 +2245,7 @@
                                                     </select>
                                                     <a @click.prevent="setEditMasterTemplate(activeMasterTemplateId)" v-if="activeMasterTemplateId">Redigér</a>
                                                 </div>
-                                                <a @click.prevent="setEditMasterTemplate(null)" id="o_create_new_master_link">Opret nyt template</a>
+                                                <a @click.prevent="setEditMasterTemplate(null)" id="o_create_new_master_link">Opret ny skabelon</a>
                                         </div>
                                     </div>
                                 </div>
