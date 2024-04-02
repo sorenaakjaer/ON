@@ -41,7 +41,7 @@ jobs:
         
         # If no tag found, start with 3.4.4 so next is 3.4.5
         if [[ -z "$LATEST_TAG" ]]; then
-          LATEST_TAG="3.4.4"
+          LATEST_TAG="3.4.6"
         fi
         
         # Increment the patch version
