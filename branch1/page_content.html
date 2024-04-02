@@ -2034,53 +2034,72 @@
     <div class="o-ann">
         <div class="o-ann__body">
             <div class="o-ann__body__header o-wrapper">
-                <div class="o-ann__body__header__left">
-                    <div class="o-slider__wrapper" v-if="active_area === 'News'">
-                        <label class="pp-label">
-                            <template v-if="theActiveFilterPeriodDays > 1">Viser nyheder for de seneste <span>{{ theActiveFilterPeriodDays }}</span> dage</template>
-                            <template v-else>Viser nyheder for det seneste døgn</template>
-                        </label>
-                        <div class="o-slider__container">
-                            <div class="o-slider-indicator" :style="{'width': ((300 / 90) * theActiveFilterPeriodDays) + 'px'}"></div>
-                            <input type="range" v-model="theActiveFilterPeriodDays" @change="setTheActiveFilterPeriod" min="1" max="90" value="30" class="o-slider">
-                        </div>
+                <div class="o-ann_body_header_row">
+                    <div class="o-ann__body__header__left">
+                        <o-multi-select :items="filterFrom" :selected_items="theActiveFilterFrom"
+                        @toggle_item="toggleFilterFrom" select_title="Vælg status" v-if="active_area === 'OperationsStatus'"></o-multi-select>                    
+                        <o-multi-select :items="filterStatuses" :selected_items="theActiveFilterStatuses"
+                        @toggle_item="toggleFilterStatus" select_title="Vælg status" v-if="active_area === 'OperationsStatus'"></o-multi-select>
+                        <o-multi-select :items="filterTypes" :selected_items="theActiveFilterTypes" v-if="active_area === 'OperationsStatus'"
+                        @toggle_item="toggleFilterTypes" select_title="Vælg Type"></o-multi-select>
+
+                        <o-multi-select :items="filterFrom" :selected_items="theActiveFilterFrom"
+                        @toggle_item="toggleFilterFrom" select_title="Vælg status" v-if="active_area === 'News'"></o-multi-select>                    
+                        <o-multi-select :items="filterStatuses" :selected_items="theActiveFilterStatuses"
+                        @toggle_item="toggleFilterStatus" select_title="Vælg status" v-if="active_area === 'News'"></o-multi-select>
+                        <o-multi-select :items="filterTypes" :selected_items="theActiveFilterTypes" v-if="active_area === 'News'"
+                        @toggle_item="toggleFilterTypes" select_title="Vælg Type"></o-multi-select>
                     </div>
-                    <div class="o-slider__wrapper" v-if="active_area === 'OperationsStatus'">
-                        <label class="pp-label">
-                            <template v-if="theActiveFilterPeriodDays > 1">Viser udmelding for de seneste <span>{{ theActiveFilterPeriodDays }}</span> dage</template>
-                            <template v-else>Viser udmelding for det seneste døgn</template>
-                        </label>
-                        <div class="o-slider__container">
-                            <div class="o-slider-indicator" :style="{'width': ((300 / 90) * theActiveFilterPeriodDays) + 'px'}"></div>
-                            <input type="range" v-model="theActiveFilterPeriodDays" @change="setTheActiveFilterPeriod" min="1" max="90" value="30" class="o-slider">
+                    <div class="o-ann__body__header__right">
+                        <div class="o-search-group">
+                            <div class="o-icon">
+                                <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24">
+                                    <title>search</title>
+                                    <path
+                                        d="M20.85,19.44l-4-4a2.44,2.44,0,0,0-.43-.35l-1-.69h0A7,7,0,1,0,10,17a7,7,0,0,0,4.37-1.53h0l.75,1a2.6,2.6,0,0,0,.3.36l4,4a.5.5,0,0,0,.71,0l.7-.7A.5.5,0,0,0,20.85,19.44ZM10,15a5,5,0,1,1,5-5A5,5,0,0,1,10,15Z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <input type="search" ref="v_ann_search_query" @input="debounceSearch"
+                                class="o-search-cases" placeholder="Søg.."
+                                :class="{'o-search-cases--active': searchQuery.length > 0}">
+                            <div class="o-search-group__clear" @click="clearSearchQuery"><i
+                                    class="tio">clear_circle</i>
+                            </div>
                         </div>
+                        <button class="o-ann-view-button hint--top marg-1-left" :class="{'o-ann-view-button--active': !isListView}" aria-label="Vis som kort" @click="setIsListView(false)"><i class="tio">grid</i></button>
+                        <button class="o-ann-view-button hint--top" :class="{'o-ann-view-button--active': isListView}" aria-label="Vis som liste" @click="setIsListView(true)"><i class="tio">format_bullets</i></button>
                     </div>
-                    <o-multi-select :items="filterStatuses" :selected_items="theActiveFilterStatuses"
-                    @toggle_item="toggleFilterStatus" select_title="Vælg status" v-if="active_area === 'OperationsStatus'"></o-multi-select>
-                    <o-multi-select :items="filterTypes" :selected_items="theActiveFilterTypes" v-if="active_area === 'OperationsStatus'"
-                    @toggle_item="toggleFilterTypes" select_title="Vælg Type"></o-multi-select>
                 </div>
-                <div class="o-ann__body__header__right">
-                    <div class="o-search-group">
-                        <div class="o-icon">
-                            <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24">
-                                <title>search</title>
-                                <path
-                                    d="M20.85,19.44l-4-4a2.44,2.44,0,0,0-.43-.35l-1-.69h0A7,7,0,1,0,10,17a7,7,0,0,0,4.37-1.53h0l.75,1a2.6,2.6,0,0,0,.3.36l4,4a.5.5,0,0,0,.71,0l.7-.7A.5.5,0,0,0,20.85,19.44ZM10,15a5,5,0,1,1,5-5A5,5,0,0,1,10,15Z">
-                                </path>
-                            </svg>
+                <div class="o-ann_body_header_row">
+                    <div class="o-ann__body__header__center">                    
+                        <div class="o-slider__wrapper" v-if="active_area === 'News'">
+                            <label class="pp-label">
+                                <template v-if="theActiveFilterPeriodDays > 1">Viser nyheder for de seneste <span>{{ theActiveFilterPeriodDays }}</span> dage</template>
+                                <template v-else>Viser nyheder for det seneste døgn</template>
+                            </label>
+                            <div class="o-slider__container">
+                                <div class="o-slider-indicator" :style="{'width': ((300 / 90) * theActiveFilterPeriodDays) + 'px'}"></div>
+                                <input type="range" v-model="theActiveFilterPeriodDays" @change="setTheActiveFilterPeriod" min="1" max="90" value="30" class="o-slider">
+                            </div>
                         </div>
-                        <input type="search" ref="v_ann_search_query" @input="debounceSearch"
-                            class="o-search-cases" placeholder="Søg.."
-                            :class="{'o-search-cases--active': searchQuery.length > 0}">
-                        <div class="o-search-group__clear" @click="clearSearchQuery"><i
-                                class="tio">clear_circle</i>
-                        </div>
-                    </div>
-                    <button class="o-ann-view-button hint--top marg-1-left" :class="{'o-ann-view-button--active': !isListView}" aria-label="Vis som kort" @click="setIsListView(false)"><i class="tio">grid</i></button>
-                    <button class="o-ann-view-button hint--top" :class="{'o-ann-view-button--active': isListView}" aria-label="Vis som liste" @click="setIsListView(true)"><i class="tio">format_bullets</i></button>
-                </div>
+                        <div class="o-slider__wrapper" v-if="active_area === 'OperationsStatus'">
+                            <label class="pp-label">
+                                <template v-if="theActiveFilterPeriodDays > 1">Viser udmelding for de seneste <span>{{ theActiveFilterPeriodDays }}</span> dage</template>
+                                <template v-else>Viser udmelding for det seneste døgn</template>
+                            </label>
+                            <div class="o-slider__container">
+                                <div class="o-slider-indicator" :style="{'width': ((300 / 90) * theActiveFilterPeriodDays) + 'px'}"></div>
+                                <input type="range" v-model="theActiveFilterPeriodDays" @change="setTheActiveFilterPeriod" min="1" max="90" value="30" class="o-slider">
+                            </div>
+                        </div>       
+                    </div>    
+                    <div class="o-ann__body__header__right">
+                        <p class="o-ann__right-items" v-if="active_area === 'News'">Nyheder i listen: XXX </p>  
+                        <p class="o-ann__right-items" v-if="active_area === 'OperationsStatus'">Udmeldinger i listen: XXX </p>  
+                    </div>                            
+                <div>
             </div>
             <h4 class="text-explainer o-center" v-if="!isLoadingAnnouncements && searchedAnnouncements.length === 0">Ingen <template v-if="active_area === 'News'">nyheder</template><template v-else>udmeldinger</template> matcher din søgning</h4>
             <div class="o-spinner-container" v-if="isLoadingAnnouncements">
