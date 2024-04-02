@@ -4016,7 +4016,7 @@ $(document).one("trigger::vue_loaded", function () {
 							s = "Slutkundeordre"
 							break
 						case "OperationsStatus":
-							s = "Operation status"
+							s = "Driftstatus"
 							break
 						case "News":
 							s = "Nyheder"
