@@ -2037,7 +2037,7 @@
                 <div class="o-ann_body_header_row">
                     <div class="o-ann__body__header__left">
                         <o-multi-select :items="filterFrom" :selected_items="theActiveFilterFrom"
-                        @toggle_item="toggleFilterFrom" select_title="Vælg status" v-if="active_area === 'OperationsStatus'"></o-multi-select>                    
+                        @toggle_item="toggleFilterFrom" select_title="Vælg fra" v-if="active_area === 'OperationsStatus'"></o-multi-select>                    
                         <o-multi-select :items="filterStatuses" :selected_items="theActiveFilterStatuses"
                         @toggle_item="toggleFilterStatus" select_title="Vælg status" v-if="active_area === 'OperationsStatus'"></o-multi-select>
                         <o-multi-select :items="filterTypes" :selected_items="theActiveFilterTypes" v-if="active_area === 'OperationsStatus'"
@@ -2096,8 +2096,8 @@
                         </div>       
                     </div>    
                     <div class="o-ann__body__header__right">
-                        <p class="o-ann__right-items" v-if="active_area === 'News'">Nyheder i listen: XXX </p>  
-                        <p class="o-ann__right-items" v-if="active_area === 'OperationsStatus'">Udmeldinger i listen: XXX </p>  
+                        <p class="pp-label" v-if="active_area === 'News'">Nyheder i listen: XXX </p>  
+                        <p class="pp-label" v-if="active_area === 'OperationsStatus'">Udmeldinger i listen: XXX </p>  
                     </div>                            
                 </div>
             </div>
