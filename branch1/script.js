@@ -3126,7 +3126,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			caseFilteredWithCategories() {
-				if (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) || (this.activeCategory == 'News' && this.isShowNewsCases) {
+				if (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports || this.activeCategory == 'News' && this.isShowNewsCases) {
 					return this.caseFilteredWithStatus
 				}
 				if (this.theActiveFilterCategories.length < 1) {
