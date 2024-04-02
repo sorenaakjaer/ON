@@ -10820,7 +10820,7 @@ ul.tags-selector__dropdow__create {
 
 .o-ann__body__header {
     padding: 2rem;
-    display: flex;
+   /* display: flex; */
     align-items: center;
     justify-content: space-between;
 }
@@ -11697,4 +11697,9 @@ ul.tags-selector__dropdow__create {
     left: 1rem;
     top: 0.45rem;
     padding: 2px 4px;
+}
+
+.o-ann_body_header_row {
+    display: flex;
+    justify-content: space-between;
 }
