@@ -1672,6 +1672,8 @@ $(document).one("trigger::vue_loaded", function () {
 				myHeaders.append("Content-Type", "application/json");
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
 
+				console.log('newMasterHTMLSanitized',newMasterHTMLSanitized)
+
 				let dbObj = {
 					template_id: null,
 					name: this.newMasterTitle,
@@ -1682,7 +1684,7 @@ $(document).one("trigger::vue_loaded", function () {
 					receivers: Object.keys(this.selectedReceivers).map(key => key).join(';'),
 					send_notifications: this.isSendNotifications,
 					attachments: null,
-					html: htmlEncode(this.newMasterHTMLSanitized)
+					html: this.newMasterHTMLSanitized
 				};
 				if (this.edit_master_template) {
 					dbObj['template_id'] = this.edit_master_template
