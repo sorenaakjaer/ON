@@ -89,7 +89,7 @@ $(document).one("trigger::vue_loaded", function () {
 		computed: {
 			ticketsVProps() {
 				const valuesToShow = ['creationDate',
-					'address',					
+					'address',
 					'source',
 					'classification',
 					'severity',
@@ -114,6 +114,12 @@ $(document).one("trigger::vue_loaded", function () {
 					'last_dc_note'
 				];
 				return this.tickets.map(ticket => {
+					const v_notes = ticket.notes ? ticket.notes
+						.sort((a, b) => this.parseDate(b.timestamp) - this.parseDate(a.timestamp)) // Sort notes by timestamp, newest first
+						.map(note => ({
+							...note,
+							v_timestamp: note.timestamp
+						})) : []
 					const v_props = valuesToShow.reduce((props, propName) => {
 						const propPath = propName.split('.');
 						let value = ticket;
@@ -136,14 +142,10 @@ $(document).one("trigger::vue_loaded", function () {
 						...ticket,
 						v_props: v_props,
 						v_lastUpdated: ticket.lastUpdated,
-						v_notes: ticket.notes ? ticket.notes
-							.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)) // Sort notes by timestamp, newest first
-							.map(note => ({
-								...note,
-								v_timestamp: note.timestamp
-							})) : []
+						v_notes: v_notes,
+						v_latest_note: v_notes.length > 0 ? this.parseDate(v_notes[0]['timestamp']) : new Date()
 					};
-				});
+				}).sort((a, b) => b.v_latest_note - a.v_latest_note);
 			},
 			filteredTickets() {
 				if (!this.search_query.trim()) {
@@ -169,6 +171,14 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			parseDate(dateStr) { // this.parseDate('21-02-2024 13:36');
+				const [datePart, timePart] = dateStr.split(' ');
+				const [day, month, year] = datePart.split('-').map(num => parseInt(num, 10));
+				const [hours, minutes] = timePart.split(':').map(num => parseInt(num, 10));
+				const date = new Date(year, month - 1, day, hours, minutes);
+
+				return date;
+			},
 			formatDateTime(dateString) {
 				let locale = 'en-US', hour12 = true;
 				const i18nTime = this.locale === 'da' ? 'kl.' : 'at';
@@ -485,17 +495,17 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: 'follow'
 				};
-				
+
 				// Function to convert dd-mm-yyyy hh24:mi to a Date object
 				function parseDateString(dateString) {
-				    const parts = dateString.split(' ');
-				    const dateParts = parts[0].split('-');
-				    const timeParts = parts[1].split(':');
-				
-				    // Note: month is 0-based, hence -1
-				    return new Date(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0], timeParts[1]);
+					const parts = dateString.split(' ');
+					const dateParts = parts[0].split('-');
+					const timeParts = parts[1].split(':');
+
+					// Note: month is 0-based, hence -1
+					return new Date(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0], timeParts[1]);
 				}
-								
+
 				//console.log('Fetching ticket details from API for days-filter:', this.theSelectedFilter, 'with user key:', this.userKey);
 				fetch('https://dev-portal.opennet.dk/ppServices/api/dc/getticketsbasedonnotes/' + this.theSelectedFilter, requestOptions)
 					.then(response => {
@@ -505,19 +515,19 @@ $(document).one("trigger::vue_loaded", function () {
 						return response.json();
 					})
 					//.then(result => {
-						//console.log('success', result);
+					//console.log('success', result);
 
-					    .then(result => {
-					        // Assuming result is the array of tickets and each ticket has a last_dc_note property
-					        const sortedTickets = result.sort((a, b) => {
-					            // Convert last_dc_note to Date objects for comparison
-					             const dateA = parseDateString(a.last_dc_note);
-            					     const dateB = parseDateString(b.last_dc_note);
-					            return dateB - dateA; // Sort in descending order
-					        });
-					        this.earlierTickets = sortedTickets;
+					.then(result => {
+						// Assuming result is the array of tickets and each ticket has a last_dc_note property
+						const sortedTickets = result.sort((a, b) => {
+							// Convert last_dc_note to Date objects for comparison
+							const dateA = parseDateString(a.last_dc_note);
+							const dateB = parseDateString(b.last_dc_note);
+							return dateB - dateA; // Sort in descending order
+						});
+						this.earlierTickets = sortedTickets;
 
-						
+
 						//this.earlierTickets = result;
 					})
 					.catch(error => {
