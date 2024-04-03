@@ -142,7 +142,8 @@
                 </li>
                 <!-- START OpenNet OpenAnalytics  -->
                 <li @click="setActivecCategory('OpenAnalytics')"
-                    :class="{'li--active': activeCategory==='OpenAnalytics'}" class="menu_openanalytics"  v-if="showOpenAnalytics">
+                    :class="{'li--active': activeCategory==='OpenAnalytics'}" class="menu_openanalytics"
+                    v-if="showOpenAnalytics">
                     <div>
                         <h4>OpenAnalytics</h4>
                         <p>Se dynamiske rapporter og hent filer</p>
@@ -278,18 +279,18 @@
                         </template>
                         <template v-if="isDocs" v-cloak>
                             <div class="o-filters__filter vue-filter-level2" v-if="activeCategory!='OpenAnalytics'"
-                                 :class="{'o-filters__filter--active': theActiveFilter==='active'}"
-                                 @click="setTheActiveFilter('active')">
+                                :class="{'o-filters__filter--active': theActiveFilter==='active'}"
+                                @click="setTheActiveFilter('active')">
                                 <span>Aktive</span>
                                 <div class="o-badge" :class="{'o-badge--loading': isOpenDocsLoading}">
                                     {{itemsActiveFromCategory.length}}
                                 </div>
                             </div>
                             <div :class="[{'hint--top': isClosedDocsLoading},{'pointer-not-allowed': isClosedDocsLoading}]"
-                                 v-if="activeCategory!='OpenAnalytics'" aria-label="Tidligere indlæses stadig">
+                                v-if="activeCategory!='OpenAnalytics'" aria-label="Tidligere indlæses stadig">
                                 <div class="o-filters__filter vue-filter-level2"
-                                     :class="[{'o-filters__filter--active': theActiveFilter==='inactive'},{'filters__filter--inactive': isClosedDocsLoading}]"
-                                     @click="setTheActiveFilter('inactive')">
+                                    :class="[{'o-filters__filter--active': theActiveFilter==='inactive'},{'filters__filter--inactive': isClosedDocsLoading}]"
+                                    @click="setTheActiveFilter('inactive')">
                                     <span>Tidligere</span>
                                     <div class="o-badge" :class="{'o-badge--loading': isClosedDocsLoading}">
                                         {{itemsExpiredFromCategory.length}}
@@ -297,32 +298,32 @@
                                 </div>
                             </div>
                             <div class="o-filters__filter vue-filter-level2"
-                                 v-if="theUserType=='IO' && activeCategory!='OpenAnalytics' || theUserType=='ON' && activeCategory!='OpenAnalytics'"
-                                 :class="{'o-filters__filter--active': theActiveFilter==='future'}"
-                                 @click="setTheActiveFilter('future')">
+                                v-if="theUserType=='IO' && activeCategory!='OpenAnalytics' || theUserType=='ON' && activeCategory!='OpenAnalytics'"
+                                :class="{'o-filters__filter--active': theActiveFilter==='future'}"
+                                @click="setTheActiveFilter('future')">
                                 <span>Fremtidige</span>
                                 <div class="o-badge">{{itemsFutureFromCategory.length}}</div>
                             </div>
 
                             <div class="o-filters__filter vue-filter-level2" v-if="activeCategory=='OpenAnalytics'"
-                                 :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab0' || theActiveFilter===''}"
-                                 @click="setTheActiveFilter('OpenAnalytics_tab0')">
+                                :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab0' || theActiveFilter===''}"
+                                @click="setTheActiveFilter('OpenAnalytics_tab0')">
                                 <span>Info</span>
                             </div>
                             <div class="o-filters__filter vue-filter-level2"
-                                 v-if="activeCategory=='OpenAnalytics' && pbiReports.length > 0"
-                                 :class="{'o-filters__filter--active': theActiveFilter==='dynamic'}"
-                                 @click="setTheActiveFilter('dynamic')">
+                                v-if="activeCategory=='OpenAnalytics' && pbiReports.length > 0"
+                                :class="{'o-filters__filter--active': theActiveFilter==='dynamic'}"
+                                @click="setTheActiveFilter('dynamic')">
                                 <span>Analytics</span>
                             </div>
                             <div class="o-filters__filter vue-filter-level2" v-if="activeCategory=='OpenAnalytics'"
-                                 :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab1'}"
-                                 @click="setTheActiveFilter('OpenAnalytics_tab1')">
+                                :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab1'}"
+                                @click="setTheActiveFilter('OpenAnalytics_tab1')">
                                 <span>Hent filer</span>
                             </div>
                             <div class="o-filters__filter vue-filter-level2" v-if="activeCategory=='OpenAnalytics'"
-                                 :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab2'}"
-                                 @click="setTheActiveFilter('OpenAnalytics_tab2')">
+                                :class="{'o-filters__filter--active': theActiveFilter==='OpenAnalytics_tab2'}"
+                                @click="setTheActiveFilter('OpenAnalytics_tab2')">
                                 <span>Administrer udsendelse</span>
                             </div>
 
@@ -355,13 +356,15 @@
                             <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__left">
                                 <o-multi-select :items="allCaseCategories" :selected_items="theActiveFilterCategories"
                                     @toggle_item="toggleFilterCategory" select_title="Vælg kategorier"></o-multi-select>
-                                <o-multi-select v-if="isUserOpennetOrSP" :items="allCaseTags" :selected_items="theActiveFilterTags"
-                                    @toggle_item="toggleFilterTag" select_title="Vælg tag"></o-multi-select>
-                                <o-multi-select v-if="isUserOpennetOrSP":items="allCaseGroups" :selected_items="theActiveFilterGroups"
-                                    @toggle_item="toggleFilterGroup" select_title="Vælg gruppe"></o-multi-select>
-                                <o-multi-select v-if="isUserOpennetOrSP" :items="allCaseStatus" :selected_items="theActiveFilterStatus"
-                                    @toggle_item="toggleFilterStatus" select_title="Vælg status"
-                                    :i18n="statusI18N"></o-multi-select>
+                                <o-multi-select v-if="isUserOpennetOrSP" :items="allCaseTags"
+                                    :selected_items="theActiveFilterTags" @toggle_item="toggleFilterTag"
+                                    select_title="Vælg tag"></o-multi-select>
+                                <o-multi-select v-if="isUserOpennetOrSP" :items="allCaseGroups"
+                                    :selected_items="theActiveFilterGroups" @toggle_item="toggleFilterGroup"
+                                    select_title="Vælg gruppe"></o-multi-select>
+                                <o-multi-select v-if="isUserOpennetOrSP" :items="allCaseStatus"
+                                    :selected_items="theActiveFilterStatus" @toggle_item="toggleFilterStatus"
+                                    select_title="Vælg status" :i18n="statusI18N"></o-multi-select>
                             </div>
                             <div class="o-body__list-of-cases__right" v-if="activeCategory !=='OpenAnalytics'">
                                 <div class="o-sort-setting o-dropdown vue-dropdown hint--left vue2-remove-all-filter-icon"
@@ -462,8 +465,7 @@
                         </div>
                     </template>
                     <!-- END 17-12-23 -->
-                    <div class="o-body__list-of-cases__left"
-                        v-if="activeCategory == 'OpenAnalytics'">
+                    <div class="o-body__list-of-cases__left" v-if="activeCategory == 'OpenAnalytics'">
                         <div class="o-body__list-of-cases__left__filters" v-if="theActiveFilter==='dynamic'">
                             <div class="o-dropdown vue-dropdown" v-click-outside="closeVueDropdown"
                                 @click="setIsVueDropdown"
@@ -529,7 +531,7 @@
                                 <div class="o-badge">{{type.onIds.length}}</div>
                             </div>
                         </div>
-                        
+
                         <template v-if="!isNewDesignActive">
                             <div class="o-body__list-of-cases__left__filters" v-if="isCases">
                                 <div class="o-dropdown vue-dropdown" v-click-outside="closeVueDropdown"
@@ -588,7 +590,8 @@
                             </div>
                         </template>
                     </div>
-                    <div class="o-body__list-of-cases__right" v-if="theActiveFilter !=='dynamic' && !isCases && activeCategory !=='OpenAnalytics'">
+                    <div class="o-body__list-of-cases__right"
+                        v-if="theActiveFilter !=='dynamic' && !isCases && activeCategory !=='OpenAnalytics'">
                         <div class="o-search-group">
                             <div class="o-icon">
                                 <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
@@ -624,15 +627,15 @@
                 </div>
                 <div class="o-body__content js-o-cases__container o-cases__container">
                     <p class="text-explainer"
-                       v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter==='dynamic'"
-                       v-cloak></p>
+                        v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter==='dynamic'"
+                        v-cloak></p>
                     <div v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter==='dynamic'"
-                         v-cloak>
+                        v-cloak>
                         <div v-if="activeCategory==='OpenAnalytics' && theUnreadSelected==='Vælg'"
-                             v-html="theReportBIExplainer">
+                            v-html="theReportBIExplainer">
                         </div>
                         <div v-if="activeCategory==='Invoice' && theUnreadSelected==='Vælg'"
-                             v-html="theInvoiceBIExplainer">
+                            v-html="theInvoiceBIExplainer">
                         </div>
                         <template v-if="theUnreadSelected !=='Vælg' && theActiveFilter==='dynamic'">
                             <div class="vue-spinner__container" v-if="isLoadingBIReport" v-cloak>
@@ -640,40 +643,60 @@
                                 <p class="text-explainer o-spinner__text">Indlæser dashboard..</p>
                             </div>
                             <div class="PowerBI_Container" id="embedContainer"
-                                 :class="{'hidePowerBi': isLoadingBIReport}">
+                                :class="{'hidePowerBi': isLoadingBIReport}">
                             </div>
                         </template>
                     </div>
-                    <div v-if="activeCategory === 'OpenAnalytics' && (theActiveFilter === '' || theActiveFilter === 'OpenAnalytics_tab0')" class="OpenAnalytics_tab_content">
-					<h1><strong>Velkommen til OpenAnalytics 1.0</strong></h1>
-					<p>Her kan du tilg&aring; rapporter og filer med data, tabeller og grafer, n&aring;r du har behov for det. OpenAnalytics er mere end tilgang til filer. Her kan du ogs&aring; tilg&aring; rapporter direkte, som er interaktive for dig.</p>
-					<p>Du kan se, hvad der er tilg&aelig;ngeligt p&aring; nuv&aelig;rende tidspunkt i vores standardkatalog <strong><a title="Standardkatelog" href="https://opnsaopenanalyticspdf.blob.core.windows.net/openanalytics/OpenAnalytics%20standardkatalog.pdf?sp=r&amp;st=2024-03-18T14:03:40Z&amp;se=2026-12-31T22:03:40Z&amp;spr=https&amp;sv=2022-11-02&amp;sr=b&amp;sig=FCK2UlcTbSjfGse1ehD3KqSsBaYKvQ%2Bvf1ZcsLSv84w%3D" target="_blank" rel="noopener">her</a>.</strong><br /> <br /> Vi er g&aring;et i luften med en l&oslash;sning, som vi l&oslash;bende vil udvikle og optimere. Hver gang vi introducerer en ny funktionalitet, vil vi kommunikere det p&aring; denne side under &ldquo;versionshistorikken&rdquo; og via udmeldinger p&aring; Partnerportalen.</p>
-					<p>L&aelig;s mere om de forskellige faner herunder, og klik <strong><a title="Vejledning" href="https://opnsaopenanalyticspdf.blob.core.windows.net/openanalytics/Kom%20godt%20i%20gang%20med%20OpenAnalytics.pdf?sp=r&amp;st=2024-03-18T14:04:37Z&amp;se=2026-12-31T22:04:37Z&amp;spr=https&amp;sv=2022-11-02&amp;sr=b&amp;sig=kY8kCmW9Gd7Mz1PWpuN%2FanzPuyXcm4lVnTodhIBld3E%3D" target="_blank" rel="noopener">her</a></strong> for en uddybende vejledning til OpenAnalytics.</p>
-					<p><br /> <strong>Fanen &ldquo;Analytics&rdquo;</strong></p>
-					<p>Her finder du det, vi kalder for &ldquo;interaktive rapporter&rdquo;, som netop giver dig mulighed for at dykke mere ned i data end blot en statisk fil. Kataloget af interaktive rapporter vil l&oslash;bende blive udvidet med mere indhold.</p>
-					<p><strong>Fanen &ldquo;Hent filer&rdquo;</strong></p>
-					<p>Her kan du via f&aring; klik hente statiske filer i pdf- eller excelformat.</p>
-					<p>Filerne, som kan oprettes, er alle del af det, vi i OpenNet kalder et standardkatalog. Dette katalog vil, ligesom vores dynamiske rapporter, l&oslash;bende blive udvidet med mere relevant indhold for dig.</p>
-					<p><strong>Fanen &ldquo;Administrer udsendelse&rdquo;</strong></p>
-					<p>Her har du mulighed for at oprette tidsbestemte udsendelser af filer til b&aring;de dig selv og dine kolleger.</p>
-					<p><strong>Versionshistorik</strong></p>
-					<p>1.0 - Vores f&oslash;rste release, som vi h&aring;ber du vil tage godt imod.</p>
-					<p>Har du forslag til forbedringer, &oslash;nsker til nye rapporter/filer eller oplever du udfordringer, er du velkommen til at oprette en sag under &rdquo;Generel henvendelse til OpenNet&rdquo; p&aring; Partnerportalen.</p>
-					<p>God forn&oslash;jelse!</p>
-					<p>Teamet bag OpenAnalytics / OpenNet</p>
-                       
+                    <div v-if="activeCategory === 'OpenAnalytics' && (theActiveFilter === '' || theActiveFilter === 'OpenAnalytics_tab0')"
+                        class="OpenAnalytics_tab_content">
+                        <h1><strong>Velkommen til OpenAnalytics 1.0</strong></h1>
+                        <p>Her kan du tilg&aring; rapporter og filer med data, tabeller og grafer, n&aring;r du har
+                            behov for det. OpenAnalytics er mere end tilgang til filer. Her kan du ogs&aring;
+                            tilg&aring; rapporter direkte, som er interaktive for dig.</p>
+                        <p>Du kan se, hvad der er tilg&aelig;ngeligt p&aring; nuv&aelig;rende tidspunkt i vores
+                            standardkatalog <strong><a title="Standardkatelog"
+                                    href="https://opnsaopenanalyticspdf.blob.core.windows.net/openanalytics/OpenAnalytics%20standardkatalog.pdf?sp=r&amp;st=2024-03-18T14:03:40Z&amp;se=2026-12-31T22:03:40Z&amp;spr=https&amp;sv=2022-11-02&amp;sr=b&amp;sig=FCK2UlcTbSjfGse1ehD3KqSsBaYKvQ%2Bvf1ZcsLSv84w%3D"
+                                    target="_blank" rel="noopener">her</a>.</strong><br /> <br /> Vi er g&aring;et i
+                            luften med en l&oslash;sning, som vi l&oslash;bende vil udvikle og optimere. Hver gang vi
+                            introducerer en ny funktionalitet, vil vi kommunikere det p&aring; denne side under
+                            &ldquo;versionshistorikken&rdquo; og via udmeldinger p&aring; Partnerportalen.</p>
+                        <p>L&aelig;s mere om de forskellige faner herunder, og klik <strong><a title="Vejledning"
+                                    href="https://opnsaopenanalyticspdf.blob.core.windows.net/openanalytics/Kom%20godt%20i%20gang%20med%20OpenAnalytics.pdf?sp=r&amp;st=2024-03-18T14:04:37Z&amp;se=2026-12-31T22:04:37Z&amp;spr=https&amp;sv=2022-11-02&amp;sr=b&amp;sig=kY8kCmW9Gd7Mz1PWpuN%2FanzPuyXcm4lVnTodhIBld3E%3D"
+                                    target="_blank" rel="noopener">her</a></strong> for en uddybende vejledning til
+                            OpenAnalytics.</p>
+                        <p><br /> <strong>Fanen &ldquo;Analytics&rdquo;</strong></p>
+                        <p>Her finder du det, vi kalder for &ldquo;interaktive rapporter&rdquo;, som netop giver dig
+                            mulighed for at dykke mere ned i data end blot en statisk fil. Kataloget af interaktive
+                            rapporter vil l&oslash;bende blive udvidet med mere indhold.</p>
+                        <p><strong>Fanen &ldquo;Hent filer&rdquo;</strong></p>
+                        <p>Her kan du via f&aring; klik hente statiske filer i pdf- eller excelformat.</p>
+                        <p>Filerne, som kan oprettes, er alle del af det, vi i OpenNet kalder et standardkatalog. Dette
+                            katalog vil, ligesom vores dynamiske rapporter, l&oslash;bende blive udvidet med mere
+                            relevant indhold for dig.</p>
+                        <p><strong>Fanen &ldquo;Administrer udsendelse&rdquo;</strong></p>
+                        <p>Her har du mulighed for at oprette tidsbestemte udsendelser af filer til b&aring;de dig selv
+                            og dine kolleger.</p>
+                        <p><strong>Versionshistorik</strong></p>
+                        <p>1.0 - Vores f&oslash;rste release, som vi h&aring;ber du vil tage godt imod.</p>
+                        <p>Har du forslag til forbedringer, &oslash;nsker til nye rapporter/filer eller oplever du
+                            udfordringer, er du velkommen til at oprette en sag under &rdquo;Generel henvendelse til
+                            OpenNet&rdquo; p&aring; Partnerportalen.</p>
+                        <p>God forn&oslash;jelse!</p>
+                        <p>Teamet bag OpenAnalytics / OpenNet</p>
+
                     </div>
-                    <div v-if="activeCategory === 'OpenAnalytics' && (theActiveFilter === 'OpenAnalytics_tab1' || theActiveFilter === 'OpenAnalytics_tab2')" class="OpenAnalytics_tab_content OpenAnalytics_tab_iframe ">
-                            <div class="o-iframe-container"
-                                 v-if="theActiveFilter === 'OpenAnalytics_tab1' || theActiveFilter === 'OpenAnalytics_tab2'">
-                                <transition name="fadeOut">
-                                    <div class="o-iframe-container--loader" v-if="isLoadingTheOpenAnalyticsIframe">
-                                        <div class="o-spinner"></div>
-                                    </div>
-                                </transition>
-                                <iframe ref="openAnalyticsIframe" :src="theOpenAnalyticsIframeUrl"></iframe>
-                            </div>
-                        
+                    <div v-if="activeCategory === 'OpenAnalytics' && (theActiveFilter === 'OpenAnalytics_tab1' || theActiveFilter === 'OpenAnalytics_tab2')"
+                        class="OpenAnalytics_tab_content OpenAnalytics_tab_iframe ">
+                        <div class="o-iframe-container"
+                            v-if="theActiveFilter === 'OpenAnalytics_tab1' || theActiveFilter === 'OpenAnalytics_tab2'">
+                            <transition name="fadeOut">
+                                <div class="o-iframe-container--loader" v-if="isLoadingTheOpenAnalyticsIframe">
+                                    <div class="o-spinner"></div>
+                                </div>
+                            </transition>
+                            <iframe ref="openAnalyticsIframe" :src="theOpenAnalyticsIframeUrl"></iframe>
+                        </div>
+
                     </div>
                     <h4 class=" text-explainer"
                         v-if="activeCategory !=='OpenAnalytics' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && !isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter !=='dynamic'"
@@ -1913,20 +1936,21 @@
 <script type="text/x-template" id="tags-selector-template">
     <div class="tags-selector" v-cloak>
         <transition name="modalFadeIn">
-            <div class="o-modal--alwaysactive vue-modal vue-modal--small" v-if="isForgotToSave" >
+            <div class="o-modal--alwaysactive vue-modal vue-modal--small" v-if="isForgotToSave">
                 <div class="o-modal__body">
                     <h4>Vil du gemme dine ændringer?</h4>
                     <div class="tags-selector__modal__close" @click="isForgotToSave = false">
                         <div class="tio clear bg-icon-hover"></div>
                     </div>
                     <div class="bg_icon">
-                    <div class="o-modal__body__actions">
-                        <button class="o-btn o-btn--small" @click="closeWithoutSaving">
-                            Gem ikke
-                        </button>
-                        <button class="o-btn o-btn--primary o-btn--small" :class="{'o-btn--loading': is_loading_tag_button}"
-                            @click="saveTags">Gem ændringerne
-                        </button>
+                        <div class="o-modal__body__actions">
+                            <button class="o-btn o-btn--small" @click="closeWithoutSaving">
+                                Gem ikke
+                            </button>
+                            <button class="o-btn o-btn--primary o-btn--small" :class="{'o-btn--loading': is_loading_tag_button}"
+                                @click="saveTags">Gem ændringerne
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1951,7 +1975,6 @@
                     </div>
                     <div class="tags-selector__tag-item__right">
                         <i class="tio" v-if="tag.v_selected">checkmark_circle_outlined</i>
-                        <div class="tags-selector__tag-item__edit-bttn" v-if="tag.v_selected" @click.stop="removeTag(tag)"><i class="tio">clear</i></div>
                         <div class="tags-selector__tag-item__edit-bttn" @click.stop="setTheEditTag(tag)"><i class="tio">edit</i></div>
                     </div>
                 
@@ -2002,7 +2025,6 @@
         </div>
         </div>
     </div>
-    </div>
   </script>
 <!-- END 17-12-23 -->
 
@@ -2051,12 +2073,18 @@
 </div>
 <div class="o-modal o-modal--small js-o-modal--small__follow-up">
     <div class="o-modal__header">
-        <h4 class="js-small-modal-title">Opfølgning</h4>
+        <h4 class="js-small-modal-title">Parker sag</h4>
         <div class="tio clear bg-icon-hover js-close-modal-small"></div>
     </div>
     <div class="o-modal__body js-o-modal-small__inner" style="display: none">
         <div class="js-o-modal-small__o-case-follow-up">
             <div class="o-datepicker"><input class="datetimepicker" type="text"></div>
+            <div class="o-follow-up-group">
+                <label for="js-follow-up__notify_when_deadline_passes" class="o-open-toggle">Notificer mig ved udløb
+                    <input type="checkbox" id="js-follow-up__notify_when_deadline_passes">
+                    <span class="o-open-toggle-slider"></span>
+                </label>
+            </div>
             <div class="o-modal__case__commentary"><textarea class="o-modal__case__commentary__textarea"
                     placeholder="Skriv kommentar..."></textarea>
                 <div class="o-modal__case__commentary__actions">
@@ -2085,7 +2113,7 @@
                 <li class="o-btn js-case-save-close"><i class="tio">archive</i> Luk sag</li>
                 <li class="o-btn js-case-save-reopen display_none"><i class="tio">restore</i> Genåben</li>
                 <li class="o-btn js-case-click-assign-case"><i class="tio">user_add</i> Tildel sag</li>
-                <li class="o-btn js-click-case-follow-up"><i class="tio">appointment</i> Opfølgning</li>
+                <li class="o-btn js-click-case-follow-up"><i class="tio">appointment</i> Parker sag</li>
                 <li class="o-btn js-click-case-create-note"><i class="tio">edit</i> Intern note</li>
                 <li class="o-btn js-click-case-edit-ref hidden_field"><i class="tio">edit</i> Rediger Intern ref
                 </li>

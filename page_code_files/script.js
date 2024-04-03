@@ -303,14 +303,41 @@ $(document).one("trigger::o_page_loaded", function () {
 	});
 
 	$(".js-case-save-follow-up").on("click", function () {
-		var e = $(".js-o-modal--small__follow-up .datetimepicker").val(),
-			t = $(".js-o-modal--small__follow-up .o-modal__case__commentary__textarea").val(),
-			s = $(".o-modal__case").attr("data-case-id-token"),
-			a = $(".o-modal__case").attr("data-case-id");
-		$(".ETRAY_READ_CASE_TOKEN_ID > input").val(s), $(".ETRAY_READ_CASE_ID > input").val(a), $(".ETRAY_READ_CASE__FOLLOW_UP > input").val(e), $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val(t), $(".ETRAY_READ_MESSAGE_TYPE > input").val("FOLLOW_UP"), $(".ETRAY_UPDATE_CASE > a").click(), $("#js-case-element__inserted > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--red">Opf\xf8lgning</span></div>'), addMutationOberserverToSingleCase(), closeSmallModal("js-o-modal--small__follow-up"), readEtrayCaseComments(), setTimeout(function () {
-			$(".o-modal__case__commentary__textarea").val(""), $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val("")
-		}, 1e3)
+		// Retrieve values from inputs and attributes
+		var followUpDate = $(".js-o-modal--small__follow-up .datetimepicker").val(),
+			commentaryText = $(".js-o-modal--small__follow-up .o-modal__case__commentary__textarea").val(),
+			notifyMe = $('#js-follow-up__notify_when_deadline_passes').is(':checked'),
+			caseIdToken = $(".o-modal__case").attr("data-case-id-token"),
+			caseId = $(".o-modal__case").attr("data-case-id");
+
+		console.log({ followUpDate, notifyMe, commentaryText, caseIdToken, caseId })
+		// Set values for processing or display
+		$(".ETRAY_READ_CASE_TOKEN_ID > input").val(caseIdToken);
+		$(".ETRAY_READ_CASE_ID > input").val(caseId);
+		$(".ETRAY_READ_CASE__FOLLOW_UP > input").val(followUpDate);
+		$(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val(commentaryText);
+		$(".ETRAY_READ_MESSAGE_TYPE > input").val("FOLLOW_UP");
+
+		// Trigger an update action
+		$(".ETRAY_UPDATE_CASE > a").click();
+
+		// Update the case status visually
+		$("#js-case-element__inserted > div > .etray_case_status").html(
+			'<div class="etray_case_status">Status:<span class="o-pill o-pill--red">Opfølgning</span></div>'
+		);
+
+		// Call to functions that might update the UI or perform additional logic
+		addMutationOberserverToSingleCase();
+		closeSmallModal("js-o-modal--small__follow-up");
+		readEtrayCaseComments();
+
+		// Clear commentary textarea after a delay (1 second)
+		setTimeout(function () {
+			$(".o-modal__case__commentary__textarea").val("");
+			$(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val("");
+		}, 1000);
 	});
+
 
 	$(".js-case-save-close").on("click", function () {
 		var e = $(".o-modal__case").attr("data-case-id-token"),
@@ -838,7 +865,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			onSelectTag(tag) {
 				if (tag.v_selected) {
-					return
+					this.removeTag(tag)
 				} else {
 					this.isEdited = true
 					this.selectedTags.push(tag)
@@ -1204,7 +1231,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
 			},
 			isNewDesignActive() {
-				    return true;
+				return true;
 				//const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet', 'SP Dev Company', 'IO Dev Company']
 				//return arrOfActivatedCompanies.indexOf(this.theActiveLoggedInCompany) > -1
 			},
@@ -2262,13 +2289,12 @@ $(document).one("trigger::vue_loaded", function () {
 					window.scroll(0, 0)
 
 					if (e == "OpenAnalytics") {
-					$(".o-wrapper").addClass("OpenAnalytics_full_width")
+						$(".o-wrapper").addClass("OpenAnalytics_full_width")
 					}
-					else
-					{
-					$(".o-wrapper").removeClass("OpenAnalytics_full_width")						
+					else {
+						$(".o-wrapper").removeClass("OpenAnalytics_full_width")
 					}
-					
+
 					$('ul.o-menu__items__inner > li[class^="js-"]').each(function () {
 						$(this).removeClass("li--active")
 					})
@@ -2369,7 +2395,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.theActiveFilter = event;
 				this.clearSearchQuery();
 				this.theUnreadSelected = "Alle";
-				
+
 				// Set the active type to null
 				this.activeType = null;
 				$(".vue-filter-2").each(function () {
@@ -2382,7 +2408,7 @@ $(document).one("trigger::vue_loaded", function () {
 				//	this.theUnreadSelected = "Vælg";
 				//}
 				if (this.activeCategory !== 'OpenAnalytics') {
-					
+
 					return
 				}
 				// For OpenAnalytics
@@ -2400,14 +2426,14 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				let openAnalyticsUrl;
 				if (this.theActiveFilter === 'OpenAnalytics_tab1') {
-					if ($(".ENV > input").val() === "PROD") {openAnalyticsUrl = 'https://opn-iframes-prod.azurewebsites.net/1'} else {openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/1'};
+					if ($(".ENV > input").val() === "PROD") { openAnalyticsUrl = 'https://opn-iframes-prod.azurewebsites.net/1' } else { openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/1' };
 					this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
 					// For demonstration purpose
 					const openAnalyticsIframeURL = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret);
 					//console.log(openAnalyticsIframeURL);
 				}
 				if (this.theActiveFilter === 'OpenAnalytics_tab2') {
-					if ($(".ENV > input").val() === "PROD") {openAnalyticsUrl = 'https://opn-iframes-prod.azurewebsites.net/2'} else {openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/2'};					
+					if ($(".ENV > input").val() === "PROD") { openAnalyticsUrl = 'https://opn-iframes-prod.azurewebsites.net/2' } else { openAnalyticsUrl = 'https://opn-iframes-dev.azurewebsites.net/2' };
 					this.theOpenAnalyticsIframeUrl = constructURLWithSecret(openAnalyticsUrl, openAnalyticsSecret)
 				}
 				// Wait for Vue's next tick to ensure the DOM updates
@@ -2430,27 +2456,26 @@ $(document).one("trigger::vue_loaded", function () {
 					if (event.data.event === 'Inspari_iframeChanged') {
 						//console.log('Inspari_iframeChanged event received', event.data);
 						// Handling Inspari_iframeChanged event to adjust iframe size
-					        var iframe = document.querySelector('.o-iframe-container');
-						
-						if (current_iframeHeight !=  event.data.iframeHeight)
-							{
+						var iframe = document.querySelector('.o-iframe-container');
+
+						if (current_iframeHeight != event.data.iframeHeight) {
 							//console.log('Current iframe height',current_iframeHeight);
-								iframe.style.height = event.data.iframeHeight + 'px';
+							iframe.style.height = event.data.iframeHeight + 'px';
 							//console.log('New iframe height',event.data.iframeHeight);
-							current_iframeHeight = event.data.iframeHeight;								
-							}
+							current_iframeHeight = event.data.iframeHeight;
+						}
 					}
 
 					if (event.data.event === 'Inspari_iframeLoaded') {
 						self.isLoadingTheOpenAnalyticsIframe = false
 						//console.log('Inspari_iframeLoaded event received', event.data);
 						var iframe = document.querySelector('.o-iframe-container');
-						
-							//console.log('Current iframe height',current_iframeHeight);
-								iframe.style.height = event.data.iframeHeight + 'px';
-							//console.log('New iframe height',event.data.iframeHeight);
-							current_iframeHeight = event.data.iframeHeight;								
-						
+
+						//console.log('Current iframe height',current_iframeHeight);
+						iframe.style.height = event.data.iframeHeight + 'px';
+						//console.log('New iframe height',event.data.iframeHeight);
+						current_iframeHeight = event.data.iframeHeight;
+
 					}
 				};
 
@@ -3623,10 +3648,10 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 					if (urlParams.tab === 'hentfiler') {
 						this.setTheActiveFilter('OpenAnalytics_tab1')
-					}					
+					}
 
 
-					
+
 				}
 				$(document).trigger("trigger::vue_mounted")
 				const el = $('.updTagOrGroup_Output_mvp_groups > div')
@@ -3800,7 +3825,7 @@ var droppedFiles = !1;
 var Set_UM_USER_INIT = !0;
 var openAnalyticsSecret = 'your_secret_value_here_global';
 var current_iframeHeight = 10;
-var current_iframeWidth = 10;	
+var current_iframeWidth = 10;
 //console.log(openAnalyticsSecret)
 // Variables - START //
 
@@ -4198,6 +4223,15 @@ function closeOSelect() {
 }
 
 function setDateTimePicker() {
+	$(".datetimepicker").datetimepicker("destroy");
+
+	var now = new Date();
+	now.setHours(now.getHours() + 1);
+	now.setMinutes(0);
+	now.setSeconds(0);
+
+	var defaultTime = now.getHours() + ":00";
+
 	$(".datetimepicker").datetimepicker("destroy"), $(".datetimepicker").datetimepicker({
 		onGenerate: function (e) {
 			jQuery(this).find(".xdsoft_date.xdsoft_day_of_week6").addClass("xdsoft_disabled"), jQuery(this).find(".xdsoft_date.xdsoft_day_of_week0").addClass("xdsoft_disabled"), $(".datetimepicker").show()
@@ -4205,14 +4239,14 @@ function setDateTimePicker() {
 		lang: "da",
 		dayOfWeekStart: 1,
 		minDate: 0,
-		inline: !0,
-		timepicker: !0,
-		scrollMonth: !1,
-		scrollInput: !1,
+		inline: true,
+		timepicker: true,
+		scrollMonth: false,
+		scrollInput: false,
 		format: "d-m-Y H:i:s",
-		defaultTime: "12:00",
-		defaultDate: new Date,
-		closeOnDateSelect: !0,
+		defaultTime: defaultTime,
+		defaultDate: new Date(),
+		closeOnDateSelect: true,
 		onChangeDateTime: function (e, t) { }
 	})
 }
@@ -4354,109 +4388,109 @@ function download_file(e) {
 function RunReport(reportId, action) {
 	//console.log('RunReport Step 1 reportId',reportId);
 	//console.log('RunReport Step 1 action',action)
-    // Triggers loading and changes state in the application using custom events
-    $(document).trigger("vue::BILoadingTrigger", true); // Indicates the start of loading
-    $(document).trigger("vue::BIChangeTrigger", action); // Indicates a change based on the action
+	// Triggers loading and changes state in the application using custom events
+	$(document).trigger("vue::BILoadingTrigger", true); // Indicates the start of loading
+	$(document).trigger("vue::BIChangeTrigger", action); // Indicates a change based on the action
 
-    // Checks if a report is already loaded and, if so, stops listening for the 'rendered' event to prevent memory leaks or duplicate handlers
-    if (report) {
-	//console.log('report.off("rendered");');
-        report.off("rendered");
-    }
+	// Checks if a report is already loaded and, if so, stops listening for the 'rendered' event to prevent memory leaks or duplicate handlers
+	if (report) {
+		//console.log('report.off("rendered");');
+		report.off("rendered");
+	}
 
-    // If the action is to 'select' (denoted by "Vælg"), stop the loading trigger and exit the function
-    if ("Vælg" === action) {
-	//console.log('"Vælg" === action');    
-        $(document).trigger("vue::BILoadingTrigger", false); // Stops the loading indication
-        return;
-    }
+	// If the action is to 'select' (denoted by "Vælg"), stop the loading trigger and exit the function
+	if ("Vælg" === action) {
+		//console.log('"Vælg" === action');    
+		$(document).trigger("vue::BILoadingTrigger", false); // Stops the loading indication
+		return;
+	}
 
-    try {
-	//console.log('Make AJAX call');  	    
-        // Initiates an AJAX POST request to fetch a new token for embedding the report
-	    $.ajax({
-            type: "POST",
-            url: "/portal/page_code_files/powerbi_proxy.aspx", 
-	    //url: "https://pbiembeddedopennet.azurewebsites.net/api/PowerBIEmbeddedToken?code=US0sk5xiqoVMLU2tcl2oR1Jg0zt49Vj80ZjcM0bHCzPRAzFuAME4fg==",
-            data: JSON.stringify({ reportId: reportId }), // Sends the reportId as data
-            contentType: "application/json; charset=utf-8", // Sets the content type of the request
-            dataType: "json", // Expects a JSON response
-            success: successFunc, // Defines a function to handle a successful response
-            error: errorFunc // Defines a function to handle any errors during the request
-        });
-    } catch (error) {
-        // Logs the error and calls a generic error handler function with context
-        //console.log(error);
-        handleError("RunReport", error);
-    }
+	try {
+		//console.log('Make AJAX call');  	    
+		// Initiates an AJAX POST request to fetch a new token for embedding the report
+		$.ajax({
+			type: "POST",
+			url: "/portal/page_code_files/powerbi_proxy.aspx",
+			//url: "https://pbiembeddedopennet.azurewebsites.net/api/PowerBIEmbeddedToken?code=US0sk5xiqoVMLU2tcl2oR1Jg0zt49Vj80ZjcM0bHCzPRAzFuAME4fg==",
+			data: JSON.stringify({ reportId: reportId }), // Sends the reportId as data
+			contentType: "application/json; charset=utf-8", // Sets the content type of the request
+			dataType: "json", // Expects a JSON response
+			success: successFunc, // Defines a function to handle a successful response
+			error: errorFunc // Defines a function to handle any errors during the request
+		});
+	} catch (error) {
+		// Logs the error and calls a generic error handler function with context
+		//console.log(error);
+		handleError("RunReport", error);
+	}
 }
 // Ends definition of PowerBI report functions
 
 // Defines a function to handle the success scenario after attempting to embed a Power BI report.
 function successFunc(response, status) {
 	//console.log('successFunc');
-    try {
-        // Checks if the status is 'success'.
-        if (status == "success") {
-            // Extracts the necessary details from the response object.
-            const embedToken = response.EmbedToken;
-            const embedUrl = response.EmbedUrl;
-            const reportId = response.ReportId;
-            const sharedSecret = $(".PBI_sharedSecret > input").val(); // Gets the shared secret from an input field.
-            
-            //console.log("v_sharedSecret", sharedSecret); // Logs the shared secret for debugging.
+	try {
+		// Checks if the status is 'success'.
+		if (status == "success") {
+			// Extracts the necessary details from the response object.
+			const embedToken = response.EmbedToken;
+			const embedUrl = response.EmbedUrl;
+			const reportId = response.ReportId;
+			const sharedSecret = $(".PBI_sharedSecret > input").val(); // Gets the shared secret from an input field.
 
-            // Accesses the Power BI Client models for configuration.
-            const powerBiClientModels = window["powerbi-client"].models;
+			//console.log("v_sharedSecret", sharedSecret); // Logs the shared secret for debugging.
 
-            // Defines the filter to be applied to the report.
-            let filter = {
-                $schema: "http://powerbi.com/product/schema#basic",
-                target: {
-                    table: "v_POWERBI_EMBEDDED_RLS",
-                    column: "sharedSecret"
-                },
-                operator: "In",
-                values: [sharedSecret]
-            };
+			// Accesses the Power BI Client models for configuration.
+			const powerBiClientModels = window["powerbi-client"].models;
 
-            // Configures the settings for the Power BI report embedding.
-            var embedConfiguration = {
-                type: "report",
-                tokenType: powerBiClientModels.TokenType.Embed,
-                accessToken: embedToken,
-                embedUrl: embedUrl,
-                id: reportId,
-                permissions: powerBiClientModels.Permissions.All,
-                filters: [filter],
-                settings: {
-                    filterPaneEnabled: false, // Disables the filter pane.
-                    navContentPaneEnabled: false // Disables the navigation content pane.
-                }
-            };
+			// Defines the filter to be applied to the report.
+			let filter = {
+				$schema: "http://powerbi.com/product/schema#basic",
+				target: {
+					table: "v_POWERBI_EMBEDDED_RLS",
+					column: "sharedSecret"
+				},
+				operator: "In",
+				values: [sharedSecret]
+			};
 
-            // Selects the DOM element where the report will be embedded.
-            var embedContainer = $("#embedContainer")[0];
+			// Configures the settings for the Power BI report embedding.
+			var embedConfiguration = {
+				type: "report",
+				tokenType: powerBiClientModels.TokenType.Embed,
+				accessToken: embedToken,
+				embedUrl: embedUrl,
+				id: reportId,
+				permissions: powerBiClientModels.Permissions.All,
+				filters: [filter],
+				settings: {
+					filterPaneEnabled: false, // Disables the filter pane.
+					navContentPaneEnabled: false // Disables the navigation content pane.
+				}
+			};
 
-            // Embeds the report and sets up filters.
-            var report = powerbi.embed(embedContainer, embedConfiguration);
-            report.setFilters([filter]);
+			// Selects the DOM element where the report will be embedded.
+			var embedContainer = $("#embedContainer")[0];
 
-            // Adds an event listener for the 'rendered' event to perform actions after the report is successfully rendered.
-            if (report) {
-                report.on("rendered", function () {
-                    $(document).trigger("vue::BILoadingTrigger", false); // Triggers a custom event to indicate loading is finished.
-                });
-            }
-        } else {
-            // Alerts the user if the report could not be embedded.
-            alert("The report could not be embedded. Please reload the page and try again.");
-        }
-    } catch (error) {
-        // Logs any errors and calls a function to handle them.
-        //console.log(error);
-        handleError("successFunc", error);
-    }
+			// Embeds the report and sets up filters.
+			var report = powerbi.embed(embedContainer, embedConfiguration);
+			report.setFilters([filter]);
+
+			// Adds an event listener for the 'rendered' event to perform actions after the report is successfully rendered.
+			if (report) {
+				report.on("rendered", function () {
+					$(document).trigger("vue::BILoadingTrigger", false); // Triggers a custom event to indicate loading is finished.
+				});
+			}
+		} else {
+			// Alerts the user if the report could not be embedded.
+			alert("The report could not be embedded. Please reload the page and try again.");
+		}
+	} catch (error) {
+		// Logs any errors and calls a function to handle them.
+		//console.log(error);
+		handleError("successFunc", error);
+	}
 }
 
 function errorFunc() {
@@ -4473,16 +4507,17 @@ function handleError(e, t) {
 }
 
 function RemoveReport() {
-    //console.log('RemoveReport: Removing embedded Power BI report');
+	//console.log('RemoveReport: Removing embedded Power BI report');
 
-    // Selects the DOM element where the report was embedded
-    var embedContainer = $("#embedContainer")[0];
+	// Selects the DOM element where the report was embedded
+	var embedContainer = $("#embedContainer")[0];
 
-    // Check if the Power BI service instance exists
-    if (window.powerbi && window.powerbi.embeds.length > 0) {
-        // Use the Power BI service API to reset the embed container
-        window.powerbi.reset(embedContainer);
-        //console.log('Report remove')
-    }}
+	// Check if the Power BI service instance exists
+	if (window.powerbi && window.powerbi.embeds.length > 0) {
+		// Use the Power BI service API to reset the embed container
+		window.powerbi.reset(embedContainer);
+		//console.log('Report remove')
+	}
+}
 
 // PowerBI report funcs - START
