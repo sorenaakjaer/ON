@@ -4230,11 +4230,22 @@ function setDateTimePicker() {
 	now.setMinutes(0);
 	now.setSeconds(0);
 
-	var defaultTime = now.getHours() + ":00";
+	// Ensure hours are always two digits
+	var formattedHours = ("0" + now.getHours()).slice(-2);
 
-	$(".datetimepicker").datetimepicker("destroy"), $(".datetimepicker").datetimepicker({
-		onGenerate: function (e) {
-			jQuery(this).find(".xdsoft_date.xdsoft_day_of_week6").addClass("xdsoft_disabled"), jQuery(this).find(".xdsoft_date.xdsoft_day_of_week0").addClass("xdsoft_disabled"), $(".datetimepicker").show()
+	// Format the 'now' date to match the datetime picker format
+	var formattedDefaultDateTime = ("0" + now.getDate()).slice(-2) + "-" +
+		("0" + (now.getMonth() + 1)).slice(-2) + "-" +
+		now.getFullYear() + " " +
+		formattedHours + ":00:00"; // 'd-m-Y H:i:s' format with two-digit hours
+
+	$(".datetimepicker").val(formattedDefaultDateTime); // Set the input field value directly
+
+	$(".datetimepicker").datetimepicker({
+		onGenerate: function (ct) {
+			$(this).find(".xdsoft_date.xdsoft_day_of_week6").addClass("xdsoft_disabled");
+			$(this).find(".xdsoft_date.xdsoft_day_of_week0").addClass("xdsoft_disabled");
+			$(".datetimepicker").show();
 		},
 		lang: "da",
 		dayOfWeekStart: 1,
@@ -4244,12 +4255,16 @@ function setDateTimePicker() {
 		scrollMonth: false,
 		scrollInput: false,
 		format: "d-m-Y H:i:s",
-		defaultTime: defaultTime,
-		defaultDate: new Date(),
+		defaultTime: formattedHours + ":00", // This sets the default two-digit hour for the widget
+		defaultDate: now, // Set the modified 'now' as the default date
 		closeOnDateSelect: true,
-		onChangeDateTime: function (e, t) { }
-	})
+		onChangeDateTime: function (dt, $input) {
+			// Optionally, update the input field on date/time change as well
+			// This can ensure consistency if the datetime picker modifies the input value
+		}
+	});
 }
+
 
 function appendEtrayCases() {
 	$(".ETRAY_LIST_OF_CASES").css("display", ""), $(".ETRAY_LIST_OF_CASES").appendTo(".js-list-of-cases"), addEventListenerOnSingleCases()
