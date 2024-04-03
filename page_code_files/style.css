@@ -9368,7 +9368,7 @@ input.o-modal__case__commentary__textarea {
 
 .PowerBI_Container>iframe {
     border: none;
-} 
+}
 
 .hidePowerBi {
     opacity: 0
@@ -10033,10 +10033,10 @@ ul.tags-selector__dropdow__create {
     color: var(--primary);
 }
 
-.o-multi-select .tags-selector__tag-item.tags-selector__tag-item--selected:hover {
+.o-multi-select .tags-selector__tag-item.tags-selector__tag-item--selected:hover,
+.tags-selector__dropdown .tags-selector__tag-item.tags-selector__tag-item--selected:hover {
     background-color: var(--red) !important;
 }
-
 
 .o-multi-select .tags-selector__tag-item .tio {
     margin-top: 0;
@@ -10477,12 +10477,12 @@ ul.tags-selector__dropdow__create {
 }
 
 .OpenAnalytics_tab_content:not(.OpenAnalytics_tab_iframe) {
-padding: 0 60px
+    padding: 0 60px
 }
 
-.o-page--menu-open  .OpenAnalytics_tab_content.OpenAnalytics_tab_iframe .o-iframe-container {
-width: calc(100vw - 350px - 60px);
-min-width: 650px;
+.o-page--menu-open .OpenAnalytics_tab_content.OpenAnalytics_tab_iframe .o-iframe-container {
+    width: calc(100vw - 350px - 60px);
+    min-width: 650px;
 }
 
 div#embedContainer {
@@ -10495,9 +10495,9 @@ div#embedContainer {
     width: calc(100vw - 60px);
 }
 
-.o-page--menu-open .PowerBI_Container{
-width: calc(100vw - 350px - 60px);
-min-width: 650px;
+.o-page--menu-open .PowerBI_Container {
+    width: calc(100vw - 350px - 60px);
+    min-width: 650px;
 }
 
 .PowerBI_Container#embedContainer {
@@ -10523,3 +10523,83 @@ min-width: 650px;
     height: 100%;
 }
 
+.js-o-modal-small__o-case-follow-up .o-datepicker input {
+    display: none !important;
+}
+
+.js-o-modal-small__o-case-follow-up .o-datepicker .xdsoft_datetimepicker .xdsoft_timepicker {
+    width: 80px !important;
+}
+
+.js-o-modal-small__o-case-follow-up .o-datepicker .xdsoft_datetimepicker .xdsoft_datepicker {
+    width: calc(100% - 80px - 16px) !important;
+}
+
+.js-o-modal-small__o-case-follow-up .o-datepicker .xdsoft_datetimepicker.xdsoft_inline {
+    width: 100% !important;
+}
+
+.o-follow-up-group .o-open-toggle {
+    position: relative;
+    display: flex;
+    height: 34px;
+    line-height: 34px;
+    width: 100%;
+    font-size: 14px;
+    background: #fff;
+    padding-left: 1rem;
+    border-radius: 4px;
+}
+
+/* Hide the checkbox */
+.o-open-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Style for the slider */
+.o-open-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 5px;
+    right: 1rem;
+    bottom: 0;
+    width: 40px;
+    height: 24px;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+    cursor: pointer;
+    color: var(--grey);
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin: 0.5rem 0;
+}
+
+.o-open-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+/* Checked state for the slider */
+input:checked+.o-open-toggle-slider {
+    background-color: var(--primary);
+}
+
+input:focus+.o-open-toggle-slider {
+    box-shadow: 0 0 1px var(--primary);
+}
+
+/* Move the slider to the right on checked */
+input:checked+.o-open-toggle-slider:before {
+    transform: translateX(16px);
+}
