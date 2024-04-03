@@ -2207,12 +2207,19 @@ $(document).one("trigger::vue_loaded", function () {
 				// END ADDED 26-11-23 For openByOtherEmp
 				// START 17-12-23
 				this.$nextTick(_ => {
-					$('#js-case-element__inserted .o-cases__case_element__header__row__tags__container').on('click', (evt) => {
-						const tagType = evt.target.dataset.tagType
-						const caseItem = this.cases[caseIndex]
-						this.setTheActiveTagDropdown(tagType, caseItem, evt)
-					})
-				})
+					$('#js-case-element__inserted').on('click', '.o-cases__case_element__header__row__tags__container, .item-tag', (evt) => {
+						let target = $(evt.target);
+						let tagContainer = target.closest('.o-cases__case_element__header__row__tags__container');
+
+						if (!tagContainer.length) {
+							tagContainer = target;
+						}
+						const tagType = tagContainer.data('tag-type');
+						const caseItem = this.cases[caseIndex];
+
+						this.setTheActiveTagDropdown(tagType, caseItem, evt);
+					});
+				});
 			},
 			// START ADDED 26-11-23 For openByOtherEmp
 			seeCaseOpenByOthers() {
