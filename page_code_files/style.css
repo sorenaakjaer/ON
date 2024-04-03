@@ -10549,6 +10549,12 @@ div#embedContainer {
     background: #fff;
     padding-left: 1rem;
     border-radius: 4px;
+    cursor: pointer;
+    color: var(--grey);
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin: 0.5rem 0;
 }
 
 /* Hide the checkbox */
@@ -10570,12 +10576,6 @@ div#embedContainer {
     background-color: #ccc;
     transition: .4s;
     border-radius: 34px;
-    cursor: pointer;
-    color: var(--grey);
-    font-weight: bold;
-    font-size: 12px;
-    text-transform: uppercase;
-    margin: 0.5rem 0;
 }
 
 .o-open-toggle-slider:before {
