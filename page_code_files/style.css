@@ -9867,7 +9867,6 @@ ul.tags-selector__dropdow__create {
     padding: 2px 4px;
     font-size: 11px;
     font-weight: bold;
-    pointer-events: none;
 }
 
 .tags-selector__tag-item__edit-bttn {

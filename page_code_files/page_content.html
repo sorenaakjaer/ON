@@ -812,6 +812,7 @@
                                             data-tag-type="tag">
                                             <div class="item-tag"
                                                 :style="{'backgroundColor': tag.color ? tag.color : '#0a37aa'}"
+                                                :class="{'hint--bottom': tag.description}" :aria-label="tag.description"
                                                 v-for="tag in itemCase.v_tags">
                                                 {{ tag.value }}
                                             </div>
@@ -1968,7 +1969,7 @@
             <ul class="tags-selector__dropdown">
                 <li v-for="(tag, index) in filteredTags" 
                 :key="tag.value" 
-                class="tags-selector__tag-item hint--bottom" :aria-label="tag.description" :class="[{'tags-selector__tag-item--selected': tag.v_selected}, { 'tags-selector__tag-item--highlighted': index === highlightedIndex }]"
+                class="tags-selector__tag-item" :aria-label="tag.description" :class="[{'hint--bottom': tag.description}, {'tags-selector__tag-item--selected': tag.v_selected}, { 'tags-selector__tag-item--highlighted': index === highlightedIndex }]"
                 @click="onSelectTag(tag)">
                 <div class="tags-selector__tag-item__icon">
                     <i class="tio" v-if="tag.v_sort">lock</i>

@@ -1894,7 +1894,12 @@ $(document).one("trigger::vue_loaded", function () {
 							container.empty();
 							let htmlArr = [];
 							tagsArr.forEach(tag => {
-								var tagDiv = `<div class="item-tag" style="background-color: ${tag.color};">${tag.value}</div>`;
+								var tagDiv;
+								if (tag.description) {
+									tagDiv = `<div class="item-tag hint-bottom" aria-label="${tag.description}" style="background-color: ${tag.color};">${tag.value}</div>`;
+								} else {
+									tagDiv = `<div class="item-tag" style="background-color: ${tag.color};">${tag.value}</div>`;
+								}
 								htmlArr.push(tagDiv);
 							});
 							const typei18n = self.theShowTagDropdown === 'group' ? 'gruppe' : 'tag'
