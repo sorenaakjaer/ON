@@ -1287,9 +1287,9 @@
         </transition>
         <!-- START 17-12-23 -->
         <tags-selector v-if="theShowTagDropdown" :active_case="theActiveCaseForTag"
-            :is_loading_tag_button="isLoadingTagButton" :tags="allCaseTags" :groups="allCaseGroups"
-            :active_tag_type="theShowTagDropdown" @close="setTheActiveTagDropdown(null)"
-            @save_tags="updateItemTags($event)">
+            :is_loading_tag_button="isLoadingTagButton" :all_tags="hiddenCaseTags" :tags="allCaseTags"
+            :groups="allCaseGroups" :all_groups="hiddenCaseGroups" :active_tag_type="theShowTagDropdown"
+            @close="setTheActiveTagDropdown(null)" @save_tags="updateItemTags($event)">
         </tags-selector>
         <!-- END 17-12-23 -->
         <transition name="modalFadeIn">
@@ -1957,8 +1957,9 @@
         </transition>
         <div class="tags-selector__bg" :class="{'tags-selector__bg--dark': isForgotToSave}" @click="onTagsBGClick"></div>
         <div class="tags-selector__container" id="popperTagsDropdown">
-            <div class="tags-selector__container__header" v-if="selectedTags.length > 0 && theTagsSelectorView === 1">
-                <p @click="removeAllTags" class="tags-selector__container__header__remove-all">Fjern alle valgte</p>
+            <div class="tags-selector__container__header" v-if="theTagsSelectorView === 1">
+                <p class="tags-selector__container__header__show-all" @click="isShowAllTags = !isShowAllTags">Vis <template v-if="!isShowAllTags">alle <template v-if="active_tag_type === 'tag'">tags</template><template v-else>grupper</template></template><template v-else>kun relevante</template></p> 
+                <p v-if="selectedTags.length > 0 && theTagsSelectorView === 1" @click="removeAllTags" class="tags-selector__container__header__remove-all">Fjern alle valgte</p>
             </div>
         <div v-if="theTagsSelectorView === 1">
             <div class="tags-selector__search">
@@ -1967,7 +1968,7 @@
             <ul class="tags-selector__dropdown">
                 <li v-for="(tag, index) in filteredTags" 
                 :key="tag.value" 
-                class="tags-selector__tag-item" :class="[{'tags-selector__tag-item--selected': tag.v_selected}, { 'tags-selector__tag-item--highlighted': index === highlightedIndex }]"
+                class="tags-selector__tag-item hint--bottom" :aria-label="tag.description" :class="[{'tags-selector__tag-item--selected': tag.v_selected}, { 'tags-selector__tag-item--highlighted': index === highlightedIndex }]"
                 @click="onSelectTag(tag)">
                 <div class="tags-selector__tag-item__icon">
                     <i class="tio" v-if="tag.v_sort">lock</i>
@@ -2001,6 +2002,10 @@
                         <label>Navn</label>
                         <input type="text" ref="create_new_tag_input" :class="{'o-input--error': isInputError}" id="create_new_tag_input" @keyup="isInputError = false" v-model="tagFormName"/>
                         <p class="tag-input-error-text" v-if="isInputError">Eksisterer allerede</p>
+                    </div>
+                    <div class="o-group">
+                        <label>Beskrivelse</label>
+                        <textarea v-model="tagFormDesc"></textarea>
                     </div>
                     <div class="o-group">
                         <label>Farve</label>

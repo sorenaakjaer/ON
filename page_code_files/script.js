@@ -698,7 +698,15 @@ $(document).one("trigger::vue_loaded", function () {
 				type: Array,
 				default: () => []
 			},
+			all_tags: {
+				type: Array,
+				default: () => []
+			},
 			groups: {
+				type: Array,
+				default: () => []
+			},
+			all_groups: {
 				type: Array,
 				default: () => []
 			},
@@ -733,21 +741,23 @@ $(document).one("trigger::vue_loaded", function () {
 					"#A1A1AA"
 				],
 				tagFormName: '',
+				tagFormDesc: '',
 				tagFormColor: '#F87171',
 				theEditingExisting: null,
 				isInputError: false,
 				isEdited: false,
 				selectedTags: [],
 				newTags: [],
-				isForgotToSave: false
+				isForgotToSave: false,
+				isShowAllTags: false
 			};
 		},
 		computed: {
 			oldAndNewTags() {
 				if (this.active_tag_type === 'tag') {
-					return this.tags.concat(this.newTags)
+					return !this.isShowAllTags ? this.tags.concat(this.newTags) : this.all_tags.concat(this.newTags)
 				} else {
-					return this.groups.concat(this.newTags)
+					return !this.isShowAllTags ? this.groups.concat(this.newTags) : this.all_groups.concat(this.newTags)
 				}
 			},
 			tagsWithProps() {
@@ -807,11 +817,13 @@ $(document).one("trigger::vue_loaded", function () {
 				const newTagObj = {
 					value: this.tagFormName,
 					color: this.tagFormColor,
+					description: this.tagFormDesc
 				}
 				this.newTags.push(newTagObj)
 				this.selectedTags.push(newTagObj)
 				this.tagFormName = ''
 				this.tagsSearch = ''
+				this.tagFormDesc = ''
 				this.tagFormColor = this.tagColors[0]
 				this.setTheTagsSelectorView(1)
 				this.isEdited = true
@@ -1292,6 +1304,36 @@ $(document).one("trigger::vue_loaded", function () {
 				})
 
 				return uniqueTags;
+			},
+			hiddenCaseTags() {
+				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden tags', v_sort: true }]
+				this.casesFiltered.forEach(caseItem => {
+					if (caseItem['v_tags']) {
+						caseItem['v_tags'].forEach(tag => {
+							const idx = uniqueTags.findIndex(allTag => allTag.value === tag.value)
+							if (idx < 0) {
+								uniqueTags.push(tag)
+							}
+						})
+					}
+				})
+
+				return uniqueTags;
+			},
+			hiddenCaseGroups() {
+				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden gruppe', v_sort: true }]
+				this.casesFiltered.forEach(caseItem => {
+					if (caseItem['v_groups']) {
+						caseItem['v_groups'].forEach(tag => {
+							const idx = uniqueTags.findIndex(allTag => allTag.value === tag.value)
+							const idxInPredefined = this.thePredefinedGroups.findIndex(predefinedTag => predefinedTag.value === tag.value)
+							if (idx < 0 && idxInPredefined < 0) {
+								uniqueTags.push(tag)
+							}
+						})
+					}
+				})
+				return uniqueTags.concat(this.thePredefinedGroups)
 			},
 			/* END 17-12-23 */
 			onpSSIDDetailsGrouped() {
@@ -1824,9 +1866,11 @@ $(document).one("trigger::vue_loaded", function () {
 				const tagsArrDb = tagsArr.map(tag => {
 					return {
 						value: tag.value,
-						color: tag.color
+						color: tag.color,
+						description: tag.description ? tag.description : null
 					}
 				})
+				console.log({ tagsArrDb })
 				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArrDb));
 				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
 				$('.updTagOrGroup_Input_caseid > input').val(caseOnId)
