@@ -2423,7 +2423,8 @@
                                 <div class="o-group__flex">
                                     <div class="o-group">
                                         <div class="o-toggle-group o-toggle-group--button" @click="onAttachFiles">
-                                        <label class="o-label">Vedhæft filer</label>
+                                        <label v-if="(activeCategory == 'OperationsStatus'" class="o-label">Tilføj filer til udmelding</label>
+                                        <label v-if="(activeCategory == 'News'" class="o-label">Tilføj filer til nyhed</label>
                                         </div>
                                     </div>
                                     <div :id="formType + '_cloneDestination'"></div>
