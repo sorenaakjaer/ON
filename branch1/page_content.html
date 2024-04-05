@@ -21,7 +21,7 @@
                 <div class="o-navbar__right">
                     <div class="o-navbar__right__buttons" v-if="isNewDesignActive">
                         <button class="o-btn o-btn--primary"
-                            v-if="(activeCategory == 'News' || activeCategory == 'OperationsStatus)' && (theUserType === 'IO' || theUserType === 'ON') && !isCases"
+                            v-if="(activeCategory == 'News' || activeCategory == 'OperationsStatus') && (theUserType === 'IO' || theUserType === 'ON') && !isCases"
                             @click="setIsCreateAnnouncementModal(true)"
                             v-if="theUserType === 'IO' || theUserType === 'ON'"><span
                                 v-if="activeCategory === 'News'">Opret nyhed</span><span v-else>Opret
