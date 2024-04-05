@@ -2513,7 +2513,7 @@
                 <label class="pp-label pp-label--row">Fra</label>
                 <p>{{email.from}} ({{email.company_display}} )</p>
             </div>
-            <div class="o-ann__element__row o-ann__element__row--border">
+            <div v-if="(theUserType === 'IO' || theUserType === 'ON')" class="o-ann__element__row o-ann__element__row--border">
                 <label class="pp-label pp-label--row">Til:</label>
                 <p>{{email.v_receivers}}</p>
             </div>
