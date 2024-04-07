@@ -1801,6 +1801,7 @@ $(document).one("trigger::vue_loaded", function () {
 				if (initialLengthOfAttachedFiles > 0) {
 					if (this.addFilesToCase === '') {
 						this.isShowAddFilesNotAnswered = true
+						this.isSubmitting = false
 						return
 					}
 					clearJSONfields();
@@ -2104,6 +2105,11 @@ $(document).one("trigger::vue_loaded", function () {
 								correspondingWrapperDiv.remove();
 							}
 						}
+					}
+					if ($('#announcement_cloneDestination > div').length === 0) {
+						this.isShowAddFiles = false
+						this.addFilesToCase = ''
+						this.isShowAddFilesNotAnswered = false
 					}
 				}
 				event.preventDefault();
