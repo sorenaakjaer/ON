@@ -1866,7 +1866,7 @@ $(document).one("trigger::vue_loaded", function () {
 					"updateSubscriptionUserId": !this.isUpdateSubscription ? null : this.updateSubscriptionUserId,
 					"receivers": Object.keys(this.selectedReceivers).map(key => key).join(';'),
 					"attachments": this.attachmentToken ? [this.attachmentToken] : null,
-					"attachments_in_email": this.addFilesToCase === 'yes' ? true : false,
+					"attachments_in_email": this.addFilesToCase == 'true' ? true : false,
 					"html": this.emailHTMLAllPlaceholdersReplaced,
 					"placeholder_1": null,
 					"placeholder_2": null,

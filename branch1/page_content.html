@@ -2446,17 +2446,17 @@
                                 <div class="o-group__flex o-group__flex--center" :class="{'o-group__flex--error': isShowAddFilesNotAnswered}" v-if="isShowAddFiles">
                                     <label class="o-label">Skal filerne tilføjes til sagen?*</label>
                                     <div class="o-radio__group">
-                                        <div class="o-radio__group__radio" @click.stop="setAddFilesToCase('yes')" :class="{'o-radio__group__radio--selected': addFilesToCase === 'yes'}">
-                                            <input type="radio" id="yes" name="option" value="yes" v-model="addFilesToCase">
+                                        <div class="o-radio__group__radio" @click.stop="setAddFilesToCase('true')" :class="{'o-radio__group__radio--selected': addFilesToCase === 'true'}">
+                                            <input type="radio" id="yes" name="option" value="true" v-model="addFilesToCase">
                                             <label class="o-label" for="yes">Ja</label>
                                         </div>
-                                        <div class="o-radio__group__radio" @click.stop="setAddFilesToCase('no')" :class="{'o-radio__group__radio--selected': addFilesToCase === 'no'}">
-                                            <input type="radio" id="no" name="option" value="no" v-model="addFilesToCase">
+                                        <div class="o-radio__group__radio" @click.stop="setAddFilesToCase('false')" :class="{'o-radio__group__radio--selected': addFilesToCase === 'false'}">
+                                            <input type="radio" id="no" name="option" value="false" v-model="addFilesToCase">
                                             <label class="o-label" for="no">Nej</label>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="o-warning" v-if="addFilesToCase === 'yes'">
+                                <div class="o-warning" v-if="addFilesToCase == 'true'">
                                     <i class="tio">info</i>
                                     <p>Filer sendes og må ikke indeholde personfølsomme oplysninger</p>
                                 </div>
@@ -2558,7 +2558,8 @@
                 <p>{{email.shortDesc}}</p>
             </div>
             <div class="o-ann__element__row o-ann__element__row--border" v-if="email.attachments">
-                <label class="pp-label pp-label--row">Vedhæftede fil(er):</label>
+                <label class="pp-label pp-label--row" v-if="!email.attachments_in_email || email.attachments_in_email == 'false'">Tilføjet til sagen:</label>
+                <label class="pp-label pp-label--row" v-if="email.attachments_in_email && email.attachments_in_email == 'true'">Vedhæftet til emailen:</label>
                 <ul class="o-ann__email__files">
                     <li v-for="file in email.v_attachments" @click="downloadFile(file)">
                         <i class="tio">attachment</i>
