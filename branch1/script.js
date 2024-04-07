@@ -1345,7 +1345,9 @@ $(document).one("trigger::vue_loaded", function () {
 				quillInstances: {},
 				versionHistPlaceholder: {},
 				changedPlaceholders: {},
-				attachmentToken: null
+				attachmentToken: null,
+				isShowAddFiles: false,
+				addFilesToCase: ''
 			}
 		},
 		computed: {
@@ -1581,6 +1583,10 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			setAddFilesToCase(val) {
+				this.addFilesToCase = val
+				this.isShowAddFilesNotAnswered = false
+			},
 			setInitialServiceWindowDates() {
 				// Set the start of the service window to the next whole hour
 				const now = new Date();
@@ -1792,6 +1798,10 @@ $(document).one("trigger::vue_loaded", function () {
 				const uploadedPanel = document.querySelector('.ppUPLOAD #uploadedPanel');
 				const initialLengthOfAttachedFiles = uploadedPanel ? uploadedPanel.children.length : 0;
 				if (initialLengthOfAttachedFiles > 0) {
+					if (this.addFilesToCase === '') {
+						this.isShowAddFilesNotAnswered = true
+						return
+					}
 					clearJSONfields();
 					this.attachmentToken = Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2);
 					$(".ppUPLOAD_TOKEN > input").val(this.attachmentToken);
@@ -2034,8 +2044,14 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			handleMutations(mutations) {
 				mutations.forEach(mutation => {
+					if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+						this.isShowAddFiles = true
+					} else {
+						this.showAddFiles = false
+					}
 					mutation.addedNodes.forEach(node => {
 						if (node.nodeType === 1) { // Checks if the node is an element node
+
 							const clonedNode = node.cloneNode(true); // Deep clone the node
 
 							// Add event listener to all links with a 'deleteurl' attribute within the cloned node
@@ -2958,8 +2974,8 @@ $(document).one("trigger::vue_loaded", function () {
 			isLoadingEndCustomerEmailConfigFormData: false,
 			theEndCustomerEmailConfigFormActiveType: 'web',
 			theFilteredSelectedTags: [],
-			newsCasesFilters: ['Igangværende ordre'],
-			errorIncidentFilters: ['Change Request']
+			errorIncidentFilters: ['Change Request'],
+			newsCasesFilters: ['Igangværende ordre']
 		},
 		computed: {
 			isViewOperationStatus() {

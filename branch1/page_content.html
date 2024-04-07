@@ -2443,6 +2443,23 @@
                                     </div>
                                     <div :id="formType + '_cloneDestination'"></div>
                                 </div>
+                                <div class="o-group__flex o-group__flex--center" :class="{'o-group__flex--error': isShowAddFilesNotAnswered}" v-if="isShowAddFiles">
+                                    <label class="o-label">Skal filerne tilføjes til sagen?*</label>
+                                    <div class="o-radio__group">
+                                        <div class="o-radio__group__radio" @click.stop="setAddFilesToCase('yes')" :class="{'o-radio__group__radio--selected': addFilesToCase === 'yes'}">
+                                            <input type="radio" id="yes" name="option" value="yes" v-model="addFilesToCase">
+                                            <label class="o-label" for="yes">Ja</label>
+                                        </div>
+                                        <div class="o-radio__group__radio" @click.stop="setAddFilesToCase('no')" :class="{'o-radio__group__radio--selected': addFilesToCase === 'no'}">
+                                            <input type="radio" id="no" name="option" value="no" v-model="addFilesToCase">
+                                            <label class="o-label" for="no">Nej</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o-warning" v-if="addFilesToCase === 'yes'">
+                                    <i class="tio">info</i>
+                                    <p>Filer sendes og må ikke indeholde personfølsomme oplysninger</p>
+                                </div>
                                 <div class="o-group__flex" v-if="!formTypeIsMaster">
                                     <div class="o-toggle-group" @click="isServiceWindow = !isServiceWindow">
                                     <label class="o-label">Service window</label>
