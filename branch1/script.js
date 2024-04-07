@@ -2959,7 +2959,7 @@ $(document).one("trigger::vue_loaded", function () {
 			theEndCustomerEmailConfigFormActiveType: 'web',
 			theFilteredSelectedTags: [],
 			newsCasesFilters: ['Igangværende ordre'],
-			errorIncidentFilters: ['Fremrykning']
+			errorIncidentFilters: ['Change Request']
 		},
 		computed: {
 			isViewOperationStatus() {
@@ -5534,16 +5534,6 @@ $(document).on("trigger::vue_mounted", function () {
 	});
 	// Bind click event for case creation button
 	$(".js-btn-create-case").off("click").on("click", function () {
-		console.log('js-btn-create-case::clicked', requestTypeFilter)
-
-		$('.Web_InnerControl_CATEGORY option').each(function () {
-			const optionText = $(this).text();
-			if (requestTypeFilter !== null && requestTypeFilter.length > 0 && !requestTypeFilter.includes(optionText)) {
-				$(this).hide();
-			} else {
-				$(this).show();
-			}
-		});
 
 		run_autoupdate = false;
 		window.scroll(0, 0);
@@ -5562,6 +5552,21 @@ $(document).on("trigger::vue_mounted", function () {
 			$("body").css("overflow", "hidden");
 			$(".js-modal-create-title").text("Opret sag");
 		}
+
+		// Set "forespørgstyper" based on filters
+		console.log('js-btn-create-case::clicked', requestTypeFilter)
+		var visibleElements = $('.INQUIRY_TYPE_LEVEL2').filter(function () {
+			return $(this).css('display') !== 'none';
+		});
+		$(visibleElements).find('.Web_InnerControl_CATEGORY').val("").change();
+		$(visibleElements).find('.Web_InnerControl_CATEGORY option').each(function () {
+			const optionText = $(this).text();
+			if (requestTypeFilter !== null && requestTypeFilter.length > 0 && !requestTypeFilter.includes(optionText)) {
+				$(this).hide();
+			} else {
+				$(this).show();
+			}
+		});
 	});
 
 	// Bind click event for menu overlay
