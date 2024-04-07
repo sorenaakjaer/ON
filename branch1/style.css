@@ -11592,7 +11592,7 @@ ul.tags-selector__dropdow__create {
 }
 
 .o-placeholders__placeholder .ql-toolbar.ql-snow {
-    border-radius: 4px 4px 0 0;
+    border-radius: 0 4px 0 0;
 }
 
 .o-placeholders__placeholder .ql-toolbar.ql-snow+.ql-container.ql-snow {
@@ -11772,4 +11772,29 @@ ul.tags-selector__dropdow__create {
 .o-group__flex.o-group__flex--error {
     box-shadow: 0 0 0 2px red;
     border-radius: 4px;
+}
+
+.o-editor__tabs {
+    display: flex;
+    align-items: center;
+}
+
+.o-editor__tabs__tab {
+    border: 1px solid transparent;
+    border-width: 1px 1px 0 1px;
+    padding: 0.5rem;
+    border-radius: 4px 4px 0 0;
+    margin-bottom: -1px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.o-editor__tabs__tab--selected {
+    border-color: #ccc;
+}
+
+.o-placeholders__placeholder__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }

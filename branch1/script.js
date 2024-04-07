@@ -1348,7 +1348,8 @@ $(document).one("trigger::vue_loaded", function () {
 				attachmentToken: null,
 				isShowAddFiles: false,
 				addFilesToCase: '',
-				isShowAddFilesNotAnswered: false
+				isShowAddFilesNotAnswered: false,
+				thePlaceholdersToShowHtml: {}
 			}
 		},
 		computed: {
@@ -1584,6 +1585,19 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			setThePlaceholdersToShowHtml(num, showHtml) {
+				if (!showHtml && this.thePlaceholdersToShowHtml[num]) {
+					this.$delete(this.thePlaceholdersToShowHtml, num);
+				} else {
+					this.$set(this.thePlaceholdersToShowHtml, num, showHtml);
+					this.$nextTick(() => {
+						const el = document.querySelector('.o-placeholder_' + num)
+						if (el) {
+							el.focus()
+						}
+					})
+				}
+			},
 			setAddFilesToCase(val) {
 				this.addFilesToCase = val
 				this.isShowAddFilesNotAnswered = false

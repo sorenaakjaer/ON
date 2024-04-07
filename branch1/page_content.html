@@ -2388,10 +2388,19 @@
                                             <p class="text-explainer text-grey" v-if="activePlaceholders.length === 0">Ingen aktive placeholders</p>
                                         <ul class="o-placeholders" v-if="activePlaceholders.length > 0">
                                             <li class="marg-1-bottom o-placeholders__placeholder" v-for="(oPlaceholder, key) in activePlaceholders" :key="oPlaceholder.id">
+                                                <div class="o-placeholders__placeholder__header">
+                                                <div class="o-editor__tabs">
+                                                    <div class="o-editor__tabs__tab" :class="{'o-editor__tabs__tab--selected': !thePlaceholdersToShowHtml[oPlaceholder.num]}" @click="setThePlaceholdersToShowHtml(oPlaceholder.num, false)">Editor</div>
+                                                    <div class="o-editor__tabs__tab" :class="{'o-editor__tabs__tab--selected': thePlaceholdersToShowHtml[oPlaceholder.num]}" @click="setThePlaceholdersToShowHtml(oPlaceholder.num, true)">HTML</div>
+                                                </div>
                                                 <label class="pp-label">{{ oPlaceholder.placeholder }}</label>
-                                                <div class="o-editor__quill" :data-placeholder-num="oPlaceholder.num" :id="'placeholder_' + oPlaceholder.num"></div>
-                                                <!-- 
-                                                <input type="text" class="o-input" :placeholder="oPlaceholder.placeholder" v-model="oPlaceholder.text"> -->
+                                            </div>
+                                                <div v-show="!thePlaceholdersToShowHtml[oPlaceholder.num]">
+                                                     <div class="o-editor__quill" :data-placeholder-num="oPlaceholder.num" :id="'placeholder_' + oPlaceholder.num"></div>
+                                                </div>
+                                                <div v-show="thePlaceholdersToShowHtml[oPlaceholder.num]">
+                                                    <textarea :class="'o-placeholder_' + oPlaceholder.num" class="o-input" :placeholder="'HTML til placeholder ' + oPlaceholder.num" v-model="oPlaceholder.text"></textarea>
+                                                </div>
                                             </li>
                                         </ul>
                                     </template>
