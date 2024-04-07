@@ -247,14 +247,15 @@
             </div>
 
 
-            <o-announcements v-if="!isShowOperationStatusErrorReports"
+            <o-announcements v-if="!isShowOperationStatusErrorReports && !isShowNewsCases"
                 :the_active_company_name="theActiveLoggedInCompany" :the_user="theUser" :the_user_type="theUserType"
                 :prop_is_create_announcement_modal="isCreateAnnouncementModal" :active_area="activeCategory"
                 @emit_announcements="onEmitAnnouncements" @on_copy="showToast($event)"
                 @on_close_create_announcement_modal="setIsCreateAnnouncementModal(false)">
             </o-announcements>
         </div>
-        <div class="o-list-of-cases" v-if="!isViewNewsOrOperationStatus || isShowOperationStatusErrorReports">
+        <div class="o-list-of-cases"
+            v-if="!isViewNewsOrOperationStatus || isShowOperationStatusErrorReports || isShowNewsCases">
             <div class="o-body__header o-wrapper" v-if="!isNewDesignActive">
                 <h1 class="js-page-title">Hjem / Mine sager</h1>
                 <button class="o-btn o-btn--primary createAnnouncement_btn" @click="CreateExtDocument('Announcement')"
@@ -415,7 +416,7 @@
             <div class="o-cases" :class="{'o-cases--is-open-analytics': activeCategory === 'OpenAnalytics'}">
                 <div class="vue-subheader-filters o-body__list-of-cases o-wrapper"
                     :class="{'vue-subheader-filters__flex': isNewDesignActive}" v-cloak
-                    v-if="!isViewRoles && (!isViewNewsOrOperationStatus || isShowOperationStatusErrorReports)">
+                    v-if="!isViewRoles && (!isViewNewsOrOperationStatus || isShowOperationStatusErrorReports || isShowNewsCases)">
                     <!-- START 17-12-23 -->
                     <template
                         v-if="isNewDesignActive && (isCases || isShowOperationStatusErrorReports || isShowNewsCases)">
@@ -423,7 +424,7 @@
                             <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__left">
                                 <o-multi-select :items="allCaseCategories" :selected_items="theActiveFilterCategories"
                                     @toggle_item="toggleFilterCategory" select_title="Vælg kategorier"
-                                    v-if="!isShowOperationStatusErrorReports"></o-multi-select>
+                                    v-if="!isShowOperationStatusErrorReports && !isShowNewsCases"></o-multi-select>
                                 <o-multi-select :items="allCaseTags" :selected_items="theActiveFilterTags"
                                     @toggle_item="toggleFilterTag" select_title="Vælg tag"></o-multi-select>
                                 <o-multi-select :items="allCaseGroups" :selected_items="theActiveFilterGroups"
@@ -739,12 +740,12 @@
 
                     </div>
                     <h4 class=" text-explainer"
-                        v-if="(activeCategory == 'OperationsStatus' && !isShowOperationStatusErrorReports) && activeCategory !=='OpenAnalytics' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && !isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter !=='dynamic'"
+                        v-if="(activeCategory == 'OperationsStatus' && !isShowOperationStatusErrorReports) && (activeCategory == 'News' && !isErrorReportsLoading) && activeCategory !=='OpenAnalytics' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && !isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter !=='dynamic'"
                         v-cloak> Ingen dokumenter matcher din søgning (1) {{ activeCategory }}
                     </h4>
                     <!-- <h4 class="text-explainer" v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1" v-cloak> Ingen dokumenter matcher din søgning</h4>-->
                     <div class="no-cases-matches"
-                        v-if="(activeCategory==='all_cases' && searchedCases.length < 1) || (activeCategory==='my_cases' && searchedCases.length < 1) || ( isShowOperationStatusErrorReports&& searchedCases.length < 1 && (!casesIsLoading && !isClosedCasesLoading))"
+                        v-if="(activeCategory==='all_cases' && searchedCases.length < 1) || (activeCategory==='my_cases' && searchedCases.length < 1) || ( isShowOperationStatusErrorReports&& searchedCases.length < 1 && (!casesIsLoading && !isClosedCasesLoading)) || ( isShowNewsCases && searchedCases.length < 1 && (!casesIsLoading && !isClosedCasesLoading))"
                         v-cloak>
                         <h4 v-if="!isSearchingOldCases && !isSearchingPartnerCases"> Ingen sager matcher din
                             søgning </h4>
@@ -776,7 +777,7 @@
                         afsluttede sager
                     </div>
                     <div class="vue-spinner o-spinner"
-                        v-if="(isCases && casesIsLoading) || (isShowOperationStatusErrorReports && (casesIsLoading || isClosedCasesLoading))"
+                        v-if="(isCases && casesIsLoading) || (isShowOperationStatusErrorReports && (casesIsLoading || isClosedCasesLoading)) || (isShowNewsCases && (casesIsLoading || isClosedCasesLoading))"
                         v-cloak></div>
                     <div class="vue-spinner o-spinner" v-if="isNewUserLoading && activeCategory=='roles'" v-cloak></div>
                     <div class="vue-spinner o-spinner"
@@ -786,7 +787,9 @@
                         v-cloak>
                         Bruger oprettes / opdateres</p>
                     <p v-if="(isShowOperationStatusErrorReports && isErrorReportsLoading)"
-                        class="text-explainer o-spinner__text">Henter error reports</p>
+                        class="text-explainer o-spinner__text">Henter fejlsager</p>
+                    <p v-if="(isShowNewsCases && isErrorReportsLoading)" class="text-explainer o-spinner__text">Henter
+                        spørgsmål til nyheder</p>
                     <p class="text-explainer o-spinner__text"
                         v-if="isNewAnnouncementLoading && activeCategory=='Announcement'" v-cloak>Ny udmelding
                         oprettes</p>
@@ -798,7 +801,8 @@
                         <p class="text-explainer o-spinner__text">Ny sag oprettes</p>
                     </template>
                     <div class="vue-spinner__container"
-                        v-if="!isShowOperationStatusErrorReports && isDocs && isOpenDocsLoading" v-cloak>
+                        v-if="!isShowNewsCases && !isShowOperationStatusErrorReports && isDocs && isOpenDocsLoading"
+                        v-cloak>
                         <div class="vue-spinner o-spinner"></div>
                         <p class="text-explainer o-spinner__text">Henter dokumenter</p>
                     </div>

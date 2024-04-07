@@ -3141,21 +3141,21 @@ $(document).one("trigger::vue_loaded", function () {
 				const errorIncidentFilters = ['Fremrykning']
 				return allIncidentCases.filter(itemCase => errorIncidentFilters.indexOf(itemCase.filter_category) > -1)
 			},
-			NewsCases() {
+			newsCases() {
 				// Kun return når begge er loaded
 				if (this.isErrorReportsLoading) {
 					return []
 				}
 				const allIncidentCases = this.casesOpen.concat(this.casesClosed)
-				const NewsCasesFilters = ['Igangværende ordre']
-				return allIncidentCases.filter(itemCase => NewsCasesFilters.indexOf(itemCase.filter_category) > -1)
+				const newsCasesFilters = ['Igangværende ordre']
+				return allIncidentCases.filter(itemCase => newsCasesFilters.indexOf(itemCase.filter_category) > -1)
 			},
 			casesFiltered2() {
 				if (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) {
 					return this.errorReports
 				}
 				if (this.activeCategory == 'News' && this.isShowNewsCases) {
-					return this.NewsCases
+					return this.newsCases
 				}
 				if (this.theActiveFilter === "active") {
 					return this.casesOpen
@@ -3491,15 +3491,19 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			setIsShowOperationStatusErrorReports(bool) {
 				if (bool) {
+					isVueView = 'error_reports'
 					this.isShowOperationStatusErrorReports = true
 				} else {
+					isVueView = null
 					this.isShowOperationStatusErrorReports = false
 				}
 			},
 			setIsShowNewsCases(bool) {
 				if (bool) {
+					isVueView = 'news'
 					this.isShowNewsCases = true
 				} else {
+					isVueView = null
 					this.isShowNewsCases = false
 				}
 			},
@@ -5530,6 +5534,7 @@ $(document).on("trigger::vue_mounted", function () {
 	});
 	// Bind click event for case creation button
 	$(".js-btn-create-case").off("click").on("click", function () {
+		console.log('js-btn-create-case::clicked', isVueView)
 
 		run_autoupdate = false;
 		window.scroll(0, 0);
@@ -5638,6 +5643,7 @@ var current_iframeHeight = 10;
 var current_iframeWidth = 10;
 var isPurifyLoadedToPage = false
 var isQuillLoadedToPage = false
+var isVueView = null
 console.log(openAnalyticsSecret)
 // Variables - START //
 
