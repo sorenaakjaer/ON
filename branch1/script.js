@@ -2957,7 +2957,9 @@ $(document).one("trigger::vue_loaded", function () {
 			],
 			isLoadingEndCustomerEmailConfigFormData: false,
 			theEndCustomerEmailConfigFormActiveType: 'web',
-			theFilteredSelectedTags: []
+			theFilteredSelectedTags: [],
+			newsCasesFilters: ['Igangværende ordre'],
+			errorIncidentFilters: ['Fremrykning']
 		},
 		computed: {
 			isViewOperationStatus() {
@@ -3138,8 +3140,7 @@ $(document).one("trigger::vue_loaded", function () {
 					return []
 				}
 				const allIncidentCases = this.casesOpen.concat(this.casesClosed)
-				const errorIncidentFilters = ['Fremrykning']
-				return allIncidentCases.filter(itemCase => errorIncidentFilters.indexOf(itemCase.filter_category) > -1)
+				return allIncidentCases.filter(itemCase => this.errorIncidentFilters.indexOf(itemCase.filter_category) > -1)
 			},
 			newsCases() {
 				// Kun return når begge er loaded
@@ -3147,8 +3148,7 @@ $(document).one("trigger::vue_loaded", function () {
 					return []
 				}
 				const allIncidentCases = this.casesOpen.concat(this.casesClosed)
-				const newsCasesFilters = ['Igangværende ordre']
-				return allIncidentCases.filter(itemCase => newsCasesFilters.indexOf(itemCase.filter_category) > -1)
+				return allIncidentCases.filter(itemCase => this.newsCasesFilters.indexOf(itemCase.filter_category) > -1)
 			},
 			casesFiltered2() {
 				if (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) {
@@ -3491,19 +3491,19 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			setIsShowOperationStatusErrorReports(bool) {
 				if (bool) {
-					isVueView = 'error_reports'
+					requestTypeFilter = this.errorIncidentFilters
 					this.isShowOperationStatusErrorReports = true
 				} else {
-					isVueView = null
+					requestTypeFilter = null
 					this.isShowOperationStatusErrorReports = false
 				}
 			},
 			setIsShowNewsCases(bool) {
 				if (bool) {
-					isVueView = 'news'
+					requestTypeFilter = this.newsCasesFilters
 					this.isShowNewsCases = true
 				} else {
-					isVueView = null
+					requestTypeFilter = null
 					this.isShowNewsCases = false
 				}
 			},
@@ -5534,7 +5534,16 @@ $(document).on("trigger::vue_mounted", function () {
 	});
 	// Bind click event for case creation button
 	$(".js-btn-create-case").off("click").on("click", function () {
-		console.log('js-btn-create-case::clicked', isVueView)
+		console.log('js-btn-create-case::clicked', requestTypeFilter)
+
+		$('.Web_InnerControl_CATEGORY option').each(function () {
+			const optionText = $(this).text();
+			if (requestTypeFilter !== null && requestTypeFilter.length > 0 && !requestTypeFilter.includes(optionText)) {
+				$(this).hide();
+			} else {
+				$(this).show();
+			}
+		});
 
 		run_autoupdate = false;
 		window.scroll(0, 0);
@@ -5643,7 +5652,7 @@ var current_iframeHeight = 10;
 var current_iframeWidth = 10;
 var isPurifyLoadedToPage = false
 var isQuillLoadedToPage = false
-var isVueView = null
+var requestTypeFilter = null
 console.log(openAnalyticsSecret)
 // Variables - START //
 
