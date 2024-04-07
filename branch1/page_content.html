@@ -235,13 +235,11 @@
                 <div class="o-wrapper">
                     <div class="o-filters">
                         <div class="o-filters__filter vue-filter-level2"
-                            :class="{'o-filters__filter--active': !isShowNewsCases}"
-                            @click="setIsShowNewsCases(false)">
+                            :class="{'o-filters__filter--active': !isShowNewsCases}" @click="setIsShowNewsCases(false)">
                             Nyheder
                         </div>
                         <div class="o-filters__filter vue-filter-level2"
-                            :class="{'o-filters__filter--active': isShowNewsCases}"
-                            @click="setIsShowNewsCases(true)">
+                            :class="{'o-filters__filter--active': isShowNewsCases}" @click="setIsShowNewsCases(true)">
                             Spørgsmål til nyheder (Sager)
                         </div>
                     </div>
@@ -249,7 +247,8 @@
             </div>
 
 
-            <o-announcements v-if="!isShowOperationStatusErrorReports" :the_user="theUser" :the_user_type="theUserType"
+            <o-announcements v-if="!isShowOperationStatusErrorReports"
+                :the_active_company_name="theActiveLoggedInCompany" :the_user="theUser" :the_user_type="theUserType"
                 :prop_is_create_announcement_modal="isCreateAnnouncementModal" :active_area="activeCategory"
                 @emit_announcements="onEmitAnnouncements" @on_copy="showToast($event)"
                 @on_close_create_announcement_modal="setIsCreateAnnouncementModal(false)">
@@ -418,7 +417,8 @@
                     :class="{'vue-subheader-filters__flex': isNewDesignActive}" v-cloak
                     v-if="!isViewRoles && (!isViewNewsOrOperationStatus || isShowOperationStatusErrorReports)">
                     <!-- START 17-12-23 -->
-                    <template v-if="isNewDesignActive && (isCases || isShowOperationStatusErrorReports || isShowNewsCases)">
+                    <template
+                        v-if="isNewDesignActive && (isCases || isShowOperationStatusErrorReports || isShowNewsCases)">
                         <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__space">
                             <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__left">
                                 <o-multi-select :items="allCaseCategories" :selected_items="theActiveFilterCategories"
@@ -2069,7 +2069,13 @@
                         @toggle_item="toggleFilterTypes" select_title="Vælg Type"></o-multi-select>
                     </div>
                     <div class="o-ann__body__header__right">
-                        <div class="o-search-group">
+                        <div class="o-sort-setting o-dropdown vue-dropdown hint--left vue2-remove-all-filter-icon"
+                        aria-label="Fjern alle filtre" @click.prevent="removeAllFilters"
+                        v-if="isAnyFiltersActive">
+                        <div class="o-dropdown__selected">
+                            <i class="tio">remove_from_trash</i>
+                        </div>
+                    </div>                        <div class="o-search-group">
                             <div class="o-icon">
                                 <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24">
@@ -2099,7 +2105,7 @@
                             </label>
                             <div class="o-slider__container">
                                 <div class="o-slider-indicator" :style="{'width': ((300 / 90) * theActiveFilterPeriodDays) + 'px'}"></div>
-                                <input type="range" v-model="theActiveFilterPeriodDays" @change="setTheActiveFilterPeriod" min="1" max="90" value="30" class="o-slider">
+                                <input type="range" v-model="theActiveFilterPeriodDays" @change="updateTheActiveFilterPeriodDays" min="1" max="90" value="30" class="o-slider">
                             </div>
                         </div>
                         <div class="o-slider__wrapper" v-if="active_area === 'OperationsStatus'">
@@ -2109,13 +2115,13 @@
                             </label>
                             <div class="o-slider__container">
                                 <div class="o-slider-indicator" :style="{'width': ((300 / 90) * theActiveFilterPeriodDays) + 'px'}"></div>
-                                <input type="range" v-model="theActiveFilterPeriodDays" @change="setTheActiveFilterPeriod" min="1" max="90" value="30" class="o-slider">
+                                <input type="range" v-model="theActiveFilterPeriodDays" @change="updateTheActiveFilterPeriodDays" min="1" max="90" value="30" class="o-slider">
                             </div>
                         </div>       
                     </div>    
                     <div class="o-ann__body__header__right">
-                        <p class="pp-label" v-if="active_area === 'News'">Nyheder i listen: XXX </p>  
-                        <p class="pp-label" v-if="active_area === 'OperationsStatus'">Udmeldinger i listen: XXX </p>  
+                        <p class="pp-label" v-if="active_area === 'News'">Nyheder i listen: {{ searchedAnnouncements.length }} </p>  
+                        <p class="pp-label" v-if="active_area === 'OperationsStatus'">Udmeldinger i listen: {{ searchedAnnouncements.length }} </p>  
                     </div>                            
                 </div>
             </div>
@@ -2200,6 +2206,7 @@
                 :master_templates="masterTemplates"
                 :theNewMasterTemplateId="theNewMasterTemplateId"
                 :the_user="the_user"
+                :the_active_company_name="the_active_company_name"
                 :edit_announcement="theEditAnnouncement"
                 :edit_master_template="theEditMasterTemplate"
                 @done="onEditAnnouncementDone"
@@ -2216,6 +2223,7 @@
                 :active_area="active_area"
                 :standard_options="standardOptions"
                 :filteredReceivers="filteredReceivers"
+                :the_active_company_name="the_active_company_name"
                 :edit_master_template="theEditMasterTemplate"
                 :master_templates="masterTemplates"
                 formType="master"
@@ -2244,7 +2252,8 @@
             </div>
         </div>
         <div class="o-modal__body">
-            <o-email :email="announcement"></o-email>
+            <div class="o-modal__body__container">
+            <o-email :email="announcement" :the_user_type="the_user_type"></o-email>
             <div v-if="announcement.v_earlierVersions.length > 0">
                 <div class="o-ann__see-more-container" v-if="the_active_see_more_case !== announcement.onid">
                     <button class="o-btn o-btn--small" @click.stop="$emit('setTheActiveSeeMoreCase', announcement.onid)"><i class="tio">chevron_down</i> Se tidligere udgaver</button>
@@ -2253,8 +2262,9 @@
                     <button class="o-btn o-btn--small" @click.stop="$emit('setTheActiveSeeMoreCase', null)"><i class="tio">chevron_up</i>Skjul tidligere udgaver</button>
                 </div>
                 <div class="o-ann__see-more__old-emails" v-if="the_active_see_more_case === announcement.onid">
-                    <o-email :email="email" :is_earlier_version="true" v-for="email in announcement.v_earlierVersions" :key="email.v_id" v-if="email.html && email.html.length > 0"></o-email>
+                    <o-email :email="email" :the_user_type="the_user_type" :is_earlier_version="true" v-for="email in announcement.v_earlierVersions" :key="email.v_id" v-if="email.html && email.html.length > 0"></o-email>
                 </div>
+            </div>
         </div>
         </div>
     </div>
@@ -2407,7 +2417,7 @@
                                         </div>
                                         </div>
                                         <ul class="o-ann-receivers">
-                                            <li v-for="receiver in filteredReceivers"
+                                            <li v-for="receiver in receiversFilterFromSelf"
                                             :class="{'o-ann-receivers__receiver--selected': getIsReceiverSelected(receiver.id)}"
                                             :key="receiver.id"
                                             @click="setSelectedReceiver(receiver.id)">
@@ -2423,8 +2433,8 @@
                                 <div class="o-group__flex">
                                     <div class="o-group">
                                         <div class="o-toggle-group o-toggle-group--button" @click="onAttachFiles">
-                                        <label v-if="activeCategory == 'OperationsStatus'" class="o-label">Tilføj filer til udmelding</label>
-                                        <label v-if="activeCategory == 'News'" class="o-label">Tilføj filer til nyhed</label>
+                                        <label v-if="active_area == 'OperationsStatus'" class="o-label">Tilføj filer til udmelding</label>
+                                        <label v-if="active_area == 'News'" class="o-label">Tilføj filer til nyhed</label>
                                         </div>
                                     </div>
                                     <div :id="formType + '_cloneDestination'"></div>
@@ -2512,9 +2522,9 @@
         <div class="o-ann__email-container__header">
             <div class="o-ann__element__row o-ann__element__row--border">
                 <label class="pp-label pp-label--row">Fra</label>
-                <p>{{email.from}} ({{email.company_display}} )</p>
+                <p>{{email.v_from}} ({{email.company_display}} )</p>
             </div>
-            <div v-if="(theUserType === 'IO' || theUserType === 'ON')" class="o-ann__element__row o-ann__element__row--border">
+            <div v-if="(the_user_type === 'IO' || the_user_type === 'ON')" class="o-ann__element__row o-ann__element__row--border">
                 <label class="pp-label pp-label--row">Til:</label>
                 <p>{{email.v_receivers}}</p>
             </div>

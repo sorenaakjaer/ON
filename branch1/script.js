@@ -568,6 +568,9 @@ $(document).one("trigger::vue_loaded", function () {
 			prop_is_create_announcement_modal: {
 				type: Boolean,
 				default: false
+			},
+			the_active_company_name: {
+				default: '' // 'SP Dev Company', 'IO Dev Company', 'Opennet' etc.
 			}
 		},
 		data() {
@@ -579,7 +582,7 @@ $(document).one("trigger::vue_loaded", function () {
 				isNewMasterModal: false,
 				searchQuery: '',
 				debounce: null,
-				theActiveFilterFrom: [],				
+				theActiveFilterFrom: [],
 				theActiveFilterStatuses: [],
 				theActiveFilterTypes: [],
 				theActiveFilterPeriod: [new Date(), new Date()],
@@ -608,8 +611,8 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			activeAnnouncementsWithVProps() {
 				const potentialReceivers = [{ id: 'ALL', name: 'All' }, { id: 'ALL_SPs', name: 'All SPs' }, { id: 'ALL_IOs', name: 'All IOs' }].concat(this.filteredReceivers)
-				const changeIdsToNames = (item) => {
-					const rece = item.receivers && item.receivers.length > 0 ? item.receivers : ''
+				const changeIdsToNames = (arr) => {
+					const rece = arr && arr.length > 0 ? arr : ''
 					const names = rece.split(';').map(userid => {
 						const idx = potentialReceivers.findIndex(user => user.id === userid);
 						if (idx > -1) {
@@ -623,7 +626,8 @@ $(document).one("trigger::vue_loaded", function () {
 				return this.activeAnnouncements.map(ann => ({
 					...ann,
 					v_id: `${ann.onid}_${ann.version}`,
-					v_receivers: changeIdsToNames(ann),
+					v_from: changeIdsToNames(ann.from),
+					v_receivers: changeIdsToNames(ann.receivers),
 					v_timeFromNow: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).fromNow() : ann.createdTime,
 					v_createTimeFormatted: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).format('LLL') : ann.createdTime,
 					v_attachments: ann.attachments ? JSON.parse(ann.attachments) : [],
@@ -673,11 +677,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			vAnnouncementsFilteredWithPeriod() {
-				if (this.active_area !== 'News') {
-					return this.vAnnouncementsFilteredWithType;
-				}
 				if (this.theActiveFilterPeriod.length === 2) {
-					console.log('theActiveFilterPeriod', this.theActiveFilterPeriod)
 					const endDate = new Date(this.theActiveFilterPeriod[0]);
 					return this.vAnnouncementsFilteredWithType.filter(itemCase => {
 						const createdTime = new Date(itemCase.createdTime);
@@ -712,7 +712,7 @@ $(document).one("trigger::vue_loaded", function () {
 						return this.theActiveFilterFrom.includes(itemCase.from);
 					})
 				}
-			},			
+			},
 			searchedAnnouncements() {
 				if (!this.searchQuery.trim()) {
 					return this.vAnnouncementsFilteredWithStatus;
@@ -731,13 +731,13 @@ $(document).one("trigger::vue_loaded", function () {
 					if (annFrom) {
 						const idx = uniqueTags.findIndex(allTag => allTag.value === annFrom)
 						if (idx < 0) {
-							const tag = { value: annFrom, label: annFrom}
+							const tag = { value: annFrom, label: annFrom }
 							uniqueTags.push(tag)
 						}
 					}
 				})
 				return uniqueTags;
-			},			
+			},
 			filterStatuses() {
 				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden status', v_sort: true }]
 				this.activeAnnouncements.forEach(ann => {
@@ -776,20 +776,51 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			theActiveAnnouncement() {
 				return this.theAnnActiveItem ? this.vAnnouncements.find(ann => ann.v_id === this.theAnnActiveItem) : null
+			},
+			isAnyFiltersActive() {
+				return this.theActiveFilterFrom.length > 0 || this.theActiveFilterStatuses.length > 0 || this.theActiveFilterTypes.length > 0
 			}
 		},
 		watch: {
 			the_user(val) {
 				console.log('THEUSER', val)
+			},
+			active_area() {
+				this.updateFilters()
 			}
 		},
 		methods: {
+			removeAllFilters() {
+				const arr = ['theActiveFilterFrom', 'theActiveFilterStatuses', 'theActiveFilterTypes']
+				arr.forEach(filterType => {
+					this[filterType] = []
+					this.setLocalStorageFilter(filterType, this[filterType])
+				})
+			},
+			updateFilters() {
+				this.theActiveFilterFrom = []
+				this.theActiveFilterStatuses = []
+				this.theActiveFilterTypes = []
+				this.getLocalStorageFilter('theActiveFilterFrom')
+				this.getLocalStorageFilter('theActiveFilterStatuses')
+				this.getLocalStorageFilter('theActiveFilterTypes')
+				if (localStorage.getItem(this.active_area + '_theActiveFilterPeriodDays')) {
+					this.getLocalStorageFilter('theActiveFilterPeriodDays')
+				} else {
+					this.theActiveFilterPeriodDays = 30
+				}
+				this.setTheActiveFilterPeriod()
+			},
 			setIsListView(bool) {
 				this.isListView = !this.isListView
 			},
+			updateTheActiveFilterPeriodDays() {
+				this.setLocalStorageFilter('theActiveFilterPeriodDays', this.theActiveFilterPeriodDays)
+				this.setTheActiveFilterPeriod()
+			},
 			setTheActiveFilterPeriod() {
 				const today = new Date();
-				today.setDate(today.getDate() - this.theActiveFilterPeriodDays); // Add 30 days to the current date
+				today.setDate(today.getDate() - (this.theActiveFilterPeriodDays * 1)); // Add 30 days to the current date
 				const newStartDate = today
 				this.theActiveFilterPeriod = [newStartDate, new Date()]
 			},
@@ -822,7 +853,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			toggleFilterFrom(item) {
 				this.toggleFilter('theActiveFilterFrom', item);
-			},			
+			},
 			toggleFilterStatus(item) {
 				this.toggleFilter('theActiveFilterStatuses', item);
 			},
@@ -835,6 +866,21 @@ $(document).one("trigger::vue_loaded", function () {
 					this[filterType].push(item.value);
 				} else {
 					this[filterType].splice(idx, 1);
+				}
+				this.setLocalStorageFilter(filterType, this[filterType])
+			},
+			setLocalStorageFilter(filterType, filterArr) {
+				const localTitle = this.active_area + '_' + filterType
+				if (!filterArr || filterArr.length === 0) {
+					localStorage.removeItem(localTitle)
+				} else {
+					localStorage.setItem(localTitle, JSON.stringify(filterArr))
+				}
+			},
+			getLocalStorageFilter(filterType) {
+				const localTitle = this.active_area + '_' + filterType
+				if (localStorage.getItem(localTitle)) {
+					this[filterType] = JSON.parse(localStorage.getItem(localTitle));
 				}
 			},
 			clearSearchQuery() {
@@ -1057,6 +1103,7 @@ $(document).one("trigger::vue_loaded", function () {
 		mounted() {
 			this.fetchData()
 			addPurifyFromCDN();
+			this.updateFilters();
 		}
 	})
 	Vue.component('o-email', {
@@ -1068,6 +1115,9 @@ $(document).one("trigger::vue_loaded", function () {
 			is_earlier_version: {
 				type: Boolean,
 				default: false
+			},
+			the_user_type: {
+				type: String
 			}
 		},
 		computed: {
@@ -1211,6 +1261,9 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			edit_announcement: {
 				default: null
+			},
+			the_active_company_name: {
+				default: '' // 'SP Dev Company', 'IO Dev Company', 'Opennet' etc.
 			}
 		},
 		data() {
@@ -1270,6 +1323,7 @@ $(document).one("trigger::vue_loaded", function () {
 				shortcuts: [
 					['{{{pp_mergecode:subject}}}',
 						'{{{pp_mergecode:type}}}',
+						'{{{pp_mergecode:status}}}',
 						'{{{pp_mergecode:from}}}',
 						'{{{pp_mergecode:user_name}}}',
 						'{{{pp_mergecode:teaser}}}',
@@ -1295,6 +1349,12 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		computed: {
+			receiversFilterFromSelf() {
+				const arrOfIds = ['ON']
+				const newArr = this.filteredReceivers.filter(receiver => arrOfIds.indexOf(receiver.id) < 0)
+				const arrOfNames = [this.the_active_company_name]
+				return newArr.filter(receiver => arrOfNames.indexOf(receiver.name) < 0)
+			},
 			isAllReceiversSelected() {
 				return this.getIsReceiverSelected('ALL')
 			},
@@ -1339,6 +1399,7 @@ $(document).one("trigger::vue_loaded", function () {
 					...this.emailServiceWindowStart ? { service_window_start: this.emailServiceWindowStart } : { service_window_start: '' },
 					...this.emailServiceWindowEnd ? { service_window_end: this.emailServiceWindowEnd } : { service_window_end: '' },
 					...this.theEmailSubject ? { subject: this.theEmailSubject } : { subject: '' },
+					...this.theSelectedStatus ? { status: this.theSelectedStatus } : { status: '' },
 					...this.theEmailFromCompany ? { from: this.theEmailFromCompany } : { from: '' },
 					...this.theEmailFromUser ? { user_name: this.theEmailFromUser } : { user_name: '' },
 					...this.theEmailTeaser ? { teaser: this.theEmailTeaser } : { teaser: '' },
@@ -1554,7 +1615,9 @@ $(document).one("trigger::vue_loaded", function () {
 							date = dayjs ? dayjs(date).format('LLL') : date
 						}
 						const text = obj['text'] ? obj['text'] : '';
-						str += '<tr><td style="border: 1px solid #eee;padding: 10px 20px;">' + date + '</td><td style="border: 1px solid #eee;padding: 10px 20px;">' + text + '</td></tr>';
+						const status = obj['status'] ? obj['status'] : '';
+						const statusStr = status.length > 0 ? '<td style="border: 1px solid #eee;padding: 10px 20px;">' + status + '</td>' : ''
+						str += '<tr><td style="border: 1px solid #eee;padding: 10px 20px;">' + date + '</td><td style="border: 1px solid #eee;padding: 10px 20px;">' + text + '</td>' + statusStr + '</tr>';
 					});
 				}
 				const tableHTML = '<table style="border-collapse: collapse;"><thead></thead><tbody>' + str + '</tbody></table>';
@@ -1672,7 +1735,7 @@ $(document).one("trigger::vue_loaded", function () {
 				myHeaders.append("Content-Type", "application/json");
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
 
-				console.log('newMasterHTMLSanitized',this.newMasterHTMLSanitized)
+				console.log('newMasterHTMLSanitized', this.newMasterHTMLSanitized)
 
 				let dbObj = {
 					template_id: null,
@@ -2155,9 +2218,12 @@ $(document).one("trigger::vue_loaded", function () {
 
 							quill.on('text-change', () => {
 								const idSuffix = editor.id.split('placeholder_')[1];
-								let val = quill.root.innerHTML
-								// remove default wrap into p tags https://github.com/quilljs/quill/issues/1745
-								val = val.replaceAll(/<\/?p[^>]*>/g, '').replace('<br>', '')
+								let val = quill.root.innerHTML;
+								// Check if the value starts with <p> and ends with </p>, and remove them
+								if (val.startsWith('<p>') && val.endsWith('</p>')) {
+									val = val.substring(3, val.length - 4); // Remove the first <p> and the last </p>
+								}
+								val = val.replace('<br>', ''); // Consider what you want to do with <br> tags more carefully
 
 								const idx = this.placeholders.findIndex(p => p.num == idSuffix);
 								if (idx !== -1) {
@@ -2165,18 +2231,19 @@ $(document).one("trigger::vue_loaded", function () {
 								}
 								// Not an edit
 								if (!this.placeholderHist) {
-									return
+									return;
 								}
-								const placeholderId = 'placeholder' + idSuffix
+								const placeholderId = 'placeholder' + idSuffix;
 								if (!this.changedPlaceholders[placeholderId]) {
-									this.changedPlaceholders[placeholderId] = true
+									this.changedPlaceholders[placeholderId] = true;
 									if (this.placeholderHist[placeholderId]) {
 										this.placeholderHist[placeholderId].unshift(this.versionHistPlaceholder[placeholderId]);
 									} else {
-										this.placeholderHist[placeholderId] = [this.versionHistPlaceholder[placeholderId]]
+										this.placeholderHist[placeholderId] = [this.versionHistPlaceholder[placeholderId]];
 									}
 								}
 							});
+
 						});
 					} else {
 						console.error("Quill is not loaded yet!");
@@ -2197,6 +2264,7 @@ $(document).one("trigger::vue_loaded", function () {
 			this.setInitialServiceWindowDates()
 		},
 		mounted() {
+			console.log('the_user', this.the_user)
 			this.$nextTick(_ => {
 				this.initializeQuillEditors()
 			})
@@ -2571,7 +2639,7 @@ $(document).one("trigger::vue_loaded", function () {
 			isCreateAnnouncementModal: false,
 			announcements: [],
 			isShowNewsCases: true,
-			isShowNews: true,			
+			isShowNews: true,
 			isShowOperationStatusErrorReports: true,
 			isShowNewOperationStatus: true,
 			toast: {
@@ -2897,7 +2965,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			isViewNews() {
 				return this.activeCategory == 'News'
-			},			
+			},
 			isViewNewsOrOperationStatus() {
 				return this.activeCategory == 'OperationsStatus' || this.activeCategory == 'News'
 			},
@@ -3081,14 +3149,14 @@ $(document).one("trigger::vue_loaded", function () {
 				const allIncidentCases = this.casesOpen.concat(this.casesClosed)
 				const NewsCasesFilters = ['Igangværende ordre']
 				return allIncidentCases.filter(itemCase => NewsCasesFilters.indexOf(itemCase.filter_category) > -1)
-			},			
+			},
 			casesFiltered2() {
 				if (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) {
 					return this.errorReports
 				}
 				if (this.activeCategory == 'News' && this.isShowNewsCases) {
 					return this.NewsCases
-				}				
+				}
 				if (this.theActiveFilter === "active") {
 					return this.casesOpen
 				} else {
@@ -3234,7 +3302,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return "" !== this.activeCategory && "roles" !== this.activeCategory && "all_cases" !== this.activeCategory && "my_cases" !== this.activeCategory && "end_customer_pricing_config" !== this.activeCategory && "end_customer_orders" !== this.activeCategory
 			},
 			isCases() {
-				return "all_cases" == this.activeCategory || "my_cases" == this.activeCategory || (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) || (this.activeCategory == 'News' && this.isShowNewsCases) 
+				return "all_cases" == this.activeCategory || "my_cases" == this.activeCategory || (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) || (this.activeCategory == 'News' && this.isShowNewsCases)
 			},
 			allCategories() {
 				let e = [];
@@ -3434,7 +3502,7 @@ $(document).one("trigger::vue_loaded", function () {
 				} else {
 					this.isShowNewsCases = false
 				}
-			},			
+			},
 			showToast(message) {
 				this.toast.message = message;
 				this.toast.visible = true;
