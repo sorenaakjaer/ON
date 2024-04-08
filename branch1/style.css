@@ -10892,7 +10892,7 @@ ul.tags-selector__dropdow__create {
 }
 
 .o-ann__elements-cards__card__header {
-    background: #333;
+    background: rgb(10, 55, 170, 0.2)   
     border-radius: 4px 4px 0 0;
     position: relative;
     padding: 1rem;
@@ -10957,7 +10957,7 @@ ul.tags-selector__dropdow__create {
     top: 0.5rem;
     right: 1rem;
     font-size: 10px;
-    color: #9da6af;
+    color: var(--grey)
 }
 
 .o-ann__elements-cards__card__body {

@@ -2511,7 +2511,7 @@
                         <div class="o-card__email-preview">
                             <div class="o-card__email-preview__header">
                                 <div class="o-ann__element__row o-ann__element__row--border"><label class="pp-label pp-label--row">Til</label> <p>{{ receiverNames }}</p></div>
-                                <div class="o-ann__element__row o-ann__element__row--border"><label class="pp-label pp-label--row">Fra</label> <p>{{ theEmailFromCompany }}</p></div>
+                                <div class="o-ann__element__row o-ann__element__row--border"><label class="pp-label pp-label--row">Fra</label> <p>Mail fra {{ theEmailFromCompany }} via OpenNets Partnerportal</p></div>
                                 <div class="o-ann__element__row o-ann__element__row--border"><label class="pp-label pp-label--row">Emne</label> <p>{{ theEmailSubject }}</p></div>
                                 <div class="o-ann__element__row o-ann__element__row--border" v-if="formType !== 'master'" v-show="addFilesToCase != ''">
                                     <label class="pp-label pp-label--row">
@@ -2558,7 +2558,7 @@
         <div class="o-ann__email-container__header">
             <div class="o-ann__element__row o-ann__element__row--border">
                 <label class="pp-label pp-label--row">Fra</label>
-                <p>{{email.v_from}} ({{email.company_display}} )</p>
+                <p>Mail fra ({{email.company_display}} via OpenNets Parnterportal )</p>
             </div>
             <div v-if="(the_user_type === 'IO' || the_user_type === 'ON')" class="o-ann__element__row o-ann__element__row--border">
                 <label class="pp-label pp-label--row">Til:</label>
