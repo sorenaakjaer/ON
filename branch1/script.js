@@ -2227,6 +2227,13 @@ $(document).one("trigger::vue_loaded", function () {
 			initializeQuillEditors() {
 				this.$nextTick(() => {
 					if (window.Quill) {
+						const Block = window.Quill.import('blots/block');
+						class DivBlock extends Block { }
+
+						DivBlock.tagName = 'SPAN';
+
+						// true means we overwrite  
+						window.Quill.register('blots/block', DivBlock, true);
 						const toolbarOptions = [['bold', 'italic', 'underline']];
 						const editors = this.$el.querySelectorAll('.o-editor__quill');
 
@@ -2261,7 +2268,6 @@ $(document).one("trigger::vue_loaded", function () {
 								if (val.startsWith('<p>') && val.endsWith('</p>')) {
 									val = val.substring(3, val.length - 4); // Remove the first <p> and the last </p>
 								}
-								val = val.replace('<br>', ''); // Consider what you want to do with <br> tags more carefully
 
 								const idx = this.placeholders.findIndex(p => p.num == idSuffix);
 								if (idx !== -1) {
