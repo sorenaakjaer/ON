@@ -2141,9 +2141,12 @@
                         @click="setActiveItem(item)">
                         <div class="o-ann__elements-cards__card__header">
                             <div class="pp-pill--unread" v-if="item.unread && item.unread != 'false'">Ulæst</div>
-                            <label class="o-ann__elements-cards__card__header__onid">
+                            <label v-if="item.version != 1" class="o-ann__elements-cards__card__header__onid">
                                 ONID: {{ item.onid }} ({{ item.version }}. udgave) 
                             </label>
+                            <label v-if="item.version === 1" class="o-ann__elements-cards__card__header__onid">
+                                ONID: {{ item.onid }}
+                            </label>                            
                             <div class="o-ann__elements-cards__card__header__email">
                                 <img :src="item.v_logo" class="o-ann__element__sender__img"/>
                                 <ul class="o-ann__elements-cards__card__header__email__list">
