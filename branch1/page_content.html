@@ -2340,6 +2340,8 @@
                                                 :value="oType.value">{{ oType.display }}</option>
                                         </select>
                                     </div>
+                                    <div v-if="theSelectedStatus === 'Pending' && active_area == 'News'" class="o-warning"><i class="tio">info</i> <p>Status ændres til "Afsluttet" efter 30 dage medmindre nyhed er opdateret</p></div>
+                                    <div v-if="theSelectedStatus != 'Closed' && active_area == 'OperationsStatus'" class="o-warning"><i class="tio">info</i> <p>Status ændres til "Closed" efter 30 dage medmindre nyhed er opdateret</p></div>
                                 </div>
                                 <div class="o-group">
                                     <label class="o-label">Fra firma (Vises som emailens afsender)</label>
