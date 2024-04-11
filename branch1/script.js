@@ -1508,6 +1508,10 @@ $(document).one("trigger::vue_loaded", function () {
 				const oStatusses = this.standard_options && this.standard_options['extMsg_status'] ? this.standard_options['extMsg_status'] : []
 				return oStatusses
 			},
+			filteredStatussesNews() {
+				const oStatussesNews = this.standard_options && this.standard_options['extMsg_status_news'] ? this.standard_options['extMsg_status_news'] : []
+				return oStatussesNews
+			},			
 			selectedReceiversLength() {
 				return Object.keys(this.selectedReceivers).length;
 			},
