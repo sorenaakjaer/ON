@@ -2411,6 +2411,10 @@
                                         </ul>
                                     </template>
                                         <textarea v-else class="o-editor__textarea" v-model="theEmailHTML" placeholder="Enter HTML here"></textarea>
+                                        <div class="o-warning" v-if="addFilesToCase == 'true'">
+                                            <i class="tio">info</i>
+                                            <p>Skriv ikke personfølsomme eller fortrolige oplysninger i emailen</p>
+                                        </div>
                                     </div>
                                 </div>
                                 </div>
@@ -2477,7 +2481,7 @@
                                 </div>
                                 <div class="o-warning" v-if="addFilesToCase == 'false'">
                                     <i class="tio">info</i>
-                                    <p>Det anses for god praksis at angive under afsnittet 'Placeholder', hvilke tilføjet filer der er tilgængelige på Partnerportalen.</p>
+                                    <p>Det betragtes som god skik at oplyse om de tilgængelige filer på Partnerportalen i brødteksten af e-mailen. </p>
                                 </div>                                
                                 <div class="o-group__flex" v-if="!formTypeIsMaster">
                                     <div class="o-toggle-group" @click="isServiceWindow = !isServiceWindow">
@@ -2568,7 +2572,7 @@
         <div class="o-ann__email-container__header">
             <div class="o-ann__element__row o-ann__element__row--border">
                 <label class="pp-label pp-label--row">Fra</label>
-                <p>Mail fra ({{email.company_display}} via OpenNets Partnerportal &lt;no-reply@opennnet.dk&gt;)</p>
+                <p>Mail fra {{email.company_display}} via OpenNets Partnerportal &lt;no-reply@opennnet.dk&gt;</p>
             </div>
             <div v-if="(the_user_type === 'IO' || the_user_type === 'ON')" class="o-ann__element__row o-ann__element__row--border">
                 <label class="pp-label pp-label--row">Til:</label>
