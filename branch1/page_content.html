@@ -2467,8 +2467,12 @@
                                 </div>
                                 <div class="o-warning" v-if="addFilesToCase == 'true'">
                                     <i class="tio">info</i>
-                                    <p>Filer som vedhæftet må ikke indeholde personfølsomme eller fortrolige oplysninger</p>
+                                    <p>Filer som er vedhæftet må ikke indeholde personfølsomme eller fortrolige oplysninger</p>
                                 </div>
+                                <div class="o-warning" v-if="addFilesToCase == 'false'">
+                                    <i class="tio">info</i>
+                                    <p>Det anses for god praksis at angive under afsnittet 'Placeholder', hvilke tilføjet filer der er tilgængelige på Partnerportalen.</p>
+                                </div>                                
                                 <div class="o-group__flex" v-if="!formTypeIsMaster">
                                     <div class="o-toggle-group" @click="isServiceWindow = !isServiceWindow">
                                     <label class="o-label">Service window</label>
@@ -2511,7 +2515,7 @@
                         <div class="o-card__email-preview">
                             <div class="o-card__email-preview__header">
                                 <div class="o-ann__element__row o-ann__element__row--border"><label class="pp-label pp-label--row">Til</label> <p>{{ receiverNames }}</p></div>
-                                <div class="o-ann__element__row o-ann__element__row--border"><label class="pp-label pp-label--row">Fra</label> <p>Mail fra {{ theEmailFromCompany }} via OpenNets Partnerportal</p></div>
+                                <div class="o-ann__element__row o-ann__element__row--border"><label class="pp-label pp-label--row">Fra</label> <p>Mail fra {{ theEmailFromCompany }} via OpenNets Partnerportal  &lt;no-reply@opennnet.dk&gt;</p></div>
                                 <div class="o-ann__element__row o-ann__element__row--border"><label class="pp-label pp-label--row">Emne</label> <p>{{ theEmailSubject }}</p></div>
                                 <div class="o-ann__element__row o-ann__element__row--border" v-if="formType !== 'master'" v-show="addFilesToCase != ''">
                                     <label class="pp-label pp-label--row">
@@ -2558,7 +2562,7 @@
         <div class="o-ann__email-container__header">
             <div class="o-ann__element__row o-ann__element__row--border">
                 <label class="pp-label pp-label--row">Fra</label>
-                <p>Mail fra ({{email.company_display}} via OpenNets Parnterportal )</p>
+                <p>Mail fra ({{email.company_display}} via OpenNets Partnerportal &lt;no-reply@opennnet.dk&gt;)</p>
             </div>
             <div v-if="(the_user_type === 'IO' || the_user_type === 'ON')" class="o-ann__element__row o-ann__element__row--border">
                 <label class="pp-label pp-label--row">Til:</label>
@@ -2573,7 +2577,7 @@
                 <p>{{email.shortDesc}}</p>
             </div>
             <div class="o-ann__element__row o-ann__element__row--border" v-if="email.attachments">
-                <label class="pp-label pp-label--row" v-if="!email.attachments_in_email || email.attachments_in_email == 'false'">Tilføjet til sagen:</label>
+                <label class="pp-label pp-label--row" v-if="!email.attachments_in_email || email.attachments_in_email == 'false'">Filer (Ikke vedhæftet i emailen):</label>
                 <label class="pp-label pp-label--row" v-if="email.attachments_in_email && email.attachments_in_email == 'true'">Vedhæftet til emailen:</label>
                 <ul class="o-ann__email__files">
                     <li v-for="file in email.v_attachments" @click="downloadFile(file)">
