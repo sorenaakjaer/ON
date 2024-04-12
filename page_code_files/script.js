@@ -301,29 +301,51 @@ $(document).one("trigger::o_page_loaded", function () {
 		openSmallModal("js-o-modal--small__follow-up")
 	});
 
-	$(".js-case-save-follow-up").on("click", function () {
-		var e = $(".js-o-modal--small__follow-up .datetimepicker").val(),
-			f = $('#js-follow-up__notify_when_deadline_passes').is(':checked'),
-			t = $(".js-o-modal--small__follow-up .o-modal__case__commentary__textarea").val(),
-			s = $(".o-modal__case").attr("data-case-id-token"),
-			a = $(".o-modal__case").attr("data-case-id");
-		
-			$(".ETRAY_READ_CASE_TOKEN_ID > input").val(s), 
-			$(".ETRAY_READ_CASE_ID > input").val(a), 
-			$(".ETRAY_READ_CASE__FOLLOW_UP > input").val(e), 
-			$(".ETRAY_READ_CASE__FOLLOW_UP_NOTI > input").val(f), 
-			$(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val(t), 
-			
-			$(".ETRAY_READ_MESSAGE_TYPE > input").val("FOLLOW_UP"), 
-			$(".ETRAY_UPDATE_CASE > a").click(), 
-			$("#js-case-element__inserted > div > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--red">Opf\xf8lgning</span></div>'), 
-			addMutationOberserverToSingleCase(), 
-			closeSmallModal("js-o-modal--small__follow-up"), 
-			readEtrayCaseComments(), 
-			setTimeout(function () {
-			$(".o-modal__case__commentary__textarea").val(""), $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val("")
-			}, 1e3)
-	});
+// Event listener for the "Save Follow-Up" button click
+$(".js-case-save-follow-up").on("click", function () {
+    // Retrieve values from modal inputs and text areas
+    var followUpDate = $(".js-o-modal--small__follow-up .datetimepicker").val(),
+        notifyWhenDeadlinePasses = $('#js-follow-up__notify_when_deadline_passes').is(':checked'),
+        commentaryText = $(".js-o-modal--small__follow-up .o-modal__case__commentary__textarea").val(),
+        caseIdToken = $(".o-modal__case").attr("data-case-id-token"),
+        caseId = $(".o-modal__case").attr("data-case-id");
+
+    // Update hidden inputs with the retrieved values
+    $(".ETRAY_READ_CASE_TOKEN_ID > input").val(caseIdToken);
+    $(".ETRAY_READ_CASE_ID > input").val(caseId);
+    $(".ETRAY_READ_CASE__FOLLOW_UP > input").val(followUpDate);
+    $(".ETRAY_READ_CASE__FOLLOW_UP_NOTI > input").val(notifyWhenDeadlinePasses);
+    $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val(commentaryText);
+
+    // Set the message type based on whether the follow-up notification checkbox is checked
+    if ($(".ETRAY_READ_CASE__FOLLOW_UP_NOTI > input").val() != 'true') {
+        $(".ETRAY_READ_MESSAGE_TYPE > input").val("FOLLOW_UP");
+    } else {
+        $(".ETRAY_READ_MESSAGE_TYPE > input").val("FOLLOW_UP_N");
+    }
+
+    // Trigger update case action
+    $(".ETRAY_UPDATE_CASE > a").click();
+
+    // Update the case status to show "Follow-Up" indication
+    $("#js-case-element__inserted > div > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--red">Opf\xf8lgning</span></div>');
+
+    // Attach a mutation observer to monitor changes in the case
+    addMutationOberserverToSingleCase();
+
+    // Close the follow-up modal window
+    closeSmallModal("js-o-modal--small__follow-up");
+
+    // Refresh the case comments to include the new follow-up
+    readEtrayCaseComments();
+
+    // Clear the commentary textarea after a short delay (1 second)
+    setTimeout(function () {
+        $(".o-modal__case__commentary__textarea").val("");
+        $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val("");
+    }, 1000);
+});
+
 
 	$(".js-case-save-close").on("click", function () {
 		var e = $(".o-modal__case").attr("data-case-id-token"),
