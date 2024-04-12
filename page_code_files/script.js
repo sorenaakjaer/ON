@@ -315,10 +315,14 @@ $(document).one("trigger::o_page_loaded", function () {
 			$(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val(t), 
 			
 			$(".ETRAY_READ_MESSAGE_TYPE > input").val("FOLLOW_UP"), 
-			$(".ETRAY_UPDATE_CASE > a").click(), $
-			("#js-case-element__inserted > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--red">Opf\xf8lgning</span></div>'), addMutationOberserverToSingleCase(), closeSmallModal("js-o-modal--small__follow-up"), readEtrayCaseComments(), setTimeout(function () {
+			$(".ETRAY_UPDATE_CASE > a").click(), 
+			$("#js-case-element__inserted > div > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--red">Opf\xf8lgning</span></div>'), 
+			addMutationOberserverToSingleCase(), 
+			closeSmallModal("js-o-modal--small__follow-up"), 
+			readEtrayCaseComments(), 
+			setTimeout(function () {
 			$(".o-modal__case__commentary__textarea").val(""), $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val("")
-		}, 1e3)
+			}, 1e3)
 	});
 
 	$(".js-case-save-close").on("click", function () {
