@@ -2654,6 +2654,7 @@ $(document).one("trigger::vue_loaded", function () {
 			isGhostUserCreating: false,
 			/* START 17-12-23 */
 			PBIReportsData: [],
+			showOpenAnalytics: true,
 			isLoadingTheOpenAnalyticsIframe: false,
 			theOpenAnalyticsIframeUrl: 'https://opn-iframes-dev.azurewebsites.net/',
 			statusI18N: {
