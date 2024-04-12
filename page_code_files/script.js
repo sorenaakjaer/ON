@@ -303,10 +303,20 @@ $(document).one("trigger::o_page_loaded", function () {
 
 	$(".js-case-save-follow-up").on("click", function () {
 		var e = $(".js-o-modal--small__follow-up .datetimepicker").val(),
+			f = $('#js-follow-up__notify_when_deadline_passes').is(':checked'),
 			t = $(".js-o-modal--small__follow-up .o-modal__case__commentary__textarea").val(),
 			s = $(".o-modal__case").attr("data-case-id-token"),
 			a = $(".o-modal__case").attr("data-case-id");
-		$(".ETRAY_READ_CASE_TOKEN_ID > input").val(s), $(".ETRAY_READ_CASE_ID > input").val(a), $(".ETRAY_READ_CASE__FOLLOW_UP > input").val(e), $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val(t), $(".ETRAY_READ_MESSAGE_TYPE > input").val("FOLLOW_UP"), $(".ETRAY_UPDATE_CASE > a").click(), $("#js-case-element__inserted > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--red">Opf\xf8lgning</span></div>'), addMutationOberserverToSingleCase(), closeSmallModal("js-o-modal--small__follow-up"), readEtrayCaseComments(), setTimeout(function () {
+		
+			$(".ETRAY_READ_CASE_TOKEN_ID > input").val(s), 
+			$(".ETRAY_READ_CASE_ID > input").val(a), 
+			$(".ETRAY_READ_CASE__FOLLOW_UP > input").val(e), 
+			$(".ETRAY_READ_CASE__FOLLOW_UP_NOTI > input").val(f), 
+			$(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val(t), 
+			
+			$(".ETRAY_READ_MESSAGE_TYPE > input").val("FOLLOW_UP"), 
+			$(".ETRAY_UPDATE_CASE > a").click(), $
+			("#js-case-element__inserted > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--red">Opf\xf8lgning</span></div>'), addMutationOberserverToSingleCase(), closeSmallModal("js-o-modal--small__follow-up"), readEtrayCaseComments(), setTimeout(function () {
 			$(".o-modal__case__commentary__textarea").val(""), $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val("")
 		}, 1e3)
 	});
