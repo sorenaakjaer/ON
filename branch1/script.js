@@ -585,7 +585,7 @@ $(document).one("trigger::vue_loaded", function () {
 				theActiveFilterFrom: [],
 				theActiveFilterStatuses: [],
 				theActiveFilterTypes: [],
-				theActiveFilterPeriod: [new Date(), new Date()],
+				theActiveFilterPeriod: { startDate: new Date(), endDate: new Date() },
 				theActiveFilterPeriodDays: 30,
 				theAnnActiveItem: null,
 				standardOptions: {},
@@ -677,11 +677,15 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			vAnnouncementsFilteredWithPeriod() {
-				if (this.theActiveFilterPeriod.length === 2) {
-					const endDate = new Date(this.theActiveFilterPeriod[0]);
+				if (this.theActiveFilterPeriod.startDate && this.theActiveFilterPeriod.endDate) {
+					const startDate = new Date(this.theActiveFilterPeriod.startDate);
+					startDate.setHours(23, 59, 59, 999);
+					const endDate = new Date(this.theActiveFilterPeriod.endDate);
+					endDate.setHours(0, 0, 0, 0);
+
 					return this.vAnnouncementsFilteredWithType.filter(itemCase => {
 						const createdTime = new Date(itemCase.createdTime);
-						return endDate <= createdTime;
+						return createdTime >= endDate && createdTime <= startDate;
 					});
 				} else {
 					return this.vAnnouncementsFilteredWithType;
@@ -790,6 +794,12 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			set_change_the_filter_dates(dates) {
+				this.theActiveFilterPeriod = dates;
+			},
+			set_change_the_active_filter_period_days(days) {
+				this.theActiveFilterPeriodDays = days;
+			},
 			removeAllFilters() {
 				const arr = ['theActiveFilterFrom', 'theActiveFilterStatuses', 'theActiveFilterTypes']
 				arr.forEach(filterType => {
@@ -804,25 +814,9 @@ $(document).one("trigger::vue_loaded", function () {
 				this.getLocalStorageFilter('theActiveFilterFrom')
 				this.getLocalStorageFilter('theActiveFilterStatuses')
 				this.getLocalStorageFilter('theActiveFilterTypes')
-				if (localStorage.getItem(this.active_area + '_theActiveFilterPeriodDays')) {
-					this.getLocalStorageFilter('theActiveFilterPeriodDays')
-				} else {
-					this.theActiveFilterPeriodDays = 30
-				}
-				this.setTheActiveFilterPeriod()
 			},
 			setIsListView(bool) {
 				this.isListView = !this.isListView
-			},
-			updateTheActiveFilterPeriodDays() {
-				this.setLocalStorageFilter('theActiveFilterPeriodDays', this.theActiveFilterPeriodDays)
-				this.setTheActiveFilterPeriod()
-			},
-			setTheActiveFilterPeriod() {
-				const today = new Date();
-				today.setDate(today.getDate() - (this.theActiveFilterPeriodDays * 1)); // Add 30 days to the current date
-				const newStartDate = today
-				this.theActiveFilterPeriod = [newStartDate, new Date()]
 			},
 			onEditAnnouncementDone() {
 				this.setEditAnnouncement(null)
@@ -1098,7 +1092,6 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		beforeMount() {
 			this.addDayJSFromCDN();
-			this.setTheActiveFilterPeriod()
 		},
 		mounted() {
 			this.fetchData()
@@ -1214,6 +1207,163 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		}
 	})
+	Vue.component('o-range-slider', {
+		template: '#o-range-slider-template',
+		props: {
+			active_area: {
+				default: 'OperationsStatus' // 'OperationsStatus' or 'News'
+			}
+		},
+		data() {
+			return {
+				indicatorWidth: 400,
+				days: 90,
+				startDay: 0,
+				endDay: 90,
+				dragging: null,
+				theActiveFilterPeriodDays: 90
+			}
+		},
+		computed: {
+			startDayDateLabel() {
+				return this.startDay === 0 ? 'Nu' : this.startDay === 1 ? '1 dag siden' : this.startDay + ' dage siden'
+			},
+			endDayDateLabel() {
+				return this.endDay === 1 ? '1 dag siden' : this.endDay + ' dage siden'
+			},
+			startDayDate() {
+				const date = new Date();
+				date.setDate(date.getDate() - this.startDay);
+				return this.formatDate(date);
+			},
+			endDayDate() {
+				const date = new Date();
+				date.setDate(date.getDate() - this.endDay);
+				return this.formatDate(date);
+			},
+			oneDay() {
+				return this.indicatorWidth / this.days;
+			},
+			oneDayInPercentage() {
+				return 100 / this.days;
+			},
+			progressStyle() {
+				return {
+					left: (this.startDay * this.oneDayInPercentage) + '%',
+					width: ((this.endDay - this.startDay) * this.oneDayInPercentage) + '%'
+				}
+			},
+			leftPosition() {
+				return {
+					left: (this.startDay * this.oneDayInPercentage) + '%',
+				}
+			},
+			rightPosition() {
+				return {
+					left: ((this.endDay) * this.oneDayInPercentage) + '%'
+				}
+			}
+		},
+		watch: {
+			active_area() {
+				this.initDates()
+			}
+		},
+		methods: {
+			setLocalStorageFilter(filterType, filterArr) {
+				const localTitle = this.active_area + '_' + filterType
+				if (!filterArr || filterArr.length === 0) {
+					localStorage.removeItem(localTitle)
+				} else {
+					localStorage.setItem(localTitle, JSON.stringify(filterArr))
+				}
+			},
+			getLocalStorageFilter(filterType) {
+				const localTitle = this.active_area + '_' + filterType
+				if (localStorage.getItem(localTitle)) {
+					this[filterType] = JSON.parse(localStorage.getItem(localTitle));
+				}
+			},
+			formatDate(date) {
+				const today = new Date();
+				const comparisonDate = new Date(date);
+
+				const formattedToday = today.toLocaleDateString('da-DK');
+				const formattedDate = comparisonDate.toLocaleDateString('da-DK');
+
+				return formattedDate;
+			},
+			startDrag(which) {
+				this.dragging = which;
+				document.addEventListener('mousemove', this.onDrag);
+				document.addEventListener('mouseup', this.stopDrag);
+			},
+			onDrag(event) {
+				if (!this.dragging) return;
+				const rect = this.$el.getBoundingClientRect();
+				const offset = event.clientX - rect.left; // mouse position relative to the slider
+				const day = Math.round(offset / this.oneDay);
+
+				if (this.dragging === 'start') {
+					if (day > this.endDay) {
+						this.startDay = this.endDay - 1;
+						return
+					}
+					if (day >= 0) {
+						this.startDay = day;
+					} else {
+						this.startDay = 0
+					}
+
+				} else if (this.dragging === 'end') {
+					if (day <= this.startDay) {
+						this.endDay = this.startDay + 1;
+						return
+					}
+					if (day <= this.days) {
+						this.endDay = day;
+					} else {
+						this.endDay = 90
+					}
+				}
+			},
+			stopDrag() {
+				document.removeEventListener('mousemove', this.onDrag);
+				document.removeEventListener('mouseup', this.stopDrag);
+				this.dragging = null;
+
+				this.setLocalStorageFilter('theActiveFilterPeriod', { startDay: this.startDay, endDay: this.endDay })
+				this.setTheActiveFilterPeriod()
+			},
+			setTheActiveFilterPeriod() {
+				this.theActiveFilterPeriodDays = this.endDay - this.startDay
+				this.$emit('on_change_the_active_filter_period_days', this.theActiveFilterPeriodDays);
+
+				const startDate = new Date();
+				startDate.setDate(startDate.getDate() - this.startDay);
+				const endDate = new Date();
+				endDate.setDate(endDate.getDate() - this.endDay);
+				this.$emit('on_change_the_filter_dates', { startDate: startDate, endDate: endDate });
+			},
+			initDates() {
+				const localStr = localStorage.getItem(this.active_area + '_theActiveFilterPeriod')
+				if (localStr) {
+					const days = JSON.parse(localStr)
+					this.startDay = days.startDay
+					this.endDay = days.endDay
+					this.setTheActiveFilterPeriod()
+				} else {
+					this.startDay = 0
+					this.endDay = 90
+					this.setTheActiveFilterPeriod()
+				}
+			}
+		},
+		beforeMount() {
+			this.initDates()
+		}
+	})
+
 	Vue.component('o-announcement-view-modal', {
 		template: '#o-announcement-view-modal-template',
 		props: {
@@ -1511,7 +1661,7 @@ $(document).one("trigger::vue_loaded", function () {
 			filteredStatussesNews() {
 				const oStatussesNews = this.standard_options && this.standard_options['extMsg_status_news'] ? this.standard_options['extMsg_status_news'] : []
 				return oStatussesNews
-			},			
+			},
 			selectedReceiversLength() {
 				return Object.keys(this.selectedReceivers).length;
 			},

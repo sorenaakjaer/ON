@@ -2102,25 +2102,12 @@
                 </div>
                 <div class="o-ann_body_header_row">
                     <div class="o-ann__body__header__center">                    
-                        <div class="o-slider__wrapper" v-if="active_area === 'News'">
-                            <label class="pp-label">
-                                <template v-if="theActiveFilterPeriodDays > 1">Viser nyheder for de seneste <span>{{ theActiveFilterPeriodDays }}</span> dage</template>
-                                <template v-else>Viser nyheder for det seneste døgn</template>
-                            </label>
-                            <div class="o-slider__container">
-                                <div class="o-slider-indicator" :style="{'width': ((300 / 90) * theActiveFilterPeriodDays) + 'px'}"></div>
-                                <input type="range" v-model="theActiveFilterPeriodDays" @change="updateTheActiveFilterPeriodDays" min="1" max="90" value="30" class="o-slider">
-                            </div>
-                        </div>
-                        <div class="o-slider__wrapper" v-if="active_area === 'OperationsStatus'">
-                            <label class="pp-label">
-                                <template v-if="theActiveFilterPeriodDays > 1">Viser udmelding for de seneste <span>{{ theActiveFilterPeriodDays }}</span> dage</template>
-                                <template v-else>Viser udmelding for det seneste døgn</template>
-                            </label>
-                            <div class="o-slider__container">
-                                <div class="o-slider-indicator" :style="{'width': ((300 / 90) * theActiveFilterPeriodDays) + 'px'}"></div>
-                                <input type="range" v-model="theActiveFilterPeriodDays" @change="updateTheActiveFilterPeriodDays" min="1" max="90" value="30" class="o-slider">
-                            </div>
+                        <div class="o-slider__wrapper">
+                            <o-range-slider 
+                                :active_area="active_area"
+                                @on_change_the_filter_dates="set_change_the_filter_dates"
+                                @on_change_the_active_filter_period_days="set_change_the_active_filter_period_days">
+                            </o-range-slider>
                         </div>       
                     </div>    
                     <div class="o-ann__body__header__right">
@@ -2140,7 +2127,8 @@
                         :key="item.v_id"
                         @click="setActiveItem(item)">
                         <div class="o-ann__elements-cards__card__header">
-                            <div class="pp-pill--unread" v-if="item.unread && item.unread != 'false'">Ulæst</div>
+                            <div class="o-ann__elements-cards__card__header__status" v-if="item.unread && item.unread == 'true'"><i class="tio">email</i></div>
+                            <div class="o-ann__elements-cards__card__header__status o-ann__elements-cards__card__header__status--read" v-if="item.unread && item.unread == 'false'"><i class="tio">draft</i></div>
                             <label v-if="item.version != 1" class="o-ann__elements-cards__card__header__onid">
                                 ONID: {{ item.onid }} ({{ item.version }}. udgave) 
                             </label>
@@ -2245,6 +2233,29 @@
         <div class="vue-modal__overlay" v-if="isCreateAnnouncementModal || theActiveAnnouncement" @click="setIsCreateAnnouncementModal(false)" v-cloak></div>
     </div>
 </script>
+
+<script type="text/x-template" id="o-range-slider-template">
+    <div class="o-range-slider__template" :class="{'o-range-slider__template--dragging': dragging}">
+        <label class="pp-label">
+            <template>Viser udmeldinger mellem d. {{startDayDate}} og d. {{endDayDate}}</template>
+        </label>
+    <div class="o-range-slider">
+        <div class="o-range-slider__handler" 
+             :style="leftPosition"
+             @pointerdown="startDrag('start')"></div>
+        <div class="o-range-slider__handler o-range-slider__handler__end" 
+             :style="rightPosition"
+             @pointerdown="startDrag('end')"></div>
+        <div class="o-range-slider__base"></div>
+        <div class="o-range-slider__base__indicator" :style="progressStyle"></div>
+    </div>
+    <div class="o-range-desc">
+        <label class="pp-label">{{startDayDateLabel }}</label>
+        <label class="pp-label">{{endDayDateLabel}}</label>
+    </div>
+</div>
+</script>
+
 
 <script type="text/x-template" id="o-announcement-view-modal-template">
     <div class="o-modal--alwaysactive vue-modal o-ann-modal__view">

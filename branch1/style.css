@@ -10892,7 +10892,7 @@ ul.tags-selector__dropdow__create {
 }
 
 .o-ann__elements-cards__card__header {
-    background: rgb(10, 55, 170, 0.2);   
+    background: rgb(10, 55, 170, 0.2);
     border-radius: 4px 4px 0 0;
     position: relative;
     padding: 1rem;
@@ -11455,7 +11455,7 @@ ul.tags-selector__dropdow__create {
 }
 
 .o-slider__wrapper {
-    width: 300px;
+    width: 400px;
     position: relative;
 }
 
@@ -11692,11 +11692,24 @@ ul.tags-selector__dropdow__create {
     padding: 4px 8px;
 }
 
-.o-ann__elements-cards__card__header .pp-pill--unread {
+.o-ann__elements-cards__card__header .o-ann__elements-cards__card__header__status {
     position: absolute;
-    left: 1rem;
-    top: 0.45rem;
+    left: 0.5rem;
+    top: calc(-24px / 2);
     padding: 2px 4px;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    border-radius: 50%;
+    background: var(--red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.o-ann__elements-cards__card__header .o-ann__elements-cards__card__header__status.o-ann__elements-cards__card__header__status--read {
+    background: var(--green);
 }
 
 .o-ann_body_header_row {
@@ -11797,4 +11810,67 @@ ul.tags-selector__dropdow__create {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.o-range-slider {
+    position: relative;
+}
+
+.o-range-slider__base {
+    -webkit-appearance: none;
+    width: calc(100% + 12px);
+    /* 12 px == the width for the handler */
+    height: 12px;
+    background: #fff;
+    outline: none;
+    opacity: 1;
+    transition: opacity .2s;
+    border-radius: 4px;
+    border: 1px solid var(--borderColor);
+    position: relative;
+}
+
+.o-range-slider__base__indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 1;
+    right: 0;
+    border-radius: 0;
+    background-color: var(--primary);
+}
+
+.o-range-slider__handler {
+    position: absolute;
+    z-index: 12;
+    top: -8px;
+    left: 0;
+    height: 28px;
+    width: 13px;
+    border-radius: 4px;
+    background-color: var(--primary);
+    cursor: pointer;
+}
+
+.o-range-slider__handler.o-range-slider__handler__end {
+    right: 0;
+    left: auto;
+}
+
+.o-range-desc {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: calc(100% + 12px);
+    margin-top: 9px;
+}
+
+.o-range-slider__template--dragging {
+    cursor: pointer;
+    user-select: none;
+}
+
+.o-range-slider__template .pp-label {
+    margin-bottom: 5px;
 }
