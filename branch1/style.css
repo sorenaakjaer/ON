@@ -11874,3 +11874,26 @@ ul.tags-selector__dropdow__create {
 .o-range-slider__template .pp-label {
     margin-bottom: 5px;
 }
+
+.vue-modal__ask-question {
+    top: 4rem !important;
+    z-index: 300 !important;
+    min-height: 200px;
+    z-index: 32;
+    max-width: 500px;
+}
+
+.vue-modal__ask-question .o-editor__textarea {
+    min-height: 150px;
+}
+
+.vue-modal__ask-question .o-modal__body__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.o-modal--alwaysactive.vue-modal__ask-question {
+    height: fit-content;
+}

@@ -936,7 +936,6 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			fetchStandardOptions() {
-				console.log('fetchStandardOptions')
 				this.isLoadingStandardOptions = true
 				const myHeaders = new Headers();
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
@@ -1088,6 +1087,10 @@ $(document).one("trigger::vue_loaded", function () {
 					.catch(error => {
 						console.error('Error loading DayJS scripts:', error);
 					});
+			},
+			onNewQuestionSubmitted(onid) {
+				const toastText = 'Tak for et spørgsmål som oprettet på Partnerportal sag med ONID:' + onid + '.';
+				this.$emit('on_new_question_submitted', toastText)
 			}
 		},
 		beforeMount() {
@@ -1375,6 +1378,45 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			the_active_see_more_case: {
 				default: null
+			},
+			active_area: {
+				default: 'OperationsStatus' // 'OperationsStatus' or 'News'
+			}
+		},
+		data() {
+			return {
+				activeAnnouncement: null,
+				question: '',
+				isSubmitting: false
+			}
+		},
+		methods: {
+			setIsAskQuestionModal(announcement) {
+				if (announcement) {
+					this.activeAnnouncement = announcement
+					this.$nextTick(() => {
+						this.$refs.question_textarea.focus()
+					})
+				} else {
+					this.activeAnnouncement = null
+				}
+			},
+			submitQuestion(announcement) {
+				this.isSubmitting = true
+				if (this.question.length < 1) {
+					this.isSubmitting = false
+					this.$refs.question_textarea.focus()
+					return
+				}
+				const onId = announcement.onid
+				console.log(this.question)
+				// wating for the API
+				setTimeout(() => {
+					this.isSubmitting = false
+					this.setIsAskQuestionModal(null)
+					this.$emit('new_question_submitted', onId)
+					this.question = ''
+				}, 1500)
 			}
 		}
 	})
@@ -1499,7 +1541,8 @@ $(document).one("trigger::vue_loaded", function () {
 				isShowAddFiles: false,
 				addFilesToCase: '',
 				isShowAddFilesNotAnswered: false,
-				thePlaceholdersToShowHtml: {}
+				thePlaceholdersToShowHtml: {},
+				thePlaceholderLabels: {}
 			}
 		},
 		computed: {
@@ -1739,6 +1782,14 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			onEditPlaceholderLabel(activePlaceholderId, val) {
+				if (val && val.length > 0) {
+					this.$set(this.thePlaceholderLabels, activePlaceholderId, val)
+				} else {
+					this.$delete(this.thePlaceholderLabels, activePlaceholderId)
+				}
+				console.log('this.thePlaceholderLabels', this.thePlaceholderLabels)
+			},
 			setThePlaceholdersToShowHtml(num, showHtml) {
 				if (!showHtml && this.thePlaceholdersToShowHtml[num]) {
 					this.$delete(this.thePlaceholdersToShowHtml, num);
