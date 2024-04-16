@@ -1,3 +1,6 @@
+var vue2Url = "https://cdn.jsdelivr.net/npm/vue@2"; // "/portal/page_code_files/ext_files/vue@2.js"
+var vueVirtualScrollerCssUrl = 'https://unpkg.com/vue-virtual-scroller/dist/vue-virtual-scroller.css' // '/portal/page_code_files/ext_files/vue-virtual-scroller.css' 
+var popperMinJsUrl = "https://unpkg.com/@popperjs/core@2"; // "/portal/page_code_files/ext_files/popper.min.js"
 // Set loaded div
 $('.triggers').html($('.triggers').html() + '<div class="v_js_loaded"></div>');
 
@@ -83,20 +86,21 @@ $(document).one("trigger::o_page_loaded", function () {
 		, "true" == $(".show_user_admin_menu").html() || $(".menu_user_admin").addClass("hidden_field")
 		, "true" == $(".show_end_customer_orders").html() || $(".menu_end_customer_orders").addClass("hidden_field")
 		, "true" == $(".show_end_customer_pricing_config").html() || $(".menu_end_customer_pricing_config").addClass("hidden_field")
-		, $.getScript("/portal/page_code_files/ext_files/vue@2.js", function (e, t, s) {
-			$(document).trigger("trigger::vue_loaded")
-		}), setInterval(function () {
-			$(".BTN_KeepAlive > a").click()
-		}, 3e5), $(".UM_USER_NAME > input").on("keyup", function () {
-			clearTimeout(e), e = setTimeout(function () {
-				var e = $(".UM_USER_NAME > input").val().toLowerCase().replaceAll("\xf8", "oe").replaceAll("\xe6", "ae").replaceAll("\xe5", "aa").replaceAll(" ", "_").substring(0, 18);
-				UM_USERNAME_VALIDATION(e)
-			}, 600)
-		}), $(".UM_USER_INIT > input").on("keyup", function () {
-			Set_UM_USER_INIT = !1, clearTimeout(t), t = setTimeout(function () {
-				$(".BTN_GetUserValidation > a").click(), $(".BTN_GetUserValidation_Result > input").val("N"), WAIT_FOR_UM_USERNAME_VALIDATION_ANSWER_ETRAY()
-			}, 600)
-		})
+
+	$.getScript(vue2Url, function (e, t, s) {
+		$(document).trigger("trigger::vue_loaded")
+	}), setInterval(function () {
+		$(".BTN_KeepAlive > a").click()
+	}, 3e5), $(".UM_USER_NAME > input").on("keyup", function () {
+		clearTimeout(e), e = setTimeout(function () {
+			var e = $(".UM_USER_NAME > input").val().toLowerCase().replaceAll("\xf8", "oe").replaceAll("\xe6", "ae").replaceAll("\xe5", "aa").replaceAll(" ", "_").substring(0, 18);
+			UM_USERNAME_VALIDATION(e)
+		}, 600)
+	}), $(".UM_USER_INIT > input").on("keyup", function () {
+		Set_UM_USER_INIT = !1, clearTimeout(t), t = setTimeout(function () {
+			$(".BTN_GetUserValidation > a").click(), $(".BTN_GetUserValidation_Result > input").val("N"), WAIT_FOR_UM_USERNAME_VALIDATION_ANSWER_ETRAY()
+		}, 600)
+	})
 
 	//Temp For Eniig SP
 	if ($(".FROM_COMPANY > input").val() == "Eniig SP") {
@@ -3930,11 +3934,10 @@ function addPopperFromCDN() {
 	// Create a <link> element for the CSS file
 	const link = document.createElement('link')
 	link.rel = 'stylesheet'
-	link.href = '/portal/page_code_files/ext_files/vue-virtual-scroller.css'
+	link.href = vueVirtualScrollerCssUrl
 	document.head.appendChild(link)
-
 	// Create a <script> element for the Vue Multiselect script
-	$.getScript("/portal/page_code_files/ext_files/popper.min.js", function (e, t, s) {
+	$.getScript(popperMinJsUrl, function (e, t, s) {
 		//console.log('popper loaded')
 		$(document).trigger("trigger::vue__virtual_scroller_loaded")
 	})
