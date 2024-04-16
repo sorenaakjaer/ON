@@ -580,7 +580,7 @@ $(document).one("trigger::vue_loaded", function () {
 			$.getScript("/portal/page_code_files/ext_files/vue-flatpickr-component@8.js", function () {
 
 				$(document).trigger("trigger::vue__flat_picker_loaded");
-				console.log('Vue-Flatpickr component loaded');
+				//console.log('Vue-Flatpickr component loaded');
 			});
 		});
 	}
@@ -4264,7 +4264,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			setIframeForOpenAnalytics() {
 				openAnalyticsSecret = JSON.parse($('.PBI_sharedSecretJSON > input').val()).sharedSecret;
-				console.log('openAnalyticsSecret', openAnalyticsSecret);
+				//console.log('openAnalyticsSecret', openAnalyticsSecret);
 				this.isLoadingTheOpenAnalyticsIframe = true
 				function constructURLWithSecret(baseURL, secretValue) {
 					const queryParams = new URLSearchParams(window.location.search);
@@ -5675,7 +5675,7 @@ var current_iframeHeight = 10;
 var current_iframeWidth = 10;
 var isPurifyLoadedToPage = false
 var isQuillLoadedToPage = false
-console.log(openAnalyticsSecret)
+//console.log(openAnalyticsSecret)
 // Variables - START //
 
 // FUNCTIONS - START //
@@ -5724,7 +5724,7 @@ function addQuillFromCDN() {
 	const quillScript = document.createElement('script');
 	quillScript.src = '/portal/page_code_files/ext_files/quill.js';
 	quillScript.onload = function () {
-		console.log('quill is here')
+		//console.log('quill is here')
 		$(document).trigger('quill::loaded');
 		isQuillLoadedToPage = true
 	};
@@ -5754,7 +5754,7 @@ function addPopperFromCDN() {
 
 	// Create a <script> element for the Vue Multiselect script
 	$.getScript("/portal/page_code_files/ext_files/popper.min.js", function (e, t, s) {
-		console.log('popper loaded')
+		//console.log('popper loaded')
 		$(document).trigger("trigger::vue__virtual_scroller_loaded")
 	})
 }
@@ -6192,7 +6192,9 @@ function addMutationOberserverToAllCases() {
 
 function addMutationOberserverToSingleCase() {
 	disable_all_btns(), (singleCaseLoadedObserver = new MutationObserver(function (e) {
-		$(".ETRAY_CASE_TIMELINE_PARRENT > div").html().length > 0 && ($(document).trigger("etray::single-case-loaded"), $(document).trigger("etray::single-case-comments-loaded"), singleCaseLoadedObserver.disconnect(), "Afsluttet" == $("#js-case-element__inserted > div > .etray_case_status span").html() ? ($(".js-case__save-commentary").html("Gem kommentar og gen\xe5ben sag"), $(".js-case-save-close").addClass("display_none"), $(".js-case-save-reopen").removeClass("display_none")) : ($(".js-case__save-commentary").html("Gem kommentar"), $(".js-case-save-close").removeClass("display_none"), $(".js-case-save-reopen").addClass("display_none")))
+		$(".ETRAY_CASE_TIMELINE_PARRENT > div").html().length > 0 && ($(document).trigger("etray::single-case-loaded"), $(document).trigger("etray::single-case-comments-loaded"), singleCaseLoadedObserver.disconnect(), "Afsluttet" == $("#js-case-element__inserted > div > .etray_case_status span").html() ? ($(".js-case__save-commentary").html("Gem kommentar og gen\xe5ben sag"), 
+		$(".js-case-save-close").addClass("display_none"), 
+		$(".js-case-save-reopen").removeClass("display_none")) : ($(".js-case__save-commentary").html("Gem kommentar"), $(".js-case-save-close").removeClass("display_none"), $(".js-case-save-reopen").addClass("display_none")))
 	})).observe($(".ETRAY_CASE_TIMELINE_PARRENT > div")[0], {
 		characterData: !0,
 		childList: !0
