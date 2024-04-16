@@ -4412,7 +4412,7 @@ function addMutationOberserverToAllCases() {
 }
 
 // Defines a function to add a mutation observer to a specific HTML element related to a case.
-function addMutationObserverToSingleCase() {
+function addMutationOberserverToSingleCase() {
     // Disables all buttons on the page first.
     disable_all_btns();
 
