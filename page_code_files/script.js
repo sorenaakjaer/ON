@@ -1903,7 +1903,7 @@ $(document).one("trigger::vue_loaded", function () {
 							tagsArr.forEach(tag => {
 								var tagDiv;
 								if (tag.description) {
-									tagDiv = `<div class="item-tag hint-bottom" aria-label="${tag.description}" style="background-color: ${tag.color};">${tag.value}</div>`;
+									tagDiv = `<div class="item-tag hint--bottom" aria-label="${tag.description}" style="background-color: ${tag.color};">${tag.value}</div>`;
 								} else {
 									tagDiv = `<div class="item-tag" style="background-color: ${tag.color};">${tag.value}</div>`;
 								}
