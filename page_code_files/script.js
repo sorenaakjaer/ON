@@ -227,7 +227,7 @@ $(document).one("trigger::o_page_loaded", function () {
 				$(".js-case__save-commentary").removeClass("o-btn--loading");
 			});
 
-			if ("Afsluttet" == $("#js-case-element__inserted > div > .etray_case_status span").html()) {
+			if ("Afsluttet" == $("#js-case-element__inserted > div > div > .etray_case_status span").html()) {
 				$("#js-case-element__inserted > div > .etray_case_status").html('<span class="o-pill o-pill--yellow">Åben</span>');
 				$(".js-case__save-commentary").html("Gem kommentar");
 
@@ -4429,7 +4429,7 @@ function addMutationOberserverToSingleCase() {
             singleCaseLoadedObserver.disconnect();
 
             // Checks if the case status is "Afsluttet" (which translates to "Finished").
-            if ($("#js-case-element__inserted > div > .etray_case_status span").html() == "Afsluttet") {
+            if ($("#js-case-element__inserted > div > div > .etray_case_status span").html() == "Afsluttet") {
                 // Changes the text of the save commentary button to indicate the option to save and reopen the case.
                 $(".js-case__save-commentary").html("Gem kommentar og genåben sag");
                 // Hides the button to close the case.
