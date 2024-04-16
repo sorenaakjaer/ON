@@ -82,7 +82,7 @@ $(document).one("trigger::o_page_loaded", function () {
 		, "true" == $(".show_user_admin_menu").html() || $(".menu_user_admin").addClass("hidden_field")
 		, "true" == $(".show_end_customer_orders").html() || $(".menu_end_customer_orders").addClass("hidden_field")
 		, "true" == $(".show_end_customer_pricing_config").html() || $(".menu_end_customer_pricing_config").addClass("hidden_field")
-		, $.getScript("https://cdn.jsdelivr.net/npm/vue@2", function (e, t, s) {
+		, $.getScript("/portal/page_code_files/ext_filesvue@2.js", function (e, t, s) {
 			$(document).trigger("trigger::vue_loaded")
 		}), setInterval(function () {
 			$(".BTN_KeepAlive > a").click()
@@ -315,7 +315,7 @@ $(".js-case-save-follow-up").on("click", function () {
     $(".ETRAY_READ_CASE_ID > input").val(caseId);
     $(".ETRAY_READ_CASE__FOLLOW_UP > input").val(followUpDate);
     $(".ETRAY_READ_CASE__FOLLOW_UP_NOTI > input").val(notifyWhenDeadlinePasses);
-    $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val(commentaryText);
+    $(".ETRAY_READ_CASE__COMMENT_TEXTAREA > textarea").val(commentaryText);h
 
     // Set the message type based on whether the follow-up notification checkbox is checked
     if ($(".ETRAY_READ_CASE__FOLLOW_UP_NOTI > input").val() != 'true') {
@@ -573,11 +573,11 @@ $(document).one("trigger::vue_loaded", function () {
 	function addVueFlatPickerFromCDN() {
 		const cssLink = document.createElement('link');
 		cssLink.rel = 'stylesheet';
-		cssLink.href = 'https://cdn.jsdelivr.net/npm/flatpickr@4/dist/flatpickr.min.css';
+		cssLink.href = '/portal/page_code_files/ext_files/flatpickr.min.css';
 		document.head.appendChild(cssLink);
 
-		$.getScript("https://cdn.jsdelivr.net/npm/flatpickr@4/dist/flatpickr.min.js", function () {
-			$.getScript("https://cdn.jsdelivr.net/npm/vue-flatpickr-component@8", function () {
+		$.getScript("/portal/page_code_files/ext_files/flatpickr.min.js", function () {
+			$.getScript("/portal/page_code_files/ext_files/vue-flatpickr-component@8.js", function () {
 
 				$(document).trigger("trigger::vue__flat_picker_loaded");
 				console.log('Vue-Flatpickr component loaded');
@@ -1101,10 +1101,10 @@ $(document).one("trigger::vue_loaded", function () {
 					return;
 				}
 				const scriptsToLoad = [
-					"https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js",
-					"https://cdn.jsdelivr.net/npm/dayjs@1.11.10/locale/da.js",
-					"https://cdn.jsdelivr.net/npm/dayjs@1.11.10/plugin/relativeTime.js",
-					'https://cdn.jsdelivr.net/npm/dayjs@1.11.10/plugin/localizedFormat.js'
+					"/portal/page_code_files/ext_files/dayjs.min.js",
+					"/portal/page_code_files/ext_files//locale/da.js",
+					"/portal/page_code_files/ext_files//relativeTime.js",
+					'/portal/page_code_files/ext_files//localizedFormat.js'
 				];
 
 				const loadScript = (scriptUrl) => {
@@ -5718,11 +5718,11 @@ function addQuillFromCDN() {
 	}
 	const quillCss = document.createElement('link');
 	quillCss.rel = 'stylesheet';
-	quillCss.href = 'https://cdn.quilljs.com/1.3.6/quill.snow.css';
+	quillCss.href = '/portal/page_code_files/ext_files/quill.snow.css';
 	document.head.appendChild(quillCss);
 
 	const quillScript = document.createElement('script');
-	quillScript.src = 'https://cdn.quilljs.com/1.3.6/quill.js';
+	quillScript.src = '/portal/page_code_files/ext_files/quill.js';
 	quillScript.onload = function () {
 		console.log('quill is here')
 		$(document).trigger('quill::loaded');
@@ -5736,7 +5736,7 @@ function addPurifyFromCDN() {
 		return
 	}
 	// Sanitizing user-generated content is crucial for preventing XSS (Cross-Site Scripting) attacks
-	$.getScript("https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js", function (e, t, s) {
+	$.getScript("/portal/page_code_files/ext_files/purify.min.js", function (e, t, s) {
 		console.log('purify loaded')
 		isPurifyLoadedToPage = true
 	})
@@ -5749,11 +5749,11 @@ function addPopperFromCDN() {
 	// Create a <link> element for the CSS file
 	const link = document.createElement('link')
 	link.rel = 'stylesheet'
-	link.href = 'https://unpkg.com/vue-virtual-scroller/dist/vue-virtual-scroller.css'
+	link.href = '/portal/page_code_files/ext_files/vue-virtual-scroller.css'
 	document.head.appendChild(link)
 
 	// Create a <script> element for the Vue Multiselect script
-	$.getScript("https://unpkg.com/@popperjs/core@2", function (e, t, s) {
+	$.getScript("/portal/page_code_files/ext_files/poller.min.js", function (e, t, s) {
 		console.log('popper loaded')
 		$(document).trigger("trigger::vue__virtual_scroller_loaded")
 	})
