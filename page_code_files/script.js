@@ -353,7 +353,17 @@ $(document).one("trigger::o_page_loaded", function () {
 	$(".js-case-save-close").on("click", function () {
 		var e = $(".o-modal__case").attr("data-case-id-token"),
 			t = $(".o-modal__case").attr("data-case-id");
-		$(".ETRAY_READ_CASE_TOKEN_ID > input").val(e), $(".ETRAY_READ_CASE_ID > input").val(t), $(".ETRAY_READ_MESSAGE_TYPE > input").val("CLOSE_CASE"), $(".ETRAY_UPDATE_CASE > a").click(), addMutationOberserverToSingleCase(), readEtrayCaseComments(), $("#js-case-element__inserted > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--grey">Afsluttet</span></div>'), $(".js-case__save-commentary").html("Gem kommentar og gen\xe5ben sag"), $(".js-case-save-close").hasClass("display_none") || $(".js-case-save-close").addClass("display_none"), $(".js-case-save-reopen").hasClass("display_none") && $(".js-case-save-reopen").removeClass("display_none"), $(document).trigger("vue::update_case_prop", [t, {
+		$(".ETRAY_READ_CASE_TOKEN_ID > input").val(e);
+		$(".ETRAY_READ_CASE_ID > input").val(t);
+		$(".ETRAY_READ_MESSAGE_TYPE > input").val("CLOSE_CASE");
+		$(".ETRAY_UPDATE_CASE > a").click();
+		addMutationOberserverToSingleCase();
+		 readEtrayCaseComments() 
+		 $("#js-case-element__inserted > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--grey">Afsluttet</span></div>');
+		 $(".js-case__save-commentary").html("Gem kommentar og gen\xe5ben sag");
+		 $(".js-case-save-close").hasClass("display_none") || $(".js-case-save-close").addClass("display_none");
+		 $(".js-case-save-reopen").hasClass("display_none") && $(".js-case-save-reopen").removeClass("display_none")
+		 $(document).trigger("vue::update_case_prop", [t, {
 			filter_open_closed: "closed"
 		}])
 	});
@@ -361,7 +371,9 @@ $(document).one("trigger::o_page_loaded", function () {
 	$(".js-case-save-reopen").on("click", function () {
 		var e = $(".o-modal__case").attr("data-case-id-token"),
 			t = $(".o-modal__case").attr("data-case-id");
-		$(".ETRAY_READ_CASE_TOKEN_ID > input").val(e), $(".ETRAY_READ_CASE_ID > input").val(t), $(".ETRAY_READ_MESSAGE_TYPE > input").val("REOPEN_CASE"), $(".ETRAY_UPDATE_CASE > a").click(), addMutationOberserverToSingleCase(), readEtrayCaseComments(), $("#js-case-element__inserted > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--yellow">\xc5ben</span></div>'), $(".js-case__save-commentary").html("Gem kommentar"), $(".js-case-save-close").hasClass("display_none") && $(".js-case-save-close").removeClass("display_none"), $(".js-case-save-reopen").hasClass("display_none") && $(".js-case-save-reopen").addClass("display_none"), $(document).trigger("vue::update_case_prop", [t, {
+		$(".ETRAY_READ_CASE_TOKEN_ID > input").val(e);
+		$(".ETRAY_READ_CASE_ID > input").val(t);
+		$(".ETRAY_READ_MESSAGE_TYPE > input").val("REOPEN_CASE"), $(".ETRAY_UPDATE_CASE > a").click(), addMutationOberserverToSingleCase(), readEtrayCaseComments(), $("#js-case-element__inserted > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--yellow">\xc5ben</span></div>'), $(".js-case__save-commentary").html("Gem kommentar"), $(".js-case-save-close").hasClass("display_none") && $(".js-case-save-close").removeClass("display_none"), $(".js-case-save-reopen").hasClass("display_none") && $(".js-case-save-reopen").addClass("display_none"), $(document).trigger("vue::update_case_prop", [t, {
 			filter_open_closed: "open"
 		}])
 	});
@@ -4399,16 +4411,50 @@ function addMutationOberserverToAllCases() {
 	})
 }
 
-function addMutationOberserverToSingleCase() {
-	disable_all_btns(), (singleCaseLoadedObserver = new MutationObserver(function (e) {
-		$(".ETRAY_CASE_TIMELINE_PARRENT > div").html().length > 0 && ($(document).trigger("etray::single-case-loaded"), $(document).trigger("etray::single-case-comments-loaded"), singleCaseLoadedObserver.disconnect(), "Afsluttet" == $("#js-case-element__inserted > div > .etray_case_status span").html() ? ($(".js-case__save-commentary").html("Gem kommentar og gen\xe5ben sag"),
-			$(".js-case-save-close").addClass("display_none"),
-			$(".js-case-save-reopen").removeClass("display_none")) : ($(".js-case__save-commentary").html("Gem kommentar"), $(".js-case-save-close").removeClass("display_none"), $(".js-case-save-reopen").addClass("display_none")))
-	})).observe($(".ETRAY_CASE_TIMELINE_PARRENT > div")[0], {
-		characterData: !0,
-		childList: !0
-	})
+// Defines a function to add a mutation observer to a specific HTML element related to a case.
+function addMutationObserverToSingleCase() {
+    // Disables all buttons on the page first.
+    disable_all_btns();
+
+    // Creates a new MutationObserver instance and assigns it to 'singleCaseLoadedObserver'.
+    // This observer will monitor for changes in a specific element and execute the function defined as its first argument.
+    singleCaseLoadedObserver = new MutationObserver(function (mutations) {
+        // Checks if the content of a specific div element is not empty.
+        if ($(".ETRAY_CASE_TIMELINE_PARRENT > div").html().length > 0) {
+            // Triggers custom events indicating that the single case and its comments are loaded.
+            $(document).trigger("etray::single-case-loaded");
+            $(document).trigger("etray::single-case-comments-loaded");
+
+            // Disconnects the observer to stop receiving notifications now that the necessary actions are taken.
+            singleCaseLoadedObserver.disconnect();
+
+            // Checks if the case status is "Afsluttet" (which translates to "Finished").
+            if ($("#js-case-element__inserted > div > .etray_case_status span").html() == "Afsluttet") {
+                // Changes the text of the save commentary button to indicate the option to save and reopen the case.
+                $(".js-case__save-commentary").html("Gem kommentar og genåben sag");
+                // Hides the button to close the case.
+                $(".js-case-save-close").addClass("display_none");
+                // Shows the button to reopen the case.
+                $(".js-case-save-reopen").removeClass("display_none");
+            } else {
+                // Sets the default text for the save commentary button when the case status is not "Afsluttet".
+                $(".js-case__save-commentary").html("Gem kommentar");
+                // Shows the button to close the case.
+                $(".js-case-save-close").removeClass("display_none");
+                // Hides the button to reopen the case.
+                $(".js-case-save-reopen").addClass("display_none");
+            }
+        }
+    });
+
+    // Specifies the element to observe and the types of changes to monitor (changes to child elements or character data).
+    singleCaseLoadedObserver.observe($(".ETRAY_CASE_TIMELINE_PARRENT > div")[0], {
+        characterData: true,
+        childList: true
+    });
 }
+
+
 
 function addMutationOberserverToNumberOfCasesInput() {
 	observeInputValue(document.querySelector(".ETRAY_NO_OF_OPEN_CASES > input"), "value", function (e, t) {
