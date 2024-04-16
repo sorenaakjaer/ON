@@ -908,6 +908,7 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		mounted() {
+			console.log('setTagsOrGroups', this.active_case)
 			if (this.active_tag_type === 'tag') {
 				this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_tags))
 			} else {
