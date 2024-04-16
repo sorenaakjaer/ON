@@ -82,7 +82,7 @@ $(document).one("trigger::o_page_loaded", function () {
 		, "true" == $(".show_user_admin_menu").html() || $(".menu_user_admin").addClass("hidden_field")
 		, "true" == $(".show_end_customer_orders").html() || $(".menu_end_customer_orders").addClass("hidden_field")
 		, "true" == $(".show_end_customer_pricing_config").html() || $(".menu_end_customer_pricing_config").addClass("hidden_field")
-		, $.getScript("/portal/page_code_files/ext_filesvue@2.js", function (e, t, s) {
+		, $.getScript("/portal/page_code_files/ext_files/vue@2.js", function (e, t, s) {
 			$(document).trigger("trigger::vue_loaded")
 		}), setInterval(function () {
 			$(".BTN_KeepAlive > a").click()
@@ -5753,7 +5753,7 @@ function addPopperFromCDN() {
 	document.head.appendChild(link)
 
 	// Create a <script> element for the Vue Multiselect script
-	$.getScript("/portal/page_code_files/ext_files/poller.min.js", function (e, t, s) {
+	$.getScript("/portal/page_code_files/ext_files/popper.min.js", function (e, t, s) {
 		console.log('popper loaded')
 		$(document).trigger("trigger::vue__virtual_scroller_loaded")
 	})
