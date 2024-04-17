@@ -821,7 +821,7 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
-			createAndAddNewTag() {
+			 createAndAddNewTagx() {
 				// Validation
 				if (this.tagFormName.length < 1) {
 					const el = document.querySelector('#create_new_tag_input')
@@ -832,11 +832,11 @@ $(document).one("trigger::vue_loaded", function () {
 					}, 100)
 					return
 				}
-				//const idxOfCurrent = this.oldAndNewTags.findIndex(tag => tag.value === this.tagFormName)
-				//if (idxOfCurrent > -1) {
-				//	this.isInputError = true
-				//	return
-				//}
+				const idxOfCurrent = this.oldAndNewTags.findIndex(tag => tag.value === this.tagFormName)
+				if (idxOfCurrent > -1) {
+					this.isInputError = true
+					return
+				}
 				const newTagObj = {
 					value: this.tagFormName,
 					color: this.tagFormColor,
@@ -851,6 +851,68 @@ $(document).one("trigger::vue_loaded", function () {
 				this.setTheTagsSelectorView(1)
 				this.isEdited = true
 			},
+
+			createAndAddNewTag() {
+				// Validation
+				if (this.tagFormName.length < 1) {
+					const el = document.querySelector('#create_new_tag_input')
+					el.focus()
+					el.classList.remove('animate-shake')
+					setTimeout(() => {
+						el.classList.add('animate-shake')
+					}, 100)
+					return
+				}
+			
+				// Find index of existing tag with the same value
+				const idxOfCurrent = this.oldAndNewTags.findIndex(tag => tag.value === this.tagFormName);
+			
+				// Define the new tag object
+				const newTagObj = {
+					value: this.tagFormName,
+					color: this.tagFormColor,
+					description: this.tagFormDesc
+				};
+			
+				if (idxOfCurrent > -1) {
+					// If the tag exists, remove the old one
+					this.oldAndNewTags.splice(idxOfCurrent, 1);
+					// Optionally, you could also want to remove it from any other lists it might be in
+					const idxInNewTags = this.newTags.findIndex(tag => tag.value === this.tagFormName);
+					if (idxInNewTags > -1) {
+						this.newTags.splice(idxInNewTags, 1);
+					}
+					const idxInSelectedTags = this.selectedTags.findIndex(tag => tag.value === this.tagFormName);
+					if (idxInSelectedTags > -1) {
+						this.selectedTags.splice(idxInSelectedTags, 1);
+					}
+				}
+			
+				// Add the new tag to the lists
+				this.newTags.push(newTagObj);
+				this.selectedTags.push(newTagObj);
+			
+				// Reset the form fields
+				this.tagFormName = '';
+				this.tagsSearch = '';
+				this.tagFormDesc = '';
+				this.tagFormColor = this.tagColors[0];
+			
+				// Update the UI accordingly
+				this.setTheTagsSelectorView(1);
+				this.isEdited = true;
+			},
+
+
+
+
+
+
+
+
+
+
+
 			onTagsBGClick() {
 				if (this.is_loading_tag_button) {
 					return
