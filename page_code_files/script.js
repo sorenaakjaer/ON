@@ -893,13 +893,9 @@ $(document).one("trigger::vue_loaded", function () {
 						this.selectedTags.splice(idxInSelectedTags, 1);
 					}
 				}
-				else
-				{
-					this.newTags.push(newTagObj);
-				}
 				// Add the new tag to the lists
 				this.selectedTags.push(newTagObj);
-			
+				this.newTags.push(newTagObj);
 				// Reset the form fields
 				this.tagFormName = '';
 				this.tagsSearch = '';
