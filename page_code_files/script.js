@@ -1955,13 +1955,30 @@ $(document).one("trigger::vue_loaded", function () {
 			updateItemTags(tagsArr) {
 				const caseOnId = this.theActiveCaseForTag.onid
 				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
-				const tagsArrDb = tagsArr.map(tag => {
+				const tagsArrDbx = tagsArr.map(tag => {
 					return {
 						value: tag.value,
 						color: tag.color,
 						description: tag.description ? tag.description : null
 					}
 				})
+				const tagsArrDb = tagsArr.map(tag => {
+					let tagObj = {};
+					// Add 'value' only if it is not null
+					if (tag.value != null) {
+						tagObj.value = tag.value;
+					}
+					// Add 'color' only if it is not null
+					if (tag.color != null) {
+						tagObj.color = tag.color;
+					}
+					// Add 'description' only if it is not null
+					if (tag.description != null) {
+						tagObj.description = tag.description;
+					}
+					return tagObj;
+				});		
+
 				console.log({ tagsArrDb })
 				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArrDb));
 				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
