@@ -867,12 +867,18 @@ $(document).one("trigger::vue_loaded", function () {
 				// Find index of existing tag with the same value
 				const idxOfCurrent = this.oldAndNewTags.findIndex(tag => tag.value === this.tagFormName);
 			
-				// Define the new tag object
+				// Define the new tag object with conditional properties
 				const newTagObj = {
-					value: this.tagFormName,
-					color: this.tagFormColor,
-					description: this.tagFormDesc
+					value: this.tagFormName
 				};
+				// Conditionally add color and description if they contain data
+				if (this.tagFormColor) {
+					newTagObj.color = this.tagFormColor;
+				}
+				if (this.tagFormDesc) {
+					newTagObj.description = this.tagFormDesc;
+				}
+
 			
 				if (idxOfCurrent > -1) {
 					// If the tag exists, remove the old one
