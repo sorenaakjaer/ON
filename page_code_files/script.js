@@ -852,7 +852,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.isEdited = true
 			},
 
-			createAndAddNewTagz() {
+			createAndAddNewTag() {
 				// Validation
 				if (this.tagFormName.length < 1) {
 					const el = document.querySelector('#create_new_tag_input')
@@ -893,9 +893,11 @@ $(document).one("trigger::vue_loaded", function () {
 						this.selectedTags.splice(idxInSelectedTags, 1);
 					}
 				}
-			
+				else
+				{
+					this.newTags.push(newTagObj);
+				}
 				// Add the new tag to the lists
-				this.newTags.push(newTagObj);
 				this.selectedTags.push(newTagObj);
 			
 				// Reset the form fields
@@ -909,63 +911,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.isEdited = true;
 			},
 
-			createAndAddNewTag() {
-				// Validation
-				if (this.tagFormName.length < 1) {
-					const el = document.querySelector('#create_new_tag_input');
-					el.focus();
-					el.classList.remove('animate-shake');
-					setTimeout(() => {
-						el.classList.add('animate-shake');
-					}, 100);
-					return;
-				}
-			
-				// Find index of existing tag with the same value in various lists
-				const idxOfCurrentOld = this.oldAndNewTags.findIndex(tag => tag.value === this.tagFormName);
-				const idxOfCurrentNew = this.newTags.findIndex(tag => tag.value === this.tagFormName);
-				const idxOfCurrentSelected = this.selectedTags.findIndex(tag => tag.value === this.tagFormName);
-			
-				// Define the new tag object with conditional properties
-				const newTagObj = {
-					value: this.tagFormName
-				};
-			
-				// Conditionally add color and description if they contain data
-				if (this.tagFormColor) {
-					newTagObj.color = this.tagFormColor;
-				}
-				if (this.tagFormDesc) {
-					newTagObj.description = this.tagFormDesc;
-				}
-			
-				// Remove the old tag from all lists it might be in
-				if (idxOfCurrentOld > -1) {
-					this.oldAndNewTags.splice(idxOfCurrentOld, 1);
-				}
-				if (idxOfCurrentNew > -1) {
-					this.newTags.splice(idxOfCurrentNew, 1);
-				}
-				if (idxOfCurrentSelected > -1) {
-					this.selectedTags.splice(idxOfCurrentSelected, 1);
-				}
-			
-				// Add the new tag to the lists
-				this.oldAndNewTags.push(newTagObj); // Ensure consistency if oldAndNewTags also needs updating
-				this.newTags.push(newTagObj);
-				this.selectedTags.push(newTagObj);
-			
-				// Reset the form fields
-				this.tagFormName = '';
-				this.tagsSearch = '';
-				this.tagFormDesc = '';
-				this.tagFormColor = this.tagColors[0];
-			
-				// Update the UI accordingly
-				this.setTheTagsSelectorView(1);
-				this.isEdited = true;
-			},
-			
+	
 
 
 			onTagsBGClick() {
