@@ -228,7 +228,7 @@ $(document).one("trigger::o_page_loaded", function () {
 			});
 
 			if ("Afsluttet" == $("#js-case-element__inserted > div > div > .etray_case_status span").html()) {
-				$("#js-case-element__inserted > div > .etray_case_status").html('<span class="o-pill o-pill--yellow">Åben</span>');
+				$("#js-case-element__inserted > div  > div > .etray_case_status").html('<span class="o-pill o-pill--yellow">Åben</span>');
 				$(".js-case__save-commentary").html("Gem kommentar");
 
 				if ($(".js-case-save-close").hasClass("display_none")) {
@@ -359,7 +359,7 @@ $(document).one("trigger::o_page_loaded", function () {
 		$(".ETRAY_UPDATE_CASE > a").click();
 		addMutationOberserverToSingleCase();
 		 readEtrayCaseComments() 
-		 $("#js-case-element__inserted > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--grey">Afsluttet</span></div>');
+		 $("#js-case-element__inserted > div > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--grey">Afsluttet</span></div>');
 		 $(".js-case__save-commentary").html("Gem kommentar og gen\xe5ben sag");
 		 $(".js-case-save-close").hasClass("display_none") || $(".js-case-save-close").addClass("display_none");
 		 $(".js-case-save-reopen").hasClass("display_none") && $(".js-case-save-reopen").removeClass("display_none")
