@@ -358,12 +358,12 @@ $(document).one("trigger::o_page_loaded", function () {
 		$(".ETRAY_READ_MESSAGE_TYPE > input").val("CLOSE_CASE");
 		$(".ETRAY_UPDATE_CASE > a").click();
 		addMutationOberserverToSingleCase();
-		 readEtrayCaseComments() 
-		 $("#js-case-element__inserted > div > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--grey">Afsluttet</span></div>');
-		 $(".js-case__save-commentary").html("Gem kommentar og gen\xe5ben sag");
-		 $(".js-case-save-close").hasClass("display_none") || $(".js-case-save-close").addClass("display_none");
-		 $(".js-case-save-reopen").hasClass("display_none") && $(".js-case-save-reopen").removeClass("display_none")
-		 $(document).trigger("vue::update_case_prop", [t, {
+		readEtrayCaseComments()
+		$("#js-case-element__inserted > div > div > .etray_case_status").html('<div class="etray_case_status">Status:<span class="o-pill o-pill--grey">Afsluttet</span></div>');
+		$(".js-case__save-commentary").html("Gem kommentar og gen\xe5ben sag");
+		$(".js-case-save-close").hasClass("display_none") || $(".js-case-save-close").addClass("display_none");
+		$(".js-case-save-reopen").hasClass("display_none") && $(".js-case-save-reopen").removeClass("display_none")
+		$(document).trigger("vue::update_case_prop", [t, {
 			filter_open_closed: "closed"
 		}])
 	});
@@ -743,6 +743,7 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		data() {
 			return {
+				initialItems: this.active_tag_type === 'tag' ? this.tags : this.groups,
 				theTagsSelectorView: 1,
 				highlightedIndex: -1,
 				tagsSearch: '',
@@ -777,11 +778,8 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		computed: {
 			oldAndNewTags() {
-				if (this.active_tag_type === 'tag') {
-					return !this.isShowAllTags ? this.tags.concat(this.newTags) : this.all_tags.concat(this.newTags)
-				} else {
-					return !this.isShowAllTags ? this.groups.concat(this.newTags) : this.all_groups.concat(this.newTags)
-				}
+				// Filter out initialItems that are already in the newTags array
+				return this.initialItems.filter(item => !this.newTags.some(tag => tag.value === item.value)).concat(this.newTags);
 			},
 			tagsWithProps() {
 				return this.oldAndNewTags.filter(tag => tag.value !== 'v_no_selected').map(tag => {
@@ -821,37 +819,14 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
-			 createAndAddNewTagx() {
-				// Validation
-				if (this.tagFormName.length < 1) {
-					const el = document.querySelector('#create_new_tag_input')
-					el.focus()
-					el.classList.remove('animate-shake')
-					setTimeout(_ => {
-						el.classList.add('animate-shake')
-					}, 100)
-					return
+			setIsShowAllTags(bool) {
+				this.isShowAllTags = bool
+				if (bool) {
+					this.initialItems = this.active_tag_type === 'tag' ? this.all_tags : this.all_groups
+				} else {
+					this.initialItems = this.active_tag_type === 'tag' ? this.tags : this.groups
 				}
-				const idxOfCurrent = this.oldAndNewTags.findIndex(tag => tag.value === this.tagFormName)
-				if (idxOfCurrent > -1) {
-					this.isInputError = true
-					return
-				}
-				const newTagObj = {
-					value: this.tagFormName,
-					color: this.tagFormColor,
-					description: this.tagFormDesc
-				}
-				this.newTags.push(newTagObj)
-				this.selectedTags.push(newTagObj)
-				this.tagFormName = ''
-				this.tagsSearch = ''
-				this.tagFormDesc = ''
-				this.tagFormColor = this.tagColors[0]
-				this.setTheTagsSelectorView(1)
-				this.isEdited = true
 			},
-
 			createAndAddNewTag() {
 				// Validation
 				if (this.tagFormName.length < 1) {
@@ -863,10 +838,12 @@ $(document).one("trigger::vue_loaded", function () {
 					}, 100)
 					return
 				}
-			
+
 				// Find index of existing tag with the same value
-				const idxOfCurrent = this.oldAndNewTags.findIndex(tag => tag.value === this.tagFormName);
-			
+				const idxOfCurrent = this.initialItems.findIndex(tag => tag.value === this.tagFormName);
+				const idxOfNew = this.newTags.findIndex(tag => tag.value === this.tagFormName);
+				const idxOfSelected = this.selectedTags.findIndex(tag => tag.value === this.tagFormName);
+
 				// Define the new tag object with conditional properties
 				const newTagObj = {
 					value: this.tagFormName
@@ -879,37 +856,27 @@ $(document).one("trigger::vue_loaded", function () {
 					newTagObj.description = this.tagFormDesc;
 				}
 
-			
-				if (idxOfCurrent > -1) {
-					// If the tag exists, remove the old one
-					this.oldAndNewTags.splice(idxOfCurrent, 1);
-					// Optionally, you could also want to remove it from any other lists it might be in
-					const idxInNewTags = this.newTags.findIndex(tag => tag.value === this.tagFormName);
-					if (idxInNewTags > -1) {
-						this.newTags.splice(idxInNewTags, 1);
-					}
-					const idxInSelectedTags = this.selectedTags.findIndex(tag => tag.value === this.tagFormName);
-					if (idxInSelectedTags > -1) {
-						this.selectedTags.splice(idxInSelectedTags, 1);
-					}
-				}
 				// Add the new tag to the lists
-				this.selectedTags.push(newTagObj);
-				this.newTags.push(newTagObj);
+				if (idxOfSelected > -1) {
+					this.selectedTags.splice(idxOfSelected, 1, newTagObj);
+				} else {
+					this.selectedTags.push(newTagObj);
+				}
+				if (idxOfNew > -1) {
+					this.newTags.splice(idxOfNew, 1, newTagObj);
+				} else {
+					this.newTags.push(newTagObj);
+				}
 				// Reset the form fields
 				this.tagFormName = '';
 				this.tagsSearch = '';
 				this.tagFormDesc = '';
 				this.tagFormColor = this.tagColors[0];
-			
+
 				// Update the UI accordingly
 				this.setTheTagsSelectorView(1);
 				this.isEdited = true;
 			},
-
-	
-
-
 			onTagsBGClick() {
 				if (this.is_loading_tag_button) {
 					return
@@ -945,6 +912,7 @@ $(document).one("trigger::vue_loaded", function () {
 			setTheEditTag(tag) {
 				this.tagFormName = tag.value
 				this.tagFormColor = tag.color ? tag.color : this.tagColors[0]
+				this.tagFormDesc = tag.description ? tag.description : ''
 				this.theEditingExisting = tag
 				this.setTheTagsSelectorView(2)
 			},
@@ -975,11 +943,11 @@ $(document).one("trigger::vue_loaded", function () {
 			resetForm() {
 				this.tagFormName = ''
 				this.tagFormColor = this.tagColors[0]
+				this.tagFormDesc = ''
 				this.theEditingExisting = null
 			}
 		},
 		mounted() {
-			console.log('setTagsOrGroups', this.active_case)
 			if (this.active_tag_type === 'tag') {
 				this.selectedTags = JSON.parse(JSON.stringify(this.active_case.v_tags))
 			} else {
@@ -1943,6 +1911,22 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				this.setLocalStorageFilter('theActiveFilterGroups', this.theActiveFilterGroups)
 			},
+			updateAllCasesTags(tagsArr, vTagsOrGroups) {
+				this.cases.forEach((caseItem, idx) => {
+					const property = vTagsOrGroups
+
+					if (!caseItem[property]) {
+						caseItem[property] = []; // Initialize if not present
+					}
+
+					tagsArr.forEach(tag => {
+						const tagIdx = caseItem[property].findIndex(item => item.value === tag.value);
+						if (tagIdx !== -1) {
+							this.$set(caseItem[property], tagIdx, tag);
+						}
+					});
+				});
+			},
 			updateItemTags(tagsArr) {
 				const caseOnId = this.theActiveCaseForTag.onid
 				const caseIdx = this.cases.findIndex(caseItem => caseItem.onid === caseOnId)
@@ -1968,9 +1952,7 @@ $(document).one("trigger::vue_loaded", function () {
 						tagObj.description = tag.description;
 					}
 					return tagObj;
-				});		
-
-				console.log({ tagsArrDb })
+				});
 				$('.updTagOrGroup_Input > input').val(JSON.stringify(tagsArrDb));
 				$('.updTagOrGroup_Input_type > input').val(this.theShowTagDropdown)
 				$('.updTagOrGroup_Input_caseid > input').val(caseOnId)
@@ -1982,6 +1964,8 @@ $(document).one("trigger::vue_loaded", function () {
 					} else {
 						this.cases[caseIdx].v_groups = tagsArr
 					}
+					const vTagsOrGroups = this.theShowTagDropdown === 'tag' ? 'v_tags' : 'v_groups';
+					this.updateAllCasesTags(tagsArr, vTagsOrGroups)
 					// If modal is open then we need to update the jquery part tags and timeline
 					if ($('#js-case-element__inserted').length > 0) {
 						// Update tags/groups
@@ -4489,45 +4473,45 @@ function addMutationOberserverToAllCases() {
 
 // Defines a function to add a mutation observer to a specific HTML element related to a case.
 function addMutationOberserverToSingleCase() {
-    // Disables all buttons on the page first.
-    disable_all_btns();
+	// Disables all buttons on the page first.
+	disable_all_btns();
 
-    // Creates a new MutationObserver instance and assigns it to 'singleCaseLoadedObserver'.
-    // This observer will monitor for changes in a specific element and execute the function defined as its first argument.
-    singleCaseLoadedObserver = new MutationObserver(function (mutations) {
-        // Checks if the content of a specific div element is not empty.
-        if ($(".ETRAY_CASE_TIMELINE_PARRENT > div").html().length > 0) {
-            // Triggers custom events indicating that the single case and its comments are loaded.
-            $(document).trigger("etray::single-case-loaded");
-            $(document).trigger("etray::single-case-comments-loaded");
+	// Creates a new MutationObserver instance and assigns it to 'singleCaseLoadedObserver'.
+	// This observer will monitor for changes in a specific element and execute the function defined as its first argument.
+	singleCaseLoadedObserver = new MutationObserver(function (mutations) {
+		// Checks if the content of a specific div element is not empty.
+		if ($(".ETRAY_CASE_TIMELINE_PARRENT > div").html().length > 0) {
+			// Triggers custom events indicating that the single case and its comments are loaded.
+			$(document).trigger("etray::single-case-loaded");
+			$(document).trigger("etray::single-case-comments-loaded");
 
-            // Disconnects the observer to stop receiving notifications now that the necessary actions are taken.
-            singleCaseLoadedObserver.disconnect();
+			// Disconnects the observer to stop receiving notifications now that the necessary actions are taken.
+			singleCaseLoadedObserver.disconnect();
 
-            // Checks if the case status is "Afsluttet" (which translates to "Finished").
-            if ($("#js-case-element__inserted > div > div > .etray_case_status span").html() == "Afsluttet") {
-                // Changes the text of the save commentary button to indicate the option to save and reopen the case.
-                $(".js-case__save-commentary").html("Gem kommentar og genåben sag");
-                // Hides the button to close the case.
-                $(".js-case-save-close").addClass("display_none");
-                // Shows the button to reopen the case.
-                $(".js-case-save-reopen").removeClass("display_none");
-            } else {
-                // Sets the default text for the save commentary button when the case status is not "Afsluttet".
-                $(".js-case__save-commentary").html("Gem kommentar");
-                // Shows the button to close the case.
-                $(".js-case-save-close").removeClass("display_none");
-                // Hides the button to reopen the case.
-                $(".js-case-save-reopen").addClass("display_none");
-            }
-        }
-    });
+			// Checks if the case status is "Afsluttet" (which translates to "Finished").
+			if ($("#js-case-element__inserted > div > div > .etray_case_status span").html() == "Afsluttet") {
+				// Changes the text of the save commentary button to indicate the option to save and reopen the case.
+				$(".js-case__save-commentary").html("Gem kommentar og genåben sag");
+				// Hides the button to close the case.
+				$(".js-case-save-close").addClass("display_none");
+				// Shows the button to reopen the case.
+				$(".js-case-save-reopen").removeClass("display_none");
+			} else {
+				// Sets the default text for the save commentary button when the case status is not "Afsluttet".
+				$(".js-case__save-commentary").html("Gem kommentar");
+				// Shows the button to close the case.
+				$(".js-case-save-close").removeClass("display_none");
+				// Hides the button to reopen the case.
+				$(".js-case-save-reopen").addClass("display_none");
+			}
+		}
+	});
 
-    // Specifies the element to observe and the types of changes to monitor (changes to child elements or character data).
-    singleCaseLoadedObserver.observe($(".ETRAY_CASE_TIMELINE_PARRENT > div")[0], {
-        characterData: true,
-        childList: true
-    });
+	// Specifies the element to observe and the types of changes to monitor (changes to child elements or character data).
+	singleCaseLoadedObserver.observe($(".ETRAY_CASE_TIMELINE_PARRENT > div")[0], {
+		characterData: true,
+		childList: true
+	});
 }
 
 
