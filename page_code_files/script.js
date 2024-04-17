@@ -1,4 +1,4 @@
-var vue2Url = "portal/page_code_files/ext_files/vue@2.js"
+var vue2Url = "/portal/page_code_files/ext_files/vue@2.js"
 var vueVirtualScrollerCssUrl = '/portal/page_code_files/ext_files/vue-virtual-scroller.css' 
 var popperMinJsUrl = "/portal/page_code_files/ext_files/popper.min.js"
 // Set loaded div
