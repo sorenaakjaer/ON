@@ -832,11 +832,11 @@ $(document).one("trigger::vue_loaded", function () {
 					}, 100)
 					return
 				}
-				const idxOfCurrent = this.oldAndNewTags.findIndex(tag => tag.value === this.tagFormName)
-				if (idxOfCurrent > -1) {
-					this.isInputError = true
-					return
-				}
+				//const idxOfCurrent = this.oldAndNewTags.findIndex(tag => tag.value === this.tagFormName)
+				//if (idxOfCurrent > -1) {
+				//	this.isInputError = true
+				//	return
+				//}
 				const newTagObj = {
 					value: this.tagFormName,
 					color: this.tagFormColor,
