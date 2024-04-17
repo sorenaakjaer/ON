@@ -304,6 +304,37 @@ $(document).one("trigger::o_page_loaded", function () {
 
 	$(".js-click-case-follow-up").on("click", function () {
 		openSmallModal("js-o-modal--small__follow-up")
+
+		var now = new Date();
+		var nextHour = now.getHours() + 1;
+		if (nextHour == 24) { nextHour = 0; }
+
+		var timeElements = document.querySelectorAll('.xdsoft_time_variant .xdsoft_time');
+
+		// First, remove the current 'xdsoft_current' class from all elements
+		timeElements.forEach(function(el) {
+			el.classList.remove('xdsoft_current');
+		});
+
+		// Find the element that matches the 'nextHour' and set it as 'xdsoft_current'
+		var currentElement = Array.from(timeElements).find(el => parseInt(el.getAttribute('data-hour')) === nextHour);
+		if (currentElement) {
+			currentElement.classList.add('xdsoft_current');
+		}
+
+		// Updating margins if necessary
+		var elm1 = document.querySelector('.xdsoft_time_variant');
+		var elm2 = document.querySelector('.xdsoft_scrollbar .xdsoft_scroller');
+
+		if (elm1 && elm2) {
+			var elm1_v_marginTop = -25 * nextHour;
+			var elm2_v_marginTop = 5 * nextHour;
+			elm1.style.marginTop = elm1_v_marginTop + 'px';
+			elm2.style.marginTop = elm2_v_marginTop + 'px';
+		}
+
+
+
 	});
 	// Event listener for the "Save Follow-Up" button click
 	$(".js-case-save-follow-up").on("click", function () {
