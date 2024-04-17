@@ -1,6 +1,6 @@
-var vue2Url = "https://cdn.jsdelivr.net/npm/vue@2"; // "/portal/page_code_files/ext_files/vue@2.js"
-var vueVirtualScrollerCssUrl = 'https://unpkg.com/vue-virtual-scroller/dist/vue-virtual-scroller.css' // '/portal/page_code_files/ext_files/vue-virtual-scroller.css' 
-var popperMinJsUrl = "https://unpkg.com/@popperjs/core@2"; // "/portal/page_code_files/ext_files/popper.min.js"
+var vue2Url = "portal/page_code_files/ext_files/vue@2.js"
+var vueVirtualScrollerCssUrl = '/portal/page_code_files/ext_files/vue-virtual-scroller.css' 
+var popperMinJsUrl = "/portal/page_code_files/ext_files/popper.min.js"
 // Set loaded div
 $('.triggers').html($('.triggers').html() + '<div class="v_js_loaded"></div>');
 
