@@ -1515,6 +1515,7 @@ $(document).one("trigger::vue_loaded", function () {
 				shortcuts: [
 					['{{{pp_mergecode:subject}}}',
 						'{{{pp_mergecode:type}}}',
+						'{{{pp_mergecode:onid}}}',
 						'{{{pp_mergecode:status}}}',
 						'{{{pp_mergecode:from}}}',
 						'{{{pp_mergecode:user_name}}}',
