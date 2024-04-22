@@ -2376,9 +2376,10 @@
                                                 :value="oType.value">{{ oType.display }}</option>
                                         </select>
                                     </div>
-                                    <div v-if="theSelectedStatus === 'Pending' && active_area == 'News'" class="o-warning"><i class="tio">info</i> <p>Status ændres til "Afsluttet" efter 30 dage medmindre nyhed er opdateret</p></div>
-                                    <div v-if="theSelectedStatus != 'Closed' && active_area == 'OperationsStatus'" class="o-warning"><i class="tio">info</i> <p>Status ændres til "Closed" efter 30 dage medmindre nyhed er opdateret</p></div>
+                                    
                                 </div>
+                                <div v-if="theSelectedStatus === 'Pending' && active_area == 'News'" class="o-warning"><i class="tio">info</i> <p>Status ændres til "Afsluttet" efter 30 dage medmindre nyhed er opdateret</p></div>
+                                    <div v-if="theSelectedStatus != 'Closed' && active_area == 'OperationsStatus'" class="o-warning"><i class="tio">info</i> <p>Status ændres til "Closed" efter 30 dage medmindre nyhed er opdateret</p></div>
                                 <div class="o-group">
                                     <label class="o-label">Fra firma (Vises som emailens afsender)</label>
                                     <input type="text" v-model="theEmailFromCompany" class="o-input" />
@@ -2387,7 +2388,7 @@
                                     <label class="o-label">Emnefelt</label>
                                     <input type="text" v-model="theEmailSubject" class="o-input" />
                                 </div>
-                                <div class="o-group" v-if="active_area === 'News'">
+                                <div class="o-group" v-if="active_area === 'xxNews'">
                                     <label class="o-label">Beskrivelse</label>
                                     <textarea v-model="theEmailTeaser" class="o-input"></textarea>
                                 </div>

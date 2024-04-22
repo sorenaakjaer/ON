@@ -1979,6 +1979,9 @@ $(document).one("trigger::vue_loaded", function () {
 				if (this.edit_master_template) {
 					dbObj['template_id'] = this.edit_master_template
 				}
+				
+				console.log("dbObj",dbObj)
+				console.log("this.thePlaceholderLabels",this.thePlaceholderLabels)
 				const raw = JSON.stringify(dbObj)
 				const requestOptions = {
 					method: "POST",
