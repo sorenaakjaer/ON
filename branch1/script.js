@@ -1973,7 +1973,8 @@ $(document).one("trigger::vue_loaded", function () {
 					receivers: Object.keys(this.selectedReceivers).map(key => key).join(';'),
 					send_notifications: this.isSendNotifications,
 					attachments: null,
-					html: this.newMasterHTMLSanitized
+					html: this.newMasterHTMLSanitized,
+					placeholder_labels: this.thePlaceholderLabels
 				};
 				if (this.edit_master_template) {
 					dbObj['template_id'] = this.edit_master_template
