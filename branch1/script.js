@@ -2377,6 +2377,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.theSelectedType = this.fncRevertFromDisplayToValue(this.filteredTypes, this.edit_announcement['type'])
 				this.theSelectedStatus = this.edit_announcement['status']
 				//this.theEmailFromCompany = this.edit_announcement['from']
+				this.theEmailFromCompany = this.edit_announcement['company_display']
 				this.theEmailSubject = this.edit_announcement['subject']
 				if (this.edit_announcement['updateSubscription'] && this.edit_announcement['updateSubscription'] != 'false') {
 					this.isUpdateSubscription = this.edit_announcement['updateSubscription'] != 'false'
