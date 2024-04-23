@@ -1,3 +1,19 @@
+var vueUrl = 'https://cdn.jsdelivr.net/npm/vue@2' // '/portal/page_code_files/ext_files/vue@2.js'
+var flatPickerCSSUrl = 'https://cdn.jsdelivr.net/npm/flatpickr@4/dist/flatpickr.min.css' // '/portal/page_code_files/ext_files/flatpickr.min.css'
+var flatPickerJSUrl = 'https://cdn.jsdelivr.net/npm/flatpickr@4/dist/flatpickr.min.js' // '/portal/page_code_files/ext_files/flatpickr.min.js'
+var flatPickerComponentUrl = 'https://cdn.jsdelivr.net/npm/vue-flatpickr-component@8' // '/portal/page_code_files/ext_files/vue-flatpickr-component@8.js'
+
+var dayJsUrl = "https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js"; // "/portal/page_code_files/ext_files/dayjs.min.js"
+var dayJsLocaleUrl = "https://cdn.jsdelivr.net/npm/dayjs@1.11.10/locale/da.js"; // "/portal/page_code_files/ext_files//locale/da.js"
+var dayJsRelativeTimeUrl = "https://cdn.jsdelivr.net/npm/dayjs@1.11.10/plugin/relativeTime.js"; // "/portal/page_code_files/ext_files//relativeTime.js"
+var dayJsLocalizedFormatUrl = "https://cdn.jsdelivr.net/npm/dayjs@1.11.10/plugin/localizedFormat.js"; // '/portal/page_code_files/ext_files//localizedFormat.js'
+
+var quillCssUrl = 'https://cdn.quilljs.com/1.3.6/quill.snow.css'; // '/portal/page_code_files/ext_files/quill.snow.css 
+var quillJsUrl = 'https://cdn.quilljs.com/1.3.6/quill.js'; // '/portal/page_code_files/ext_files/quill.js'
+var purifyJsUrl = 'https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js'; // '/portal/page_code_files/ext_files/purify.min.js'
+var popperJsUrl = 'https://unpkg.com/@popperjs/core@2' // /portal/page_code_files/ext_files/popper.min.js
+var virtualScrollCssUrl = 'https://unpkg.com/vue-virtual-scroller/dist/vue-virtual-scroller.css' // '/portal/page_code_files/ext_files/vue-virtual-scroller.css'
+
 // Set loaded div
 $('.triggers').html($('.triggers').html() + '<div class="v_js_loaded"></div>');
 
@@ -82,7 +98,7 @@ $(document).one("trigger::o_page_loaded", function () {
 		, "true" == $(".show_user_admin_menu").html() || $(".menu_user_admin").addClass("hidden_field")
 		, "true" == $(".show_end_customer_orders").html() || $(".menu_end_customer_orders").addClass("hidden_field")
 		, "true" == $(".show_end_customer_pricing_config").html() || $(".menu_end_customer_pricing_config").addClass("hidden_field")
-		, $.getScript("https://cdn.jsdelivr.net/npm/vue@2", function (e, t, s) {
+		, $.getScript(vueUrl, function (e, t, s) {
 			$(document).trigger("trigger::vue_loaded")
 		}), setInterval(function () {
 			$(".BTN_KeepAlive > a").click()
@@ -537,11 +553,11 @@ $(document).one("trigger::vue_loaded", function () {
 	function addVueFlatPickerFromCDN() {
 		const cssLink = document.createElement('link');
 		cssLink.rel = 'stylesheet';
-		cssLink.href = 'https://cdn.jsdelivr.net/npm/flatpickr@4/dist/flatpickr.min.css';
+		cssLink.href = flatPickerCSSUrl;
 		document.head.appendChild(cssLink);
 
-		$.getScript("https://cdn.jsdelivr.net/npm/flatpickr@4/dist/flatpickr.min.js", function () {
-			$.getScript("https://cdn.jsdelivr.net/npm/vue-flatpickr-component@8", function () {
+		$.getScript(flatPickerJSUrl, function () {
+			$.getScript(flatPickerComponentUrl, function () {
 
 				$(document).trigger("trigger::vue__flat_picker_loaded");
 				console.log('Vue-Flatpickr component loaded');
@@ -1058,10 +1074,10 @@ $(document).one("trigger::vue_loaded", function () {
 					return;
 				}
 				const scriptsToLoad = [
-					"https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js",
-					"https://cdn.jsdelivr.net/npm/dayjs@1.11.10/locale/da.js",
-					"https://cdn.jsdelivr.net/npm/dayjs@1.11.10/plugin/relativeTime.js",
-					'https://cdn.jsdelivr.net/npm/dayjs@1.11.10/plugin/localizedFormat.js'
+					dayJsUrl,
+					dayJsLocaleUrl,
+					dayJsRelativeTimeUrl,
+					dayJsLocalizedFormatUrl
 				];
 
 				const loadScript = (scriptUrl) => {
@@ -1980,9 +1996,9 @@ $(document).one("trigger::vue_loaded", function () {
 				if (this.edit_master_template) {
 					dbObj['template_id'] = this.edit_master_template
 				}
-				
-				console.log("dbObj",dbObj)
-				console.log("this.thePlaceholderLabels",this.thePlaceholderLabels)
+
+				console.log("dbObj", dbObj)
+				console.log("this.thePlaceholderLabels", this.thePlaceholderLabels)
 				const raw = JSON.stringify(dbObj)
 				const requestOptions = {
 					method: "POST",
@@ -5956,11 +5972,11 @@ function addQuillFromCDN() {
 	}
 	const quillCss = document.createElement('link');
 	quillCss.rel = 'stylesheet';
-	quillCss.href = 'https://cdn.quilljs.com/1.3.6/quill.snow.css';
+	quillCss.href = quillCssUrl;
 	document.head.appendChild(quillCss);
 
 	const quillScript = document.createElement('script');
-	quillScript.src = 'https://cdn.quilljs.com/1.3.6/quill.js';
+	quillScript.src = quillJsUrl;
 	quillScript.onload = function () {
 		console.log('quill is here')
 		$(document).trigger('quill::loaded');
@@ -5974,7 +5990,7 @@ function addPurifyFromCDN() {
 		return
 	}
 	// Sanitizing user-generated content is crucial for preventing XSS (Cross-Site Scripting) attacks
-	$.getScript("https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js", function (e, t, s) {
+	$.getScript(purifyJsUrl, function (e, t, s) {
 		console.log('purify loaded')
 		isPurifyLoadedToPage = true
 	})
@@ -5987,11 +6003,11 @@ function addPopperFromCDN() {
 	// Create a <link> element for the CSS file
 	const link = document.createElement('link')
 	link.rel = 'stylesheet'
-	link.href = 'https://unpkg.com/vue-virtual-scroller/dist/vue-virtual-scroller.css'
+	link.href = virtualScrollCssUrl
 	document.head.appendChild(link)
 
 	// Create a <script> element for the Vue Multiselect script
-	$.getScript("https://unpkg.com/@popperjs/core@2", function (e, t, s) {
+	$.getScript(popperJsUrl, function (e, t, s) {
 		console.log('popper loaded')
 		$(document).trigger("trigger::vue__virtual_scroller_loaded")
 	})
