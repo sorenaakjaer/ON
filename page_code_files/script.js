@@ -1,5 +1,5 @@
 var vue2Url = "/portal/page_code_files/ext_files/vue@2.js"
-var vueVirtualScrollerCssUrl = '/portal/page_code_files/ext_files/vue-virtual-scroller.css' 
+var vueVirtualScrollerCssUrl = '/portal/page_code_files/ext_files/vue-virtual-scroller.css'
 var popperMinJsUrl = "/portal/page_code_files/ext_files/popper.min.js"
 // Set loaded div
 $('.triggers').html($('.triggers').html() + '<div class="v_js_loaded"></div>');
@@ -312,7 +312,7 @@ $(document).one("trigger::o_page_loaded", function () {
 		var timeElements = document.querySelectorAll('.xdsoft_time_variant .xdsoft_time');
 
 		// First, remove the current 'xdsoft_current' class from all elements
-		timeElements.forEach(function(el) {
+		timeElements.forEach(function (el) {
 			el.classList.remove('xdsoft_current');
 		});
 

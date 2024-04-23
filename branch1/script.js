@@ -2222,6 +2222,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.theSelectedType = masterTemp.type;
 				this.isSendNotifications = this.convertToBoolean(masterTemp.send_notifications);
 				this.theEmailHTML = masterTemp.html;
+				this.setPlaceholderLabels(masterTemp)
 
 				if (masterTemp.receivers?.length > 0) {
 					this.selectedReceivers = this.fncConvertSemicolonSeparatedStringToObject(masterTemp.receivers);
@@ -2450,6 +2451,13 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 				}
 				this.versionHistPlaceholder = newHistPlaceholder
+			},
+			setPlaceholderLabels(masterTemplate) {
+				const labelsObj = masterTemplate['thePlaceholderLabels'] ? masterTemplate['thePlaceholderLabels'] : {}
+				Object.keys(labelsObj).forEach((key) => {
+					const idx = this.placeholders.findIndex(place => place.id == key)
+					this.placeholders[idx]['placeholder'] = labelsObj[key]
+				})
 			},
 			initializeQuillEditors() {
 				this.$nextTick(() => {
