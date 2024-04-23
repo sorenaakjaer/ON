@@ -2270,6 +2270,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.selectedReceivers = obj.receivers && obj.receivers.length > 0 ? this.fncConvertSemicolonSeparatedStringToObject(obj.receivers) : {}
 				this.isSendNotifications = obj.send_notifications
 				this.theEmailSubject = obj.subject
+				this.setPlaceholderLabels(obj)
 				if (obj.type) {
 					const selectedTypeIdx = this.filteredTypes.findIndex(oType => {
 						return oType.value === obj.type
@@ -2441,6 +2442,7 @@ $(document).one("trigger::vue_loaded", function () {
 						}
 					}
 				}
+				this.setPlaceholderLabels(masterTemp)
 			},
 			setHistoryPlaceholders() {
 				const newHistPlaceholder = {}
@@ -2454,6 +2456,10 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			setPlaceholderLabels(masterTemplate) {
 				const labelsObj = masterTemplate['thePlaceholderLabels'] ? masterTemplate['thePlaceholderLabels'] : {}
+				this.placeholders.forEach((place, key) => {
+					const num = key + 1
+					place['placeholder'] = 'Tekst til {{{pp_mergecode:placeholder' + num + '}}}'
+				})
 				Object.keys(labelsObj).forEach((key) => {
 					const idx = this.placeholders.findIndex(place => place.id == key)
 					this.placeholders[idx]['placeholder'] = labelsObj[key]
@@ -2543,7 +2549,6 @@ $(document).one("trigger::vue_loaded", function () {
 			this.setInitialServiceWindowDates()
 		},
 		mounted() {
-			console.log('the_user', this.the_user)
 			this.$nextTick(_ => {
 				this.initializeQuillEditors()
 			})
