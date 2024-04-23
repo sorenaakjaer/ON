@@ -907,7 +907,6 @@ $(document).one("trigger::vue_loaded", function () {
 				}, 600)
 			},
 			getAnnouncements() {
-				console.log('fetchAnnouncements')
 				this.isLoadingAnnouncements = true;
 				const myHeaders = new Headers();
 				myHeaders.append("Accept", "application/json");
@@ -1978,8 +1977,6 @@ $(document).one("trigger::vue_loaded", function () {
 				myHeaders.append("Content-Type", "application/json");
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
 
-				console.log('newMasterHTMLSanitized', this.newMasterHTMLSanitized)
-
 				let dbObj = {
 					template_id: null,
 					name: this.newMasterTitle,
@@ -2463,6 +2460,7 @@ $(document).one("trigger::vue_loaded", function () {
 				Object.keys(labelsObj).forEach((key) => {
 					const idx = this.placeholders.findIndex(place => place.id == key)
 					this.placeholders[idx]['placeholder'] = labelsObj[key]
+					this.thePlaceholderLabels[key] = labelsObj[key]
 				})
 			},
 			initializeQuillEditors() {
