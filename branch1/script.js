@@ -855,7 +855,7 @@ $(document).one("trigger::vue_loaded", function () {
 					this.theAnnActiveItem = null
 					return
 				}
-				this.getAnnouncement(item.v_id);
+				this.getAnnouncement(item.onid);
 				if (this.theAnnActiveItem !== item.v_id) {
 					this.theAnnActiveItem = item.v_id
 				} else {
