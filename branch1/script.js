@@ -855,7 +855,7 @@ $(document).one("trigger::vue_loaded", function () {
 					this.theAnnActiveItem = null
 					return
 				}
-				this.getAnnouncement(item);
+				this.getAnnouncement(item.v_id);
 				if (this.theAnnActiveItem !== item.v_id) {
 					this.theAnnActiveItem = item.v_id
 				} else {
@@ -947,7 +947,8 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: "follow"
 				};
-				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg?$onid={pONID}", requestOptions)
+				const fetch_url = "https://dev-portal.opennet.dk/ppServices/api/extMsg?onid=" + pONID
+				fetch(fetch_url, requestOptions)
 					.then(response => {
 						console.log('fetchAnnouncements::answer', response)
 						if (!response.ok) {
