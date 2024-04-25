@@ -855,6 +855,7 @@ $(document).one("trigger::vue_loaded", function () {
 					this.theAnnActiveItem = null
 					return
 				}
+				this.getAnnouncement(item);
 				if (this.theAnnActiveItem !== item.v_id) {
 					this.theAnnActiveItem = item.v_id
 				} else {
@@ -935,6 +936,35 @@ $(document).one("trigger::vue_loaded", function () {
 						this.isLoadingAnnouncements = false; // Ensure loading state is managed correctly
 					});
 			},
+			getAnnouncement(pONID) {
+				//this.isLoadingAnnouncements = true;
+				const myHeaders = new Headers();
+				myHeaders.append("Accept", "application/json");
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
+				const requestOptions = {
+					method: "GET",
+					headers: myHeaders,
+					redirect: "follow"
+				};
+				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg?${pONID}", requestOptions)
+					.then(response => {
+						console.log('fetchAnnouncements::answer', response)
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json(); // Assuming the response is JSON formatted
+					})
+					.then(result => {
+						this.announcements = result; // Assign the fetched data to the component's data property
+						this.$emit('emit_announcements', this.announcements)
+					})
+					.catch(error => {
+						console.error('Error:', error);
+					})
+					.finally(() => {
+						this.isLoadingAnnouncements = false; // Ensure loading state is managed correctly
+					});
+			},			
 			setIsCreateAnnouncementModal(bool) {
 				if (bool) {
 					this.dataIsCreateAnnouncementModal = true
