@@ -938,7 +938,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			getAnnouncement(pONID) {
 				//this.isLoadingAnnouncements = true;
-				console.log('pONID',pONID)
+				//console.log('pONID',pONID)
 				const myHeaders = new Headers();
 				myHeaders.append("Accept", "application/json");
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
