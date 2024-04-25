@@ -957,7 +957,8 @@ $(document).one("trigger::vue_loaded", function () {
 						return response.json(); // Assuming the response is JSON formatted
 					})
 					.then(result => {
-						this.announcements = result; // Assign the fetched data to the component's data property
+						this.announcements.push(result)
+						//this.announcements = result; // Assign the fetched data to the component's data property
 						this.$emit('emit_announcements', this.announcements)
 					})
 					.catch(error => {
