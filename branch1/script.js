@@ -946,7 +946,7 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: "follow"
 				};
-				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg?${pONID}", requestOptions)
+				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg?$onid={pONID}", requestOptions)
 					.then(response => {
 						console.log('fetchAnnouncements::answer', response)
 						if (!response.ok) {
