@@ -103,7 +103,7 @@ $(document).one("trigger::vue_loaded", function () {
 					'expectedOnsiteStart',
 					'expectedOnsiteEnd',
 					'initialInstallationTime',
-					'errAfterInstallation',
+					'errorAfterInstallation',
 					'relatedEntities.serviceProviderName',
 					'relatedEntities.infrastructureOwnerName',
 					'relatedEntities.networkOperatorName',
