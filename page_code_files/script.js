@@ -1826,11 +1826,14 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		methods: {
 			fetchAllInitialData() {
-				this.isLoadingAllInitialData = true
+				this.isLoadingAllInitialData = true;
+
 				if (!eTrayWebportal || !eTrayWebportal.User || !eTrayWebportal.User.Key) {
-					console.log('MISSING::eTrayWebportal.User.Key')
-					return
+					console.error('MISSING::eTrayWebportal.User.Key');
+					this.isLoadingAllInitialData = false;
+					return;
 				}
+
 				const myHeaders = new Headers();
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
 
@@ -1841,24 +1844,21 @@ $(document).one("trigger::vue_loaded", function () {
 				};
 
 				fetch("https://portal.opennet.dk/ppServices/api/login", requestOptions)
-					.then(response => {
-						console.log('fetchAllInitialData::answer', { response })
+					.then((response) => {
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
-						return response.json();
+						return response.text(); // Assuming text is the appropriate format
 					})
-					.then(result => {
-						console.log({ result })
-						// this.standardOptions = result
+					.then((result) => {
+						console.log('fetchAllInitialData::result', result);
 					})
-					.catch(error => {
-						console.error('Error fetching master templates data:', error);
+					.catch((error) => {
+						console.error('Error during fetch operation:', error);
 					})
 					.finally(() => {
-						this.isLoadingAllInitialData = false
-						console.log('succes::fetchAllInitialData', response)
-					})
+						this.isLoadingAllInitialData = false;
+					});
 			},
 			showToast(message) {
 				this.toast.message = message;
