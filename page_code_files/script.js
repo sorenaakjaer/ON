@@ -990,6 +990,7 @@ $(document).one("trigger::vue_loaded", function () {
 	new Vue({
 		el: "#o-app",
 		data: {
+			isLoadingAllInitialData: false,
 			toast: {
 				message: '',
 				visible: false
@@ -1824,6 +1825,41 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			fetchAllInitialData() {
+				this.isLoadingAllInitialData = true
+				if (!eTrayWebportal || !eTrayWebportal.User || !eTrayWebportal.User.Key) {
+					console.log('MISSING::eTrayWebportal.User.Key')
+					return
+				}
+				const myHeaders = new Headers();
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
+
+				const requestOptions = {
+					method: "GET",
+					headers: myHeaders,
+					redirect: "follow"
+				};
+
+				fetch("https://portal.opennet.dk/ppServices/api/login", requestOptions)
+					.then(response => {
+						console.log('fetchAllInitialData::answer', { response })
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(result => {
+						console.log({ result })
+						// this.standardOptions = result
+					})
+					.catch(error => {
+						console.error('Error fetching master templates data:', error);
+					})
+					.finally(() => {
+						this.isLoadingAllInitialData = false
+						console.log('succes::fetchAllInitialData', response)
+					})
+			},
 			showToast(message) {
 				this.toast.message = message;
 				this.toast.visible = true;
@@ -3783,6 +3819,7 @@ $(document).one("trigger::vue_loaded", function () {
 			var e = this
 			this.theActiveLoggedInCompany = $(".FROM_COMPANY > input").val()
 			/* START 17-12-23 */
+			this.fetchAllInitialData()
 			this.$nextTick(_ => {
 				t = window.location.href
 				s = t.indexOf("&ID=");
