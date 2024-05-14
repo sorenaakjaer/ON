@@ -1843,7 +1843,7 @@ $(document).one("trigger::vue_loaded", function () {
 					redirect: "follow"
 				};
 
-				fetch("https://portal.opennet.dk/ppServices/api/login", requestOptions)
+				fetch("/ppServices/api/login", requestOptions)
 					.then((response) => {
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
