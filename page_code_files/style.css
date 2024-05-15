@@ -10748,3 +10748,7 @@ input:checked+.o-open-toggle-slider:before {
 .o-search-advanced.o-search-advanced--active .o-search-group input[type="search"].o-search-advanced__search-input.o-search-advanced__search-input--active {
     width: 200px;
 }
+
+.o-search-advanced__dropdown-item--focused {
+    background-color: #e2e2e2;
+}
