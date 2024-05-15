@@ -1006,7 +1006,7 @@ $(document).one("trigger::vue_loaded", function () {
 				selectedProps: {},
 				i18n: {
 					da: {
-						'Onid': 'Onid',
+						'onid': 'Onid',
 						'created_time': 'Oprettet',
 						'last_updated_time': 'Sidst opdateret',
 						'desc_text': 'Beskrivelse',
@@ -1017,7 +1017,7 @@ $(document).one("trigger::vue_loaded", function () {
 						'v_groups': 'Grupper',
 						'assign_to': 'Tildelt til',
 						'status': 'Status',
-						'filter_inquiry_type': 'Type',
+						'filter_inquiry_type': 'Forespørgselstype',
 						'subject': 'Emne',
 					}
 				}
@@ -1062,16 +1062,6 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
-			debounceSearch(event) {
-				this.reactiveSearchQuery = event.target.value;
-				clearTimeout(this.debounce)
-				this.searchQuery = "";
-				this.debounce = setTimeout(() => {
-					console.log('searchQuery::debounce', this.searchQuery)
-					this.searchQuery = event.target.value;  // Update searchQuery with the new value
-					this.$emit('emit_search_query', this.searchQuery)
-				}, 600);
-			},
 			onBGClick() {
 				this.isShowDropdown = false;
 			},
@@ -1092,11 +1082,11 @@ $(document).one("trigger::vue_loaded", function () {
 				this.reactiveSearchQuery = '';
 				this.searchQuery = '';
 			},
-			checkForAtSymbol(event) {
+			combinedSearch(event) {
 				const currentValue = event.target.value;
 				const previousValue = this.searchQuery || '';
-				console.log('Current input:', currentValue, 'Previous input:', previousValue);
-				// Find the position of the newly inserted '@' if it exists
+
+				// Check if "@" was just added
 				if (currentValue.length > previousValue.length) { // Ensure something was added
 					const difference = currentValue.length - previousValue.length;
 					const start = event.target.selectionStart - difference;
@@ -1110,6 +1100,7 @@ $(document).one("trigger::vue_loaded", function () {
 								this.$refs.theDropdownSearchQueryInput.focus();
 							}
 						});
+						return; // Do not proceed with debouncing if "@" is detected
 					} else {
 						this.isShowDropdown = false;
 					}
@@ -1117,6 +1108,21 @@ $(document).one("trigger::vue_loaded", function () {
 					this.indexOfCurrentAt = -1;
 					this.isShowDropdown = false;
 				}
+
+				// Proceed with debouncing if "@" is not detected
+				this.reactiveSearchQuery = currentValue;
+				clearTimeout(this.debounce);
+				this.searchQuery = "";
+				this.debounce = setTimeout(() => {
+					console.log('searchQuery::debounce', this.searchQuery);
+					this.searchQuery = currentValue; // Update searchQuery with the new value
+					this.$emit('emit_search_query', this.searchQuery);
+				}, 600);
+			},
+			clearSearchQuery() {
+				this.searchQuery = "";
+				this.reactiveSearchQuery = "";
+				this.isShowDropdown = false;
 			},
 			selectOption(option) {
 				this.$set(this.selectedProps, option.value, '');

@@ -1922,13 +1922,13 @@
                     <div class="bg-icon-hover" @click.stop="removeProp(prop)"><i class="tio">clear</i></div>
                 </div>
                 <input type="search"
-                    @input="debounceSearch"
-                    @keyup="checkForAtSymbol"
-                    ref="v_advanced_search_query" 
-                    :placeholder="placeholderText"
-                    class="o-search-advanced__search-input"
-                    :class="{'o-search-advanced__search-input--active': isInputActive}" />
-                <div class="o-search-group__clear" @click="clearSearchQuery"><i class="tio">clear_circle</i></div>
+                @input="combinedSearch"
+                ref="v_advanced_search_query" 
+                :placeholder="placeholderText"
+                class="o-search-advanced__search-input"
+                :class="{'o-search-advanced__search-input--active': isInputActive}" />
+         <div class="o-search-group__clear" @click="clearSearchQuery"><i class="tio">clear_circle</i></div>
+         
             </div>
             <div v-if="isShowDropdown" class="o-search-advanced__dropdown">
                 <input v-model="theDropdownSearchQuery" class="o-input" ref="theDropdownSearchQueryInput" />
