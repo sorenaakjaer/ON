@@ -997,6 +997,7 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		data() {
 			return {
+				focusedOptionIndex: -1,
 				indexOfCurrentAt: -1,
 				debounce: null,
 				searchQuery: '',
@@ -1054,6 +1055,16 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		watch: {
+			focusedOptionIndex(newIndex) {
+				if (this.isShowDropdown && newIndex !== -1) {
+					this.$nextTick(() => {
+						const optionElement = this.$refs[`dropdownOption${newIndex}`];
+						if (optionElement && optionElement.scrollIntoView) {
+							optionElement.scrollIntoView({ block: 'nearest' });
+						}
+					});
+				}
+			},
 			selectedProps: {
 				handler(newVal) {
 					this.$emit('emit_update_search_props', newVal);
@@ -1064,6 +1075,8 @@ $(document).one("trigger::vue_loaded", function () {
 		methods: {
 			onBGClick() {
 				this.isShowDropdown = false;
+				this.focusedOptionIndex = -1;
+				this.removeGlobalKeyListener();
 			},
 			removeProp(prop) {
 				this.$delete(this.selectedProps, prop.title);
@@ -1077,10 +1090,6 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			setSearchText(propTitle, val) {
 				this.$set(this.selectedProps, propTitle, val);
-			},
-			clearSearchQuery() {
-				this.reactiveSearchQuery = '';
-				this.searchQuery = '';
 			},
 			combinedSearch(event) {
 				const currentValue = event.target.value;
@@ -1100,13 +1109,18 @@ $(document).one("trigger::vue_loaded", function () {
 								this.$refs.theDropdownSearchQueryInput.focus();
 							}
 						});
+						this.addGlobalKeyListener();
 						return; // Do not proceed with debouncing if "@" is detected
 					} else {
 						this.isShowDropdown = false;
+						this.focusedOptionIndex = -1;
+						this.removeGlobalKeyListener();
 					}
 				} else {
 					this.indexOfCurrentAt = -1;
 					this.isShowDropdown = false;
+					this.focusedOptionIndex = -1;
+					this.removeGlobalKeyListener();
 				}
 
 				// Proceed with debouncing if "@" is not detected
@@ -1123,26 +1137,69 @@ $(document).one("trigger::vue_loaded", function () {
 				this.searchQuery = "";
 				this.reactiveSearchQuery = "";
 				this.isShowDropdown = false;
+				this.focusedOptionIndex = -1;
+				this.removeGlobalKeyListener();
+			},
+			navigateDropdown(event) {
+				if (!this.isShowDropdown) return;
+
+				switch (event.key) {
+					case 'ArrowDown':
+						event.preventDefault();
+						if (this.focusedOptionIndex < this.filteredOptions.length - 1) {
+							this.focusedOptionIndex++;
+						}
+						break;
+					case 'ArrowUp':
+						event.preventDefault();
+						if (this.focusedOptionIndex > 0) {
+							this.focusedOptionIndex--;
+						}
+						break;
+					case 'Enter':
+						if (this.focusedOptionIndex !== -1) {
+							this.selectOption(this.filteredOptions[this.focusedOptionIndex]);
+						}
+						break;
+					case 'Escape':
+						this.isShowDropdown = false;
+						this.focusedOptionIndex = -1;
+						this.removeGlobalKeyListener();
+						break;
+				}
 			},
 			selectOption(option) {
 				this.$set(this.selectedProps, option.value, '');
-				this.searchQuery = this.replaceAt(this.searchQuery, this.indexOfCurrentAt)
+				this.searchQuery = this.replaceAt(this.searchQuery, this.indexOfCurrentAt);
 				this.reactiveSearchQuery = this.searchQuery;
 				this.$refs.v_advanced_search_query.value = this.searchQuery;
-				this.$emit('emit_search_query', this.searchQuery)
+				this.$emit('emit_search_query', this.searchQuery);
 				this.theDropdownSearchQuery = '';
 				this.isShowDropdown = false;
+				this.focusedOptionIndex = -1;
+				this.removeGlobalKeyListener();
 				this.$nextTick(() => {
 					this.setActiveProp(option.value);
 				});
 			},
 			replaceAt(str, idx) {
-				if (idx > str.length - 1) return str; {
-					return str.substring(idx, 0) + str.substring(idx + 1)
-				}
+				if (idx > str.length - 1) return str;
+				return str.substring(0, idx) + str.substring(idx + 1);
+			},
+			addGlobalKeyListener() {
+				document.addEventListener('keydown', this.navigateDropdown);
+			},
+			removeGlobalKeyListener() {
+				document.removeEventListener('keydown', this.navigateDropdown);
 			}
+		},
+		beforeDestroy() {
+			// Clean up the global event listener when the component is destroyed
+			this.removeGlobalKeyListener();
 		}
 	});
+
+
 
 	/* END 17-12-23 */
 	new Vue({
