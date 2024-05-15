@@ -1094,9 +1094,8 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			checkForAtSymbol(event) {
 				const currentValue = event.target.value;
-
+				const previousValue = this.searchQuery || '';
 				console.log('Current input:', currentValue, 'Previous input:', previousValue);
-
 				// Find the position of the newly inserted '@' if it exists
 				if (currentValue.length > previousValue.length) { // Ensure something was added
 					const difference = currentValue.length - previousValue.length;
