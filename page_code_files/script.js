@@ -986,10 +986,143 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		}
 	})
+
+	Vue.component('o-advanced-search', {
+		template: '#o-advanced-search-template',
+		props: {
+			options: {
+				type: Array,
+				default: () => ['Onid', 'created_time', 'to_company', 'from_company', 'from_user'],
+			}
+		},
+		data() {
+			return {
+				indexOfCurrentAt: -1,
+				debounce: null,
+				searchQuery: '',
+				reactiveSearchQuery: '',
+				isShowDropdown: false,
+				theDropdownSearchQuery: '',
+				selectedProps: {},
+				i18n: {
+					da: {
+						'Onid': 'Onid',
+						'created_time': 'Oprettet',
+						'desc_text': 'Beskrivelse',
+						'to_company': 'Til virksomhed',
+						'from_company': 'Fra virksomhed',
+						'from_user': 'Fra bruger',
+					}
+				}
+			}
+		},
+		computed: {
+			isInputActive() {
+				return this.reactiveSearchQuery.length > 0
+			},
+			placeholderText() {
+				return this.isPropsSelected ? '' : 'Skriv @ for at søge i felter..'
+			},
+			isPropsSelected() {
+				return Object.keys(this.selectedProps).length > 0
+			},
+			translatedOptions() {
+				return this.options.map(option => ({
+					value: option,
+					v_label: this.i18n.da[option] || option
+				})).sort((a, b) => a.v_label.localeCompare(b.v_label))
+			},
+			filteredOptions() {
+				const searchLower = this.theDropdownSearchQuery.toLowerCase();
+				return this.translatedOptions.filter(item => item.v_label.toLowerCase().includes(searchLower));
+			},
+			selectedPropsArray() {
+				return Object.keys(this.selectedProps).map(key => ({
+					title: key,
+					value: this.selectedProps[key],
+					v_label: this.i18n.da[key] || key
+				}));
+			}
+		},
+		watch: {
+			selectedProps: {
+				handler(newVal) {
+					this.$emit('emit_update_search_props', newVal);
+				},
+				deep: true
+			}
+		},
+		methods: {
+			debounceSearch(event) {
+				this.reactiveSearchQuery = event.target.value;
+				clearTimeout(this.debounce)
+				this.searchQuery = "";
+				this.debounce = setTimeout(() => {
+					console.log('searchQuery::debounce', this.searchQuery)
+					this.searchQuery = event.target.value;  // Update searchQuery with the new value
+					this.$emit('emit_search_query', this.searchQuery)
+				}, 600);
+			},
+			onBGClick() {
+				this.isShowDropdown = false;
+			},
+			removeProp(prop) {
+				this.$delete(this.selectedProps, prop.title);
+			},
+			setActiveProp(propTitle) {
+				const inputId = `#o-search__tag__${propTitle} > input`;
+				const inputElement = document.querySelector(inputId);
+				if (inputElement) {
+					inputElement.focus();
+				}
+			},
+			setSearchText(propTitle, val) {
+				this.$set(this.selectedProps, propTitle, val);
+			},
+			clearSearchQuery() {
+				this.reactiveSearchQuery = '';
+				this.searchQuery = '';
+			},
+			checkForAtSymbol(event) {
+				if (event.key === '@') {
+					this.indexOfCurrentAt = event.target.selectionStart - 1; // SelectionStart is right after the '@' symbol
+					this.isShowDropdown = true;
+					this.$nextTick(() => {
+						if (this.$refs.theDropdownSearchQueryInput) {
+							this.$refs.theDropdownSearchQueryInput.focus();
+						}
+					});
+				} else {
+					this.indexOfCurrentAt = -1;
+					this.isShowDropdown = false;
+				}
+			},
+			selectOption(option) {
+				this.$set(this.selectedProps, option.value, '');
+				this.searchQuery = this.replaceAt(this.searchQuery, this.indexOfCurrentAt)
+				this.reactiveSearchQuery = this.searchQuery;
+				this.$refs.v_advanced_search_query.value = this.searchQuery;
+				this.$emit('emit_search_query', this.searchQuery)
+				this.theDropdownSearchQuery = '';
+				this.isShowDropdown = false;
+				this.$nextTick(() => {
+					this.setActiveProp(option.value);
+				});
+			},
+			replaceAt(str, idx) {
+				if (idx > str.length - 1) return str; {
+					return str.substring(idx, 0) + str.substring(idx + 1)
+				}
+			}
+		}
+	});
+
 	/* END 17-12-23 */
 	new Vue({
 		el: "#o-app",
 		data: {
+			theAdvancedSearchQuery: '',
+			theAdvancedSearchQueryObj: {},
 			isLoadingAllInitialData: false,
 			toast: {
 				message: '',
@@ -1310,6 +1443,17 @@ $(document).one("trigger::vue_loaded", function () {
 			theFilteredSelectedTags: []
 		},
 		computed: {
+			allCasesProps() {
+				const propArr = []
+				if (this.cases.length > 0) {
+					Object.keys(this.cases[0]).forEach(prop => {
+						if (propArr.indexOf(prop) < 0) {
+							propArr.push(prop)
+						}
+					})
+				}
+				return propArr
+			},
 			theGhostUserListPartners() {
 				return this.theGhostUserList.map(company => company.company)
 			},
@@ -1435,7 +1579,6 @@ $(document).one("trigger::vue_loaded", function () {
 				if (!this.PBIReportsData || this.PBIReportsData.length < 1) {
 					return [];
 				}
-
 				// Filter reports by the active category
 				let filteredReports = this.PBIReportsData.filter(report => report.area === this.activeCategory);
 				//console.log('filteredReports',filteredReports);
@@ -1602,7 +1745,17 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			searchedCases() {
-				return this.isCases ? this.searchQuery.length < 1 ? this.casesSorted : this.searchFunc(this.casesSorted) : []
+				if (this.theAdvancedSearchQueryObj && Object.keys(this.theAdvancedSearchQueryObj).length > 0) {
+					return this.casesSorted.filter(itemCase => {
+						return Object.keys(this.theAdvancedSearchQueryObj).every(prop => {
+							const propName = prop;
+							const searchValue = this.theAdvancedSearchQueryObj[prop].toLowerCase();
+							const itemValue = itemCase[propName];
+							return this.matchesSearchValue(itemValue, searchValue);
+						});
+					});
+				}
+				return this.isCases && this.searchQuery.length < 1 ? this.casesSorted : this.searchFunc(this.casesSorted);
 			},
 			lengthOfCases() {
 				var e = {
@@ -1825,10 +1978,31 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			onAdvancedSearchSearchQuery(val) {
+				this.searchQuery = val
+			},
+			matchesSearchValue(itemValue, searchValue) {
+				const deepSearch = (value) => {
+					if (value == null) return false; // Handle null and undefined
+					if (typeof value === 'string' || typeof value === 'number') {
+						return value.toString().toLowerCase().includes(searchValue);
+					} else if (Array.isArray(value)) {
+						return value.some(element => deepSearch(element));
+					} else if (typeof value === 'object') {
+						return Object.values(value).some(deepSearch);
+					}
+					return false;
+				};
+
+				return deepSearch(itemValue);
+			},
+			onAdvancedSearch(val) {
+				this.theAdvancedSearchQueryObj = val
+			},
 			fetchAllInitialData() {
 				this.isLoadingAllInitialData = true;
 
-				if (!eTrayWebportal || !eTrayWebportal.User || !eTrayWebportal.User.Key) {
+				if (!eTrayWebportal?.User?.Key) {
 					console.error('MISSING::eTrayWebportal.User.Key');
 					this.isLoadingAllInitialData = false;
 					return;
@@ -1842,18 +2016,22 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: "follow"
 				};
-
-				fetch("/ppServices/api/login", requestOptions)
-					.then((response) => {
+				const baseUrl = window.location.origin;
+				fetch(baseUrl + "/ppServices/api/login", requestOptions)
+					.then(response => {
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
-						return response.text(); // Assuming text is the appropriate format
+						return response.json();
 					})
-					.then((result) => {
+					.then(result => {
+						if (!result.length) {
+							console.warn('Empty result from API');
+							return [];
+						}
 						console.log('fetchAllInitialData::result', result);
 					})
-					.catch((error) => {
+					.catch(error => {
 						console.error('Error during fetch operation:', error);
 					})
 					.finally(() => {
@@ -3826,8 +4004,10 @@ $(document).one("trigger::vue_loaded", function () {
 				if (0 > t.indexOf("&ID=&GUID")) {
 					var a = t.substring(s + 4, t.indexOf("&GUID="));
 					this.setActivecCategory("all_cases")
-					this.$refs.v_search_query.value = a
-					this.searchQuery = a
+					if (this.$refs.v_search_query) {
+						this.$refs.v_search_query.value = a
+						this.searchQuery = a
+					}
 				}
 				const getQueryParams = (url) => {
 					const urlObj = new URL(url);
