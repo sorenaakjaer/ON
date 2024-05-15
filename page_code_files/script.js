@@ -1008,10 +1008,17 @@ $(document).one("trigger::vue_loaded", function () {
 					da: {
 						'Onid': 'Onid',
 						'created_time': 'Oprettet',
+						'last_updated_time': 'Sidst opdateret',
 						'desc_text': 'Beskrivelse',
 						'to_company': 'Til virksomhed',
 						'from_company': 'Fra virksomhed',
 						'from_user': 'Fra bruger',
+						'v_tags': 'Tags',
+						'v_groups': 'Grupper',
+						'assign_to': 'Tildelt til',
+						'status': 'Status',
+						'filter_inquiry_type': 'Type',
+						'subject': 'Emne',
 					}
 				}
 			}
@@ -1027,7 +1034,9 @@ $(document).one("trigger::vue_loaded", function () {
 				return Object.keys(this.selectedProps).length > 0
 			},
 			translatedOptions() {
-				return this.options.map(option => ({
+				return this.options.filter(option => {
+					return this.i18n.da[option]
+				}).map(option => ({
 					value: option,
 					v_label: this.i18n.da[option] || option
 				})).sort((a, b) => a.v_label.localeCompare(b.v_label))
@@ -2001,7 +2010,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			fetchAllInitialData() {
 				this.isLoadingAllInitialData = true;
-
+				console.log('http://localhost:3000/server/login.json',)
 				if (!eTrayWebportal || !eTrayWebportal.User || !eTrayWebportal.User.Key) {
 					console.error('MISSING::eTrayWebportal.User.Key');
 					this.isLoadingAllInitialData = false;
@@ -2017,7 +2026,8 @@ $(document).one("trigger::vue_loaded", function () {
 					redirect: "follow"
 				};
 				const baseUrl = window.location.origin;
-				fetch(baseUrl + "/ppServices/api/login", requestOptions)
+				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/login" : 'http://localhost:3000/ppServices/api/login.json'
+				fetch(url, requestOptions)
 					.then((response) => {
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
