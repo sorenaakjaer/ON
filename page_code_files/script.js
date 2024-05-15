@@ -2002,7 +2002,7 @@ $(document).one("trigger::vue_loaded", function () {
 			fetchAllInitialData() {
 				this.isLoadingAllInitialData = true;
 
-				if (!eTrayWebportal?.User?.Key) {
+				if (!eTrayWebportal || !eTrayWebportal.User || !eTrayWebportal.User.Key) {
 					console.error('MISSING::eTrayWebportal.User.Key');
 					this.isLoadingAllInitialData = false;
 					return;
@@ -2018,20 +2018,16 @@ $(document).one("trigger::vue_loaded", function () {
 				};
 				const baseUrl = window.location.origin;
 				fetch(baseUrl + "/ppServices/api/login", requestOptions)
-					.then(response => {
+					.then((response) => {
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
-						return response.json();
+						return response.json(); // Assuming text is the appropriate format
 					})
-					.then(result => {
-						if (!result.length) {
-							console.warn('Empty result from API');
-							return [];
-						}
+					.then((result) => {
 						console.log('fetchAllInitialData::result', result);
 					})
-					.catch(error => {
+					.catch((error) => {
 						console.error('Error during fetch operation:', error);
 					})
 					.finally(() => {
