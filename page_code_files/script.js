@@ -1093,14 +1093,27 @@ $(document).one("trigger::vue_loaded", function () {
 				this.searchQuery = '';
 			},
 			checkForAtSymbol(event) {
-				if (event.key === '@') {
-					this.indexOfCurrentAt = event.target.selectionStart - 1; // SelectionStart is right after the '@' symbol
-					this.isShowDropdown = true;
-					this.$nextTick(() => {
-						if (this.$refs.theDropdownSearchQueryInput) {
-							this.$refs.theDropdownSearchQueryInput.focus();
-						}
-					});
+				const currentValue = event.target.value;
+
+				console.log('Current input:', currentValue, 'Previous input:', previousValue);
+
+				// Find the position of the newly inserted '@' if it exists
+				if (currentValue.length > previousValue.length) { // Ensure something was added
+					const difference = currentValue.length - previousValue.length;
+					const start = event.target.selectionStart - difference;
+					const newCharacters = currentValue.slice(start, event.target.selectionStart);
+
+					if (newCharacters.includes('@')) {
+						this.indexOfCurrentAt = start + newCharacters.indexOf('@');
+						this.isShowDropdown = true;
+						this.$nextTick(() => {
+							if (this.$refs.theDropdownSearchQueryInput) {
+								this.$refs.theDropdownSearchQueryInput.focus();
+							}
+						});
+					} else {
+						this.isShowDropdown = false;
+					}
 				} else {
 					this.indexOfCurrentAt = -1;
 					this.isShowDropdown = false;
