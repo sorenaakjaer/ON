@@ -3103,13 +3103,11 @@ $(document).one("trigger::vue_loaded", function () {
 				this.isEditUser = true;
 
 				// Populate the user form with the user's details
-				this.userform = {
-					name: user.name,
-					display_name: user.display_name,
-					user_init: user.user_init,
-					email: user.email,
-					sms_no: user.sms_no
-				};
+				this.userform.name = user.name;
+				this.userform.display_name = user.display_name
+				this.userform.user_init = user.user_init
+				this.userform.email = user.email
+				this.userform.sms_no = user.sms_no
 
 				// Show the modal overlay
 				this.isVueModalOverlay = true;
