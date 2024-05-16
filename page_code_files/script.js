@@ -3064,7 +3064,7 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 				} else "true" == n && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click()), "false" == n && ($(".UM_EVENT_TYPE > input").val("REMOVE_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click())
 			},
-			onActiveRoleNotificationsChange(userId, groupId, status) {
+			onActiveRoleNotificationsChange(theActiveUser, groupId, status) {
 				// Find the index of the active user in the users array
 				const userIndex = this.users.findIndex(user => user.id === this.theActiveUser.id);
 
@@ -3081,9 +3081,10 @@ $(document).one("trigger::vue_loaded", function () {
 				this.users[userIndex].role_array[roleIndex].active_role_noti = newStatus;
 
 				// Prepare the event type and set the necessary input values
+				const userId = theActiveUser.id;
 				const eventType = newStatus === "true" ? "ADD_GROUP" : "REMOVE_GROUP";
 				const groupIdToStr = groupId.toString();
-				console.log(groupIdToStr)
+				console.log({ eventType, userId, groupIdToStr })
 				$(".UM_EVENT_TYPE > input").val(eventType);
 				$(".UM_USER_ID > input").val(userId);
 				$(".UM_GROUP_ID > input").val(groupIdToStr);
