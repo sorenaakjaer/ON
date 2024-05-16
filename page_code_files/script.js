@@ -3065,28 +3065,26 @@ $(document).one("trigger::vue_loaded", function () {
 				} else "true" == n && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click()), "false" == n && ($(".UM_EVENT_TYPE > input").val("REMOVE_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click())
 			},
 			onActiveRoleNotificationsChange(activeUser, groupId, currentStatus) {
-				// Find the index of the active user in the users array
-				const userIndex = this.users.findIndex(user => user.id === activeUser.id);
+				const userIndex = this.users.findIndex(user => user.id * 1 === activeUser.id * 1);
+				const roleIndex = activeUser.role_array.findIndex(role => role.group_id_noti * 1 === groupId * 1);
 
-				// Find the index of the role in the active user's role array
-				const roleIndex = activeUser.role_array.findIndex(role => role.group_id_noti === groupId);
+				let newStatus;
 
-				// Determine the new status based on the current status
-				const newStatus = !currentStatus
+				if (typeof currentStatus === 'boolean') {
+					newStatus = !currentStatus;
+				} else if (typeof currentStatus === 'string') {
+					newStatus = currentStatus == 'true' ? 'false' : 'true';
+				}
 
-				// Update the active role notification status for the active user
 				this.theActiveUser.role_array[roleIndex].active_role_noti = newStatus;
 
-				// Update the active role notification status in the users array
 				this.users[userIndex].role_array[roleIndex].active_role_noti = newStatus;
 
-				// Prepare the event type and set the necessary input values
 				const eventType = newStatus ? "ADD_GROUP" : "REMOVE_GROUP";
 				$(".UM_EVENT_TYPE > input").val(eventType);
 				$(".UM_USER_ID > input").val(activeUser.id);
 				$(".UM_GROUP_ID > input").val(groupId);
 
-				// Trigger the user management action
 				$(".BTN_UserManagement > a").click();
 			},
 			setTheActiveUserRoleChangeModal(e) {
@@ -3310,11 +3308,23 @@ $(document).one("trigger::vue_loaded", function () {
 				return t.innerHTML = e, t.value
 			},
 			setLatestUser() {
-				var e = $(".UM_RESULT > div").html();
-				e.length > 2 && JSON.parse(this.decode(this.decode(e))).forEach((e, t) => {
-					var s = this.users.findIndex(t => t.id == e.id);
-					s < 0 ? this.users.push(e) : Vue.set(this.users, s, e)
-				})
+				const resultHtml = $(".UM_RESULT > div").html();
+				if (resultHtml.length > 2) {
+					// Decode the HTML content twice and parse it as JSON
+					const decodedData = JSON.parse(this.decode(this.decode(resultHtml)));
+
+					// Process each user in the decoded data
+					decodedData.forEach((user) => {
+						const existingUserIndex = this.users.findIndex(existingUser => existingUser.id === user.id);
+
+						// If the user does not exist, add them to the array; otherwise, update the existing user
+						if (existingUserIndex < 0) {
+							this.users.push(user);
+						} else {
+							Vue.set(this.users, existingUserIndex, user);
+						}
+					});
+				}
 			},
 			funcObserveLatestUser() {
 				let e = this;
