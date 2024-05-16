@@ -4077,8 +4077,7 @@ $(document).one("trigger::vue_loaded", function () {
 		mounted() {
 			var e = this
 			this.theActiveLoggedInCompany = $(".FROM_COMPANY > input").val()
-			/* START 17-12-23 */
-			this.fetchAllInitialData()
+			//this.fetchAllInitialData()
 			this.$nextTick(_ => {
 				t = window.location.href
 				s = t.indexOf("&ID=");
