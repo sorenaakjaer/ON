@@ -3082,9 +3082,11 @@ $(document).one("trigger::vue_loaded", function () {
 
 				// Prepare the event type and set the necessary input values
 				const eventType = newStatus === "true" ? "ADD_GROUP" : "REMOVE_GROUP";
+				const groupIdToStr = groupId.toString();
+				console.log(groupIdToStr)
 				$(".UM_EVENT_TYPE > input").val(eventType);
 				$(".UM_USER_ID > input").val(userId);
-				$(".UM_GROUP_ID > input").val(groupId);
+				$(".UM_GROUP_ID > input").val(groupIdToStr);
 
 				// Trigger the user management action
 				$(".BTN_UserManagement > a").click();
