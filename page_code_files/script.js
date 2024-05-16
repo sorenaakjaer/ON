@@ -2103,7 +2103,7 @@ $(document).one("trigger::vue_loaded", function () {
 					.then((result) => {
 						console.log('fetchAllInitialData::result', result);
 						// this.theUser = result.dbUserDetails;
-						// this.setThisUserAPI(result.dbUserDetails)
+						this.setThisUserAPI(result.dbUserDetails)
 						this.setAllCasesV3(result.dbAllCases)
 					})
 					.catch((error) => {
@@ -3064,11 +3064,30 @@ $(document).one("trigger::vue_loaded", function () {
 					}
 				} else "true" == n && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click()), "false" == n && ($(".UM_EVENT_TYPE > input").val("REMOVE_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click())
 			},
-			onActiveRoleNotificationsChange(e, t, s) {
-				var a = this.users.findIndex(e => e.id == this.theActiveUser.id),
-					i = this.theActiveUser.role_array.findIndex(e => e.group_id_noti == t),
-					r = "false" == s ? "true" : "false";
-				this.theActiveUser.role_array[i].active_role_noti = r, this.users[a].role_array[i].active_role_noti = r, "true" == r && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click()), "false" == r && ($(".UM_EVENT_TYPE > input").val("REMOVE_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click())
+			onActiveRoleNotificationsChange(userId, groupId, status) {
+				// Find the index of the active user in the users array
+				const userIndex = this.users.findIndex(user => user.id === this.theActiveUser.id);
+
+				// Find the index of the role in the active user's role array
+				const roleIndex = this.theActiveUser.role_array.findIndex(role => role.group_id_noti === groupId);
+
+				// Determine the new status based on the current status
+				const newStatus = status === "false" ? "true" : "false";
+
+				// Update the active role notification status for the active user
+				this.theActiveUser.role_array[roleIndex].active_role_noti = newStatus;
+
+				// Update the active role notification status in the users array
+				this.users[userIndex].role_array[roleIndex].active_role_noti = newStatus;
+
+				// Prepare the event type and set the necessary input values
+				const eventType = newStatus === "true" ? "ADD_GROUP" : "REMOVE_GROUP";
+				$(".UM_EVENT_TYPE > input").val(eventType);
+				$(".UM_USER_ID > input").val(userId);
+				$(".UM_GROUP_ID > input").val(groupId);
+
+				// Trigger the user management action
+				$(".BTN_UserManagement > a").click();
 			},
 			setTheActiveUserRoleChangeModal(e) {
 				this.theActiveUser = e, this.isEditUserRoles = !0, this.isVueModalOverlay = !0, $("body").css("overflow", "")
@@ -3258,9 +3277,8 @@ $(document).one("trigger::vue_loaded", function () {
 					childList: !0
 				})
 			},
-			setAllCasesV3(json) {
-				console.log('setOpenCasesV3', json)
-				const toStr = JSON.stringify(json);
+			setAllCasesV3(arr) {
+				const toStr = JSON.stringify(arr);
 				this.encodeCases(toStr);
 				this.casesIsLoading = false;
 				this.isClosedCasesLoading = false;
@@ -3397,50 +3415,11 @@ $(document).one("trigger::vue_loaded", function () {
 				var e = document.querySelector(".ETRAY_JSON_LIST_OF_UPDATED_CASES > div").innerHTML;
 				this.encodeCases(e)
 			},
-			funcObserveThisUser() {
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					e.setThisUser(), t.disconnect()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_USER_RAW_JSON > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			setThisUserAPI(json) {
-				const objToArr = Object.entries(json)
-				const rawJsonData = json ? JSON.stringify(objToArr) : ''
-				console.log('setThisUserAPI', json, rawJsonData, JSON.parse(rawJsonData))
-				// Check if the raw JSON data is not empty
-				if (rawJsonData.length > 0) {
-					// Parse the JSON data
-					const parsedData = JSON.parse(rawJsonData);
-
-					// Set the user to the first element of the parsed data
-					this.theUser = parsedData[0];
-
-					// Set the users with the raw JSON data
-					this.setUsers(rawJsonData);
-				}
-			},
-			setThisUser() {
-				// Get the raw JSON data from the DOM element
-				const rawJsonData = $(".ETRAY_USER_PROFILE_USER_RAW_JSON > div").html();
-
-				// Check if the raw JSON data is not empty
-				if (rawJsonData.length > 0) {
-					// Parse the JSON data
-					const parsedData = JSON.parse(rawJsonData);
-					console.log('setThisUser', parsedData)
-
-					// Set the user to the first element of the parsed data
-					this.theUser = parsedData[0];
-
-					// Set the users with the raw JSON data
-					this.setUsers(rawJsonData);
-
-					// Clear the HTML content of the DOM element
-					$(".ETRAY_USER_PROFILE_USER_RAW_JSON > div").html("");
+			setThisUserAPI(userObj) {
+				this.theUser = userObj
+				const userExists = this.users.some(existingUser => existingUser.id === userObj.id);
+				if (!userExists) {
+					this.users.push(userObj);
 				}
 			},
 			readUsers() {
@@ -3532,31 +3511,6 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			run_autoupdate_func() {
 				this.isNewCaseLoading || this.isCaseUpdating || (clearJSONfields(), this.readLatestUpdatedCases()), this.isNewAnnouncementLoading || this.isUpdatedAnnouncementLoading || (clearJSONfields(), this.readLatestUpdatedDocsByOthers())
-			},
-			setUsers(encodedData) {
-				// Helper function to decode HTML entities
-				function decodeHtml(html) {
-					const textarea = document.createElement("textarea");
-					textarea.innerHTML = html;
-					return textarea.value;
-				}
-
-				// Ensure the encoded data is valid (length > 2)
-				if (encodedData.length > 2) {
-					// Decode the encoded data twice
-					const decodedData = decodeHtml(decodeHtml(encodedData));
-
-					// Parse the decoded JSON data
-					const usersData = JSON.parse(decodedData);
-
-					// Add each user to the users array if they don't already exist
-					usersData.forEach(user => {
-						const userExists = this.users.some(existingUser => existingUser.id === user.id);
-						if (!userExists) {
-							this.users.push(user);
-						}
-					});
-				}
 			},
 			setUsers_1_75(e) {
 				function t(e) {
@@ -4093,8 +4047,6 @@ $(document).one("trigger::vue_loaded", function () {
 			"OpenNet" == $(".FROM_COMPANY > input").val() && $(".LOGIN_CUSTOMER_TYPE > input").val("ON"), this.theUserType = $(".LOGIN_CUSTOMER_TYPE > input").val(), "ON" == this.theUserType && $(".INQUIRY_TYPE_LEVEL0 > select").html($(".INQUIRY_TYPE_LEVEL0 > select").html().replace("SP</option>", "Til Infrastructure owner (IO)</option>").replace("IO</option>", "Til Service Provider (SP)</option>")), "ON" == this.theUserType ? ($(".js-click-case-edit-ref").removeClass("hidden_field"), $(".toggle-timeline-read-msg").removeClass("hidden_field"), readTimelineReadMsgCookie()) : ($("#js-checkbox__toogle-timeline_read_msg").prop("checked", !0), readTimelineReadMsgCookie()), document.querySelector("#o-page").addEventListener("click", function (t) {
 				e.onClickOutside(t)
 			})
-			e.funcObserveThisUser()
-			$(".BTN_GetListOfUserProfilesUser > a").click()
 			e.readOpenDocs()
 			$(document).on("vue::BILoadingTrigger", function (t, s) {
 				e.isLoadingBIReport = s
