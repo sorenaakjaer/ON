@@ -3072,7 +3072,7 @@ $(document).one("trigger::vue_loaded", function () {
 				const roleIndex = activeUser.role_array.findIndex(role => role.group_id_noti === groupId);
 
 				// Determine the new status based on the current status
-				const newStatus = currentStatus == "false" ? "true" : "false";
+				const newStatus = !currentStatus
 
 				// Update the active role notification status for the active user
 				this.theActiveUser.role_array[roleIndex].active_role_noti = newStatus;
@@ -3081,7 +3081,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.users[userIndex].role_array[roleIndex].active_role_noti = newStatus;
 
 				// Prepare the event type and set the necessary input values
-				const eventType = newStatus === "true" ? "ADD_GROUP" : "REMOVE_GROUP";
+				const eventType = newStatus ? "ADD_GROUP" : "REMOVE_GROUP";
 				$(".UM_EVENT_TYPE > input").val(eventType);
 				$(".UM_USER_ID > input").val(activeUser.id);
 				$(".UM_GROUP_ID > input").val(groupId);
