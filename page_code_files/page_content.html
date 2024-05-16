@@ -374,11 +374,11 @@
                                         <i class="tio">remove_from_trash</i>
                                     </div>
                                 </div>
-                                <o-advanced-search :options="allCasesProps"
+                                <!--<o-advanced-search :options="allCasesProps"
                                     @emit_search_query="onAdvancedSearchSearchQuery"
                                     @emit_update_search_props="onAdvancedSearch">
-                                </o-advanced-search>
-                                <!--
+                                </o-advanced-search>-->
+                                
                                 <div class="o-search-group">
                                     <div class="o-icon">
                                         <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
@@ -396,7 +396,7 @@
                                             class="tio">clear_circle</i>
                                     </div>
                                 </div>
-                                -->
+                                
                                 <div class="o-sort-setting o-dropdown vue-dropdown hint--left" aria-label="Sortér"
                                     v-if="isCases || isDocs" v-click-outside="closeSortDropdown"
                                     @click="setIsSortDropdown" :class="[{'o-dropdown--active': isSortDropdown}]">

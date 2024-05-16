@@ -4123,6 +4123,8 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				$(document).trigger("trigger::vue_mounted")
 				const el = $('.updTagOrGroup_Output_mvp_groups > div')
+
+				if $(".FROM_COMPANY > input").val() != '' {el = '';}
 				if (el && el.length > 0) {
 					const arrOfPredifinedGroups = el.html() && el.html().length > 2 ? JSON.parse(el.html()) : [];
 					const modifiedArrOfPredifinedGroups = arrOfPredifinedGroups.map(group => {
