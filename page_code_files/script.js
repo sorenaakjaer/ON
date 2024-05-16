@@ -2085,7 +2085,6 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			fetchAllInitialData() {
 				this.isLoadingAllInitialData = true;
-				console.log('http://localhost:3000/server/login.json',)
 				if (!eTrayWebportal || !eTrayWebportal.User || !eTrayWebportal.User.Key) {
 					console.error('MISSING::eTrayWebportal.User.Key');
 					this.isLoadingAllInitialData = false;
@@ -2111,6 +2110,9 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 					.then((result) => {
 						console.log('fetchAllInitialData::result', result);
+						// this.theUser = result.dbUserDetails;
+						// this.setThisUserAPI(result.dbUserDetails)
+						this.setOpenCasesV3(result.dbAllCases)
 					})
 					.catch((error) => {
 						console.error('Error during fetch operation:', error);
@@ -3079,8 +3081,30 @@ $(document).one("trigger::vue_loaded", function () {
 			setTheActiveUserRoleChangeModal(e) {
 				this.theActiveUser = e, this.isEditUserRoles = !0, this.isVueModalOverlay = !0, $("body").css("overflow", "")
 			},
-			setTheEditUserModal(e, t) {
-				t ? this.isProfileClick = !0 : this.isProfileClick = !1, this.theActiveUser = e, this.isEditUser = !0, this.userform.name = e.name, this.userform.display_name = e.display_name, this.userform.user_init = e.user_init, this.userform.email = e.email, this.userform.sms_no = e.sms_no, this.isVueModalOverlay = !0, $("body").css("overflow", "")
+			setTheEditUserModal(user, isProfileClick) {
+				// Set the profile click flag
+				this.isProfileClick = !!isProfileClick;
+
+				// Set the active user
+				this.theActiveUser = user;
+
+				// Enable the edit user mode
+				this.isEditUser = true;
+
+				// Populate the user form with the user's details
+				this.userform = {
+					name: user.name,
+					display_name: user.display_name,
+					user_init: user.user_init,
+					email: user.email,
+					sms_no: user.sms_no
+				};
+
+				// Show the modal overlay
+				this.isVueModalOverlay = true;
+
+				// Allow body scrolling
+				$("body").css("overflow", "");
 			},
 			resetEditUserForm() {
 				this.userform.name = "", this.userform.display_name = "", this.userform.email = "", this.userform.user_init = "", this.userform.sms_no = "", this.userform.new_password = "", this.userform.new_password_confirmed = ""
@@ -3263,8 +3287,36 @@ $(document).one("trigger::vue_loaded", function () {
 					// $(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html("");
 				}
 			},
-			readOpenCasesV2(e, t) {
-				$(".ETRAY_JSON_LIST_OF_OPEN_CASES_ROW_START > input").val(e), $(".ETRAY_JSON_LIST_OF_OPEN_CASES_ROW_END > input").val(t), this.observeOpenCasesV2 && this.observeOpenCasesV2.disconnect(), $(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div").html(""), this.funcObserveOpenCasesV2(), $(".BTN_GetListOfOpenCasesJSON_V2 > a").click()
+			readOpenCasesV2(start, end) {
+				// Set the value of the input elements for the start and end dates
+				$(".ETRAY_JSON_LIST_OF_OPEN_CASES_ROW_START > input").val(start);
+				$(".ETRAY_JSON_LIST_OF_OPEN_CASES_ROW_END > input").val(end);
+
+				// Disconnect the observer if it exists
+				if (this.observeOpenCasesV2) {
+					this.observeOpenCasesV2.disconnect();
+				}
+
+				// Clear the HTML content of the open cases container
+				$(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div").html("");
+
+				// Re-initialize the observer for open cases
+				this.funcObserveOpenCasesV2();
+
+				// Trigger the click event to get the list of open cases
+				$(".BTN_GetListOfOpenCasesJSON_V2 > a").click();
+			},
+			setOpenCasesV3(json) {
+				console.log('setOpenCasesV3', json)
+				const toStr = JSON.stringify(json);
+				this.encodeCases(toStr);
+				this.casesIsLoading = false;
+				this.isClosedCasesLoading = false;
+				run_autoupdate = true;
+
+				// Remove loading status from the cases container and the page
+				$(".js-o-cases__container").removeClass("o-cases__container--loading");
+				$(".o-page").removeClass("o-page--is-loading");
 			},
 			funcObserveOpenCasesV2() {
 				var self = this;
@@ -3496,11 +3548,36 @@ $(document).one("trigger::vue_loaded", function () {
 					childList: !0
 				})
 			},
+			setThisUserAPI(rawJsonData) {
+				// Check if the raw JSON data is not empty
+				if (rawJsonData.length > 0) {
+					// Parse the JSON data
+					const parsedData = JSON.parse(rawJsonData);
+
+					// Set the user to the first element of the parsed data
+					this.theUser = parsedData[0];
+
+					// Set the users with the raw JSON data
+					this.setUsers(rawJsonData);
+				}
+			},
 			setThisUser() {
-				var e = $(".ETRAY_USER_PROFILE_USER_RAW_JSON > div").html();
-				if (!(e.length < 1)) {
-					var t = JSON.parse(e);
-					this.theUser = t[0], this.setUsers(e), $(".ETRAY_USER_PROFILE_USER_RAW_JSON > div").html("")
+				// Get the raw JSON data from the DOM element
+				const rawJsonData = $(".ETRAY_USER_PROFILE_USER_RAW_JSON > div").html();
+
+				// Check if the raw JSON data is not empty
+				if (rawJsonData.length > 0) {
+					// Parse the JSON data
+					const parsedData = JSON.parse(rawJsonData);
+
+					// Set the user to the first element of the parsed data
+					this.theUser = parsedData[0];
+
+					// Set the users with the raw JSON data
+					this.setUsers(rawJsonData);
+
+					// Clear the HTML content of the DOM element
+					$(".ETRAY_USER_PROFILE_USER_RAW_JSON > div").html("");
 				}
 			},
 			readUsers() {
@@ -3593,14 +3670,30 @@ $(document).one("trigger::vue_loaded", function () {
 			run_autoupdate_func() {
 				this.isNewCaseLoading || this.isCaseUpdating || (clearJSONfields(), this.readLatestUpdatedCases()), this.isNewAnnouncementLoading || this.isUpdatedAnnouncementLoading || (clearJSONfields(), this.readLatestUpdatedDocsByOthers())
 			},
-			setUsers(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
+			setUsers(encodedData) {
+				// Helper function to decode HTML entities
+				function decodeHtml(html) {
+					const textarea = document.createElement("textarea");
+					textarea.innerHTML = html;
+					return textarea.value;
 				}
-				e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
+
+				// Ensure the encoded data is valid (length > 2)
+				if (encodedData.length > 2) {
+					// Decode the encoded data twice
+					const decodedData = decodeHtml(decodeHtml(encodedData));
+
+					// Parse the decoded JSON data
+					const usersData = JSON.parse(decodedData);
+
+					// Add each user to the users array if they don't already exist
+					usersData.forEach(user => {
+						const userExists = this.users.some(existingUser => existingUser.id === user.id);
+						if (!userExists) {
+							this.users.push(user);
+						}
+					});
+				}
 			},
 			setUsers_1_75(e) {
 				function t(e) {
@@ -4077,7 +4170,7 @@ $(document).one("trigger::vue_loaded", function () {
 		mounted() {
 			var e = this
 			this.theActiveLoggedInCompany = $(".FROM_COMPANY > input").val()
-			//this.fetchAllInitialData()
+			this.fetchAllInitialData()
 			this.$nextTick(_ => {
 				t = window.location.href
 				s = t.indexOf("&ID=");
@@ -4123,7 +4216,7 @@ $(document).one("trigger::vue_loaded", function () {
 				$(document).trigger("trigger::vue_mounted")
 				const el = $('.updTagOrGroup_Output_mvp_groups > div')
 
-				if ($(".FROM_COMPANY > input").val() != 'OpenNet') {el.empty();}
+				if ($(".FROM_COMPANY > input").val() != 'OpenNet') { el.empty(); }
 				if (el && el.length > 0) {
 					const arrOfPredifinedGroups = el.html() && el.html().length > 2 ? JSON.parse(el.html()) : [];
 					const modifiedArrOfPredifinedGroups = arrOfPredifinedGroups.map(group => {
@@ -4136,7 +4229,12 @@ $(document).one("trigger::vue_loaded", function () {
 			/* END 17-12-23 */
 			"OpenNet" == $(".FROM_COMPANY > input").val() && $(".LOGIN_CUSTOMER_TYPE > input").val("ON"), this.theUserType = $(".LOGIN_CUSTOMER_TYPE > input").val(), "ON" == this.theUserType && $(".INQUIRY_TYPE_LEVEL0 > select").html($(".INQUIRY_TYPE_LEVEL0 > select").html().replace("SP</option>", "Til Infrastructure owner (IO)</option>").replace("IO</option>", "Til Service Provider (SP)</option>")), "ON" == this.theUserType ? ($(".js-click-case-edit-ref").removeClass("hidden_field"), $(".toggle-timeline-read-msg").removeClass("hidden_field"), readTimelineReadMsgCookie()) : ($("#js-checkbox__toogle-timeline_read_msg").prop("checked", !0), readTimelineReadMsgCookie()), document.querySelector("#o-page").addEventListener("click", function (t) {
 				e.onClickOutside(t)
-			}), e.funcObserveThisUser(), $(".BTN_GetListOfUserProfilesUser > a").click(), e.readOpenCasesV2(e.open_startLength, e.open_endLength), e.readOpenDocs(), $(document).on("vue::BILoadingTrigger", function (t, s) {
+			})
+			e.funcObserveThisUser()
+			$(".BTN_GetListOfUserProfilesUser > a").click()
+			// e.readOpenCasesV2(e.open_startLength, e.open_endLength)
+			e.readOpenDocs()
+			$(document).on("vue::BILoadingTrigger", function (t, s) {
 				e.isLoadingBIReport = s
 			}), $(document).on("vue::BIChangeTrigger", function (t, s) {
 				e.theUnreadSelected = s
