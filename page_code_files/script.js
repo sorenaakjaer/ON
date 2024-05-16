@@ -3197,18 +3197,21 @@ $(document).one("trigger::vue_loaded", function () {
 					$(".BTN_UserManagement > a").click();
 
 					if (this.isTheActiveUserTheUser) {
-						// Update the user details in the users array
-						const userIndex = this.users.findIndex(user => user.id === this.theActiveUser.id);
-						this.users[userIndex].name = this.userform.name;
-						this.users[userIndex].display_name = this.userform.display_name;
-						this.users[userIndex].sms_no = this.userform.sms_no;
-						this.users[userIndex].email = this.userform.email;
-						this.users[userIndex].user_init = this.userform.user_init;
 						this.theUser.name = this.userform.name;
 						this.theUser.display_name = this.userform.display_name;
 						this.theUser.sms_no = this.userform.sms_no;
 						this.theUser.email = this.userform.email;
 						this.theUser.user_init = this.userform.user_init;
+						// Update the user details in the users array
+						console.log('this.users', this.users)
+						const userIndex = this.users.findIndex(user => user.id === this.theActiveUser.id);
+						if (userIndex > -1) {
+							this.users[userIndex].name = this.userform.name;
+							this.users[userIndex].display_name = this.userform.display_name;
+							this.users[userIndex].sms_no = this.userform.sms_no;
+							this.users[userIndex].email = this.userform.email;
+							this.users[userIndex].user_init = this.userform.user_init;
+						}
 					}
 					// Close the modal overlay
 					this.closeVueModalOverlay();
