@@ -3179,7 +3179,55 @@ $(document).one("trigger::vue_loaded", function () {
 				}, 600)
 			},
 			submitEditUserForm() {
-				if (!(Object.keys(this.formErrors).length > 0)) this.formValidation(), !(Object.keys(this.formErrors).length > 0) && ($(".UM_EVENT_TYPE > input").val("UPDATE_USER_DETAILS"), $(".UM_USER_ID > input").val(this.theActiveUser.id), $(".UM_USER_NAME > input").val(this.userform.name), $(".UM_DISPLAY_NAME > input").val(this.userform.display_name), $(".UM_MOBILE_NO > input").val(this.userform.sms_no), $(".UM_EMAIL > input").val(this.userform.email), $(".UM_USER_INIT > input").val(this.userform.user_init), this.userform.new_password.length > 0 && $(".UM_PASSWORD > input").val(this.userform.new_password), $(".UM_RESULT > div").html(""), $(document).trigger("vue::new_user"), $(".BTN_UserManagement > a").click(), this.closeVueModalOverlay())
+				// Validate the form and check for errors
+				this.formValidation();
+
+				// If there are no form errors, proceed with submitting the form
+				if (Object.keys(this.formErrors).length === 0) {
+					// Set form values for the user management event
+					this.setUserManagementFormValues();
+
+					// Clear previous results
+					$(".UM_RESULT > div").html("");
+
+					// Trigger a custom event for new user
+					$(document).trigger("vue::new_user");
+
+					// Simulate a click on the user management button to submit the form
+					$(".BTN_UserManagement > a").click();
+
+					if (this.isTheActiveUserTheUser) {
+						// Update the user details in the users array
+						const userIndex = this.users.findIndex(user => user.id === this.theActiveUser.id);
+						this.users[userIndex].name = this.userform.name;
+						this.users[userIndex].display_name = this.userform.display_name;
+						this.users[userIndex].sms_no = this.userform.sms_no;
+						this.users[userIndex].email = this.userform.email;
+						this.users[userIndex].user_init = this.userform.user_init;
+						this.theUser.name = this.userform.name;
+						this.theUser.display_name = this.userform.display_name;
+						this.theUser.sms_no = this.userform.sms_no;
+						this.theUser.email = this.userform.email;
+						this.theUser.user_init = this.userform.user_init;
+					}
+					// Close the modal overlay
+					this.closeVueModalOverlay();
+				}
+			},
+			setUserManagementFormValues() {
+				// Set values for the user management form
+				$(".UM_EVENT_TYPE > input").val("UPDATE_USER_DETAILS");
+				$(".UM_USER_ID > input").val(this.theActiveUser.id);
+				$(".UM_USER_NAME > input").val(this.userform.name);
+				$(".UM_DISPLAY_NAME > input").val(this.userform.display_name);
+				$(".UM_MOBILE_NO > input").val(this.userform.sms_no);
+				$(".UM_EMAIL > input").val(this.userform.email);
+				$(".UM_USER_INIT > input").val(this.userform.user_init);
+
+				// Set password if a new one is provided
+				if (this.userform.new_password.length > 0) {
+					$(".UM_PASSWORD > input").val(this.userform.new_password);
+				}
 			},
 			submitDeleteUserForm() {
 				$(".UM_EVENT_TYPE > input").val("DELETE_USER"), $(".UM_USER_ID > input").val(this.theActiveUser.id), $(".UM_USER_NAME > input").val(this.userform.name), $(".UM_DISPLAY_NAME > input").val(this.userform.display_name), $(".UM_MOBILE_NO > input").val(this.userform.sms_no), $(".UM_EMAIL > input").val(this.userform.email), $(".UM_USER_INIT > input").val(this.userform.user_init), this.userform.new_password.length > 0 && $(".UM_PASSWORD > input").val(this.userform.new_password), $(".UM_RESULT > div").html(""), $(".BTN_UserManagement > a").click();
