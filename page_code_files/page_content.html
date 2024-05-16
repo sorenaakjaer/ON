@@ -356,13 +356,13 @@
                             <div class="vue-subheader-filters__flex__row vue-subheader-filters__flex__row__left">
                                 <o-multi-select :items="allCaseCategories" :selected_items="theActiveFilterCategories"
                                     @toggle_item="toggleFilterCategory" select_title="Vælg kategorier"></o-multi-select>
-                                <o-multi-select v-if="isUserOpennetOrSP" :items="allCaseTags"
+                                <o-multi-select :items="allCaseTags"
                                     :selected_items="theActiveFilterTags" @toggle_item="toggleFilterTag"
                                     select_title="Vælg tag"></o-multi-select>
-                                <o-multi-select v-if="isUserOpennetOrSP" :items="allCaseGroups"
+                                <o-multi-select :items="allCaseGroups"
                                     :selected_items="theActiveFilterGroups" @toggle_item="toggleFilterGroup"
                                     select_title="Vælg gruppe"></o-multi-select>
-                                <o-multi-select v-if="isUserOpennetOrSP" :items="allCaseStatus"
+                                <o-multi-select :items="allCaseStatus"
                                     :selected_items="theActiveFilterStatus" @toggle_item="toggleFilterStatus"
                                     select_title="Vælg status" :i18n="statusI18N"></o-multi-select>
                             </div>
@@ -810,7 +810,7 @@
                                         Opfølgning
                                         udløber: {{itemCase.onhold_until}}</div>
                                 </div>
-                                <template v-if="isUserOpennetOrSP">
+                                <template>
                                     <div class="o-cases__case_element__header__row__tags">
                                         <label>Tags</label>
                                         <div class="o-cases__case_element__header__row__tags__container"
