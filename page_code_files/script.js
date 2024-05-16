@@ -3202,7 +3202,7 @@ $(document).one("trigger::vue_loaded", function () {
 						this.theUser.user_init = this.userform.user_init;
 						// Update the user details in the users array
 						console.log('this.users', this.users)
-						const userIndex = this.users.findIndex(user => user.id === this.theActiveUser.id);
+						const userIndex = this.users.findIndex(user => user.id * 1 === this.theActiveUser.id * 1);
 						if (userIndex > -1) {
 							this.users[userIndex].name = this.userform.name;
 							this.users[userIndex].display_name = this.userform.display_name;
@@ -3232,7 +3232,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			submitDeleteUserForm() {
 				$(".UM_EVENT_TYPE > input").val("DELETE_USER"), $(".UM_USER_ID > input").val(this.theActiveUser.id), $(".UM_USER_NAME > input").val(this.userform.name), $(".UM_DISPLAY_NAME > input").val(this.userform.display_name), $(".UM_MOBILE_NO > input").val(this.userform.sms_no), $(".UM_EMAIL > input").val(this.userform.email), $(".UM_USER_INIT > input").val(this.userform.user_init), this.userform.new_password.length > 0 && $(".UM_PASSWORD > input").val(this.userform.new_password), $(".UM_RESULT > div").html(""), $(".BTN_UserManagement > a").click();
-				var e = this.users.findIndex(e => e.id == this.theActiveUser.id);
+				var e = this.users.findIndex(e => e.id * 1 == this.theActiveUser.id * 1);
 				this.users.splice(e, 1), this.closeVueModalOverlay()
 			},
 			resetPasswordForUser(e) {
@@ -3315,10 +3315,11 @@ $(document).one("trigger::vue_loaded", function () {
 
 					// Process each user in the decoded data
 					decodedData.forEach((user) => {
-						const existingUserIndex = this.users.findIndex(existingUser => existingUser.id === user.id);
+						const existingUserIndex = this.users.findIndex(existingUser => existingUser.id * 1 === user.id * 1);
 
 						// If the user does not exist, add them to the array; otherwise, update the existing user
 						if (existingUserIndex < 0) {
+							user.id = user.id * 1;
 							this.users.push(user);
 						} else {
 							Vue.set(this.users, existingUserIndex, user);
