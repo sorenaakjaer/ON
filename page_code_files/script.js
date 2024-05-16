@@ -1295,15 +1295,7 @@ $(document).one("trigger::vue_loaded", function () {
 			theActiveCaseCategory: "Alle kategorier",
 			casesQuery: "",
 			infiniteScrollNumber: 50,
-			isClosedCasesLoading: !0,
-			startLength: 1,
-			endLength: 500,
-			addLength: 500,
-			open_startLength: 1,
-			open_endLength: 500,
-			open_addLength: 500,
-			observeClosedCases: null,
-			observeOpenCasesV2: null,
+			isClosedCasesLoading: true,
 			observeLatestCasesDiv: null,
 			isNewCaseLoading: !1,
 			isCaseUpdating: !1,
@@ -2112,7 +2104,7 @@ $(document).one("trigger::vue_loaded", function () {
 						console.log('fetchAllInitialData::result', result);
 						// this.theUser = result.dbUserDetails;
 						// this.setThisUserAPI(result.dbUserDetails)
-						this.setOpenCasesV3(result.dbAllCases)
+						this.setAllCasesV3(result.dbAllCases)
 					})
 					.catch((error) => {
 						console.error('Error during fetch operation:', error);
@@ -3266,47 +3258,7 @@ $(document).one("trigger::vue_loaded", function () {
 					childList: !0
 				})
 			},
-			funcObserveOpenCases() {
-				var e = this,
-					t = new MutationObserver(function (s) {
-						e.setOpenCases(), e.casesIsLoading = !1, t.disconnect(), e.readClosedCases(e.startLength, e.endLength)
-					});
-				t.observe(document.querySelector(".ETRAY_JSON_LIST_OF_OPEN_CASES > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			setOpenCases() {
-				var openCasesHtml = $(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html();
-				//console.log('openCasesHtml',openCasesHtml)	
-				$(".js-o-cases__container").removeClass("o-cases__container--loading");
-				$(".o-page").removeClass("o-page--is-loading");
-
-				if (openCasesHtml.length >= 3) {
-					this.encodeCases(openCasesHtml);
-					// $(".ETRAY_JSON_LIST_OF_OPEN_CASES > div").html("");
-				}
-			},
-			readOpenCasesV2(start, end) {
-				// Set the value of the input elements for the start and end dates
-				$(".ETRAY_JSON_LIST_OF_OPEN_CASES_ROW_START > input").val(start);
-				$(".ETRAY_JSON_LIST_OF_OPEN_CASES_ROW_END > input").val(end);
-
-				// Disconnect the observer if it exists
-				if (this.observeOpenCasesV2) {
-					this.observeOpenCasesV2.disconnect();
-				}
-
-				// Clear the HTML content of the open cases container
-				$(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div").html("");
-
-				// Re-initialize the observer for open cases
-				this.funcObserveOpenCasesV2();
-
-				// Trigger the click event to get the list of open cases
-				$(".BTN_GetListOfOpenCasesJSON_V2 > a").click();
-			},
-			setOpenCasesV3(json) {
+			setAllCasesV3(json) {
 				console.log('setOpenCasesV3', json)
 				const toStr = JSON.stringify(json);
 				this.encodeCases(toStr);
@@ -3318,99 +3270,6 @@ $(document).one("trigger::vue_loaded", function () {
 				$(".js-o-cases__container").removeClass("o-cases__container--loading");
 				$(".o-page").removeClass("o-page--is-loading");
 			},
-			funcObserveOpenCasesV2() {
-				var self = this;
-
-				self.observeOpenCasesV2 = new MutationObserver(function () {
-					// Disconnect the observer
-					self.observeOpenCasesV2.disconnect();
-
-					var openCasesHtml = $(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div").html();
-					//console.log('openCasesHtml')
-					var caseLength = 0;
-
-					// Check if openCasesHtml length is greater than 3
-					if (openCasesHtml.length > 3) {
-						caseLength = JSON.parse(openCasesHtml).length + 1;
-						self.encodeCases(openCasesHtml);
-					}
-
-					// Check if caseLength is greater or equal to open_addLength
-					if (caseLength >= self.open_addLength) {
-						self.open_startLength = self.open_endLength + 1;
-						self.open_endLength = self.open_endLength + self.open_addLength;
-
-						self.readOpenCasesV2(self.open_startLength, self.open_endLength);
-					} else {
-						self.casesIsLoading = false;
-
-						$(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div").html("");
-						self.readClosedCases(self.startLength, self.endLength);
-
-						// Remove loading status from the cases container and the page
-						$(".js-o-cases__container").removeClass("o-cases__container--loading");
-						$(".o-page").removeClass("o-page--is-loading");
-					}
-				});
-
-				// Start observing the target node for configured mutations
-				self.observeOpenCasesV2.observe(document.querySelector(".ETRAY_JSON_LIST_OF_OPEN_CASES_V2 > div"), {
-					characterData: true,
-					childList: true
-				});
-			}
-			,
-			readClosedCases(start, end) {
-				// Set input values
-				$(".ETRAY_JSON_LIST_OF_CLOSED_CASES_ROW_START > input").val(start);
-				$(".ETRAY_JSON_LIST_OF_CLOSED_CASES_ROW_END > input").val(end);
-
-				// Disconnect previous observer and clear the HTML
-				if (this.observeClosedCases) {
-					this.observeClosedCases.disconnect();
-				}
-				$(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html("");
-
-				// Start observing closed cases and trigger the click event
-				this.funcObserveClosedCases();
-				$(".BTN_GetListOfClosedCasesJSON > a").click();
-			},
-
-			funcObserveClosedCases() {
-				var self = this;
-				self.observeClosedCases = new MutationObserver(function (mutations) {
-					self.observeClosedCases.disconnect();
-
-					var html = $(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html();
-					var count = 0;
-
-					if (html.length > 3) {
-						count = JSON.parse(html).length + 1;
-						self.pushClosedCases();
-					}
-
-					if (count >= self.addLength) {
-						self.startLength = self.endLength + 1;
-						self.endLength = self.endLength + self.addLength;
-						self.readClosedCases(self.startLength, self.endLength);
-					} else {
-						self.isClosedCasesLoading = false;
-						run_autoupdate = true;
-						$(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html("");
-					}
-				});
-
-				self.observeClosedCases.observe(document.querySelector(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div"), {
-					characterData: true,
-					childList: true
-				});
-			},
-
-			pushClosedCases() {
-				var html = $(".ETRAY_JSON_LIST_OF_CLOSED_CASES > div").html();
-				this.encodeCases(html);
-			},
-
 			encodeCases(html) {
 				const self = this
 				if (html.length >= 3) {
@@ -3548,7 +3407,10 @@ $(document).one("trigger::vue_loaded", function () {
 					childList: !0
 				})
 			},
-			setThisUserAPI(rawJsonData) {
+			setThisUserAPI(json) {
+				const objToArr = Object.entries(json)
+				const rawJsonData = json ? JSON.stringify(objToArr) : ''
+				console.log('setThisUserAPI', json, rawJsonData, JSON.parse(rawJsonData))
 				// Check if the raw JSON data is not empty
 				if (rawJsonData.length > 0) {
 					// Parse the JSON data
@@ -3569,6 +3431,7 @@ $(document).one("trigger::vue_loaded", function () {
 				if (rawJsonData.length > 0) {
 					// Parse the JSON data
 					const parsedData = JSON.parse(rawJsonData);
+					console.log('setThisUser', parsedData)
 
 					// Set the user to the first element of the parsed data
 					this.theUser = parsedData[0];
@@ -4232,7 +4095,6 @@ $(document).one("trigger::vue_loaded", function () {
 			})
 			e.funcObserveThisUser()
 			$(".BTN_GetListOfUserProfilesUser > a").click()
-			// e.readOpenCasesV2(e.open_startLength, e.open_endLength)
 			e.readOpenDocs()
 			$(document).on("vue::BILoadingTrigger", function (t, s) {
 				e.isLoadingBIReport = s
