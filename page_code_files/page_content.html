@@ -1826,7 +1826,7 @@
                                                 <td>{{role.group_name}}</td>
                                                 <td v-if="!isProfileClick">
                                                     <div class="o-toggle"
-                                                        :class="{'o-toggle--activated': role.active_role_noti || role.active_role_noti == 'true'}"
+                                                        :class="{'o-toggle--activated': role.active_role == 'true'}"
                                                         @click="onActiveRoleChange(theActiveUser, role.group_id, role.active_role)">
                                                     </div>
                                                 </td>

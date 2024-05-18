@@ -3082,10 +3082,19 @@ $(document).one("trigger::vue_loaded", function () {
 					this.onActiveRoleChange(e, t.group_id, i, !0, r)
 				})
 			},
-			getIsGroupCategoryActive: (e, t) => e.role_array.filter(e => e.group_category == t).filter(e => "true" == e.active_role).length > 0,
+			getIsGroupCategoryActive: (user, category) => {
+				// Filter roles by the specified group category
+				const rolesInCategory = user.role_array.filter(role => role.group_category === category)
+
+				// Further filter roles that are active
+				const activeRolesInCategory = rolesInCategory.filter(role => role.active_role === "true")
+
+				// Check if there are any active roles in the specified category
+				return activeRolesInCategory.length > 0
+			},
 			onActiveRoleChange(e, t, s, a, i) {
 				var r = this.users.findIndex(e => e.id == this.theActiveUser.id),
-					o = this.theActiveUser.role_array.findIndex(e => e.group_id == t),
+					o = this.theActiveUser.role_array.findIndex(e => e.group_id * 1 == t * 1),
 					n = "false" == s ? "true" : "false";
 				if (this.theActiveUser.role_array[o].active_role = n, this.users[r].role_array[o].active_role = n, a) {
 					if (this.toggle_group_ids.push(t), i) {
@@ -3274,11 +3283,16 @@ $(document).one("trigger::vue_loaded", function () {
 			setTheActiveRoleForFilter(e) {
 				this.theActiveRoleForFilter = e
 			},
-			numberOfUsersWithRole(e) {
-				return this.users.filter(t => t.role_array.findIndex(t => t.group_id == e && "true" == t.active_role) > -1)
+			numberOfUsersWithRole(roleId) {
+				return this.users.filter(user => {
+					return user.role_array.some(role => role.group_id * 1 === roleId * 1 && role.active_role === "true")
+				}).length
 			},
-			usersWithRole(e) {
-				return this.users.filter(t => t.role_array.findIndex(t => t.group_id == e && "true" == t.active_role) > -1)
+			usersWithRole(roleId) {
+				return this.users.filter(user => {
+					// Check if the user has the specific active role
+					return user.role_array.some(role => role.group_id * 1 === roleId * 1 && role.active_role === "true")
+				})
 			},
 			setTheOSelect(e) {
 				setTimeout(t => {
