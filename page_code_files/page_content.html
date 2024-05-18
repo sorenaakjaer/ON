@@ -1833,7 +1833,7 @@
                                                 <td>
                                                     <div class="o-toggle"
                                                         v-if="role.active_role=='true' && role.group_id_noti"
-                                                        :class="{'o-toggle--activated': role.active_role_noti || role.active_role_noti == 'true'}"
+                                                        :class="{'o-toggle--activated': role.active_role_noti === true || role.active_role_noti == 'true'}"
                                                         @click="onActiveRoleNotificationsChange(theActiveUser, role.group_id_noti, role.active_role_noti)">
                                                     </div>
                                                 </td>

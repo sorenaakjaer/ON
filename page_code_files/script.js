@@ -2068,9 +2068,13 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			fetchAllInitialData() {
 				this.isLoadingAllInitialData = true;
+				this.isOpenDocsLoading = true
+				this.isClosedDocsLoading = true
 				if (!eTrayWebportal || !eTrayWebportal.User || !eTrayWebportal.User.Key) {
 					console.error('MISSING::eTrayWebportal.User.Key');
 					this.isLoadingAllInitialData = false;
+					this.isOpenDocsLoading = false
+					this.isClosedDocsLoading = false
 					return;
 				}
 
@@ -2096,12 +2100,15 @@ $(document).one("trigger::vue_loaded", function () {
 						// this.theUser = result.dbUserDetails;
 						this.setThisUserAPI(result.dbUserDetails)
 						this.setAllCasesV3(result.dbAllCases)
+						this.items = result.dbExtDocs
 					})
 					.catch((error) => {
 						console.error('Error during fetch operation:', error);
 					})
 					.finally(() => {
 						this.isLoadingAllInitialData = false;
+						this.isOpenDocsLoading = false
+						this.isClosedDocsLoading = false
 					});
 			},
 			fetchAllUsers() {
@@ -3562,50 +3569,6 @@ $(document).one("trigger::vue_loaded", function () {
 			run_autoupdate_func() {
 				this.isNewCaseLoading || this.isCaseUpdating || (clearJSONfields(), this.readLatestUpdatedCases()), this.isNewAnnouncementLoading || this.isUpdatedAnnouncementLoading || (clearJSONfields(), this.readLatestUpdatedDocsByOthers())
 			},
-			readOpenDocs() {
-				this.isOpenDocsLoading = !0, this.funcObserveDocsOpen(), $(".BTN_GetListOfExtDocs_Open > a").click()
-			},
-			readClosedDocs() {
-				this.isClosedDocsLoading = !0, this.funcObserveDocsClosed(), $(".BTN_GetListOfExtDocs_Closed > a").click()
-			},
-			funcObserveDocsOpen() {
-				$(".ETRAY_EXT_DOCS_RAW_JSON_OPEN > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_OPEN > div").innerHTML;
-					e.setDocs(a), e.isOpenDocsLoading = !1, t.disconnect(), e.readClosedDocs()
-				});
-				t.observe(document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_OPEN > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveDocsClosed() {
-				$(".ETRAY_EXT_DOCS_RAW_JSON_CLOSED > div").html("");
-				let self = this;
-				var observer = new MutationObserver(function (mutations) {
-					var html = document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_CLOSED > div").innerHTML;
-					self.setDocs(html);
-					self.isClosedDocsLoading = false;
-					observer.disconnect();
-				});
-				observer.observe(document.querySelector(".ETRAY_EXT_DOCS_RAW_JSON_CLOSED > div"), {
-					characterData: true,
-					childList: true
-				});
-			},
-
-			setDocs(html) {
-				setDocPagePostIDs();
-				if (html.length > 2) {
-					var docs = JSON.parse(html);
-					docs.forEach((doc, index) => {
-						if (this.items.findIndex(item => item.onid == doc.onid) < 0) {
-							this.items.push(doc);
-						}
-					});
-				}
-			},
 			setSearchInOldCases() {
 				this.isSearchingOldCases = !0, $(".ETRAY_JSON_LIST_OF_OLD_CASES > div").html(""), $(".SEARCH_FIELD > input").val(this.searchQuery), this.funcObserveSearchedServerCases(), $(".BTN_GetListOfOldCasesJSON > a").click()
 			},
@@ -4034,7 +3997,6 @@ $(document).one("trigger::vue_loaded", function () {
 			"OpenNet" == $(".FROM_COMPANY > input").val() && $(".LOGIN_CUSTOMER_TYPE > input").val("ON"), this.theUserType = $(".LOGIN_CUSTOMER_TYPE > input").val(), "ON" == this.theUserType && $(".INQUIRY_TYPE_LEVEL0 > select").html($(".INQUIRY_TYPE_LEVEL0 > select").html().replace("SP</option>", "Til Infrastructure owner (IO)</option>").replace("IO</option>", "Til Service Provider (SP)</option>")), "ON" == this.theUserType ? ($(".js-click-case-edit-ref").removeClass("hidden_field"), $(".toggle-timeline-read-msg").removeClass("hidden_field"), readTimelineReadMsgCookie()) : ($("#js-checkbox__toogle-timeline_read_msg").prop("checked", !0), readTimelineReadMsgCookie()), document.querySelector("#o-page").addEventListener("click", function (t) {
 				e.onClickOutside(t)
 			})
-			e.readOpenDocs()
 			$(document).on("vue::BILoadingTrigger", function (t, s) {
 				e.isLoadingBIReport = s
 			}), $(document).on("vue::BIChangeTrigger", function (t, s) {
@@ -4198,13 +4160,6 @@ var current_iframeWidth = 10;
 // Variables - START //
 
 // FUNCTIONS - START //
-
-function setDocPagePostIDs() {
-	$(".BTN_SetDocPagePostIDs_Step1 > a").click();
-	setTimeout(() => {
-		$(".BTN_SetDocPagePostIDs_Step2 > a").click();
-	}, 2000); // 2000 milliseconds = 2 seconds
-}
 
 function openBurgerMenu() {
 	// If the page does not have the 'o-page--menu-open' class, add it
