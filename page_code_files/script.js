@@ -2097,10 +2097,11 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 					.then((result) => {
 						console.log('fetchAllInitialData::result', result);
-						// this.theUser = result.dbUserDetails;
+						const cases = result.dbAllCases ? result.dbAllCases : []
+						const docs = result.dbExtDocs ? result.dbExtDocs : []
 						this.setThisUserAPI(result.dbUserDetails)
-						this.setAllCasesV3(result.dbAllCases)
-						this.items = result.dbExtDocs
+						this.setAllCasesV3(cases)
+						this.items = docs
 					})
 					.catch((error) => {
 						console.error('Error during fetch operation:', error);
