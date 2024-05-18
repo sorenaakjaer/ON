@@ -1261,13 +1261,7 @@ $(document).one("trigger::vue_loaded", function () {
 			theUserType: "",
 			observeAllUsersDiv: null,
 			users: [],
-			usersIsLoading_1_75: !0,
-			usersIsLoading_76_150: !0,
-			usersIsLoading_151_225: !0,
-			usersIsLoading_226_300: !0,
-			usersIsLoading_301_375: !0,
-			usersIsLoading_376_450: !0,
-			usersIsLoading_451_525: !0,
+			usersIsLoading: false,
 			theToggleRolesAcc: [],
 			theActiveUser: null,
 			isEditUser: !1,
@@ -1964,9 +1958,6 @@ $(document).one("trigger::vue_loaded", function () {
 				var e = this.theActiveRoleForFilter;
 				return this.oSelectUsers.filter(t => t.role_array.findIndex(t => t.group_id == e && "false" == t.active_role) > -1)
 			},
-			usersIsLoading() {
-				return this.usersIsLoading_1_75 || this.usersIsLoading_76_150 || this.usersIsLoading_151_225 || this.usersIsLoading_226_300 || this.usersIsLoading_301_375 || this.usersIsLoading_376_450 || this.usersIsLoading_451_525
-			},
 			onpProductListVProps() {
 				const valueTitleMap = this.standardOnpItems.reduce((obj, item) => (obj[item.value] = item.title, obj), {})
 				return this.onpProductList.map(item => {
@@ -2112,6 +2103,45 @@ $(document).one("trigger::vue_loaded", function () {
 					.finally(() => {
 						this.isLoadingAllInitialData = false;
 					});
+			},
+			fetchAllUsers() {
+				this.usersIsLoading = true;
+
+				if (!eTrayWebportal || !eTrayWebportal.User || !eTrayWebportal.User.Key) {
+					console.error('MISSING::eTrayWebportal.User.Key');
+					this.usersIsLoading = false;
+					return;
+				}
+
+				const myHeaders = new Headers();
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
+
+				const requestOptions = {
+					method: "GET",
+					headers: myHeaders,
+					redirect: "follow"
+				};
+
+				const baseUrl = window.location.origin;
+				const url = !window.ISLOCALHOST ? `${baseUrl}/ppServices/api/profiles` : 'http://localhost:3000/ppServices/api/profiles.json';
+
+				fetch(url, requestOptions)
+					.then((response) => {
+						if (!response.ok) {
+							throw new Error(`Network response was not ok: ${response.statusText}`);
+						}
+						return response.json();
+					})
+					.then((result) => {
+						console.log('fetchAllUsers::result', result);
+						this.users = result.dbProfiles ? result.dbProfiles : [];
+					})
+					.catch((error) => {
+						console.error('Error during fetch operation:', error)
+					})
+					.finally(() => {
+						this.usersIsLoading = false;
+					})
 			},
 			showToast(message) {
 				this.toast.message = message;
@@ -2817,7 +2847,7 @@ $(document).one("trigger::vue_loaded", function () {
 							this.readEndCustomerConfigs();
 							break;
 						case "roles":
-							this.readUsers();
+							this.fetchAllUsers();
 							break;
 						default:
 							break;
@@ -3482,158 +3512,8 @@ $(document).one("trigger::vue_loaded", function () {
 					this.users.push(userObj);
 				}
 			},
-			readUsers() {
-				this.usersIsLoading_1_75 = !0, this.funcObserveAllUsers_1_75(), $(".BTN_GetListOfUserProfiles_1_75 > a").click()
-			},
-			funcObserveAllUsers_1_75() {
-				$(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div").html();
-					e.setUsers_1_75(a), e.usersIsLoading_1_75 = !1, t.disconnect(), e.usersIsLoading_76_150 = !0, e.funcObserveAllUsers_76_150(), $(".BTN_GetListOfUserProfiles_76_150 > a").click()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveAllUsers_76_150() {
-				$(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div").html();
-					e.setUsers_76_150(a), e.usersIsLoading_76_150 = !1, t.disconnect(), e.usersIsLoading_151_225 = !0, e.funcObserveAllUsers_151_225(), $(".BTN_GetListOfUserProfiles_151_225 > a").click()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveAllUsers_151_225() {
-				$(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div").html();
-					e.setUsers_151_225(a), e.usersIsLoading_151_225 = !1, t.disconnect(), e.usersIsLoading_226_300 = !0, e.funcObserveAllUsers_226_300(), $(".BTN_GetListOfUserProfiles_226_300 > a").click()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveAllUsers_226_300() {
-				$(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div").html();
-					e.setUsers_226_300(a), e.usersIsLoading_226_300 = !1, t.disconnect(), e.usersIsLoading_301_375 = !0, e.funcObserveAllUsers_301_375(), $(".BTN_GetListOfUserProfiles_301_375 > a").click()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveAllUsers_301_375() {
-				$(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div").html();
-					e.setUsers_301_375(a), e.usersIsLoading_301_375 = !1, t.disconnect(), e.usersIsLoading_376_450 = !0, e.funcObserveAllUsers_376_450(), $(".BTN_GetListOfUserProfiles_376_450 > a").click()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveAllUsers_376_450() {
-				$(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div").html();
-					e.setUsers_376_450(a), e.usersIsLoading_376_450 = !1, t.disconnect(), e.usersIsLoading_451_525 = !0, e.funcObserveAllUsers_451_525(), $(".BTN_GetListOfUserProfiles_451_525 > a").click()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
-			funcObserveAllUsers_451_525() {
-				$(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div").html("");
-				let e = this;
-				var t = new MutationObserver(function (s) {
-					var a = $(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div").html();
-					e.setUsers_451_525(a), e.usersIsLoading_451_525 = !1, t.disconnect()
-				});
-				t.observe(document.querySelector(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div"), {
-					characterData: !0,
-					childList: !0
-				})
-			},
 			run_autoupdate_func() {
 				this.isNewCaseLoading || this.isCaseUpdating || (clearJSONfields(), this.readLatestUpdatedCases()), this.isNewAnnouncementLoading || this.isUpdatedAnnouncementLoading || (clearJSONfields(), this.readLatestUpdatedDocsByOthers())
-			},
-			setUsers_1_75(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				$(".ETRAY_USER_PROFILE_RAW_JSON_1_75 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
-			},
-			setUsers_76_150(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				$(".ETRAY_USER_PROFILE_RAW_JSON_76_150 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
-			},
-			setUsers_151_225(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				$(".ETRAY_USER_PROFILE_RAW_JSON_151_225 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
-			},
-			setUsers_226_300(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				$(".ETRAY_USER_PROFILE_RAW_JSON_226_300 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
-			},
-			setUsers_301_375(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				$(".ETRAY_USER_PROFILE_RAW_JSON_301_375 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
-			},
-			setUsers_376_450(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				$(".ETRAY_USER_PROFILE_RAW_JSON_376_450 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
-			},
-			setUsers_451_525(e) {
-				function t(e) {
-					var t = document.createElement("textarea");
-					return t.innerHTML = e, t.value
-				}
-				$(".ETRAY_USER_PROFILE_RAW_JSON_451_525 > div").html(""), e.length > 2 && JSON.parse(t(t(e))).forEach(e => {
-					0 > this.users.findIndex(t => t.id == e.id) && this.users.push(e)
-				})
 			},
 			readOpenDocs() {
 				this.isOpenDocsLoading = !0, this.funcObserveDocsOpen(), $(".BTN_GetListOfExtDocs_Open > a").click()
