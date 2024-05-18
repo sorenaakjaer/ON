@@ -3093,34 +3093,16 @@ $(document).one("trigger::vue_loaded", function () {
 					this.onActiveRoleChange(user, role.group_id, isActive, true, isLastRole)
 				})
 			},
-			onActiveRoleChange(theActiveUser, groupId, currentStatus, toggleGroups, processToggleGroups) {
-				const userId = theActiveUser.id
-				const userIndex = this.users.findIndex(user => user.id * 1 === this.theActiveUser.id * 1)
-				const roleIndex = this.theActiveUser.role_array.findIndex(role => role.group_id * 1 == groupId * 1)
-
-				let newStatus;
-
-				if (typeof currentStatus === 'boolean') {
-					newStatus = currentStatus ? 'false' : 'true';
-				} else if (typeof currentStatus === 'string') {
-					newStatus = currentStatus == 'true' ? 'false' : 'true';
-				}
-
-				// Update the active role status for both the active user and the user in the users array
-				this.theActiveUser.role_array[roleIndex].active_role = newStatus
-				this.users[userIndex].role_array[roleIndex].active_role = newStatus
-
-				if (toggleGroups) {
-					this.toggle_group_ids.push(groupId)
-
-					if (processToggleGroups) {
-
-						const groupIds = this.toggle_group_ids.join(";")
-						this.updateUserManagement(userId, groupIds, newStatus)
+			onActiveRoleChange(e, t, s, a, i) {
+				var r = this.users.findIndex(e => e.id == this.theActiveUser.id),
+					o = this.theActiveUser.role_array.findIndex(e => e.group_id == t),
+					n = "false" == s ? "true" : "false";
+				if (this.theActiveUser.role_array[o].active_role = n, this.users[r].role_array[o].active_role = n, a) {
+					if (this.toggle_group_ids.push(t), i) {
+						var l = this.toggle_group_ids.join(";");
+						"true" == n && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(l), $(".BTN_UserManagement > a").click()), "false" == n && ($(".UM_EVENT_TYPE > input").val("REMOVE_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(l), $(".BTN_UserManagement > a").click())
 					}
-				} else {
-					this.updateUserManagement(userId, groupId, newStatus)
-				}
+				} else "true" == n && ($(".UM_EVENT_TYPE > input").val("ADD_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click()), "false" == n && ($(".UM_EVENT_TYPE > input").val("REMOVE_GROUP"), $(".UM_USER_ID > input").val(e.id), $(".UM_GROUP_ID > input").val(t), $(".BTN_UserManagement > a").click())
 			},
 			updateUserManagement(userId, groupIds, status) {
 				let eventType = true
@@ -3143,7 +3125,7 @@ $(document).one("trigger::vue_loaded", function () {
 				let newStatus;
 
 				if (typeof currentStatus === 'boolean') {
-					newStatus = !currentStatus;
+					newStatus = currentStatus ? 'false' : 'true';
 				} else if (typeof currentStatus === 'string') {
 					newStatus = currentStatus == 'true' ? 'false' : 'true';
 				}
