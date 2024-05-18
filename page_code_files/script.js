@@ -3133,7 +3133,7 @@ $(document).one("trigger::vue_loaded", function () {
 				$(".UM_EVENT_TYPE > input").val(eventType)
 				$(".UM_USER_ID > input").val(userId)
 				$(".UM_GROUP_ID > input").val(groupIds)
-				console.log('updateUserManagement', { eventType, userId, groupId })
+				console.log('updateUserManagement', { eventType, userId, groupIds })
 				$(".BTN_UserManagement > a").click()
 			},
 			onActiveRoleNotificationsChange(activeUser, groupId, currentStatus) {
