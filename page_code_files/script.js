@@ -3150,9 +3150,9 @@ $(document).one("trigger::vue_loaded", function () {
 				let newStatus;
 
 				if (typeof currentStatus === 'boolean') {
-					newStatus = currentStatus ? 'false' : 'true';
+					newStatus = !currentStatus
 				} else if (typeof currentStatus === 'string') {
-					newStatus = currentStatus == 'true' ? 'false' : 'true';
+					newStatus = currentStatus == 'true' ? false : true;
 				}
 
 				this.theActiveUser.role_array[roleIndex].active_role_noti = newStatus;
@@ -3163,7 +3163,7 @@ $(document).one("trigger::vue_loaded", function () {
 				$(".UM_EVENT_TYPE > input").val(eventType);
 				$(".UM_USER_ID > input").val(activeUser.id);
 				$(".UM_GROUP_ID > input").val(groupId);
-				console.log('onActiveRoleNotificationsChange', { eventType, activeUser, groupId })
+				console.log('onActiveRoleNotificationsChange', { eventType, groupId, activeUser })
 				$(".BTN_UserManagement > a").click();
 			},
 			setTheActiveUserRoleChangeModal(e) {
