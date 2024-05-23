@@ -928,8 +928,9 @@
                                     <div v-if="item.click==='No'" class="item-with-files o-cases__case-group">
                                         <label>Filer:</label>
                                         <ul class="item-files">
-                                            <li v-for="file in item.message" :key="file.link"><a :href="file.link"
-                                                    @click.stop="downloadItem(item)" class="item-files-li-link"
+                                            <li v-for="file in item.attachment_list" :key="file.link"><a
+                                                    :href="file.link" @click.stop="downloadItem(item)"
+                                                    class="item-files-li-link"
                                                     :aria-label="'Seneste opdateret: ' + file.updated">
                                                     <div><i v-if="file.new_file_icon==='Yes'"
                                                             class="tio star_icon">star</i>
