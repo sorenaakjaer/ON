@@ -925,7 +925,8 @@
                                             beskrivelse:</label>
                                         <p>{{item.message_short}}</p>
                                     </div>
-                                    <div v-if="item.click==='No'" class="item-with-files o-cases__case-group">
+                                    <div v-if="item.attachment_list && item.attachment_list.length > 0"
+                                        class="item-with-files o-cases__case-group">
                                         <label>Filer:</label>
                                         <ul class="item-files">
                                             <li v-for="file in item.attachment_list" :key="file.link"><a
@@ -944,7 +945,9 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="o-cases__case_element__body__arrow" v-if="item.click==='Yes'"> Læs
+                                <div class="o-cases__case_element__body__arrow"
+                                    v-if="item.click==='Yes' && (!item.attachment_list || item.attachment_list.length === 0)">
+                                    Læs
                                     <div class="tio chevron_right"></div>
                                 </div>
                             </div>
@@ -1376,7 +1379,7 @@
                                         <label>Udløbsdato:</label>
                                         <p>{{theActiveItem.expire_date}}</p>
                                     </div>
-                                    <div v-if="theActiveItem.attachment_list"
+                                    <div v-if="theActiveItem.attachment_list && theActiveItem.attachment_list.length > 0"
                                         class="item-with-files o-cases__case-group">
                                         <label>Filer:</label>
                                         <ul class="item-files">
