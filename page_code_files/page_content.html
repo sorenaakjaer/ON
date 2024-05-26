@@ -372,12 +372,12 @@
                                         <i class="tio">remove_from_trash</i>
                                     </div>
                                 </div>
-                                <!--
+
                                 <o-advanced-search :options="allCasesProps"
                                     @emit_search_query="onAdvancedSearchSearchQuery"
                                     @emit_update_search_props="onAdvancedSearch">
                                 </o-advanced-search>
-                                -->
+                                <!--
                                 <div class="o-search-group">
                                     <div class="o-icon">
                                         <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
@@ -395,6 +395,7 @@
                                             class="tio">clear_circle</i>
                                     </div>
                                 </div>
+                                -->
                                 <div class="o-sort-setting o-dropdown vue-dropdown hint--left" aria-label="Sortér"
                                     v-if="isCases || isDocs" v-click-outside="closeSortDropdown"
                                     @click="setIsSortDropdown" :class="[{'o-dropdown--active': isSortDropdown}]">
@@ -1908,41 +1909,52 @@
 </div>
 
 <script type="text/x-template" id="o-advanced-search-template">
-    <div class="o-search-advanced" :class="{'o-search-advanced--active': isPropsSelected}">
+    <div class="o-search-advanced" :class="[{'o-search-advanced--open': isShowDropdown}, {'o-search-advanced--active': isPropsSelected}]">
       <div class="o-search-advanced__container">
+        <div class="o-search-group o-search-group--searched" v-if="Object.keys(this.selectedProps).length > 0" @click="setIsShowDropdown(true)">
+            Avanceret søgning på <span v-for="(prop, index) in searchedProps" :key="prop" class="o-pill o-pill--advanced-search-pill">{{ prop }}</span>
+            <i class="tio">chevron_down</i>
+        </div>
         <div class="o-search-group" @click.self="$refs.v_advanced_search_query.focus()">
-          <div class="o-icon" @click.stop="$refs.v_advanced_search_query.focus()">
+          <div class="o-search-advanced__toggler" @click="setIsShowDropdown(true)">
             <!-- SVG for search icon -->
             <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <title>search</title>
               <path d="M20.85,19.44l-4-4a2.44,2.44,0,0,0-.43-.35l-1-.69h0A7,7,0,1,0,10,17a7,7,0,0,0,4.37-1.53h0l.75,1a2.6,2.6,0,0,0,.3.36l4,4a.5.5,0,0,0,.71,0l.7-.7A.5.5,0,0,0,20.85,19.44ZM10,15a5,5,0,1,1,5-5A5,5,0,0,1,10,15Z"></path>
             </svg>
+            Alle
+            <i class="tio">chevron_down</i>
           </div>
-          <div class="o-search__tag" v-for="prop in selectedPropsArray" :id="'o-search__tag__' + prop.title" :key="prop.title" @click.stop="setActiveProp(prop.title)">
-            {{ prop.v_label }}: 
-            <input type="search" class="o-search__tag__search_input" @input="setSearchText(prop.title, $event.target.value)">
-            <div class="bg-icon-hover" @click.stop="removeProp(prop)"><i class="tio">clear</i></div>
-          </div>
-          <input type="search"
+          <input
+                type="search"
+                @focus="setIsShowDropdown(false)"
                  @input="combinedSearch"
                  ref="v_advanced_search_query" 
                  :placeholder="placeholderText"
                  class="o-search-advanced__search-input"
                  :class="{'o-search-advanced__search-input--active': isInputActive}" />
-          <div class="o-search-group__clear" @click="clearSearchQuery"><i class="tio">clear_circle"></i></div>
+          <div class="o-search-group__clear" @click="clearSearchQuery"><i class="tio">clear_circle</i></div>
         </div>
-        <div v-if="isShowDropdown" class="o-search-advanced__dropdown">
-          <input v-model="theDropdownSearchQuery" class="o-input" ref="theDropdownSearchQueryInput" />
-          <div v-for="(option, index) in filteredOptions" 
-               :key="option.value" 
-               @click="selectOption(option)"
-               :ref="'dropdownOption' + index"
-               :class="{'o-search-advanced__dropdown-item--focused': focusedOptionIndex === index}">
-            {{ option.v_label }}
-          </div>
-          <div class="o-search-advanced__container__options__no-matching" v-if="filteredOptions.length < 1">
-            Ingen matchende resultater...
-          </div>
+        <div class="o-search-advanced__dropdown" v-show="isShowDropdown">
+            <div class="o-search-advanced__dropdown__header">
+                <div class="o-search-advanced__dropdown__header__title">Søg i bestemte felter</div>
+                <div class="o-search-advanced__dropdown__header__delete__all" v-if="Object.keys(this.selectedProps).length > 0" @click="deleteAllSeleted">Ryd alle</div>
+        </div>
+        <div class="o-search-advanced__dropdown__container">
+            <table>
+                <tbody>
+            <tr v-for="(option, index) in filteredOptions" 
+                :key="option.value" 
+                class="o-search-advanced__dropdown__item">
+                <td class="o-search-advanced__dropdown__item__label">{{ option.v_label }}</td>
+                <td class="o-search-advanced__dropdown__item__input">
+                    <input type="search" :id="'o-search-advanced__dropdown__item__' + option.value" @input="setSearchText(option.value, $event.target.value)"/>
+                    <div class="bg-icon-hover bg-icon-hover--danger o-search-advanced__dropdown__item__input__delete" v-if="selectedProps[option.value]" @click.stop="removeProp(option.value)"><i class="tio">clear</i></div>
+                </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
         </div>
       </div>
       <div class="o-search-advanced__bg" @click="onBGClick" v-if="isShowDropdown"></div>

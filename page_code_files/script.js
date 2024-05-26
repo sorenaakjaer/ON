@@ -997,13 +997,10 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		data() {
 			return {
-				focusedOptionIndex: -1,
-				indexOfCurrentAt: -1,
 				debounce: null,
 				searchQuery: '',
 				reactiveSearchQuery: '',
 				isShowDropdown: false,
-				theDropdownSearchQuery: '',
 				selectedProps: {},
 				i18n: {
 					da: {
@@ -1019,17 +1016,28 @@ $(document).one("trigger::vue_loaded", function () {
 						'assign_to': 'Tildelt til',
 						'status': 'Status',
 						'filter_inquiry_type': 'Forespørgselstype',
-						'subject': 'Emne',
+						'subject': 'Overskrift',
 					}
 				}
 			}
 		},
 		computed: {
+			searchedProps() {
+				const selectedArr = Object.keys(this.selectedProps)
+				if (selectedArr.length === 1) {
+					return selectedArr.map(key => {
+						return this.i18n['da'][key]
+					})
+				} else {
+					const label = this.i18n['da'][selectedArr[0]]
+					return [label, '+' + (selectedArr.length - 1)]
+				}
+			},
 			isInputActive() {
 				return this.reactiveSearchQuery.length > 0
 			},
 			placeholderText() {
-				return this.isPropsSelected ? '' : 'Skriv @ for at søge i felter..'
+				return this.isPropsSelected ? '' : 'Søg..'
 			},
 			isPropsSelected() {
 				return Object.keys(this.selectedProps).length > 0
@@ -1043,8 +1051,7 @@ $(document).one("trigger::vue_loaded", function () {
 				})).sort((a, b) => a.v_label.localeCompare(b.v_label))
 			},
 			filteredOptions() {
-				const searchLower = this.theDropdownSearchQuery.toLowerCase();
-				return this.translatedOptions.filter(item => item.v_label.toLowerCase().includes(searchLower));
+				return this.translatedOptions
 			},
 			selectedPropsArray() {
 				return Object.keys(this.selectedProps).map(key => ({
@@ -1055,16 +1062,6 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		watch: {
-			focusedOptionIndex(newIndex) {
-				if (this.isShowDropdown && newIndex !== -1) {
-					this.$nextTick(() => {
-						const optionElement = this.$refs[`dropdownOption${newIndex}`];
-						if (optionElement && optionElement.scrollIntoView) {
-							optionElement.scrollIntoView({ block: 'nearest' });
-						}
-					});
-				}
-			},
 			selectedProps: {
 				handler(newVal) {
 					this.$emit('emit_update_search_props', newVal);
@@ -1073,13 +1070,26 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			deleteAllSeleted() {
+				this.selectedProps = {};
+				this.filteredOptions.forEach((option, key) => {
+					document.querySelector(`#o-search-advanced__dropdown__item__${option.value}`).value = '';
+				});
+			},
+			setIsShowDropdown(bool) {
+				this.isShowDropdown = bool;
+				if (bool) {
+					this.$nextTick(_ => {
+						document.getElementById('o-search-advanced__dropdown__item__desc_text').focus();
+					})
+				}
+			},
 			onBGClick() {
 				this.isShowDropdown = false;
-				this.focusedOptionIndex = -1;
-				this.removeGlobalKeyListener();
 			},
 			removeProp(prop) {
-				this.$delete(this.selectedProps, prop.title);
+				this.$delete(this.selectedProps, prop);
+				document.querySelector('#o-search-advanced__dropdown__item__' + prop).value = '';
 			},
 			setActiveProp(propTitle) {
 				const inputId = `#o-search__tag__${propTitle} > input`;
@@ -1095,40 +1105,11 @@ $(document).one("trigger::vue_loaded", function () {
 				const currentValue = event.target.value;
 				const previousValue = this.searchQuery || '';
 
-				// Check if "@" was just added
-				if (currentValue.length > previousValue.length) { // Ensure something was added
-					const difference = currentValue.length - previousValue.length;
-					const start = event.target.selectionStart - difference;
-					const newCharacters = currentValue.slice(start, event.target.selectionStart);
-
-					if (newCharacters.includes('@')) {
-						this.indexOfCurrentAt = start + newCharacters.indexOf('@');
-						this.isShowDropdown = true;
-						this.$nextTick(() => {
-							if (this.$refs.theDropdownSearchQueryInput) {
-								this.$refs.theDropdownSearchQueryInput.focus();
-							}
-						});
-						this.addGlobalKeyListener();
-						return; // Do not proceed with debouncing if "@" is detected
-					} else {
-						this.isShowDropdown = false;
-						this.focusedOptionIndex = -1;
-						this.removeGlobalKeyListener();
-					}
-				} else {
-					this.indexOfCurrentAt = -1;
-					this.isShowDropdown = false;
-					this.focusedOptionIndex = -1;
-					this.removeGlobalKeyListener();
-				}
-
 				// Proceed with debouncing if "@" is not detected
 				this.reactiveSearchQuery = currentValue;
 				clearTimeout(this.debounce);
 				this.searchQuery = "";
 				this.debounce = setTimeout(() => {
-					console.log('searchQuery::debounce', this.searchQuery);
 					this.searchQuery = currentValue; // Update searchQuery with the new value
 					this.$emit('emit_search_query', this.searchQuery);
 				}, 600);
@@ -1137,65 +1118,9 @@ $(document).one("trigger::vue_loaded", function () {
 				this.searchQuery = "";
 				this.reactiveSearchQuery = "";
 				this.isShowDropdown = false;
-				this.focusedOptionIndex = -1;
-				this.removeGlobalKeyListener();
-			},
-			navigateDropdown(event) {
-				if (!this.isShowDropdown) return;
-
-				switch (event.key) {
-					case 'ArrowDown':
-						event.preventDefault();
-						if (this.focusedOptionIndex < this.filteredOptions.length - 1) {
-							this.focusedOptionIndex++;
-						}
-						break;
-					case 'ArrowUp':
-						event.preventDefault();
-						if (this.focusedOptionIndex > 0) {
-							this.focusedOptionIndex--;
-						}
-						break;
-					case 'Enter':
-						if (this.focusedOptionIndex !== -1) {
-							this.selectOption(this.filteredOptions[this.focusedOptionIndex]);
-						}
-						break;
-					case 'Escape':
-						this.isShowDropdown = false;
-						this.focusedOptionIndex = -1;
-						this.removeGlobalKeyListener();
-						break;
-				}
-			},
-			selectOption(option) {
-				this.$set(this.selectedProps, option.value, '');
-				this.searchQuery = this.replaceAt(this.searchQuery, this.indexOfCurrentAt);
-				this.reactiveSearchQuery = this.searchQuery;
-				this.$refs.v_advanced_search_query.value = this.searchQuery;
+				this.$refs.v_advanced_search_query.value = '';
 				this.$emit('emit_search_query', this.searchQuery);
-				this.theDropdownSearchQuery = '';
-				this.isShowDropdown = false;
-				this.focusedOptionIndex = -1;
-				this.removeGlobalKeyListener();
-				this.$nextTick(() => {
-					this.setActiveProp(option.value);
-				});
-			},
-			replaceAt(str, idx) {
-				if (idx > str.length - 1) return str;
-				return str.substring(0, idx) + str.substring(idx + 1);
-			},
-			addGlobalKeyListener() {
-				document.addEventListener('keydown', this.navigateDropdown);
-			},
-			removeGlobalKeyListener() {
-				document.removeEventListener('keydown', this.navigateDropdown);
 			}
-		},
-		beforeDestroy() {
-			// Clean up the global event listener when the component is destroyed
-			this.removeGlobalKeyListener();
 		}
 	});
 
@@ -3588,7 +3513,15 @@ $(document).one("trigger::vue_loaded", function () {
 				!(e.length < 3) && (this.encodeCases(e), $(".ETRAY_JSON_LIST_OF_OLD_CASES > div").html(""))
 			},
 			setSearchInParnerCases() {
-				this.isSearchingPartnerCases = !0, $(".ETRAY_JSON_LIST_OF_OTHER_P_CASES > div").html(""), $(".SEARCH_FIELD > input").val(this.searchQuery), this.funcObservePartnerCases(), $(".BTN_GetListOfOtherPCasesJSON > a").click()
+				// Check if the advanced search query object is not empty
+				if (this.theAdvancedSearchQueryObj && Object.keys(this.theAdvancedSearchQueryObj).length > 0) {
+					console.log('this.theAdvancedSearchQueryObj', this.theAdvancedSearchQueryObj)
+				}
+				this.isSearchingPartnerCases = true
+				$(".ETRAY_JSON_LIST_OF_OTHER_P_CASES > div").html("")
+				$(".SEARCH_FIELD > input").val(this.searchQuery)
+				this.funcObservePartnerCases()
+				$(".BTN_GetListOfOtherPCasesJSON > a").click()
 			},
 			funcObservePartnerCases() {
 				var e = this,
