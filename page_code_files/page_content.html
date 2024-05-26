@@ -924,7 +924,7 @@
                                     </div>
                                     <div class="o-cases__case-group" v-if="item.message_short"><label>Kort
                                             beskrivelse:</label>
-                                        <p>{{item.message_short}}</p>
+                                        <p v-html="item.message_short"></p>
                                     </div>
                                     <div v-if="item.attachment_list && item.attachment_list.length > 0"
                                         class="item-with-files o-cases__case-group">
@@ -1374,7 +1374,7 @@
                                     <div class="o-cases__case-group"
                                         v-if="activeCategory !='Invoice' && activeCategory !='Contract' && activeCategory !='Report'">
                                         <label>Besked:</label>
-                                        <p>{{theActiveItem.message}}</p>
+                                        <p v-html="theActiveItem.message"></p>
                                     </div>
                                     <div class="o-cases__case-group" v-if="theActiveItem.expire_date">
                                         <label>Udløbsdato:</label>

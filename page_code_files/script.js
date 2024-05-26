@@ -2026,7 +2026,7 @@ $(document).one("trigger::vue_loaded", function () {
 						const docs = result.dbExtDocs ? result.dbExtDocs : []
 						this.setThisUserAPI(result.dbUserDetails)
 						this.setAllCasesV3(cases)
-						this.items = docs
+						this.setAllDocsV3(docs)
 					})
 					.catch((error) => {
 						console.error('Error during fetch operation:', error);
@@ -3346,6 +3346,63 @@ $(document).one("trigger::vue_loaded", function () {
 					characterData: !0,
 					childList: !0
 				})
+			},
+			setAllDocsV3(arr) {
+				const lineBreakRegex = /\\n|\\r\\n|\\n\\r|\\r/g;
+				const bulletPointRegex = /•\\t/g;
+				const numberedListRegex = /\\n(\d+\.)\\t/g;
+				const tabRegex = /\\t/g;
+
+				this.items = arr.map(item => {
+					if (typeof item.message === 'string') {
+						// Replace all \n, \r\n, \n\r, \r with <br> in message if it is a string
+						item.message = item.message.replace(lineBreakRegex, '<br>');
+
+						// Replace •\t with <br>• in message if it is a string
+						item.message = item.message.replace(bulletPointRegex, '<br>•');
+
+						// Replace \n2.\t with <br>2. in message if it is a string
+						item.message = item.message.replace(numberedListRegex, '<br>$1 ');
+
+						// Replace \t with &nbsp;&nbsp;&nbsp;&nbsp; in message if it is a string
+						item.message = item.message.replace(tabRegex, '&nbsp;&nbsp;&nbsp;&nbsp;');
+					} else if (Array.isArray(item.message)) {
+						// Iterate over the array if message is an array
+						item.message = item.message.map(subItem => {
+							// Replace \n, \r\n, \n\r, \r with <br> in title if it exists
+							if (subItem.title) {
+								subItem.title = subItem.title.replace(lineBreakRegex, '<br>');
+
+								// Replace •\t with <br>• in title if it exists
+								subItem.title = subItem.title.replace(bulletPointRegex, '<br>•');
+
+								// Replace \n2.\t with <br>2. in title if it exists
+								subItem.title = subItem.title.replace(numberedListRegex, '<br>$1 ');
+
+								// Replace \t with &nbsp;&nbsp;&nbsp;&nbsp; in title if it is a string
+								subItem.title = subItem.title.replace(tabRegex, '&nbsp;&nbsp;&nbsp;&nbsp;');
+							}
+							// Repeat for other string properties if needed
+							return subItem;
+						});
+					}
+
+					// Replace all \n, \r\n, \n\r, \r with <br> in message_short if it is a string
+					if (typeof item.message_short === 'string') {
+						item.message_short = item.message_short.replace(lineBreakRegex, '<br>');
+
+						// Replace •\t with <br>• in message_short if it is a string
+						item.message_short = item.message_short.replace(bulletPointRegex, '<br>•');
+
+						// Replace \n2.\t with <br>2. in message_short if it is a string
+						item.message_short = item.message_short.replace(numberedListRegex, '<br>$1 ');
+
+						// Replace \t with &nbsp;&nbsp;&nbsp;&nbsp; in message_short if it is a string
+						item.message_short = item.message_short.replace(tabRegex, '&nbsp;&nbsp;&nbsp;&nbsp;');
+					}
+
+					return item;
+				});
 			},
 			setAllCasesV3(arr) {
 				const toStr = JSON.stringify(arr);
