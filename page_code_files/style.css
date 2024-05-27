@@ -10919,6 +10919,10 @@ input:checked+.o-open-toggle-slider:before {
     border-bottom: 1px solid var(--borderColor);
 }
 
+.o-search-advanced__dropdown__item:last-child {
+    border-bottom: none;
+}
+
 .o-search-advanced__dropdown__item:focus-within .o-search-advanced__dropdown__item__label {
     color: var(--primary);
 }
