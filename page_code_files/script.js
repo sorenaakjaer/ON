@@ -1859,7 +1859,10 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			filteredItemsWithType() {
-				return (items = "active" === this.theActiveFilter ? this.itemsActiveFromCategory : "future" === this.theActiveFilter ? this.itemsFutureFromCategory : this.itemsExpiredFromCategory).filter(e => !this.activeType || e.type === this.activeType)
+				return (items = "active" === this.theActiveFilter ? this.itemsActiveFromCategory : "future" === this.theActiveFilter ? this.itemsFutureFromCategory : this.itemsExpiredFromCategory).filter(e => {
+					console.log('filteredItemsWithType', e, e.type)
+					return !this.activeType || e.type === this.activeType
+				})
 			},
 			filteredItemsOnUnread() {
 				return this.filteredItemsWithType.filter(e => "Alle" === this.theUnreadSelected ? e : "Ul\xe6st" === this.theUnreadSelected ? "Yes" === e.show_unread_icon : "L\xe6st" === this.theUnreadSelected ? "No" === e.show_unread_icon : void 0)
@@ -2913,6 +2916,7 @@ $(document).one("trigger::vue_loaded", function () {
 				$(".vue-filter-2").removeClass("o-btn__filter---active");
 
 				// Toggle the active type
+				console.log({ event, target })
 				if (this.activeType === event) {
 					this.activeType = null;
 				} else {
