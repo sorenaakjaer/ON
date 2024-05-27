@@ -10842,6 +10842,7 @@ input:checked+.o-open-toggle-slider:before {
     width: 100%;
     background: #fff;
     padding: 0;
+    flex-wrap: unset;
 }
 
 .o-search-advanced .o-search-group:focus-within,
