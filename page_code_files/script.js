@@ -3348,12 +3348,23 @@ $(document).one("trigger::vue_loaded", function () {
 				})
 			},
 			setAllDocsV3(arr) {
+				const uniqueArr = []
+				const duplicateArr = []
+				arr.forEach(item => {
+					const idx = uniqueArr.findIndex(existingItem => existingItem.onid === item.onid)
+					if (idx < 0) {
+						uniqueArr.push(item)
+					} else {
+						duplicateArr.push(item)
+					}
+				})
+				console.log({ uniqueArr, duplicateArr })
 				const lineBreakRegex = /\\n|\\r\\n|\\n\\r|\\r/g;
 				const bulletPointRegex = /•\\t/g;
 				const numberedListRegex = /\\n(\d+\.)\\t/g;
 				const tabRegex = /\\t/g;
 
-				this.items = arr.map(item => {
+				this.items = uniqueArr.map(item => {
 					if (typeof item.message === 'string') {
 						// Replace all \n, \r\n, \n\r, \r with <br> in message if it is a string
 						item.message = item.message.replace(lineBreakRegex, '<br>');
