@@ -1949,7 +1949,7 @@
                 <td class="o-search-advanced__dropdown__item__label">{{ option.v_label }}</td>
                 <td class="o-search-advanced__dropdown__item__input">
                     <input type="search" :id="'o-search-advanced__dropdown__item__' + option.value" @input="setSearchText(option.value, $event.target.value)"/>
-                    <div class="bg-icon-hover bg-icon-hover--danger o-search-advanced__dropdown__item__input__delete" v-if="selectedProps[option.value]" @click.stop="removeProp(option.value)"><i class="tio">clear</i></div>
+                    <span class="bg-icon-hover bg-icon-hover--danger o-search-advanced__dropdown__item__input__delete" v-if="selectedProps[option.value]" @click.stop="removeProp(option.value)"><i class="tio">clear</i></span>
                 </td>
                 </tr>
                 </tbody>
