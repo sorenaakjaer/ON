@@ -957,7 +957,7 @@ $(document).one("trigger::vue_loaded", function () {
 						return response.json(); // Assuming the response is JSON formatted
 					})
 					.then(result => {
-						onAddAnnouncements(result)
+						this.onAddAnnouncements(result)
 						//this.announcements.push(result)
 						//this.announcements = result; // Assign the fetched data to the component's data property
 						this.$emit('emit_announcements', this.announcements)
@@ -968,13 +968,15 @@ $(document).one("trigger::vue_loaded", function () {
 					.finally(() => {
 						this.isLoadingAnnouncements = false; // Ensure loading state is managed correctly
 					});
-			},			
+			},
 			setIsCreateAnnouncementModal(bool) {
+				console.log('setIsCreateAnnouncementModal', bool)
 				if (bool) {
 					this.dataIsCreateAnnouncementModal = true
 				} else {
 					this.$emit('on_close_create_announcement_modal', false)
 					this.dataIsCreateAnnouncementModal = false
+					this.setActiveItem(null)
 				}
 			},
 			setIsCreateNewMaster(bool) {
