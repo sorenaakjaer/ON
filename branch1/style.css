@@ -11157,6 +11157,7 @@ ul.tags-selector__dropdow__create {
     font-size: 11px;
     color: var(--grey);
     margin-bottom: 0;
+    font-weight: normal;
 }
 
 .pp-label--row {

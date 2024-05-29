@@ -2215,11 +2215,82 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				this.createAnnouncement()
 			},
-			setSelectedReceiver(receiverId) {
-				if (this.selectedReceivers[receiverId]) {
-					this.$delete(this.selectedReceivers, receiverId)
+			setSelectedReceiver(receiver) {
+				const receiverId = receiver.id;
+				const allShortcuts = ['ALL', 'ALL_SPs', 'ALL_IOs'];
+				const allSingle = this.receiversFilterFromSelf.map(receiver => receiver.id);
+				const all = allShortcuts.concat(allSingle);
+
+				const selectAll = (ids) => {
+					ids.forEach(id => this.$set(this.selectedReceivers, id, true));
+				};
+
+				const deselectAll = (ids) => {
+					ids.forEach(id => this.$delete(this.selectedReceivers, id));
+				};
+
+				const checkIfAllIsSelected = () => {
+					if (all.filter(allItemId => allItemId !== 'ALL').every(id => this.selectedReceivers[id])) {
+						this.$set(this.selectedReceivers, 'ALL', true);
+					}
+				}
+
+				const handleTypeSelection = (type, shortcut) => {
+					if (!this.selectedReceivers[shortcut]) {
+						this.$set(this.selectedReceivers, shortcut, true);
+						this.receiversFilterFromSelf.forEach(receiver => {
+							if (receiver.type === type) {
+								this.$set(this.selectedReceivers, receiver.id, true);
+							}
+						});
+						checkIfAllIsSelected()
+					} else {
+						this.$delete(this.selectedReceivers, shortcut);
+						this.$delete(this.selectedReceivers, 'ALL');
+						this.receiversFilterFromSelf.forEach(receiver => {
+							if (receiver.type === type) {
+								this.$delete(this.selectedReceivers, receiver.id);
+							}
+						});
+					}
+				};
+
+				if (receiverId === 'ALL') {
+					if (!this.selectedReceivers[receiverId]) {
+						selectAll(all);
+					} else {
+						deselectAll(all);
+					}
+				} else if (receiverId === 'ALL_SPs') {
+					handleTypeSelection('SP', 'ALL_SPs');
+				} else if (receiverId === 'ALL_IOs') {
+					handleTypeSelection('IO', 'ALL_IOs');
 				} else {
-					this.$set(this.selectedReceivers, receiverId, true)
+					if (this.selectedReceivers[receiverId]) {
+						this.$delete(this.selectedReceivers, receiverId);
+						this.$delete(this.selectedReceivers, 'ALL');
+						if (receiver.type === 'SP') {
+							this.$delete(this.selectedReceivers, 'ALL_SPs');
+						} else if (receiver.type === 'IO') { // IO
+							this.$delete(this.selectedReceivers, 'ALL_IOs');
+						}
+					} else {
+						this.$set(this.selectedReceivers, receiverId, true);
+
+						const receiverType = receiver.type;
+						const allWithType = this.receiversFilterFromSelf.filter(rece => rece.type === receiverType);
+						const allWithTypeSelected = allWithType.every(rece => this.selectedReceivers[rece.id]);
+
+						if (allWithTypeSelected) {
+							if (receiverType === 'SP') {
+								this.$set(this.selectedReceivers, 'ALL_SPs', true);
+							}
+							if (receiverType === 'IO') {
+								this.$set(this.selectedReceivers, 'ALL_IOs', true);
+							}
+							checkIfAllIsSelected();
+						}
+					}
 				}
 			},
 			getIsReceiverSelected(receiverId) {

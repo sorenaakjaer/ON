@@ -2240,7 +2240,7 @@
 <script type="text/x-template" id="o-range-slider-template">
     <div class="o-range-slider__template" :class="{'o-range-slider__template--dragging': dragging}">
         <label class="pp-label">
-            <template>Viser udmeldinger mellem d. {{startDayDate}} og d. {{endDayDate}}</template>
+            <template>Viser udmeldinger mellem</template>
         </label>
     <div class="o-range-slider">
         <div class="o-range-slider__handler" 
@@ -2253,8 +2253,8 @@
         <div class="o-range-slider__base__indicator" :style="progressStyle"></div>
     </div>
     <div class="o-range-desc">
-        <label class="pp-label">{{startDayDateLabel }}</label>
-        <label class="pp-label">{{endDayDateLabel}}</label>
+        <label class="pp-label">{{startDayDate }}</label>
+        <label class="pp-label">{{endDayDate}}</label>
     </div>
 </div>
 </script>
@@ -2478,15 +2478,15 @@
                                         <div class="o-ann-receivers__header">
                                             <label class="o-label">{{ selectedReceiversLength }} modtager{{ selectedReceiversLength !== 1 ? 'e' : '' }} valgt</label>
                                             <div class="o-ann-receivers__header__right">
-                                            <div class="o-toggle-group" @click="setSelectedReceiver('ALL')">
+                                            <div class="o-toggle-group" @click="setSelectedReceiver({id: 'ALL'})">
                                                 <label class="o-label">Alle</label>
                                                 <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected('ALL')}"></div>
                                             </div>
-                                            <div class="o-toggle-group" @click="setSelectedReceiver('ALL_SPs')">
+                                            <div class="o-toggle-group" @click="setSelectedReceiver({id: 'ALL_SPs'})">
                                                 <label class="o-label">Alle SP's</label>
                                                 <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected('ALL_SPs')}"></div>
                                             </div>
-                                            <div class="o-toggle-group" @click="setSelectedReceiver('ALL_IOs')">
+                                            <div class="o-toggle-group" @click="setSelectedReceiver({id:'ALL_IOs'})">
                                                 <label class="o-label">Alle IO’s</label>
                                                 <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected('ALL_IOs')}"></div>
                                             </div>
@@ -2496,7 +2496,7 @@
                                             <li v-for="receiver in receiversFilterFromSelf"
                                             :class="{'o-ann-receivers__receiver--selected': getIsReceiverSelected(receiver.id)}"
                                             :key="receiver.id"
-                                            @click="setSelectedReceiver(receiver.id)">
+                                            @click="setSelectedReceiver(receiver)">
                                                 {{ receiver.name }} 
                                                 <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected(receiver.id)}"></div>
                                             </li>
