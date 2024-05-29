@@ -1916,7 +1916,7 @@
             <i class="tio">chevron_down</i>
         </div>
         <div class="o-search-group" @click.self="$refs.v_advanced_search_query.focus()">
-          <div class="o-search-advanced__toggler" @click="setIsShowDropdown(true)">
+          <div class="o-search-advanced__toggler" @click="setIsShowDropdown(!isShowDropdown)">
             <!-- SVG for search icon -->
             <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <title>search</title>
