@@ -10783,6 +10783,8 @@ input:checked+.o-open-toggle-slider:before {
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 2;
     border-radius: 4px;
+    max-height: initial;
+    overflow-y: initial;
 }
 
 .o-search-advanced .o-search-advanced__dropdown__container {
