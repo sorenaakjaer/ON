@@ -996,7 +996,9 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: "follow"
 				};
-				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg", requestOptions)
+				const baseUrl = window.location.origin;
+				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/extMsg" : 'http://localhost:3000/ppServices/api/extMsg'
+				fetch(url, requestOptions)
 					.then(response => {
 						console.log('fetchAnnouncements::answer', response)
 						if (!response.ok) {
@@ -1026,7 +1028,8 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: "follow"
 				};
-				const fetch_url = "https://dev-portal.opennet.dk/ppServices/api/extMsg?onid=" + pONID
+				const baseUrl = window.location.origin;
+				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/extMsg?onid=" + pONID : 'http://localhost:3000/ppServices/api/extMsg?onid=' + pONID
 				fetch(fetch_url, requestOptions)
 					.then(response => {
 						console.log('fetchAnnouncements::answer', response)
@@ -1076,7 +1079,9 @@ $(document).one("trigger::vue_loaded", function () {
 					redirect: "follow"
 				};
 
-				fetch("https://dev-portal.opennet.dk/ppServices/api/general/getFormDetails/all", requestOptions)
+				const baseUrl = window.location.origin;
+				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/general/getFormDetails/all" : 'http://localhost:3000/ppServices/api/general/getFormDetails/all'
+				fetch(url, requestOptions)
 					.then(response => {
 						console.log('fetchStandardOptions::answer', { response })
 						if (!response.ok) {
@@ -1108,7 +1113,10 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: 'follow'
 				};
-				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate", requestOptions)
+
+				const baseUrl = window.location.origin;
+				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/extMsg/mastertemplate" : 'http://localhost:3000/ppServices/api/extMsg/mastertemplate'
+				fetch(url, requestOptions)
 					.then(response => {
 						console.log('fetchMasterTemplates::answer', { response })
 						if (!response.ok) {
@@ -1269,7 +1277,9 @@ $(document).one("trigger::vue_loaded", function () {
 					headers: myHeaders,
 					redirect: "follow"
 				};
-				const url = `https://dev-portal.opennet.dk/ppServices/api/general/ePath?fileId=${fileId}&fileToken=${fileToken}`;
+				const baseUrl = window.location.origin;
+				const nextUrl = `/ppServices/api/general/ePath?fileId=${fileId}&fileToken=${fileToken}`
+				const url = !window.ISLOCALHOST ? baseUrl + nextUrl : 'http://localhost:3000/' + nextUrl
 
 				fetch(url, requestOptions)
 					.then(response => response.json())
@@ -2008,8 +2018,9 @@ $(document).one("trigger::vue_loaded", function () {
 					redirect: "follow"
 				};
 
-				const url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate?action=DELETE&template_id=' + this.edit_master_template
-
+				const baseUrl = window.location.origin;
+				const nextUrl = '/ppServices/api/extMsg/mastertemplate?action=DELETE&template_id=' + this.edit_master_template
+				const url = !window.ISLOCALHOST ? baseUrl + nextUrl : 'http://localhost:3000/' + nextUrl
 				fetch(url, requestOptions)
 					.then(response => {
 						console.log('deleteMasterTemplate', { response })
@@ -2118,11 +2129,10 @@ $(document).one("trigger::vue_loaded", function () {
 					body: raw,
 					redirect: "follow"
 				};
-				let url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate'
 
-				if (this.edit_master_template) {
-					url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate?action=PATCH'
-				}
+				const baseUrl = window.location.origin;
+				const apiPath = this.edit_master_template ? '/ppServices/api/extMsg/mastertemplate?action=PATCH' : '/ppServices/api/extMsg/mastertemplate';
+				const url = !window.ISLOCALHOST ? `${baseUrl}${apiPath}` : `http://localhost:3000${apiPath}`;
 
 				fetch(url, requestOptions)
 					.then(response => {
@@ -2257,11 +2267,11 @@ $(document).one("trigger::vue_loaded", function () {
 					body: raw,
 					redirect: "follow"
 				};
-				let url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg'
 
-				if (this.edit_announcement) {
-					url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg?action=PATCH'
-				}
+				// Determine the base URL and next URL based on the environment
+				const baseUrl = window.location.origin;
+				const apiPath = this.edit_announcement ? '/ppServices/api/extMsg?action=PATCH' : '/ppServices/api/extMsg';
+				const url = !window.ISLOCALHOST ? `${baseUrl}${apiPath}` : `http://localhost:3000${apiPath}`;
 				fetch(url, requestOptions)
 					.then(response => {
 						console.log('createAnnouncement', { response })
