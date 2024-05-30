@@ -1030,7 +1030,7 @@ $(document).one("trigger::vue_loaded", function () {
 				};
 				const baseUrl = window.location.origin;
 				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/extMsg?onid=" + pONID : 'http://localhost:3000/ppServices/api/extMsg?onid=' + pONID
-				fetch(fetch_url, requestOptions)
+				fetch(url, requestOptions)
 					.then(response => {
 						console.log('fetchAnnouncements::answer', response)
 						if (!response.ok) {
