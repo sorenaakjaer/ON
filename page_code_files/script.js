@@ -1,6 +1,19 @@
-var vue2Url = "/portal/page_code_files/ext_files/vue@2.js"
-var vueVirtualScrollerCssUrl = '/portal/page_code_files/ext_files/vue-virtual-scroller.css'
-var popperMinJsUrl = "/portal/page_code_files/ext_files/popper.min.js"
+var vueUrl = 'https://cdn.jsdelivr.net/npm/vue@2' // '/portal/page_code_files/ext_files/vue@2.js'
+var flatPickerCSSUrl = 'https://cdn.jsdelivr.net/npm/flatpickr@4/dist/flatpickr.min.css' // '/portal/page_code_files/ext_files/flatpickr.min.css'
+var flatPickerJSUrl = 'https://cdn.jsdelivr.net/npm/flatpickr@4/dist/flatpickr.min.js' // '/portal/page_code_files/ext_files/flatpickr.min.js'
+var flatPickerComponentUrl = 'https://cdn.jsdelivr.net/npm/vue-flatpickr-component@8' // '/portal/page_code_files/ext_files/vue-flatpickr-component@8.js'
+
+var dayJsUrl = "https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js"; // "/portal/page_code_files/ext_files/dayjs.min.js"
+var dayJsLocaleUrl = "https://cdn.jsdelivr.net/npm/dayjs@1.11.10/locale/da.js"; // "/portal/page_code_files/ext_files//locale/da.js"
+var dayJsRelativeTimeUrl = "https://cdn.jsdelivr.net/npm/dayjs@1.11.10/plugin/relativeTime.js"; // "/portal/page_code_files/ext_files//relativeTime.js"
+var dayJsLocalizedFormatUrl = "https://cdn.jsdelivr.net/npm/dayjs@1.11.10/plugin/localizedFormat.js"; // '/portal/page_code_files/ext_files//localizedFormat.js'
+
+var quillCssUrl = 'https://cdn.quilljs.com/1.3.6/quill.snow.css'; // '/portal/page_code_files/ext_files/quill.snow.css 
+var quillJsUrl = 'https://cdn.quilljs.com/1.3.6/quill.js'; // '/portal/page_code_files/ext_files/quill.js'
+var purifyJsUrl = 'https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js'; // '/portal/page_code_files/ext_files/purify.min.js'
+var popperJsUrl = 'https://unpkg.com/@popperjs/core@2' // /portal/page_code_files/ext_files/popper.min.js
+var virtualScrollCssUrl = 'https://unpkg.com/vue-virtual-scroller/dist/vue-virtual-scroller.css' // '/portal/page_code_files/ext_files/vue-virtual-scroller.css'
+
 // Set loaded div
 $('.triggers').html($('.triggers').html() + '<div class="v_js_loaded"></div>');
 
@@ -87,7 +100,7 @@ $(document).one("trigger::o_page_loaded", function () {
 		, "true" == $(".show_end_customer_orders").html() || $(".menu_end_customer_orders").addClass("hidden_field")
 		, "true" == $(".show_end_customer_pricing_config").html() || $(".menu_end_customer_pricing_config").addClass("hidden_field")
 
-	$.getScript(vue2Url, function (e, t, s) {
+	$.getScript(vueUrl, function (e, t, s) {
 		$(document).trigger("trigger::vue_loaded")
 	}), setInterval(function () {
 		$(".BTN_KeepAlive > a").click()
@@ -615,6 +628,2148 @@ $(document).one("trigger::vue_loaded", function () {
 			document.body.removeEventListener("click", e.clickOutsideEvent)
 		}
 	})
+	addVueFlatPickerFromCDN()
+	function addVueFlatPickerFromCDN() {
+		const cssLink = document.createElement('link');
+		cssLink.rel = 'stylesheet';
+		cssLink.href = flatPickerCSSUrl;
+		document.head.appendChild(cssLink);
+
+		$.getScript(flatPickerJSUrl, function () {
+			$.getScript(flatPickerComponentUrl, function () {
+
+				$(document).trigger("trigger::vue__flat_picker_loaded");
+				console.log('Vue-Flatpickr component loaded');
+			});
+		});
+	}
+
+	$(document).on('trigger::vue__flat_picker_loaded', () => {
+		Vue.component('flat-pickr', VueFlatpickr)
+	})
+
+	Vue.component('o-announcements', {
+		template: '#o-announcements-template',
+		props: {
+			active_area: {
+				default: 'OperationsStatus' // 'OperationsStatus' or 'News'
+			},
+			the_user: {
+				default: () => { }
+			},
+			the_user_type: {
+				default: '' // IO, SP, ON etc.
+			},
+			prop_is_create_announcement_modal: {
+				type: Boolean,
+				default: false
+			},
+			the_active_company_name: {
+				default: '' // 'SP Dev Company', 'IO Dev Company', 'Opennet' etc.
+			}
+		},
+		data() {
+			return {
+				isListView: false,
+				isLoadingAnnouncements: false,
+				announcements: [],
+				dataIsCreateAnnouncementModal: false,
+				isNewMasterModal: false,
+				searchQuery: '',
+				debounce: null,
+				theActiveFilterFrom: [],
+				theActiveFilterStatuses: [],
+				theActiveFilterTypes: [],
+				theActiveFilterPeriod: { startDate: new Date(), endDate: new Date() },
+				theActiveFilterPeriodDays: 30,
+				theAnnActiveItem: null,
+				standardOptions: {},
+				isLoadingStandardOptions: false,
+				masterTemplates: [],
+				isLoadingMasterTemplates: false,
+				theEditMasterTemplate: null,
+				theNewMasterTemplateId: null,
+				theEditAnnouncement: null,
+				theActiveSeeMoreCase: null,
+				isDayJSLoadedToPage: false
+			}
+		},
+		computed: {
+			isCreateAnnouncementModal() {
+				return this.dataIsCreateAnnouncementModal || this.prop_is_create_announcement_modal
+			},
+			activeAnnouncements() {
+				return this.announcements.filter(announcement => announcement.area === this.active_area)
+			},
+			standardOptionsPartners() {
+				return this.standardOptions && this.standardOptions['extMsg_Partners'] ? this.standardOptions['extMsg_Partners'] : []
+			},
+			activeAnnouncementsWithVProps() {
+				const potentialReceivers = [{ id: 'ALL', name: 'All' }, { id: 'ALL_SPs', name: 'All SPs' }, { id: 'ALL_IOs', name: 'All IOs' }].concat(this.filteredReceivers)
+				const changeIdsToNames = (arr) => {
+					const rece = arr && arr.length > 0 ? arr : ''
+					const names = rece.split(';').map(userid => {
+						const idx = potentialReceivers.findIndex(user => user.id === userid);
+						if (idx > -1) {
+							return potentialReceivers[idx]['name']
+						} else {
+							return userid
+						}
+					})
+					return names.join(', ')
+				}
+				return this.activeAnnouncements.map(ann => ({
+					...ann,
+					v_id: `${ann.onid}_${ann.version}`,
+					v_from: changeIdsToNames(ann.from),
+					v_receivers: changeIdsToNames(ann.receivers),
+					v_timeFromNow: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).fromNow() : ann.createdTime,
+					v_createTimeFormatted: this.isDayJSLoadedToPage ? dayjs(ann.createdTime).format('LLL') : ann.createdTime,
+					v_attachments: ann.attachments ? JSON.parse(ann.attachments) : [],
+					v_logo: this.standardOptionsPartners.find(partner => partner.id === ann.from) ? this.standardOptionsPartners.find(partner => partner.id === ann.from)['logo'] : 'https://opennet.dk/assets/img/logo-clean.png'
+				}))
+			},
+			announcementsInVersionsArr() {
+				const groupedByOnid = this.activeAnnouncementsWithVProps.reduce((acc, curr) => {
+					(acc[curr.onid] = acc[curr.onid] || []).push(curr);
+					return acc;
+				}, {});
+				return Object.values(groupedByOnid).map(group => {
+					group.sort((a, b) => b.version - a.version);
+
+					const newest = group[0];
+					const earlierVersions = group.slice(1);
+					return {
+						...newest,
+						v_earlierVersions: earlierVersions
+					};
+				});
+			},
+			vAnnouncements() {
+				return this.announcementsInVersionsArr.sort((a, b) => {
+					// Check if either item lacks a 'createdTime' and adjust sorting accordingly
+					if (!a.createdTime) return 1; // a has no date, sort a to the bottom
+					if (!b.createdTime) return -1; // b has no date, sort b to the bottom
+
+					// Both items have a date, compare them as before
+					const dateA = new Date(a.createdTime);
+					const dateB = new Date(b.createdTime);
+
+					return dateB - dateA;
+				})
+			},
+			vAnnouncementsFilteredWithType() {
+				if (this.theActiveFilterTypes.length < 1) {
+					return this.vAnnouncements;
+				} else {
+					return this.vAnnouncements.filter(itemCase => {
+						const hasNoSelectedType = this.theActiveFilterTypes.includes('v_no_selected');
+						if (hasNoSelectedType && (!itemCase.type || itemCase.type === '')) {
+							return true;
+						}
+						return this.theActiveFilterTypes.includes(itemCase.type);
+					})
+				}
+			},
+			vAnnouncementsFilteredWithPeriod() {
+				if (this.theActiveFilterPeriod.startDate && this.theActiveFilterPeriod.endDate) {
+					const startDate = new Date(this.theActiveFilterPeriod.startDate);
+					startDate.setHours(23, 59, 59, 999);
+					const endDate = new Date(this.theActiveFilterPeriod.endDate);
+					endDate.setHours(0, 0, 0, 0);
+
+					return this.vAnnouncementsFilteredWithType.filter(itemCase => {
+						const createdTime = new Date(itemCase.createdTime);
+						return createdTime >= endDate && createdTime <= startDate;
+					});
+				} else {
+					return this.vAnnouncementsFilteredWithType;
+				}
+			},
+			vAnnouncementsFilteredWithStatus() {
+				if (this.theActiveFilterStatuses.length < 1) {
+					return this.vAnnouncementsFilteredWithPeriod;
+				} else {
+					return this.vAnnouncementsFilteredWithPeriod.filter(itemCase => {
+						const hasNoSelectedStatus = this.theActiveFilterStatuses.includes('v_no_selected');
+						if (hasNoSelectedStatus && (!itemCase.status || itemCase.status === '')) {
+							return true;
+						}
+						return this.theActiveFilterStatuses.includes(itemCase.status);
+					})
+				}
+			},
+			vAnnouncementsFilteredWithFrom() {
+				if (this.theActiveFilterFrom.length < 1) {
+					return this.vAnnouncementsFilteredWithPeriod;
+				} else {
+					return this.vAnnouncementsFilteredWithPeriod.filter(itemCase => {
+						const hasNoSelectedFrom = this.theActiveFilterFrom.includes('v_no_selected');
+						if (hasNoSelectedFrom && (!itemCase.from || itemCase.from === '')) {
+							return true;
+						}
+						return this.theActiveFilterFrom.includes(itemCase.from);
+					})
+				}
+			},
+			searchedAnnouncements() {
+				if (!this.searchQuery.trim()) {
+					return this.vAnnouncementsFilteredWithStatus;
+				}
+				const searchLower = this.searchQuery.toLowerCase();
+				return this.vAnnouncementsFilteredWithStatus.filter(announcement => {
+					return Object.values(announcement).some(value => {
+						return value && value.toString().toLowerCase().includes(searchLower);
+					});
+				});
+			},
+			filterFrom() {
+				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden fra', v_sort: true }]
+				this.activeAnnouncements.forEach(ann => {
+					const annFrom = ann['from']
+					if (annFrom) {
+						const idx = uniqueTags.findIndex(allTag => allTag.value === annFrom)
+						if (idx < 0) {
+							const tag = { value: annFrom, label: annFrom }
+							uniqueTags.push(tag)
+						}
+					}
+				})
+				return uniqueTags;
+			},
+			filterStatuses() {
+				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden status', v_sort: true }]
+				this.activeAnnouncements.forEach(ann => {
+					const annStatus = ann['status']
+					if (annStatus) {
+						const idx = uniqueTags.findIndex(allTag => allTag.value === annStatus)
+						if (idx < 0) {
+							const tag = { value: annStatus, label: annStatus }
+							uniqueTags.push(tag)
+						}
+					}
+				})
+				return uniqueTags;
+			},
+			filterTypes() {
+				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden type', v_sort: true }]
+				this.activeAnnouncements.forEach(ann => {
+					const annProp = ann['type']
+					if (annProp) {
+						const idx = uniqueTags.findIndex(allTag => allTag.value === annProp)
+						if (idx < 0) {
+							const tag = { value: annProp, label: annProp }
+							uniqueTags.push(tag)
+						}
+					}
+				})
+				return uniqueTags;
+			},
+			filteredReceivers() {
+				const arr = this.standardOptions && this.standardOptions['extMsg_Partners'] ? this.standardOptions['extMsg_Partners'] : []
+				return arr.sort((a, b) => {
+					if (a.type < b.type) return -1;
+					if (a.type > b.type) return 1;
+					return a.name.localeCompare(b.name);
+				})
+			},
+			theActiveAnnouncement() {
+				return this.theAnnActiveItem ? this.vAnnouncements.find(ann => ann.v_id === this.theAnnActiveItem) : null
+			},
+			isAnyFiltersActive() {
+				return this.theActiveFilterFrom.length > 0 || this.theActiveFilterStatuses.length > 0 || this.theActiveFilterTypes.length > 0
+			}
+		},
+		watch: {
+			the_user(val) {
+				console.log('THEUSER', val)
+			},
+			active_area() {
+				this.updateFilters()
+			}
+		},
+		methods: {
+			set_change_the_filter_dates(dates) {
+				this.theActiveFilterPeriod = dates;
+			},
+			set_change_the_active_filter_period_days(days) {
+				this.theActiveFilterPeriodDays = days;
+			},
+			removeAllFilters() {
+				const arr = ['theActiveFilterFrom', 'theActiveFilterStatuses', 'theActiveFilterTypes']
+				arr.forEach(filterType => {
+					this[filterType] = []
+					this.setLocalStorageFilter(filterType, this[filterType])
+				})
+			},
+			updateFilters() {
+				this.theActiveFilterFrom = []
+				this.theActiveFilterStatuses = []
+				this.theActiveFilterTypes = []
+				this.getLocalStorageFilter('theActiveFilterFrom')
+				this.getLocalStorageFilter('theActiveFilterStatuses')
+				this.getLocalStorageFilter('theActiveFilterTypes')
+			},
+			setIsListView(bool) {
+				this.isListView = !this.isListView
+			},
+			onEditAnnouncementDone() {
+				this.setEditAnnouncement(null)
+			},
+			setEditAnnouncement(item) {
+				this.theEditAnnouncement = item
+				if (item) {
+					this.setIsCreateAnnouncementModal(true)
+				}
+			},
+			setTheActiveSeeMoreCase(item) {
+				this.theActiveSeeMoreCase = item
+			},
+			getisTheActiveCase(item) {
+				return this.theAnnActiveItem === item.v_id
+			},
+			setActiveItem(item) {
+				this.theActiveSeeMoreCase = null
+				if (item == null) {
+					this.theAnnActiveItem = null
+					return
+				}
+				this.getAnnouncement(item.onid);
+				if (this.theAnnActiveItem !== item.v_id) {
+					this.theAnnActiveItem = item.v_id
+				} else {
+					this.theAnnActiveItem = null
+				}
+			},
+			toggleFilterFrom(item) {
+				this.toggleFilter('theActiveFilterFrom', item);
+			},
+			toggleFilterStatus(item) {
+				this.toggleFilter('theActiveFilterStatuses', item);
+			},
+			toggleFilterTypes(item) {
+				this.toggleFilter('theActiveFilterTypes', item);
+			},
+			toggleFilter(filterType, item) {
+				const idx = this[filterType].indexOf(item.value);
+				if (idx < 0) {
+					this[filterType].push(item.value);
+				} else {
+					this[filterType].splice(idx, 1);
+				}
+				this.setLocalStorageFilter(filterType, this[filterType])
+			},
+			setLocalStorageFilter(filterType, filterArr) {
+				const localTitle = this.active_area + '_' + filterType
+				if (!filterArr || filterArr.length === 0) {
+					localStorage.removeItem(localTitle)
+				} else {
+					localStorage.setItem(localTitle, JSON.stringify(filterArr))
+				}
+			},
+			getLocalStorageFilter(filterType) {
+				const localTitle = this.active_area + '_' + filterType
+				if (localStorage.getItem(localTitle)) {
+					this[filterType] = JSON.parse(localStorage.getItem(localTitle));
+				}
+			},
+			clearSearchQuery() {
+				if (this.$refs.v_ann_search_query) {
+					this.$refs.v_ann_search_query.value = "";
+				}
+				this.searchQuery = "";
+			},
+			debounceSearch(e) {
+				this.searchQuery = "",
+					clearTimeout(this.debounce)
+				this.debounce = setTimeout(() => {
+					this.searchQuery = e.target.value
+				}, 600)
+			},
+			getAnnouncements() {
+				this.isLoadingAnnouncements = true;
+				const myHeaders = new Headers();
+				myHeaders.append("Accept", "application/json");
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
+				const requestOptions = {
+					method: "GET",
+					headers: myHeaders,
+					redirect: "follow"
+				};
+				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg", requestOptions)
+					.then(response => {
+						console.log('fetchAnnouncements::answer', response)
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json(); // Assuming the response is JSON formatted
+					})
+					.then(result => {
+						this.announcements = result; // Assign the fetched data to the component's data property
+						this.$emit('emit_announcements', this.announcements)
+					})
+					.catch(error => {
+						console.error('Error:', error);
+					})
+					.finally(() => {
+						this.isLoadingAnnouncements = false; // Ensure loading state is managed correctly
+					});
+			},
+			getAnnouncement(pONID) {
+				//this.isLoadingAnnouncements = true;
+				//console.log('pONID',pONID)
+				const myHeaders = new Headers();
+				myHeaders.append("Accept", "application/json");
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
+				const requestOptions = {
+					method: "GET",
+					headers: myHeaders,
+					redirect: "follow"
+				};
+				const fetch_url = "https://dev-portal.opennet.dk/ppServices/api/extMsg?onid=" + pONID
+				fetch(fetch_url, requestOptions)
+					.then(response => {
+						console.log('fetchAnnouncements::answer', response)
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json(); // Assuming the response is JSON formatted
+					})
+					.then(result => {
+						this.onAddAnnouncements(result)
+						//this.announcements.push(result)
+						//this.announcements = result; // Assign the fetched data to the component's data property
+						this.$emit('emit_announcements', this.announcements)
+					})
+					.catch(error => {
+						console.error('Error:', error);
+					})
+					.finally(() => {
+						this.isLoadingAnnouncements = false; // Ensure loading state is managed correctly
+					});
+			},
+			setIsCreateAnnouncementModal(bool) {
+				console.log('setIsCreateAnnouncementModal', bool)
+				if (bool) {
+					this.dataIsCreateAnnouncementModal = true
+				} else {
+					this.$emit('on_close_create_announcement_modal', false)
+					this.dataIsCreateAnnouncementModal = false
+					this.setActiveItem(null)
+				}
+			},
+			setIsCreateNewMaster(bool) {
+				if (bool) {
+					this.isNewMasterModal = true
+				} else {
+					this.isNewMasterModal = false
+				}
+			},
+			fetchStandardOptions() {
+				this.isLoadingStandardOptions = true
+				const myHeaders = new Headers();
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
+
+				const requestOptions = {
+					method: "GET",
+					headers: myHeaders,
+					redirect: "follow"
+				};
+
+				fetch("https://dev-portal.opennet.dk/ppServices/api/general/getFormDetails/all", requestOptions)
+					.then(response => {
+						console.log('fetchStandardOptions::answer', { response })
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(result => {
+						console.log({ result })
+						this.standardOptions = result
+					})
+					.catch(error => {
+						console.error('Error fetching master templates data:', error);
+					})
+					.finally(() => {
+						this.isLoadingStandardOptions = false
+						this.fetchMasterTemplates()
+					})
+			},
+			fetchMasterTemplates() {
+				console.log('fetchMasterTemplates')
+				this.isLoadingMasterTemplates = true
+				const myHeaders = new Headers();
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
+				myHeaders.append("Accept", "application/json");
+
+				const requestOptions = {
+					method: 'GET',
+					headers: myHeaders,
+					redirect: 'follow'
+				};
+				fetch("https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate", requestOptions)
+					.then(response => {
+						console.log('fetchMasterTemplates::answer', { response })
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(result => {
+						this.masterTemplates = result;
+					})
+					.catch(error => {
+						console.error('Error fetching master templates data:', error);
+					})
+					.finally(() => {
+						this.isLoadingMasterTemplates = false;
+						this.getAnnouncements()
+					});
+			},
+			onDeleteMasterTemplate(deletedTemplateId) {
+				const idx = this.masterTemplates.findIndex(masterTemp => masterTemp.template_id === deletedTemplateId)
+				if (idx > -1) {
+					this.masterTemplates.splice(idx, 1)
+					if (this.masterTemplates.length > 0) {
+						this.theNewMasterTemplateId = this.masterTemplates[this.masterTemplates.length - 1]['template_id']
+					} else {
+						this.theNewMasterTemplateId = null
+					}
+				}
+			},
+			onAddMasterTemplate(succesObj) {
+				const arr = succesObj.success
+				const updatedTemplateId = succesObj.updatedTemplateId
+				arr.forEach(newMasterTemp => {
+					const idx = this.masterTemplates.findIndex(masterTemp => masterTemp.template_id === newMasterTemp.template_id)
+					if (idx < 0) {
+						this.masterTemplates.push(newMasterTemp)
+						this.theNewMasterTemplateId = newMasterTemp.template_id
+					} else {
+						this.masterTemplates.splice(idx, 1, newMasterTemp)
+					}
+					if (updatedTemplateId) {
+						this.theNewMasterTemplateId = null
+						setTimeout(_ => {
+							this.theNewMasterTemplateId = updatedTemplateId
+						}, 500)
+					}
+				})
+			},
+			onAddAnnouncements(arr) {
+				console.log('onAddAnnouncements', arr, this.announcements)
+				arr.forEach(obj => {
+					const idx = this.announcements.findIndex(announcement => announcement.onid === obj.onid && +announcement.version === +obj.version)
+					if (idx < 0) {
+						this.announcements.push(obj)
+					} else {
+						this.announcements.splice(idx, 1, obj)
+					}
+				})
+			},
+			onSetEditMasterTemplate(template) {
+				this.theEditMasterTemplate = template
+			},
+			fetchData() {
+				this.isLoadingAnnouncements = true
+				if (typeof ISLOCALHOST !== 'undefined') {
+					this.masterTemplates = MASTERTEMPLATES
+					this.announcements = ANNOUNCEMENTS
+					this.isLoadingAnnouncements = false;
+					this.standardOptions = JSON.parse(JSON.stringify(STANDARDOPTIONS))
+					this.$emit('emit_announcements', this.announcements)
+					return
+				}
+				this.fetchStandardOptions()
+			},
+			addDayJSFromCDN() {
+				if (this.isDayJSLoadedToPage) {
+					return;
+				}
+				const scriptsToLoad = [
+					dayJsUrl,
+					dayJsLocaleUrl,
+					dayJsRelativeTimeUrl,
+					dayJsLocalizedFormatUrl
+				];
+
+				const loadScript = (scriptUrl) => {
+					return new Promise((resolve, reject) => {
+						$.getScript(scriptUrl, (e, t, s) => {
+							resolve();
+						}).fail((jqxhr, settings, exception) => {
+							reject(exception);
+						});
+					});
+				};
+
+				scriptsToLoad.reduce((prevPromise, scriptUrl) => {
+					return prevPromise.then(() => loadScript(scriptUrl));
+				}, Promise.resolve())
+					.then(() => {
+						dayjs.locale('da');
+						dayjs.extend(window.dayjs_plugin_relativeTime);
+						dayjs.extend(window.dayjs_plugin_localizedFormat);
+						this.isDayJSLoadedToPage = true;
+						console.log('DayJS and plugins loaded successfully.');
+					})
+					.catch(error => {
+						console.error('Error loading DayJS scripts:', error);
+					});
+			},
+			onNewQuestionSubmitted(onid) {
+				const toastText = 'Tak for et spørgsmål som oprettet på Partnerportal sag med ONID:' + onid + '.';
+				this.$emit('on_new_question_submitted', toastText)
+			}
+		},
+		beforeMount() {
+			this.addDayJSFromCDN();
+		},
+		mounted() {
+			this.fetchData()
+			addPurifyFromCDN();
+			this.updateFilters();
+		}
+	})
+	Vue.component('o-email', {
+		template: '#o-email-template',
+		props: {
+			email: {
+				default: null
+			},
+			is_earlier_version: {
+				type: Boolean,
+				default: false
+			},
+			the_user_type: {
+				type: String
+			}
+		},
+		computed: {
+			sanitizedHtml() {
+				return this.email.html
+			}
+		},
+		methods: {
+			adjustIframeHeight() {
+				const iframe = this.$refs.iframe;
+				if (iframe.contentWindow.document.body) {
+					iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + 'px';
+				}
+			},
+			downloadFile(file) {
+				const fileId = file.fileId;
+				const fileToken = file.fileToken;
+				const PP_userKEY = eTrayWebportal.User.Key; // Assuming this correctly obtains the PP_userKEY
+				const myHeaders = new Headers();
+				myHeaders.append("PP_USER_KEY", PP_userKEY);
+				const requestOptions = {
+					method: "GET",
+					headers: myHeaders,
+					redirect: "follow"
+				};
+				const url = `https://dev-portal.opennet.dk/ppServices/api/general/ePath?fileId=${fileId}&fileToken=${fileToken}`;
+
+				fetch(url, requestOptions)
+					.then(response => response.json())
+					.then(result => {
+						if (result.ePath) {
+							download_file(result.ePath); // Assuming download_file is a method in this Vue component
+						} else {
+							console.error('ePath not found in the result');
+						}
+					})
+					.catch(error => console.error(error));
+			}
+		}
+	})
+	Vue.component('o-announcements-metrics', {
+		template: '#o-announcements-metrics-template',
+		props: {
+			announcements: {
+				default: () => []
+			},
+			error_reports: {
+				default: () => []
+			},
+			active_category: {
+				default: 'OperationsStatus' // OperationsStatus, News etc.
+			},
+			is_error_reports_loading: {
+				type: Boolean,
+				default: false
+			}
+		},
+		computed: {
+			news() {
+				return this.announcements.filter(ann => ann.area == 'News')
+			},
+			operationsAnnouncements() {
+				return this.announcements.filter(ann => ann.area == 'OperationsStatus')
+			},
+			errorReports() {
+				return this.error_reports
+			},
+			errorReportsPastSLA() {
+				return this.errorReports.filter(errorReport => errorReport.sla_past_deadline == 'true')
+			},
+			incidents() {
+				const types = ['Incident Prod']
+				return this.operationsAnnouncements.filter(ann => types.indexOf(ann.type) > -1)
+			},
+			planned() {
+				const types = ['Driftsudmelding']
+				return this.operationsAnnouncements.filter(ann => types.indexOf(ann.type) > -1)
+			},
+			other() {
+				const types = ['IT-Production Planned']
+				return this.operationsAnnouncements.filter(ann => types.indexOf(ann.type) > -1)
+			},
+			newsCampaigns() {
+				const types = ['Kampagner']
+				return this.news.filter(ann => types.indexOf(ann.type) > -1)
+			},
+			newsEquipments() {
+				const types = ['IT']
+				return this.news.filter(ann => types.indexOf(ann.type) > -1)
+			},
+			newsOther() {
+				const types = ['Nyudrulning']
+				return this.news.filter(ann => types.indexOf(ann.type) > -1)
+			}
+		}
+	})
+	Vue.component('o-range-slider', {
+		template: '#o-range-slider-template',
+		props: {
+			active_area: {
+				default: 'OperationsStatus' // 'OperationsStatus' or 'News'
+			}
+		},
+		data() {
+			return {
+				indicatorWidth: 400,
+				days: 90,
+				startDay: 0,
+				endDay: 90,
+				dragging: null,
+				theActiveFilterPeriodDays: 90
+			}
+		},
+		computed: {
+			startDayDateLabel() {
+				return this.startDay === 0 ? 'Nu' : this.startDay === 1 ? '1 dag siden' : this.startDay + ' dage siden'
+			},
+			endDayDateLabel() {
+				return this.endDay === 1 ? '1 dag siden' : this.endDay + ' dage siden'
+			},
+			startDayDate() {
+				const date = new Date();
+				date.setDate(date.getDate() - this.startDay);
+				return this.formatDate(date);
+			},
+			endDayDate() {
+				const date = new Date();
+				date.setDate(date.getDate() - this.endDay);
+				return this.formatDate(date);
+			},
+			oneDay() {
+				return this.indicatorWidth / this.days;
+			},
+			oneDayInPercentage() {
+				return 100 / this.days;
+			},
+			progressStyle() {
+				return {
+					left: (this.startDay * this.oneDayInPercentage) + '%',
+					width: ((this.endDay - this.startDay) * this.oneDayInPercentage) + '%'
+				}
+			},
+			leftPosition() {
+				return {
+					left: (this.startDay * this.oneDayInPercentage) + '%',
+				}
+			},
+			rightPosition() {
+				return {
+					left: ((this.endDay) * this.oneDayInPercentage) + '%'
+				}
+			}
+		},
+		watch: {
+			active_area() {
+				this.initDates()
+			}
+		},
+		methods: {
+			setLocalStorageFilter(filterType, filterArr) {
+				const localTitle = this.active_area + '_' + filterType
+				if (!filterArr || filterArr.length === 0) {
+					localStorage.removeItem(localTitle)
+				} else {
+					localStorage.setItem(localTitle, JSON.stringify(filterArr))
+				}
+			},
+			getLocalStorageFilter(filterType) {
+				const localTitle = this.active_area + '_' + filterType
+				if (localStorage.getItem(localTitle)) {
+					this[filterType] = JSON.parse(localStorage.getItem(localTitle));
+				}
+			},
+			formatDate(date) {
+				const today = new Date();
+				const comparisonDate = new Date(date);
+
+				const formattedToday = today.toLocaleDateString('da-DK');
+				const formattedDate = comparisonDate.toLocaleDateString('da-DK');
+
+				return formattedDate;
+			},
+			startDrag(which) {
+				this.dragging = which;
+				document.addEventListener('mousemove', this.onDrag);
+				document.addEventListener('mouseup', this.stopDrag);
+			},
+			onDrag(event) {
+				if (!this.dragging) return;
+				const rect = this.$el.getBoundingClientRect();
+				const offset = event.clientX - rect.left; // mouse position relative to the slider
+				const day = Math.round(offset / this.oneDay);
+
+				if (this.dragging === 'start') {
+					if (day > this.endDay) {
+						this.startDay = this.endDay - 1;
+						return
+					}
+					if (day >= 0) {
+						this.startDay = day;
+					} else {
+						this.startDay = 0
+					}
+
+				} else if (this.dragging === 'end') {
+					if (day <= this.startDay) {
+						this.endDay = this.startDay + 1;
+						return
+					}
+					if (day <= this.days) {
+						this.endDay = day;
+					} else {
+						this.endDay = 90
+					}
+				}
+			},
+			stopDrag() {
+				document.removeEventListener('mousemove', this.onDrag);
+				document.removeEventListener('mouseup', this.stopDrag);
+				this.dragging = null;
+
+				this.setLocalStorageFilter('theActiveFilterPeriod', { startDay: this.startDay, endDay: this.endDay })
+				this.setTheActiveFilterPeriod()
+			},
+			setTheActiveFilterPeriod() {
+				this.theActiveFilterPeriodDays = this.endDay - this.startDay
+				this.$emit('on_change_the_active_filter_period_days', this.theActiveFilterPeriodDays);
+
+				const startDate = new Date();
+				startDate.setDate(startDate.getDate() - this.startDay);
+				const endDate = new Date();
+				endDate.setDate(endDate.getDate() - this.endDay);
+				this.$emit('on_change_the_filter_dates', { startDate: startDate, endDate: endDate });
+			},
+			initDates() {
+				const localStr = localStorage.getItem(this.active_area + '_theActiveFilterPeriod')
+				if (localStr) {
+					const days = JSON.parse(localStr)
+					this.startDay = days.startDay
+					this.endDay = days.endDay
+					this.setTheActiveFilterPeriod()
+				} else {
+					this.startDay = 0
+					this.endDay = 90
+					this.setTheActiveFilterPeriod()
+				}
+			}
+		},
+		beforeMount() {
+			this.initDates()
+		}
+	})
+
+	Vue.component('o-announcement-view-modal', {
+		template: '#o-announcement-view-modal-template',
+		props: {
+			announcement: {
+				default: () => { }
+			},
+			the_user_type: {
+				default: null
+			},
+			the_active_see_more_case: {
+				default: null
+			},
+			active_area: {
+				default: 'OperationsStatus' // 'OperationsStatus' or 'News'
+			}
+		},
+		data() {
+			return {
+				activeAnnouncement: null,
+				question: '',
+				isSubmitting: false
+			}
+		},
+		methods: {
+			setIsAskQuestionModal(announcement) {
+				if (announcement) {
+					this.activeAnnouncement = announcement
+					this.$nextTick(() => {
+						this.$refs.question_textarea.focus()
+					})
+				} else {
+					this.activeAnnouncement = null
+				}
+			},
+			submitQuestion(announcement) {
+				this.isSubmitting = true
+				if (this.question.length < 1) {
+					this.isSubmitting = false
+					this.$refs.question_textarea.focus()
+					return
+				}
+				const onId = announcement.onid
+				console.log(this.question)
+				// wating for the API
+				setTimeout(() => {
+					this.isSubmitting = false
+					this.setIsAskQuestionModal(null)
+					this.$emit('new_question_submitted', onId)
+					this.question = ''
+				}, 1500)
+			}
+		}
+	})
+
+	Vue.component('o-announcements-modal', {
+		template: '#o-announcements-modal-form-template',
+		props: {
+			formType: {
+				default: 'announcement' // 'master', 'announcement'
+			},
+			formTitle: {
+				default: 'Create announcement'
+			},
+			standard_options: {
+				default: () => { }
+			},
+			filteredReceivers: {
+				default: () => []
+			},
+			master_templates: {
+				default: () => []
+			},
+			edit_master_template: {
+				default: null
+			},
+			theNewMasterTemplateId: {
+				default: null
+			},
+			the_user: {
+				default: () => { }
+			},
+			active_area: {
+				default: 'OperationsStatus' // 'OperationsStatus' or 'News'
+			},
+			edit_announcement: {
+				default: null
+			},
+			the_active_company_name: {
+				default: '' // 'SP Dev Company', 'IO Dev Company', 'Opennet' etc.
+			}
+		},
+		data() {
+			return {
+				activeMasterTemplateId: null,
+				theEmailHTML: '',
+				newMasterTitle: '',
+				isSubmitting: false,
+				isUpdateSubscription: false,
+				updateSubscriptionInterval: null,
+				updateSubscriptionUserId: this.the_user ? this.the_user.id : null,
+				isAttachFiles: false,
+				attachments: null,
+				isSendNotifications: false,
+				theSelectedStatus: 'New',
+				theEmailDateStart: new Date().toISOString().slice(0, 10),
+				theEmailSubject: '',
+				theEmailFromCompany: '',
+				theSelectedType: null,
+				updateIntervals: [
+					{ value: '15', display: '15min' },
+					{ value: '30', display: '30min' },
+					{ value: '60', display: '1 time' },
+					{ value: '180', display: '3 time' },
+					{ value: '360', display: '6 time' },
+					{ value: '720', display: '12 time' },
+					{ value: '1440', display: '24 time' },
+					{ value: '4320', display: '3 dage' },
+					{ value: '10080', display: '7 dage' },
+					{ value: '43200', display: '30 dage' },
+					{ value: '129600', display: '90 dage' }
+				],
+				selectedReceivers: {},
+				isCreatingNewAnnouncement: false,
+				placeholders: [
+					{ id: '{{{pp_mergecode:placeholder1}}}', num: 1, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder1}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder2}}}', num: 2, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder2}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder3}}}', num: 3, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder3}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder4}}}', num: 4, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder4}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder5}}}', num: 5, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder5}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder6}}}', num: 6, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder6}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder7}}}', num: 7, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder7}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder8}}}', num: 8, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder8}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder9}}}', num: 9, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder9}}}', isShow: false },
+					{ id: '{{{pp_mergecode:placeholder10}}}', num: 10, text: '', placeholder: 'Tekst til {{{pp_mergecode:placeholder10}}}', isShow: false }
+				],
+				placeholderHist: null,
+				activeTab: 'placeholders',
+				isServiceWindow: false,
+				serviceWindowStartFlatPicker: new Date(),
+				serviceWindowEndFlatPicker: new Date(),
+				theEditMasterTemplate: null,
+				isDeleting: false,
+				isConfirmation: false,
+				attachFilesObserver: null,
+				theEmailTeaser: '',
+				shortcuts: [
+					['{{{pp_mergecode:subject}}}',
+						'{{{pp_mergecode:type}}}',
+						'{{{pp_mergecode:onid}}}',
+						'{{{pp_mergecode:status}}}',
+						'{{{pp_mergecode:from}}}',
+						'{{{pp_mergecode:user_name}}}',
+						'{{{pp_mergecode:teaser}}}',
+						'{{{pp_mergecode:service_window_start}}}',
+						'{{{pp_mergecode:service_window_end}}}'
+					],
+					['{{{pp_mergecode:placeholder1}}}'],
+					['{{{pp_mergecode:history_placeholder1}}}'],
+					['{{{pp_hasdata:history_placeholder1}}}',
+						'{{{end:pp_hasdata:history_placeholder1}}}'
+					]
+				],
+				flatPickerConfig: {
+					enableTime: true,
+					dateFormat: 'd/m/Y H:i',
+					time_24hr: true,
+					minuteIncrement: 30
+				},
+				quillInstances: {},
+				versionHistPlaceholder: {},
+				changedPlaceholders: {},
+				attachmentToken: null,
+				isShowAddFiles: false,
+				addFilesToCase: '',
+				isShowAddFilesNotAnswered: false,
+				thePlaceholdersToShowHtml: {},
+				thePlaceholderLabels: {}
+			}
+		},
+		computed: {
+			receiversFilterFromSelf() {
+				const arrOfIds = ['ON']
+				const newArr = this.filteredReceivers.filter(receiver => arrOfIds.indexOf(receiver.id) < 0)
+				const arrOfNames = [this.the_active_company_name]
+				return newArr.filter(receiver => arrOfNames.indexOf(receiver.name) < 0)
+			},
+			isAllReceiversSelected() {
+				return this.getIsReceiverSelected('ALL')
+			},
+			isAllSPsSelected() {
+				return this.getIsReceiverSelected('ALL_SPs')
+			},
+			isAllIOsSelected() {
+				return this.getIsReceiverSelected('ALL_IOs')
+			},
+			activePlaceholders() {
+				return this.placeholders.filter(place => place.isShow)
+			},
+			formTypeIsMaster() {
+				return this.formType === 'master'
+			},
+			newMasterHTMLSanitized() {
+				return this.theEmailHTML
+			},
+			serviceWindowStart() {
+				const dateString = this.serviceWindowStartFlatPicker
+				return flatpickr.parseDate(dateString, 'd/m/Y H:i'); // JS dateObject
+			},
+			serviceWindowEnd() {
+				const dateString = this.serviceWindowEndFlatPicker
+				return flatpickr.parseDate(dateString, 'd/m/Y H:i'); // JS dateObject
+			},
+			emailServiceWindowStart() {
+				return this.isServiceWindow ? dayjs(this.serviceWindowStart).format('LLL') : ''
+			},
+			emailServiceWindowEnd() {
+				return this.isServiceWindow ? dayjs(this.serviceWindowEnd).format('LLL') : ''
+			},
+			contentReplacement() {
+				if (this.formTypeIsMaster) {
+					return {};
+				}
+
+				let replacements = {
+					...this.theSelectedType ? {
+						type: this.filteredTypes.find(oType => oType.value === this.theSelectedType)?.display || this.theSelectedType
+					} : {},
+					...this.emailServiceWindowStart ? { service_window_start: this.emailServiceWindowStart } : { service_window_start: '' },
+					...this.emailServiceWindowEnd ? { service_window_end: this.emailServiceWindowEnd } : { service_window_end: '' },
+					...this.theEmailSubject ? { subject: this.theEmailSubject } : { subject: '' },
+					...this.theSelectedStatus ? { status: this.theSelectedStatus } : { status: '' },
+					...this.theEmailFromCompany ? { from: this.theEmailFromCompany } : { from: '' },
+					...this.theEmailFromUser ? { user_name: this.theEmailFromUser } : { user_name: '' },
+					...this.theEmailTeaser ? { teaser: this.theEmailTeaser } : { teaser: '' },
+					...Object.fromEntries(this.activePlaceholders.map(place => [`placeholder${place.num}`, place.text])),
+					...Array.from({ length: 10 }, (_, i) => i + 1).reduce((acc, num) => {
+						const history = this.replaceHistoryPlaceholderWithTable(`placeholder${num}`);
+						if (history) {
+							acc[`history_placeholder${num}`] = history;
+						}
+						return acc;
+					}, {})
+				};
+
+				return replacements;
+			},
+			emailHistoryPlaceholders() {
+				let arr = []
+				if (!this.placeholderHist) {
+					return arr
+				}
+
+				Object.keys(this.placeholderHist).forEach(prop => {
+					if (this.placeholderHist[prop] && this.placeholderHist[prop].length > 0) {
+						arr.push(prop)
+					}
+				});
+				return arr
+			},
+			emailHTMLReplaced() {
+				const placeholderToRemove = ['placeholder1', 'placeholder2', 'placeholder3', 'placeholder4', 'placeholder5', 'placeholder6', 'placeholder7', 'placeholder8', 'placeholder9', 'placeholder10']
+				let html = this.newMasterHTMLSanitized ? this.newMasterHTMLSanitized : ''
+				if (this.emailHistoryPlaceholders.length > 0) {
+					this.emailHistoryPlaceholders.forEach(placeholderName => {
+						const idx = placeholderToRemove.indexOf(placeholderName)
+						if (idx > -1) {
+							placeholderToRemove.splice(idx, 1)
+						}
+						html = this.removeFilledHistoryPlaceholderLabels(html, 'history_' + placeholderName)
+					})
+				}
+				placeholderToRemove.forEach(placeholderName => {
+					html = this.removeEmptyHistoryPlaceholder(html, 'history_' + placeholderName)
+				})
+				const placeholderHTML = this.replacePlaceholders(html, this.contentReplacement);
+				return placeholderHTML
+			},
+			iframeContent() {
+				let htmlContent = this.emailHTMLReplaced
+				const script1 = `<script>
+				window.onload = function() {
+					const height = document.documentElement.scrollHeight;
+					window.parent.postMessage({ type: 'oiFrameHeight', frameHeight: height }, '*');
+				};
+				</script>
+				`
+				const script2 = `<script>
+				window.onload = function() {
+					const height = document.documentElement.scrollHeight;
+					window.parent.postMessage({ type: 'oiFrameHeightMaster', frameHeight: height }, '*');
+				};
+				</script>
+				`
+				const script = this.formTypeIsMaster ? script2 : script1
+				// Insert the script before the closing </body> tag
+				if (htmlContent.includes('</body>')) {
+					htmlContent = htmlContent.replace('</body>', script + '</body>');
+				} else {
+					htmlContent += script;
+				}
+
+				return htmlContent;
+			},
+			emailHTMLAllPlaceholdersReplaced() {
+				// Removes all {{{ }}}
+				return this.emailHTMLReplaced.replace(/\{\{\{[^}]+\}\}\}/g, '');
+			},
+			userKey() {
+				return eTrayWebportal && eTrayWebportal.User.Key ? eTrayWebportal.User.Key : null
+			},
+			theEmailFromUser() {
+				return this.the_user && this.the_user['display_name'] ? this.the_user['display_name'] : ''
+			},
+			sortedMasterTemplates() {
+				return this.master_templates
+					.filter(masterTemp => masterTemp.area === this.active_area)
+					.sort((a, b) => b.template_id - a.template_id);
+			},
+			filteredTypes() {
+				const allTypes = []
+				const oTypes = this.standard_options && this.standard_options['extMsg_type'] ? this.standard_options['extMsg_type'] : []
+				oTypes.forEach(oType => {
+					if (oType.area === this.active_area) {
+						const idx = allTypes.findIndex(allType => allType.value === oType.value)
+						if (idx < 0) {
+							allTypes.push(oType)
+						}
+					}
+				})
+				return allTypes.sort((a, b) => a.display.localeCompare(b.display))
+			},
+			filteredStatusses() {
+				const oStatusses = this.standard_options && this.standard_options['extMsg_status'] ? this.standard_options['extMsg_status'] : []
+				return oStatusses
+			},
+			filteredStatussesNews() {
+				const oStatussesNews = this.standard_options && this.standard_options['extMsg_status_news'] ? this.standard_options['extMsg_status_news'] : []
+				return oStatussesNews
+			},
+			selectedReceiversLength() {
+				return Object.keys(this.selectedReceivers).length;
+			},
+			filteredAssignUpdatesToList() {
+				const arr = this.standard_options && this.standard_options['assigntoList'] ? this.standard_options['assigntoList'] : []
+				return arr.sort((a, b) => {
+					return a.Name.localeCompare(b.Name);
+				})
+			},
+			receiverNames() {
+				const names = [];
+				const potentialReceivers = [{ id: 'ALL', name: 'Alle' }, { id: 'ALL_SPs', name: 'Alle SPs' }, { id: 'ALL_IOs', name: 'Alle IOs' }].concat(this.filteredReceivers)
+				Object.keys(this.selectedReceivers).forEach(key => {
+					const idx = potentialReceivers.findIndex(user => user.id === key);
+					if (idx > -1) {
+						names.push(potentialReceivers[idx]['name']);
+					}
+				});
+				return names.join(', ')
+			},
+			theFormTitle() {
+				if (!this.formTypeIsMaster) {
+					if (this.edit_announcement) {
+						const versionNumber = +this.edit_announcement['version'] + 1
+						return this.active_area === 'News' ? 'Rediger nyhed' : 'Ny udmelding (version nr. ' + versionNumber + ')'
+					} else {
+						return this.active_area === 'News' ? 'Opret nyhed' : 'Opret udmelding'
+					}
+				} else {
+					if (!this.edit_master_template) {
+						return 'Opret nyt template'
+					} else {
+						return 'Rediger template'
+					}
+				}
+			},
+			isSaveButtonValid() {
+				return !this.getIsFormInvalid()
+			}
+		},
+		watch: {
+			theNewMasterTemplateId(val) {
+				if (val) {
+					this.setMasterTemplate(val)
+				}
+			},
+			'activeMasterTemplateId': {
+				immediate: true, // Run the handler immediately, not just when it changes
+				handler(newValue, oldValue) {
+					this.$nextTick(() => {
+						this.initializeQuillEditors();
+					});
+				}
+			},
+			theEmailHTML(val) {
+				// Find number of placeholders
+				if (!this.theEmailHTML) {
+					return
+				}
+				const htmlContent = this.theEmailHTML
+				const contentWithoutSpaces = htmlContent.replace(/\s+/g, '')
+				for (let i = 1; i <= 10; i++) {
+					const id = '{{{pp_mergecode:placeholder' + i + '}}}'
+					const regex = new RegExp(`\\{\\{\\{pp_mergecode:placeholder${i}\\}\\}\\}`, 'g')
+					const matches = contentWithoutSpaces.match(regex)
+					const idx = this.placeholders.findIndex(place => place.id === id)
+					if (idx > -1) {
+						if (matches) {
+							this.placeholders[idx]['isShow'] = true
+						} else {
+							this.placeholders[idx]['isShow'] = false
+						}
+					}
+				}
+			}
+		},
+		methods: {
+			onEditPlaceholderLabel(activePlaceholderId, val) {
+				if (val && val.length > 0) {
+					this.$set(this.thePlaceholderLabels, activePlaceholderId, val)
+				} else {
+					this.$delete(this.thePlaceholderLabels, activePlaceholderId)
+				}
+				console.log('this.thePlaceholderLabels', this.thePlaceholderLabels)
+			},
+			setThePlaceholdersToShowHtml(num, showHtml) {
+				if (!showHtml && this.thePlaceholdersToShowHtml[num]) {
+					this.$delete(this.thePlaceholdersToShowHtml, num);
+				} else {
+					this.$set(this.thePlaceholdersToShowHtml, num, showHtml);
+					this.$nextTick(() => {
+						const el = document.querySelector('.o-placeholder_' + num)
+						if (el) {
+							el.focus()
+						}
+					})
+				}
+			},
+			setAddFilesToCase(val) {
+				this.addFilesToCase = val
+				this.isShowAddFilesNotAnswered = false
+			},
+			setInitialServiceWindowDates() {
+				// Set the start of the service window to the next whole hour
+				const now = new Date();
+				now.setHours(now.getHours() + 1);
+				now.setMinutes(0);
+				now.setSeconds(0);
+				now.setMilliseconds(0);
+				this.serviceWindowStartFlatPicker = now;
+
+				// Set the end of the service window to 7 days from now
+				const sevenDaysLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+				this.serviceWindowEndFlatPicker = sevenDaysLater;
+			},
+			async copyTextToClipboard(text) {
+				try {
+					await navigator.clipboard.writeText(text);
+					this.$emit('onCopy', 'Kopieret ' + text)
+				} catch (err) {
+					this.$emit('onCopy', 'Kunne ikke kopiere')
+					console.error('Failed to copy text: ', err);
+				}
+			},
+			replaceHistoryPlaceholderWithTable(historyPlaceholderName) {
+				if (!this.placeholderHist || this.placeholderHist.length < 1) {
+					return null;
+				}
+				let str = '';
+				if (this.placeholderHist[historyPlaceholderName]) {
+					this.placeholderHist[historyPlaceholderName].forEach(obj => {
+						let date = obj['time'] ? obj['time'] : '';
+						if (date.length > 0) {
+							date = dayjs ? dayjs(date).format('LLL') : date
+						}
+						const text = obj['text'] ? obj['text'] : '';
+						const status = obj['status'] ? obj['status'] : '';
+						const statusStr = status.length > 0 ? '<td style="border: 1px solid #eee;padding: 10px 20px;">' + status + '</td>' : ''
+						str += '<tr><td style="border: 1px solid #eee;padding: 10px 20px;">' + date + '</td><td style="border: 1px solid #eee;padding: 10px 20px;">' + text + '</td>' + statusStr + '</tr>';
+					});
+				}
+				const tableHTML = '<table style="border-collapse: collapse;"><thead></thead><tbody>' + str + '</tbody></table>';
+				return tableHTML;
+			},
+			getIsFormInvalid() {
+				const errors = {}
+				if (this.formTypeIsMaster) {
+					if (this.newMasterTitle.length === 0) {
+						errors['master_title'] = 'Der skal være en titel'
+					}
+					return Object.keys(errors).length > 0
+				}
+				// Not master validation
+				if (this.selectedReceiversLength === 0) {
+					errors['receivers'] = 'Der skal vælges mindst en modtager'
+				}
+				return Object.keys(errors).length > 0
+			},
+			setIsDeleteConfirmation(bool) {
+				this.isConfirmation = bool
+			},
+			deleteMasterTemplate() {
+				this.isDeleting = true
+				const myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
+				const requestOptions = {
+					method: "POST",
+					headers: myHeaders,
+					redirect: "follow"
+				};
+
+				const url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate?action=DELETE&template_id=' + this.edit_master_template
+
+				fetch(url, requestOptions)
+					.then(response => {
+						console.log('deleteMasterTemplate', { response })
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(success => {
+						console.log({ success })
+						this.$emit('deleteMasterTemplate', this.edit_master_template)
+					})
+					.catch(error => {
+						console.error('Error creating new announcement:', error);
+					})
+					.finally(() => {
+						this.isDeleting = false
+						this.setIsCreateModal(false)
+					});
+			},
+			setEditMasterTemplate(template) {
+				this.$emit('setEditMasterTemplate', template)
+				this.setIsCreateNewMaster(true)
+			},
+			formatDate(date) {
+				// Format dates as "YYYY-MM-DD"
+				const year = date.getFullYear();
+				const month = String(date.getMonth() + 1).padStart(2, '0')
+				const day = String(date.getDate()).padStart(2, '0')
+				return `${year}-${month}-${day}`;
+			},
+			setActiveTab(tabName) {
+				return this.activeTab = tabName
+			},
+			getIsActiveTab(tabName) {
+				return this.activeTab === tabName
+			},
+			replacePlaceholders(html, replacements) {
+				Object.entries(replacements).forEach(([key, value]) => {
+					const regex = new RegExp(`{{\\{\\s*pp_mergecode:${key}\\s*\\}\\}}`, 'g')
+					html = html.replace(regex, value)
+				});
+				return html
+			},
+			removeFilledHistoryPlaceholderLabels(html, placeholderName) {
+				if (this.formTypeIsMaster) {
+					return html;
+				}
+				// Updated regex to allow for optional spaces around "end:"
+				var startMarkerRegex = new RegExp(`\\{\\{\\{\\s*pp_hasdata:${placeholderName}\\}\\}\\}`, 'g');
+				var endMarkerRegex = new RegExp(`\\{\\{\\{\\s*end\\s*:\\s*pp_hasdata:${placeholderName}\\s*\\}\\}\\}`, 'g');
+
+				// Use regex to replace the start and end markers with an empty string
+				html = html.replace(startMarkerRegex, '');
+				html = html.replace(endMarkerRegex, '');
+				return html;
+			},
+
+			removeEmptyHistoryPlaceholder(html, placeholderName) {
+				if (this.formTypeIsMaster) {
+					return html;
+				}
+				// Updated regex to include optional spaces around "end:"
+				var startMarkerRegex = new RegExp(`\\{\\{\\{\\s*pp_hasdata:${placeholderName}\\}\\}\\}`, 'g');
+				var endMarkerRegex = new RegExp(`\\{\\{\\{\\s*end\\s*:\\s*pp_hasdata:${placeholderName}\\s*\\}\\}\\}`, 'g');
+
+				var startIndex = html.search(startMarkerRegex);
+				var match = html.match(endMarkerRegex);
+
+				if (startIndex !== -1 && match) {
+					var endIndex = html.indexOf(match[0], startIndex) + match[0].length;
+					// Remove the section from startIndex to endIndex
+					return html.slice(0, startIndex) + html.slice(endIndex);
+				} else {
+					return html;
+				}
+			},
+			createMasterTemplate() {
+				const myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
+
+				let dbObj = {
+					template_id: null,
+					name: this.newMasterTitle,
+					company_display: this.theEmailFromCompany,
+					subject: this.theEmailSubject,
+					area: this.active_area,
+					type: this.theSelectedType,
+					receivers: Object.keys(this.selectedReceivers).map(key => key).join(';'),
+					send_notifications: this.isSendNotifications,
+					attachments: null,
+					html: this.newMasterHTMLSanitized,
+					placeholder_labels: this.thePlaceholderLabels
+				};
+				if (this.edit_master_template) {
+					dbObj['template_id'] = this.edit_master_template
+				}
+
+				console.log("dbObj", dbObj)
+				console.log("this.thePlaceholderLabels", this.thePlaceholderLabels)
+				const raw = JSON.stringify(dbObj)
+				const requestOptions = {
+					method: "POST",
+					headers: myHeaders,
+					body: raw,
+					redirect: "follow"
+				};
+				let url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate'
+
+				if (this.edit_master_template) {
+					url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg/mastertemplate?action=PATCH'
+				}
+
+				fetch(url, requestOptions)
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(success => {
+						const succesObj = {
+							success: success,
+							updatedTemplateId: this.edit_master_template ? this.edit_master_template : null
+						}
+						this.$emit('addMasterTemplate', succesObj)
+					})
+					.catch(error => {
+						console.error('Error creating new announcement:', error);
+					})
+					.finally(() => {
+						this.isSubmitting = false
+						this.setIsCreateModal(false)
+					});
+			},
+			createAnnouncement() {
+				this.attachmentToken = null;
+				const uploadedPanel = document.querySelector('.ppUPLOAD #uploadedPanel');
+				const initialLengthOfAttachedFiles = uploadedPanel ? uploadedPanel.children.length : 0;
+				if (initialLengthOfAttachedFiles > 0) {
+					if (this.addFilesToCase === '') {
+						this.isShowAddFilesNotAnswered = true
+						this.isSubmitting = false
+						return
+					}
+					clearJSONfields();
+					this.attachmentToken = Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2);
+					$(".ppUPLOAD_TOKEN > input").val(this.attachmentToken);
+					$(".webformCreateMore").click();
+
+					const observer = new MutationObserver((mutations) => {
+						mutations.forEach((mutation) => {
+							if (mutation.type === "childList") {
+								const currentLengthOfAttachedFiles = mutation.target.children.length;
+								if (currentLengthOfAttachedFiles !== initialLengthOfAttachedFiles) {
+									observer.disconnect(); // Stop observing
+									this.proceedWithAnnouncement(); // Proceed with the rest of the method
+								}
+							}
+						});
+					});
+					const config = { childList: true };
+					observer.observe(uploadedPanel, config);
+				} else {
+					// Directly proceed if no files need to be uploaded
+					this.proceedWithAnnouncement();
+				}
+			},
+			proceedWithAnnouncement() {
+				const myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
+
+				const timestamp = getCurrentTimestamp();
+				function getCurrentTimestamp() {
+					const now = new Date();
+					const year = now.getFullYear();
+					const month = String(now.getMonth() + 1).padStart(2, '0'); // getMonth() is zero-indexed
+					const day = String(now.getDate()).padStart(2, '0');
+					const hours = String(now.getHours()).padStart(2, '0');
+					const minutes = String(now.getMinutes()).padStart(2, '0');
+					const seconds = String(now.getSeconds()).padStart(2, '0');
+
+					return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+				}
+				const selectedType = this.filteredTypes.find(oType => oType.value === this.theSelectedType)
+				let dbObj = {
+					"onid": null,
+					"version": null,
+					"createdTime": timestamp,
+					"expired": "false",
+					"area": this.active_area,
+					"type": selectedType && selectedType.display ? selectedType.display : this.theSelectedType,
+					"template_id": this.activeMasterTemplateId,
+					"from": this.the_user && this.the_user['display_name'] ? this.the_user['display_name'] : '',
+					"company_display": this.theEmailFromCompany,
+					"subject": this.theEmailSubject,
+					"shortDesc": this.active_area === 'News' && this.theEmailTeaser.length > 0 ? this.theEmailTeaser : null,
+					"status": this.theSelectedStatus,
+					"serviceWindow": this.isServiceWindow,
+					"serviceWindowStart": this.isServiceWindow ? this.serviceWindowStart : null,
+					"serviceWindowEnd": this.isServiceWindow ? this.serviceWindowEnd : null,
+					"updateSubscription": this.isUpdateSubscription,
+					"updateSubscriptionInterval": !this.isUpdateSubscription ? null : this.updateSubscriptionInterval,
+					"updateSubscriptionUserId": !this.isUpdateSubscription ? null : this.updateSubscriptionUserId,
+					"receivers": Object.keys(this.selectedReceivers).map(key => key).join(';'),
+					"attachments": this.attachmentToken ? [this.attachmentToken] : null,
+					"attachments_in_email": this.addFilesToCase == 'true' ? true : false,
+					"html": this.emailHTMLAllPlaceholdersReplaced,
+					"placeholder_1": null,
+					"placeholder_2": null,
+					"placeholder_3": null,
+					"placeholder_4": null,
+					"placeholder_5": null,
+					"placeholder_6": null,
+					"placeholder_7": null,
+					"placeholder_8": null,
+					"placeholder_9": null,
+					"placeholder_10": null,
+					"placeholder_hist": null
+				};
+				this.activePlaceholders.forEach(placeholder => {
+					const placeHolderKey = 'placeholder_' + placeholder.num
+					dbObj[placeHolderKey] = placeholder.text
+				})
+				const fncConvertNullsToEmptyArrays = (obj) => {
+					Object.keys(obj).forEach(key => {
+						if (obj[key] === null) {
+							obj[key] = [];
+						}
+					});
+					return obj;
+				}
+				if (this.edit_announcement) {
+					dbObj['onid'] = this.edit_announcement.onid
+					dbObj['placeholder_hist'] = JSON.stringify(fncConvertNullsToEmptyArrays(this.placeholderHist))
+				}
+				console.log({ dbObj })
+				const raw = JSON.stringify(dbObj)
+
+				let requestOptions = {
+					method: "POST",
+					headers: myHeaders,
+					body: raw,
+					redirect: "follow"
+				};
+				let url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg'
+
+				if (this.edit_announcement) {
+					url = 'https://dev-portal.opennet.dk/ppServices/api/extMsg?action=PATCH'
+				}
+				fetch(url, requestOptions)
+					.then(response => {
+						console.log('createAnnouncement', { response })
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(success => {
+						console.log({ success })
+						this.$emit('addAnnouncements', success)
+					})
+					.catch(error => {
+						console.error('Error creating new announcement:', error);
+					})
+					.finally(() => {
+						this.isSubmitting = false
+						this.setIsCreateModal(false)
+					});
+			},
+			onSubmit() {
+				if (this.getIsFormInvalid()) {
+					this.isShowErrors = true
+					return
+				}
+				this.isSubmitting = true
+				if (this.formTypeIsMaster) {
+					this.createMasterTemplate()
+					return
+				}
+				this.createAnnouncement()
+			},
+			setSelectedReceiver(receiver) {
+				const receiverId = receiver.id;
+				const allShortcuts = ['ALL', 'ALL_SPs', 'ALL_IOs'];
+				const allSingle = this.receiversFilterFromSelf.map(receiver => receiver.id);
+				const all = allShortcuts.concat(allSingle);
+
+				const selectAll = (ids) => {
+					ids.forEach(id => this.$set(this.selectedReceivers, id, true));
+				};
+
+				const deselectAll = (ids) => {
+					ids.forEach(id => this.$delete(this.selectedReceivers, id));
+				};
+
+				const checkIfAllIsSelected = () => {
+					if (all.filter(allItemId => allItemId !== 'ALL').every(id => this.selectedReceivers[id])) {
+						this.$set(this.selectedReceivers, 'ALL', true);
+					}
+				}
+
+				const handleTypeSelection = (type, shortcut) => {
+					if (!this.selectedReceivers[shortcut]) {
+						this.$set(this.selectedReceivers, shortcut, true);
+						this.receiversFilterFromSelf.forEach(receiver => {
+							if (receiver.type === type) {
+								this.$set(this.selectedReceivers, receiver.id, true);
+							}
+						});
+						checkIfAllIsSelected()
+					} else {
+						this.$delete(this.selectedReceivers, shortcut);
+						this.$delete(this.selectedReceivers, 'ALL');
+						this.receiversFilterFromSelf.forEach(receiver => {
+							if (receiver.type === type) {
+								this.$delete(this.selectedReceivers, receiver.id);
+							}
+						});
+					}
+				};
+
+				if (receiverId === 'ALL') {
+					if (!this.selectedReceivers[receiverId]) {
+						selectAll(all);
+					} else {
+						deselectAll(all);
+					}
+				} else if (receiverId === 'ALL_SPs') {
+					handleTypeSelection('SP', 'ALL_SPs');
+				} else if (receiverId === 'ALL_IOs') {
+					handleTypeSelection('IO', 'ALL_IOs');
+				} else {
+					if (this.selectedReceivers[receiverId]) {
+						this.$delete(this.selectedReceivers, receiverId);
+						this.$delete(this.selectedReceivers, 'ALL');
+						if (receiver.type === 'SP') {
+							this.$delete(this.selectedReceivers, 'ALL_SPs');
+						} else if (receiver.type === 'IO') { // IO
+							this.$delete(this.selectedReceivers, 'ALL_IOs');
+						}
+					} else {
+						this.$set(this.selectedReceivers, receiverId, true);
+
+						const receiverType = receiver.type;
+						const allWithType = this.receiversFilterFromSelf.filter(rece => rece.type === receiverType);
+						const allWithTypeSelected = allWithType.every(rece => this.selectedReceivers[rece.id]);
+
+						if (allWithTypeSelected) {
+							if (receiverType === 'SP') {
+								this.$set(this.selectedReceivers, 'ALL_SPs', true);
+							}
+							if (receiverType === 'IO') {
+								this.$set(this.selectedReceivers, 'ALL_IOs', true);
+							}
+							checkIfAllIsSelected();
+						}
+					}
+				}
+			},
+			getIsReceiverSelected(receiverId) {
+				return this.selectedReceivers[receiverId]
+			},
+			resetTemplateSettings() {
+				this.theEmailFromCompany = '';
+				this.theEmailSubject = '';
+				this.theSelectedType = null;
+				this.isSendNotifications = false;
+				this.theEmailHTML = '';
+				this.selectedReceivers = {};
+			},
+			setMasterTemplate(masterTemplateId) {
+				if (masterTemplateId === null) {
+					this.activeMasterTemplateId = null;
+					this.resetTemplateSettings();
+					return;
+				}
+				const newMasterTemplateId = +masterTemplateId;
+				if (this.activeMasterTemplateId !== newMasterTemplateId) {
+					this.activeMasterTemplateId = newMasterTemplateId;
+				}
+
+				const masterTemp = this.master_templates.find(temp => +temp.template_id === newMasterTemplateId);
+				if (!masterTemp) {
+					console.error('Template not found', newMasterTemplateId);
+					return;
+				}
+
+				this.theEmailFromCompany = masterTemp.company_display;
+				this.theEmailSubject = masterTemp.subject;
+				this.theSelectedType = masterTemp.type;
+				this.isSendNotifications = this.convertToBoolean(masterTemp.send_notifications);
+				this.theEmailHTML = masterTemp.html;
+				this.setPlaceholderLabels(masterTemp)
+
+				if (masterTemp.receivers?.length > 0) {
+					this.selectedReceivers = this.fncConvertSemicolonSeparatedStringToObject(masterTemp.receivers);
+				}
+			},
+			convertToBoolean(value) {
+				return String(value).toLowerCase() === "true";
+			},
+			setIsCreateNewMaster(bool) {
+				this.$emit('openNewMasterModal')
+			},
+			setIsCreateModal(bool) {
+				if (!bool) {
+					this.$emit('setEditMasterTemplate', null)
+					this.$emit('close')
+					if (this.edit_announcement) {
+						this.$emit('done')
+					}
+				}
+			},
+			handleFrameMessage(event) {
+				if (event.data.type && event.data.type === 'oiFrameHeight') {
+					const iFrameHeight = event.data.frameHeight
+					this.$refs.o_preview_iframe.height = iFrameHeight + 'px'
+				}
+				if (event.data.type && event.data.type === 'oiFrameHeightMaster') {
+					const iFrameHeight = event.data.frameHeight
+					this.$nextTick(_ => {
+						const el = this.$refs.o_preview_iframe_master
+						if (el) {
+							el.height = iFrameHeight + 'px'
+						}
+					})
+				}
+			},
+			setInitMasterTemplateValues(obj) {
+				this.active_area = obj.area
+				if (obj.attachments) {
+					this.isAttachFiles = true
+					this.attachments = obj.attachments
+				}
+				this.theEmailFromCompany = obj.company_display
+				this.theEmailHTML = obj.html
+				this.newMasterTitle = obj.name
+				this.selectedReceivers = obj.receivers && obj.receivers.length > 0 ? this.fncConvertSemicolonSeparatedStringToObject(obj.receivers) : {}
+				this.isSendNotifications = obj.send_notifications
+				this.theEmailSubject = obj.subject
+				this.setPlaceholderLabels(obj)
+				if (obj.type) {
+					const selectedTypeIdx = this.filteredTypes.findIndex(oType => {
+						return oType.value === obj.type
+					})
+					this.theSelectedType = selectedTypeIdx > -1 ? this.filteredTypes[selectedTypeIdx].value : null
+				}
+			},
+			onAttachFiles() {
+				document.querySelector('.ppUPLOAD #fileupload').click();
+				subCatChangeSelect('UPLOAD');
+				if (this.attachFilesObserver) {
+					this.attachFilesObserver.disconnect();
+				}
+
+				this.startObserving();
+			},
+			handleMutations(mutations) {
+				mutations.forEach(mutation => {
+					if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+						this.isShowAddFiles = true
+					} else {
+						this.showAddFiles = false
+					}
+					mutation.addedNodes.forEach(node => {
+						if (node.nodeType === 1) { // Checks if the node is an element node
+
+							const clonedNode = node.cloneNode(true); // Deep clone the node
+
+							// Add event listener to all links with a 'deleteurl' attribute within the cloned node
+							const links = clonedNode.querySelectorAll('a[deleteurl]');
+							links.forEach(link => {
+								link.addEventListener('click', this.handleCloneClick);
+							});
+
+							// First clone destination
+							const elId = `${this.formType}_cloneDestination`;
+							const destinationElement = document.getElementById(elId);
+							if (destinationElement) {
+								destinationElement.appendChild(clonedNode);
+							} else {
+								console.warn(`Element with ID '${elId}' not found.`);
+							}
+
+							// Second clone destination
+							const secondClonedNode = node.cloneNode(true); // Clone again for the second destination
+							const secondElId = 'second_cloneDestination'; // Change this ID to your second destination's ID
+							const secondDestinationElement = document.getElementById(secondElId);
+							if (secondDestinationElement) {
+								secondDestinationElement.appendChild(secondClonedNode);
+							} else {
+								console.warn(`Element with ID '${secondElId}' not found.`);
+							}
+						}
+					});
+				});
+			},
+			handleCloneClick(event) {
+				const deleteUrl = event.target.getAttribute('deleteurl');
+				if (deleteUrl) {
+					const originalLink = document.querySelector(`.ppUPLOAD #uploadedPanel a[deleteurl="${deleteUrl}"]`);
+					if (originalLink) {
+						originalLink.click();
+					}
+					const wrapperDiv = event.target.closest('div');
+					if (wrapperDiv) {
+						wrapperDiv.remove();
+					}
+					const secondContainer = document.getElementById('second_cloneDestination');
+					if (secondContainer) {
+						const correspondingAnchor = secondContainer.querySelector(`a[deleteurl="${deleteUrl}"]`);
+						if (correspondingAnchor) {
+							const correspondingWrapperDiv = correspondingAnchor.closest('div');
+							if (correspondingWrapperDiv) {
+								correspondingWrapperDiv.remove();
+							}
+						}
+					}
+					if ($('#announcement_cloneDestination > div').length === 0) {
+						this.isShowAddFiles = false
+						this.addFilesToCase = ''
+						this.isShowAddFilesNotAnswered = false
+					}
+				}
+				event.preventDefault();
+			},
+			startObserving() {
+				const targetNode = document.querySelector('.ppUPLOAD #uploadedPanel');
+
+				if (targetNode) {
+					this.attachFilesObserver = new MutationObserver(this.handleMutations);
+
+					this.attachFilesObserver.observe(targetNode, {
+						childList: true,
+						subtree: true
+					});
+				}
+			},
+			resetFilesOnClose() {
+				$('.ppUPLOAD #uploadedPanel > div > a').each(function () {
+					$(this).click()
+				})
+			},
+			fncRevertFromDisplayToValue(originalArr, display) {
+				const idx = originalArr.findIndex(obj => obj.display === display)
+				if (idx > -1) {
+					return originalArr[idx]['value']
+				} else {
+					return display
+				}
+			},
+			fncConvertSemicolonSeparatedStringToObject(input) {
+				const object = {};
+				input.split(';').forEach(prop => {
+					if (prop) {
+						object[prop] = true
+					}
+				});
+				return object;
+			},
+			setInitialFormElements() {
+				this.activeMasterTemplateId = this.edit_announcement['template_id']
+				this.theSelectedType = this.fncRevertFromDisplayToValue(this.filteredTypes, this.edit_announcement['type'])
+				this.theSelectedStatus = this.edit_announcement['status']
+				//this.theEmailFromCompany = this.edit_announcement['from']
+				this.theEmailFromCompany = this.edit_announcement['company_display']
+				this.theEmailSubject = this.edit_announcement['subject']
+				if (this.edit_announcement['updateSubscription'] && this.edit_announcement['updateSubscription'] != 'false') {
+					this.isUpdateSubscription = this.edit_announcement['updateSubscription'] != 'false'
+					this.updateSubscriptionInterval = this.edit_announcement['updateSubscriptionInterval']
+					this.updateSubscriptionUserId = this.edit_announcement['updateSubscriptionUserId']
+				}
+				if (this.edit_announcement['serviceWindow'] && this.edit_announcement['serviceWindow'] != 'false') {
+					this.isServiceWindow = this.edit_announcement['serviceWindow'] != 'false'
+					this.serviceWindowStartFlatPicker = this.edit_announcement['serviceWindowStart']
+					this.serviceWindowEndFlatPicker = this.edit_announcement['serviceWindowEnd']
+				}
+				if (this.edit_announcement['shortDesc'] && this.edit_announcement['shortDesc'].length > 0) {
+					this.theEmailTeaser = this.edit_announcement['shortDesc']
+				}
+				const editReceivers = this.edit_announcement['receivers']
+				if (editReceivers) {
+					const formattedReceivers = this.fncConvertSemicolonSeparatedStringToObject(editReceivers)
+					this.selectedReceivers = formattedReceivers
+				}
+				const masterTemp = this.master_templates.find(temp => +temp.template_id === +this.activeMasterTemplateId)
+				if (masterTemp) {
+					this.theEmailHTML = masterTemp['html']
+				}
+				console.log('this.edit_announcement', this.edit_announcement)
+				// Placeholder history
+				let newHistPlaceholder = {}
+				const currentHist = this.edit_announcement['placeholder_hist']
+				try {
+					let historyObj = JSON.parse(currentHist)
+					newHistPlaceholder = historyObj
+				} catch {
+				}
+				this.placeholderHist = newHistPlaceholder
+				// Save current placeholders to history if the current is being changed
+				this.setHistoryPlaceholders()
+				// Set placeholders 
+				for (let i = 1; i < 11; i++) {
+					const currentPlaceholder = this.edit_announcement['placeholder_' + i]
+					// Set the current placeholders to the edit_placeholders
+					if (currentPlaceholder != null) {
+						const idx = this.placeholders.findIndex(place => place.num == i)
+						if (idx > -1) {
+							this.placeholders[idx]['text'] = currentPlaceholder
+						}
+					}
+				}
+				this.setPlaceholderLabels(masterTemp)
+			},
+			setHistoryPlaceholders() {
+				const newHistPlaceholder = {}
+				for (let i = 1; i < 11; i++) {
+					const currentPlaceholder = this.edit_announcement['placeholder_' + i]
+					if (currentPlaceholder != null) {
+						newHistPlaceholder['placeholder' + i] = { time: this.edit_announcement['createdTime'], text: currentPlaceholder }
+					}
+				}
+				this.versionHistPlaceholder = newHistPlaceholder
+			},
+			setPlaceholderLabels(masterTemplate) {
+				const labelsObj = masterTemplate['thePlaceholderLabels'] ? masterTemplate['thePlaceholderLabels'] : {}
+				this.placeholders.forEach((place, key) => {
+					const num = key + 1
+					place['placeholder'] = 'Tekst til {{{pp_mergecode:placeholder' + num + '}}}'
+				})
+				Object.keys(labelsObj).forEach((key) => {
+					const idx = this.placeholders.findIndex(place => place.id == key)
+					this.placeholders[idx]['placeholder'] = labelsObj[key]
+					this.thePlaceholderLabels[key] = labelsObj[key]
+				})
+			},
+			initializeQuillEditors() {
+				this.$nextTick(() => {
+					if (window.Quill) {
+						const Block = window.Quill.import('blots/block');
+						class DivBlock extends Block { }
+
+						DivBlock.tagName = 'SPAN';
+
+						// true means we overwrite  
+						window.Quill.register('blots/block', DivBlock, true);
+						const toolbarOptions = [['bold', 'italic', 'underline']];
+						const editors = this.$el.querySelectorAll('.o-editor__quill');
+
+						editors.forEach((editor) => {
+							if (editor.hasAttribute('data-quill')) {
+								return;
+							}
+
+							const quill = new Quill(editor, {
+								modules: { toolbar: toolbarOptions },
+								theme: 'snow',
+							});
+
+							editor.setAttribute('data-quill', 'true');
+
+							const idSuffix = editor.id.split('placeholder_')[1];
+
+							this.quillInstances[editor.id] = quill;
+
+							if (Object.keys(this.quillInstances).length === 1) {
+								quill.focus();
+							}
+							const placeholder = this.placeholders.find(p => p.num == idSuffix);
+							if (placeholder && placeholder.text) {
+								quill.clipboard.dangerouslyPasteHTML(placeholder.text);
+							}
+
+							quill.on('text-change', () => {
+								const idSuffix = editor.id.split('placeholder_')[1];
+								let val = quill.root.innerHTML;
+								// Check if the value starts with <p> and ends with </p>, and remove them
+								if (val.startsWith('<p>') && val.endsWith('</p>')) {
+									val = val.substring(3, val.length - 4); // Remove the first <p> and the last </p>
+								}
+
+								const idx = this.placeholders.findIndex(p => p.num == idSuffix);
+								if (idx !== -1) {
+									this.placeholders[idx].text = val;
+								}
+								// Not an edit
+								if (!this.placeholderHist) {
+									return;
+								}
+								const placeholderId = 'placeholder' + idSuffix;
+								if (!this.changedPlaceholders[placeholderId]) {
+									this.changedPlaceholders[placeholderId] = true;
+									if (this.placeholderHist[placeholderId]) {
+										this.placeholderHist[placeholderId].unshift(this.versionHistPlaceholder[placeholderId]);
+									} else {
+										this.placeholderHist[placeholderId] = [this.versionHistPlaceholder[placeholderId]];
+									}
+								}
+							});
+
+						});
+					} else {
+						console.error("Quill is not loaded yet!");
+					}
+				});
+			}
+		},
+		beforeDestroy() {
+			window.removeEventListener('message', this.handleFrameMessage);
+			if (this.attachFilesObserver) {
+				this.attachFilesObserver.disconnect();
+			}
+			setTimeout(_ => {
+				this.resetFilesOnClose()
+			})
+		},
+		beforeMount() {
+			this.setInitialServiceWindowDates()
+		},
+		mounted() {
+			this.$nextTick(_ => {
+				this.initializeQuillEditors()
+			})
+			window.addEventListener('message', this.handleFrameMessage);
+			if (this.edit_announcement) {
+				this.setInitialFormElements()
+			}
+			if (this.formTypeIsMaster) {
+				this.setActiveTab('html')
+				if (this.edit_master_template) {
+					const idx = this.master_templates.findIndex(masterTemp => +masterTemp.template_id === +this.edit_master_template)
+					if (idx > -1) {
+						this.setInitMasterTemplateValues(this.master_templates[idx])
+					}
+				}
+				this.$nextTick(_ => {
+					if (this.$refs.new_template_title_input) {
+						this.$refs.new_template_title_input.focus()
+					}
+				})
+			} else {
+				if (!this.edit_announcement) {
+					let tempId = 0
+					this.sortedMasterTemplates.forEach(masterTemp => {
+						if (+masterTemp.template_id > tempId) {
+							tempId = +masterTemp.template_id
+						}
+					})
+					if (tempId > 0) {
+						this.setMasterTemplate(tempId)
+					}
+				}
+				this.setActiveTab('placeholders')
+			}
+		}
+	})
+
 	/* START 17-12-23 */
 	Vue.component('o-multi-select', {
 		template: '#o-multi-select-template',
@@ -1130,6 +3285,12 @@ $(document).one("trigger::vue_loaded", function () {
 	new Vue({
 		el: "#o-app",
 		data: {
+			isCreateAnnouncementModal: false,
+			announcements: [],
+			isShowNewsCases: true,
+			isShowNews: true,
+			isShowOperationStatusErrorReports: true,
+			isShowNewOperationStatus: true,
 			theAdvancedSearchQuery: '',
 			theAdvancedSearchQueryObj: {},
 			isLoadingAllInitialData: false,
@@ -1435,7 +3596,9 @@ $(document).one("trigger::vue_loaded", function () {
 			],
 			isLoadingEndCustomerEmailConfigFormData: false,
 			theEndCustomerEmailConfigFormActiveType: 'web',
-			theFilteredSelectedTags: []
+			theFilteredSelectedTags: [],
+			errorIncidentFilters: ['Change Request'],
+			newsCasesFilters: ['Igangværende ordre']
 		},
 		computed: {
 			allCasesProps() {
@@ -1449,6 +3612,15 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				return propArr
 			},
+			isViewOperationStatus() {
+				return this.activeCategory == 'OperationsStatus'
+			},
+			isViewNews() {
+				return this.activeCategory == 'News'
+			},
+			isViewNewsOrOperationStatus() {
+				return this.activeCategory == 'OperationsStatus' || this.activeCategory == 'News'
+			},
 			theGhostUserListPartners() {
 				return this.theGhostUserList.map(company => company.company)
 			},
@@ -1458,7 +3630,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			/* START 17-12-23 */
 			isAnyFiltersActive() {
-				return this.theActiveFilterTags.length > 0 || this.theActiveFilterGroups.length > 0 || this.theActiveFilterStatus.length > 0 || this.theActiveFilterCategories.length > 0 || this.activeType
+				return this.theActiveFilterTags.length > 0 || this.theActiveFilterGroups.length > 0 || this.theActiveFilterStatus.length > 0 || this.activeType || (this.theActiveFilterCategories.length > 0 && !this.isShowOperationStatusErrorReports) || (this.theActiveFilterCategories.length > 0 && !this.isShowNewsCases)
 			},
 			isUserOpennetOrSP() {
 				const arrOfActivatedCompanies = ['SP Prod Company', 'OpenNet', 'SP Dev Company']
@@ -1639,7 +3811,32 @@ $(document).one("trigger::vue_loaded", function () {
 			partnerCases() {
 				return this.casesFiltered.filter(e => "partnerCases" == e.filter_open_closed)
 			},
+			isErrorReportsLoading() {
+				return this.isClosedCasesLoading || this.casesIsLoading
+			},
+			errorReports() {
+				// Kun return når begge er loaded
+				if (this.isErrorReportsLoading) {
+					return []
+				}
+				const allIncidentCases = this.casesOpen.concat(this.casesClosed)
+				return allIncidentCases.filter(itemCase => this.errorIncidentFilters.indexOf(itemCase.filter_category) > -1)
+			},
+			newsCases() {
+				// Kun return når begge er loaded
+				if (this.isErrorReportsLoading) {
+					return []
+				}
+				const allIncidentCases = this.casesOpen.concat(this.casesClosed)
+				return allIncidentCases.filter(itemCase => this.newsCasesFilters.indexOf(itemCase.filter_category) > -1)
+			},
 			casesFiltered2() {
+				if (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) {
+					return this.errorReports
+				}
+				if (this.activeCategory == 'News' && this.isShowNewsCases) {
+					return this.newsCases
+				}
 				if (this.theActiveFilter === "active") {
 					return this.casesOpen
 				} else {
@@ -1695,6 +3892,9 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			caseFilteredWithTags() {
+				if (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports || this.activeCategory == 'News' && this.isShowNewsCases) {
+					return this.caseFilteredWithStatus
+				}
 				if (this.theActiveFilterTags.length < 1) {
 					return this.caseFilteredWithCategories;
 				} else {
@@ -1792,7 +3992,7 @@ $(document).one("trigger::vue_loaded", function () {
 				return "" !== this.activeCategory && "roles" !== this.activeCategory && "all_cases" !== this.activeCategory && "my_cases" !== this.activeCategory && "end_customer_pricing_config" !== this.activeCategory && "end_customer_orders" !== this.activeCategory
 			},
 			isCases() {
-				return "all_cases" == this.activeCategory || "my_cases" == this.activeCategory
+				return "all_cases" == this.activeCategory || "my_cases" == this.activeCategory || (this.activeCategory == 'OperationsStatus' && this.isShowOperationStatusErrorReports) || (this.activeCategory == 'News' && this.isShowNewsCases)
 			},
 			allCategories() {
 				let e = [];
@@ -2075,6 +4275,30 @@ $(document).one("trigger::vue_loaded", function () {
 					.finally(() => {
 						this.usersIsLoading = false;
 					})
+			},
+			setIsCreateAnnouncementModal(bool) {
+				this.isCreateAnnouncementModal = bool
+			},
+			onEmitAnnouncements(payload) {
+				this.announcements = payload
+			},
+			setIsShowOperationStatusErrorReports(bool) {
+				if (bool) {
+					requestTypeFilter = this.errorIncidentFilters
+					this.isShowOperationStatusErrorReports = true
+				} else {
+					requestTypeFilter = null
+					this.isShowOperationStatusErrorReports = false
+				}
+			},
+			setIsShowNewsCases(bool) {
+				if (bool) {
+					requestTypeFilter = this.newsCasesFilters
+					this.isShowNewsCases = true
+				} else {
+					requestTypeFilter = null
+					this.isShowNewsCases = false
+				}
 			},
 			showToast(message) {
 				this.toast.message = message;
@@ -2723,6 +4947,8 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 					$(".js-o-cases__container").removeClass("o-cases__container--loading"), $(".o-page").removeClass("o-page--all-cases"), $(".o-page").hasClass("o-page--docs") || $(".o-page").addClass("o-page--docs");
 					var s = "";
+					this.setIsShowOperationStatusErrorReports(false)
+					this.setIsShowNewsCases(false)
 					switch (e) {
 						case "my_cases":
 							s = "Hjem / Mine sager";
@@ -2758,6 +4984,12 @@ $(document).one("trigger::vue_loaded", function () {
 							break;
 						case "end_customer_orders":
 							s = "Slutkundeordre"
+						case "OperationsStatus":
+							s = "Driftstatus"
+							break
+						case "News":
+							s = "Nyheder"
+							break
 					}
 					if ("Report" === e || "Invoice" === e || "OpenAnalytics" === e) {
 						// Retrieve HTML content from the specified element
@@ -4158,6 +6390,9 @@ var Set_UM_USER_INIT = !0;
 var openAnalyticsSecret = 'your_secret_value_here_global';
 var current_iframeHeight = 10;
 var current_iframeWidth = 10;
+var isPurifyLoadedToPage = false
+var isQuillLoadedToPage = false
+var requestTypeFilter = null
 //console.log(openAnalyticsSecret)
 // Variables - START //
 
@@ -4186,6 +6421,37 @@ function openBurgerMenu() {
 	}
 }
 
+addQuillFromCDN();
+function addQuillFromCDN() {
+	if (isQuillLoadedToPage) {
+		return
+	}
+	const quillCss = document.createElement('link');
+	quillCss.rel = 'stylesheet';
+	quillCss.href = quillCssUrl;
+	document.head.appendChild(quillCss);
+
+	const quillScript = document.createElement('script');
+	quillScript.src = quillJsUrl;
+	quillScript.onload = function () {
+		console.log('quill is here')
+		$(document).trigger('quill::loaded');
+		isQuillLoadedToPage = true
+	};
+	document.body.appendChild(quillScript);
+}
+
+function addPurifyFromCDN() {
+	if (isPurifyLoadedToPage) {
+		return
+	}
+	// Sanitizing user-generated content is crucial for preventing XSS (Cross-Site Scripting) attacks
+	$.getScript(purifyJsUrl, function (e, t, s) {
+		console.log('purify loaded')
+		isPurifyLoadedToPage = true
+	})
+}
+
 /* START 17-12-23 */
 addPopperFromCDN()
 
@@ -4193,10 +6459,10 @@ function addPopperFromCDN() {
 	// Create a <link> element for the CSS file
 	const link = document.createElement('link')
 	link.rel = 'stylesheet'
-	link.href = vueVirtualScrollerCssUrl
+	link.href = virtualScrollCssUrl
 	document.head.appendChild(link)
 	// Create a <script> element for the Vue Multiselect script
-	$.getScript(popperMinJsUrl, function (e, t, s) {
+	$.getScript(popperJsUrl, function (e, t, s) {
 		//console.log('popper loaded')
 		$(document).trigger("trigger::vue__virtual_scroller_loaded")
 	})
