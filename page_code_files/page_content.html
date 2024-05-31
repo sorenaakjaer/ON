@@ -2246,6 +2246,7 @@
                 :master_templates="masterTemplates"
                 :theNewMasterTemplateId="theNewMasterTemplateId"
                 :the_user="the_user"
+                :the_user_type="the_user_type"
                 :the_active_company_name="the_active_company_name"
                 :edit_announcement="theEditAnnouncement"
                 :edit_master_template="theEditMasterTemplate"
@@ -2518,32 +2519,45 @@
                                 <div class="o-group">
                                  <h4>Modtagere</h4>
                                     <div class="o-group">
-                                        <div class="o-ann-receivers__header">
-                                            <label class="o-label">{{ selectedReceiversLength }} modtager{{ selectedReceiversLength !== 1 ? 'e' : '' }} valgt</label>
-                                            <div class="o-ann-receivers__header__right">
+                                        <div class="o-ann-receivers__header" v-if="the_user_type === 'ON'">
                                             <div class="o-toggle-group" @click="setSelectedReceiver({id: 'ALL'})">
-                                                <label class="o-label">Alle</label>
                                                 <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected('ALL')}"></div>
                                             </div>
-                                            <div class="o-toggle-group" @click="setSelectedReceiver({id: 'ALL_SPs'})">
-                                                <label class="o-label">Alle SP's</label>
-                                                <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected('ALL_SPs')}"></div>
-                                            </div>
-                                            <div class="o-toggle-group" @click="setSelectedReceiver({id:'ALL_IOs'})">
-                                                <label class="o-label">Alle IO’s</label>
+                                            <label class="o-label">Alle</label>
+                                        </div>
+                                        <div class="o-ann-receivers__header o-ann-receivers__header--second">
+                                            <div class="o-toggle-group" :class="{'o-toggle-group--disabled': getIsReceiverDisabled('ALL_IOs')}" @click="setSelectedReceiver({id:'ALL_IOs'})">
                                                 <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected('ALL_IOs')}"></div>
                                             </div>
-                                        </div>
+                                            <label class="o-label">IO's</label>
                                         </div>
                                         <ul class="o-ann-receivers">
-                                            <li v-for="receiver in receiversFilterFromSelf"
-                                            :class="{'o-ann-receivers__receiver--selected': getIsReceiverSelected(receiver.id)}"
+                                            <li v-for="receiver in receiversFilterFromSelfIOs"
+                                            :class="{'o-ann-receivers__receiver--selected': getIsReceiverSelected(receiver.id), 'o-ann-receivers__receiver--disabled': getIsReceiverDisabled(receiver)}"
                                             :key="receiver.id"
                                             @click="setSelectedReceiver(receiver)">
                                                 {{ receiver.name }} 
                                                 <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected(receiver.id)}"></div>
                                             </li>
                                         </ul>
+                                        <!-- SP's-->
+                                        <template v-if="the_user_type === 'ON'">
+                                            <div class="o-ann-receivers__header o-ann-receivers__header--second o-ann-receivers__header--last">
+                                                <div class="o-toggle-group" :class="{'o-toggle-group--disabled': getIsReceiverDisabled('ALL_SPs')}" @click="setSelectedReceiver({id: 'ALL_SPs'})">
+                                                    <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected('ALL_SPs')}"></div>
+                                                </div>
+                                                <label class="o-label">SP's</label>
+                                            </div>
+                                            <ul class="o-ann-receivers">
+                                                <li v-for="receiver in receiversFilterFromSelfSPs"
+                                                :class="{'o-ann-receivers__receiver--selected': getIsReceiverSelected(receiver.id), 'o-ann-receivers__receiver--disabled': getIsReceiverDisabled(receiver)}"
+                                                :key="receiver.id"
+                                                @click="setSelectedReceiver(receiver)">
+                                                    {{ receiver.name }} 
+                                                    <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected(receiver.id)}"></div>
+                                                </li>
+                                            </ul>
+                                        </template>
                                     </div>
                                 </div>
                             <template v-if="!formTypeIsMaster">

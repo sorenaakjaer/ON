@@ -10641,7 +10641,7 @@ ul.tags-selector__dropdow__create {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem;
+    padding: 0.5rem 0.5rem 0.5rem 2rem;
     cursor: pointer;
     transition: background 0.15s;
     font-size: 14px;
@@ -10657,12 +10657,24 @@ ul.tags-selector__dropdow__create {
     border-bottom: none;
 }
 
-.o-ann-receivers li.o-ann-receivers__receiver--selected {
-    background: var(--borderBlue) !important;
+.o-ann-receivers li.o-ann-receivers__receiver--disabled {
+    cursor: not-allowed;
+    background-color: initial !important;
+    pointer-events: none;
 }
 
-.o-ann-receivers li:nth-child(even) {
-    background: rgb(10 55 170 / 2%);
+.o-ann-receivers li.o-ann-receivers__receiver--disabled>.o-toggle {
+    display: none;
+}
+
+.o-toggle-group.o-toggle-group--disabled {
+    cursor: not-allowed;
+    background-color: initial !important;
+    pointer-events: none;
+}
+
+.o-toggle-group.o-toggle-group--disabled>.o-toggle {
+    display: none;
 }
 
 .o-ann-receivers li:hover {
@@ -10810,14 +10822,24 @@ ul.tags-selector__dropdow__create {
     max-width: 100%;
 }
 
+.o-group .o-ann-receivers__header:first-child {
+    border-radius: 4px 4px 0 0;
+}
+
+.o-group .o-ann-receivers__header:last-child {
+    border-radius: 0 0 4px 4px;
+}
+
 .o-ann-receivers__header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     border: 1px solid var(--bgLigthBlue);
     border-width: 1px 1px 0 1px;
-    border-radius: 4px 4px 0 0;
-    padding: 0 0.5rem;
+    height: 28px;
+}
+
+.o-ann-receivers__header.o-ann-receivers__header--second {
+    background-color: #f9fafb;
 }
 
 .o-ann-receivers__header .o-toggle-group {
@@ -11148,14 +11170,10 @@ ul.tags-selector__dropdow__create {
     overflow-y: auto;
 }
 
-.o-ann-receivers__header__right {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-}
-
-.o-ann-receivers__header__right>.o-toggle-group {
+.o-ann-receivers__header>.o-toggle-group {
     max-width: 100%;
+    height: 100%;
+    padding: 0.25rem 0.5rem;
 }
 
 .o-ann-form__editor {

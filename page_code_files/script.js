@@ -1589,6 +1589,9 @@ $(document).one("trigger::vue_loaded", function () {
 			the_user: {
 				default: () => { }
 			},
+			the_user_type: {
+				default: 'IO'
+			},
 			active_area: {
 				default: 'OperationsStatus' // 'OperationsStatus' or 'News'
 			},
@@ -1601,6 +1604,7 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		data() {
 			return {
+				disabledReceivers: {},
 				isDraft: false,
 				activeMasterTemplateId: null,
 				theEmailHTML: '',
@@ -1694,6 +1698,12 @@ $(document).one("trigger::vue_loaded", function () {
 				const newArr = this.filteredReceivers.filter(receiver => arrOfIds.indexOf(receiver.id) < 0)
 				const arrOfNames = [this.the_active_company_name]
 				return newArr.filter(receiver => arrOfNames.indexOf(receiver.name) < 0)
+			},
+			receiversFilterFromSelfSPs() {
+				return this.receiversFilterFromSelf.filter(receiver => receiver.type === 'SP')
+			},
+			receiversFilterFromSelfIOs() {
+				return this.receiversFilterFromSelf.filter(receiver => receiver.type === 'IO')
 			},
 			isAllReceiversSelected() {
 				return this.getIsReceiverSelected('ALL')
@@ -1848,6 +1858,9 @@ $(document).one("trigger::vue_loaded", function () {
 				const oStatussesNews = this.standard_options && this.standard_options['extMsg_status_news'] ? this.standard_options['extMsg_status_news'] : []
 				return oStatussesNews
 			},
+			potentialReceivers() {
+				return [{ id: 'ALL', name: 'Alle' }, { id: 'ALL_SPs', name: 'Alle SPs' }, { id: 'ALL_IOs', name: 'Alle IOs' }].concat(this.filteredReceivers)
+			},
 			selectedReceiversLength() {
 				return Object.keys(this.selectedReceivers).length;
 			},
@@ -1859,11 +1872,10 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			receiverNames() {
 				const names = [];
-				const potentialReceivers = [{ id: 'ALL', name: 'Alle' }, { id: 'ALL_SPs', name: 'Alle SPs' }, { id: 'ALL_IOs', name: 'Alle IOs' }].concat(this.filteredReceivers)
 				Object.keys(this.selectedReceivers).forEach(key => {
-					const idx = potentialReceivers.findIndex(user => user.id === key);
+					const idx = this.potentialReceivers.findIndex(user => user.id === key);
 					if (idx > -1) {
-						names.push(potentialReceivers[idx]['name']);
+						names.push(this.potentialReceivers[idx]['name']);
 					}
 				});
 				return names.join(', ')
@@ -1925,13 +1937,16 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			getIsReceiverDisabled(receiver) {
+				const id = receiver.id ? receiver.id : receiver
+				return this.disabledReceivers[id]
+			},
 			onEditPlaceholderLabel(activePlaceholderId, val) {
 				if (val && val.length > 0) {
 					this.$set(this.thePlaceholderLabels, activePlaceholderId, val)
 				} else {
 					this.$delete(this.thePlaceholderLabels, activePlaceholderId)
 				}
-				console.log('this.thePlaceholderLabels', this.thePlaceholderLabels)
 			},
 			setThePlaceholdersToShowHtml(num, showHtml) {
 				if (!showHtml && this.thePlaceholdersToShowHtml[num]) {
@@ -2314,77 +2329,57 @@ $(document).one("trigger::vue_loaded", function () {
 				const receiverId = receiver.id;
 				const allShortcuts = ['ALL', 'ALL_SPs', 'ALL_IOs'];
 				const allSingle = this.receiversFilterFromSelf.map(receiver => receiver.id);
+				const allSingleSps = this.receiversFilterFromSelfSPs.map(receiver => receiver.id)
+				const allSingleIOs = this.receiversFilterFromSelfIOs.map(receiver => receiver.id)
 				const all = allShortcuts.concat(allSingle);
 
-				const selectAll = (ids) => {
-					ids.forEach(id => this.$set(this.selectedReceivers, id, true));
+				const disableAll = (ids) => {
+					ids.forEach(id => {
+						this.$set(this.disabledReceivers, id, true)
+						this.$delete(this.selectedReceivers, id)
+					});
 				};
 
-				const deselectAll = (ids) => {
-					ids.forEach(id => this.$delete(this.selectedReceivers, id));
+				const deselectDisabledIds = (ids) => {
+					ids.forEach(id => {
+						this.$delete(this.disabledReceivers, id)
+					});
 				};
 
-				const checkIfAllIsSelected = () => {
-					if (all.filter(allItemId => allItemId !== 'ALL').every(id => this.selectedReceivers[id])) {
-						this.$set(this.selectedReceivers, 'ALL', true);
-					}
-				}
-
-				const handleTypeSelection = (type, shortcut) => {
-					if (!this.selectedReceivers[shortcut]) {
-						this.$set(this.selectedReceivers, shortcut, true);
-						this.receiversFilterFromSelf.forEach(receiver => {
-							if (receiver.type === type) {
-								this.$set(this.selectedReceivers, receiver.id, true);
-							}
-						});
-						checkIfAllIsSelected()
-					} else {
-						this.$delete(this.selectedReceivers, shortcut);
-						this.$delete(this.selectedReceivers, 'ALL');
-						this.receiversFilterFromSelf.forEach(receiver => {
-							if (receiver.type === type) {
-								this.$delete(this.selectedReceivers, receiver.id);
-							}
-						});
-					}
+				const deselectAll = () => {
+					this.disabledReceivers = {}
+					this.selectedReceivers = {}
 				};
 
 				if (receiverId === 'ALL') {
 					if (!this.selectedReceivers[receiverId]) {
-						selectAll(all);
+						const allFiltered = all.filter(item => item !== 'ALL')
+						disableAll(allFiltered);
+						this.$set(this.selectedReceivers, 'ALL', true)
 					} else {
 						deselectAll(all);
 					}
 				} else if (receiverId === 'ALL_SPs') {
-					handleTypeSelection('SP', 'ALL_SPs');
-				} else if (receiverId === 'ALL_IOs') {
-					handleTypeSelection('IO', 'ALL_IOs');
-				} else {
-					if (this.selectedReceivers[receiverId]) {
-						this.$delete(this.selectedReceivers, receiverId);
-						this.$delete(this.selectedReceivers, 'ALL');
-						if (receiver.type === 'SP') {
-							this.$delete(this.selectedReceivers, 'ALL_SPs');
-						} else if (receiver.type === 'IO') { // IO
-							this.$delete(this.selectedReceivers, 'ALL_IOs');
-						}
+					if (!this.selectedReceivers[receiverId]) {
+						disableAll(allSingleSps);
+						this.$set(this.selectedReceivers, 'ALL_SPs', true)
 					} else {
-						this.$set(this.selectedReceivers, receiverId, true);
-
-						const receiverType = receiver.type;
-						const allWithType = this.receiversFilterFromSelf.filter(rece => rece.type === receiverType);
-						const allWithTypeSelected = allWithType.every(rece => this.selectedReceivers[rece.id]);
-
-						if (allWithTypeSelected) {
-							if (receiverType === 'SP') {
-								this.$set(this.selectedReceivers, 'ALL_SPs', true);
-							}
-							if (receiverType === 'IO') {
-								this.$set(this.selectedReceivers, 'ALL_IOs', true);
-							}
-							checkIfAllIsSelected();
-						}
+						deselectDisabledIds(allSingleSps)
+						this.$delete(this.selectedReceivers, 'ALL_SPs')
+					}
+				} else if (receiverId === 'ALL_IOs') {
+					if (!this.selectedReceivers[receiverId]) {
+						disableAll(allSingleIOs);
+						this.$set(this.selectedReceivers, 'ALL_IOs', true)
+					} else {
+						deselectDisabledIds(allSingleIOs)
+						this.$delete(this.selectedReceivers, 'ALL_IOs')
+					}
+				} else {
+					if (this.selectedReceivers[receiver.id]) {
+						this.$delete(this.selectedReceivers, receiver.id)
+					} else {
+						this.$set(this.selectedReceivers, receiver.id, true)
 					}
 				}
 			},
