@@ -11857,6 +11857,17 @@ ul.tags-selector__dropdow__create {
     background: var(--green);
 }
 
+.o-ann__elements-cards__card__header .o-ann__elements-cards__card__header__status.o-ann__elements-cards__card__header__status--draft {
+    background-color: #fdf7b2;
+    color: #855529;
+    width: auto;
+    border-radius: 4px;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+    top: 5px;
+}
+
 .o-ann_body_header_row {
     display: flex;
     justify-content: space-between;
