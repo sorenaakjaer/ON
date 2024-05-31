@@ -1180,13 +1180,16 @@ $(document).one("trigger::vue_loaded", function () {
 				})
 			},
 			onAddAnnouncements(arr) {
-				console.log('onAddAnnouncements', arr, this.announcements)
 				arr.forEach(obj => {
 					const idx = this.announcements.findIndex(announcement => announcement.onid === obj.onid && +announcement.version === +obj.version)
 					if (idx < 0) {
 						this.announcements.push(obj)
 					} else {
-						this.announcements.splice(idx, 1, obj)
+						if (obj.version === 0 && new Date(obj.createdTime) > new Date(this.announcements[idx].createdTime)) {
+							this.announcements.splice(idx, 1, obj)
+						} else {
+							this.announcements.splice(idx, 1, obj)
+						}
 					}
 				})
 			},
