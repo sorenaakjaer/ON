@@ -1118,22 +1118,20 @@ $(document).one("trigger::vue_loaded", function () {
 				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/extMsg/mastertemplate" : 'http://localhost:3000/ppServices/api/extMsg/mastertemplate.json'
 				fetch(url, requestOptions)
 					.then(response => {
-						console.log('fetchMasterTemplates::answer', { response });
+						console.log('fetchMasterTemplates::answer', { response })
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
-						return response.text(); // Get response as text first
+						// Check if the response body is empty
+						return response.text();
 					})
 					.then(text => {
+						// If text is empty, return an empty array
 						if (!text) {
-							console.warn('Empty response received for master templates');
-							return {}; // Return an empty object or any default value you prefer
+							return [];
 						}
-						try {
-							return JSON.parse(text); // Try to parse JSON from the text
-						} catch (error) {
-							throw new Error('Error parsing JSON: ' + error.message);
-						}
+						// Otherwise, parse the JSON
+						return JSON.parse(text);
 					})
 					.then(result => {
 						this.masterTemplates = result;
