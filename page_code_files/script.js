@@ -997,7 +997,7 @@ $(document).one("trigger::vue_loaded", function () {
 					redirect: "follow"
 				};
 				const baseUrl = window.location.origin;
-				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/extMsg" : 'http://localhost:3000/ppServices/api/extMsg'
+				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/extMsg" : 'http://localhost:3000/ppServices/api/extMsg.json'
 				fetch(url, requestOptions)
 					.then(response => {
 						console.log('fetchAnnouncements::answer', response)
@@ -1080,7 +1080,7 @@ $(document).one("trigger::vue_loaded", function () {
 				};
 
 				const baseUrl = window.location.origin;
-				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/general/getFormDetails/all" : 'http://localhost:3000/ppServices/api/general/getFormDetails/all'
+				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/general/getFormDetails/all" : 'http://localhost:3000/ppServices/api/general/getFormDetails/all.json'
 				fetch(url, requestOptions)
 					.then(response => {
 						console.log('fetchStandardOptions::answer', { response })
@@ -1115,7 +1115,7 @@ $(document).one("trigger::vue_loaded", function () {
 				};
 
 				const baseUrl = window.location.origin;
-				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/extMsg/mastertemplate" : 'http://localhost:3000/ppServices/api/extMsg/mastertemplate'
+				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/extMsg/mastertemplate" : 'http://localhost:3000/ppServices/api/extMsg/mastertemplate.json'
 				fetch(url, requestOptions)
 					.then(response => {
 						console.log('fetchMasterTemplates::answer', { response })
@@ -1125,7 +1125,12 @@ $(document).one("trigger::vue_loaded", function () {
 						return response.json();
 					})
 					.then(result => {
-						this.masterTemplates = result;
+						if (!result || typeof result !== 'object' || Array.isArray(result) && result.length === 0) {
+							console.warn('Empty or invalid master templates data received');
+							this.masterTemplates = []; // or some default value
+						} else {
+							this.masterTemplates = result;
+						}
 					})
 					.catch(error => {
 						console.error('Error fetching master templates data:', error);
@@ -1181,14 +1186,6 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			fetchData() {
 				this.isLoadingAnnouncements = true
-				if (typeof ISLOCALHOST !== 'undefined') {
-					this.masterTemplates = MASTERTEMPLATES
-					this.announcements = ANNOUNCEMENTS
-					this.isLoadingAnnouncements = false;
-					this.standardOptions = JSON.parse(JSON.stringify(STANDARDOPTIONS))
-					this.$emit('emit_announcements', this.announcements)
-					return
-				}
 				this.fetchStandardOptions()
 			},
 			addDayJSFromCDN() {
