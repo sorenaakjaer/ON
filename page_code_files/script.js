@@ -1600,6 +1600,7 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		data() {
 			return {
+				isDraft: false,
 				activeMasterTemplateId: null,
 				theEmailHTML: '',
 				newMasterTitle: '',
@@ -2156,6 +2157,11 @@ $(document).one("trigger::vue_loaded", function () {
 						this.setIsCreateModal(false)
 					});
 			},
+			onSubmitDraft() {
+				this.isSubmitting = true
+				this.isDraft = true
+				this.createAnnouncement()
+			},
 			createAnnouncement() {
 				this.attachmentToken = null;
 				const uploadedPanel = document.querySelector('.ppUPLOAD #uploadedPanel');
@@ -2209,7 +2215,7 @@ $(document).one("trigger::vue_loaded", function () {
 				const selectedType = this.filteredTypes.find(oType => oType.value === this.theSelectedType)
 				let dbObj = {
 					"onid": null,
-					"version": null,
+					"version": this.isDraft ? 0 : null,
 					"createdTime": timestamp,
 					"expired": "false",
 					"area": this.active_area,
@@ -2260,7 +2266,6 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				console.log({ dbObj })
 				const raw = JSON.stringify(dbObj)
-
 				let requestOptions = {
 					method: "POST",
 					headers: myHeaders,
@@ -2431,6 +2436,7 @@ $(document).one("trigger::vue_loaded", function () {
 				if (!bool) {
 					this.$emit('setEditMasterTemplate', null)
 					this.$emit('close')
+					this.isDraft = false
 					if (this.edit_announcement) {
 						this.$emit('done')
 					}
