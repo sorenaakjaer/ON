@@ -1188,7 +1188,6 @@ $(document).one("trigger::vue_loaded", function () {
 						if (obj.version === 0) {
 							const newDate = new Date(obj.createdTime)
 							const currentDate = new Date(this.announcements[idx].createdTime)
-							console.log({ obj, newDate, currentDate }, this.announcements[idx])
 							if (newDate > currentDate) {
 								this.announcements.splice(idx, 1, obj)
 							}
