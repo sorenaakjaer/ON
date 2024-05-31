@@ -801,9 +801,9 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			vAnnouncementsFilteredWithFrom() {
 				if (this.theActiveFilterFrom.length < 1) {
-					return this.vAnnouncementsFilteredWithPeriod;
+					return this.vAnnouncementsFilteredWithStatus;
 				} else {
-					return this.vAnnouncementsFilteredWithPeriod.filter(itemCase => {
+					return this.vAnnouncementsFilteredWithStatus.filter(itemCase => {
 						const hasNoSelectedFrom = this.theActiveFilterFrom.includes('v_no_selected');
 						if (hasNoSelectedFrom && (!itemCase.from || itemCase.from === '')) {
 							return true;
@@ -814,10 +814,10 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			searchedAnnouncements() {
 				if (!this.searchQuery.trim()) {
-					return this.vAnnouncementsFilteredWithStatus;
+					return this.vAnnouncementsFilteredWithFrom;
 				}
 				const searchLower = this.searchQuery.toLowerCase();
-				return this.vAnnouncementsFilteredWithStatus.filter(announcement => {
+				return this.vAnnouncementsFilteredWithFrom.filter(announcement => {
 					return Object.values(announcement).some(value => {
 						return value && value.toString().toLowerCase().includes(searchLower);
 					});
@@ -826,16 +826,21 @@ $(document).one("trigger::vue_loaded", function () {
 			filterFrom() {
 				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden fra', v_sort: true }]
 				this.activeAnnouncements.forEach(ann => {
+					let label = ann['from']
+					const partnerIdx = this.filteredReceivers.findIndex(partner => partner.id === ann['from'])
+					if (partnerIdx > -1) {
+						label = this.filteredReceivers[partnerIdx]['name']
+					}
 					const annFrom = ann['from']
 					if (annFrom) {
 						const idx = uniqueTags.findIndex(allTag => allTag.value === annFrom)
 						if (idx < 0) {
-							const tag = { value: annFrom, label: annFrom }
+							const tag = { value: annFrom, label: label }
 							uniqueTags.push(tag)
 						}
 					}
 				})
-				return uniqueTags;
+				return uniqueTags.sort((a, b) => { b.label.localeCompare(a.label) });
 			},
 			filterStatuses() {
 				const uniqueTags = [{ value: 'v_no_selected', label: 'Uden status', v_sort: true }]
