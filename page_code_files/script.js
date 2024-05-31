@@ -1185,8 +1185,13 @@ $(document).one("trigger::vue_loaded", function () {
 					if (idx < 0) {
 						this.announcements.push(obj)
 					} else {
-						if (obj.version === 0 && new Date(obj.createdTime) > new Date(this.announcements[idx].createdTime)) {
-							this.announcements.splice(idx, 1, obj)
+						if (obj.version === 0) {
+							const newDate = new Date(obj.createdTime)
+							const currentDate = new Date(this.announcements[idx].createdTime)
+							console.log({ obj, newDate, currentDate }, this.announcements[idx])
+							if (newDate > currentDate) {
+								this.announcements.splice(idx, 1, obj)
+							}
 						} else {
 							this.announcements.splice(idx, 1, obj)
 						}
@@ -2658,7 +2663,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.versionHistPlaceholder = newHistPlaceholder
 			},
 			setPlaceholderLabels(masterTemplate) {
-				const labelsObj = masterTemplate['thePlaceholderLabels'] ? masterTemplate['thePlaceholderLabels'] : {}
+				const labelsObj = masterTemplate && masterTemplate['thePlaceholderLabels'] ? masterTemplate['thePlaceholderLabels'] : {}
 				this.placeholders.forEach((place, key) => {
 					const num = key + 1
 					place['placeholder'] = 'Tekst til {{{pp_mergecode:placeholder' + num + '}}}'

@@ -11846,12 +11846,30 @@ ul.tags-selector__dropdow__create {
     margin-right: 1rem;
 }
 
-.pp-pill--unread {
+.pp-pill--draft {
     font-size: 12px;
     line-height: 1;
     border-radius: 4px;
     background-color: #fdf7b2;
     color: #855529;
+    padding: 4px 8px;
+}
+
+.pp-pill--unread {
+    font-size: 12px;
+    line-height: 1;
+    border-radius: 4px;
+    background-color: var(--red);
+    color: #fff;
+    padding: 4px 8px;
+}
+
+.pp-pill--read {
+    font-size: 12px;
+    line-height: 1;
+    border-radius: 4px;
+    background-color: var(--green);
+    color: #ffff;
     padding: 4px 8px;
 }
 
