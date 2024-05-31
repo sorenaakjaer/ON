@@ -1118,26 +1118,32 @@ $(document).one("trigger::vue_loaded", function () {
 				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/extMsg/mastertemplate" : 'http://localhost:3000/ppServices/api/extMsg/mastertemplate.json'
 				fetch(url, requestOptions)
 					.then(response => {
-						console.log('fetchMasterTemplates::answer', { response })
+						console.log('fetchMasterTemplates::answer', { response });
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
-						return response.json();
+						return response.text(); // Get response as text first
+					})
+					.then(text => {
+						if (!text) {
+							console.warn('Empty response received for master templates');
+							return {}; // Return an empty object or any default value you prefer
+						}
+						try {
+							return JSON.parse(text); // Try to parse JSON from the text
+						} catch (error) {
+							throw new Error('Error parsing JSON: ' + error.message);
+						}
 					})
 					.then(result => {
-						if (!result || typeof result !== 'object' || Array.isArray(result) && result.length === 0) {
-							console.warn('Empty or invalid master templates data received');
-							this.masterTemplates = []; // or some default value
-						} else {
-							this.masterTemplates = result;
-						}
+						this.masterTemplates = result;
 					})
 					.catch(error => {
 						console.error('Error fetching master templates data:', error);
 					})
 					.finally(() => {
 						this.isLoadingMasterTemplates = false;
-						this.getAnnouncements()
+						this.getAnnouncements();
 					});
 			},
 			onDeleteMasterTemplate(deletedTemplateId) {
