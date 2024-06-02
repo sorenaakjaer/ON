@@ -1937,13 +1937,6 @@ $(document).one("trigger::vue_loaded", function () {
 					this.setMasterTemplate(val)
 				}
 			},
-			'activeMasterTemplateId': {
-				handler(newValue, oldValue) {
-					this.$nextTick(() => {
-						this.initializeQuillEditors();
-					});
-				}
-			},
 			theEmailHTML(val) {
 				// Find number of placeholders
 				if (!this.theEmailHTML) {
