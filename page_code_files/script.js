@@ -2006,8 +2006,12 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				let str = '';
 				if (this.placeholderHist[historyPlaceholderName]) {
-					console.log('this.placeholderHist[historyPlaceholderName]', this.placeholderHist[historyPlaceholderName])
-					this.placeholderHist[historyPlaceholderName].forEach(obj => {
+					const sortedTable = this.placeholderHist[historyPlaceholderName].sort((a, b) => {
+						return new Date(b.time) - new Date(a.time)
+					});
+					const oldTable = this.versionHistPlaceholder[historyPlaceholderName] ? this.versionHistPlaceholder[historyPlaceholderName] : []
+					console.log({ oldTable, sortedTable })
+					sortedTable.forEach(obj => {
 						let date = obj['time'] ? obj['time'] : '';
 						if (date.length > 0) {
 							date = dayjs ? dayjs(date).format('LLL') : date
