@@ -251,8 +251,8 @@
             <o-announcements v-if="!isShowOperationStatusErrorReports && !isShowNewsCases"
                 :the_active_company_name="theActiveLoggedInCompany" :the_user="theUser" :the_user_type="theUserType"
                 :prop_is_create_announcement_modal="isCreateAnnouncementModal" :active_area="activeCategory"
-                @emit_announcements="onEmitAnnouncements" @on_copy="showToast($event)"
-                @on_close_create_announcement_modal="setIsCreateAnnouncementModal(false)"
+                :infinite_scroll_number="infiniteScrollNumber" @emit_announcements="onEmitAnnouncements"
+                @on_copy="showToast($event)" @on_close_create_announcement_modal="setIsCreateAnnouncementModal(false)"
                 @on_new_question_submitted="showToast($event)">
             </o-announcements>
         </div>
@@ -2163,7 +2163,7 @@
             <div v-else>
                 <transition-group name="o-grid-cards" tag="div" class="o-ann__elements-cards o-wrapper" v-if="!isListView">
                     <div class="o-ann__elements-cards__card"
-                        v-for="item in searchedAnnouncements" 
+                        v-for="(item, key) in searchedAnnouncements.slice(0, infiniteScrollNumber)" 
                         :key="item.v_id"
                         @click="setActiveItem(item)">
                         <div class="o-ann__elements-cards__card__header">
@@ -2227,6 +2227,7 @@
                 </div>
             </transition-group>
             </div>
+            <div ref="infiniteScrollTrigger"></div>
         </div>
         <transition name="modalFadeIn">
         <o-announcement-view-modal 

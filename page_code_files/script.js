@@ -670,6 +670,8 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		data() {
 			return {
+				infiniteScrollNumberMultiplier: 9,
+				infiniteScrollNumber: 9,
 				isListView: false,
 				isLoadingAnnouncements: false,
 				announcements: [],
@@ -894,6 +896,11 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		methods: {
+			showMoreCases() {
+				if (this.isLoadingAnnouncements) return; // Prevent multiple simultaneous loads
+				if (this.searchedAnnouncements.length < this.infiniteScrollNumber) return; // Prevent loading more if all are already shown
+				this.infiniteScrollNumber += (this.infiniteScrollNumberMultiplier * 1);
+			},
 			set_change_the_filter_dates(dates) {
 				this.theActiveFilterPeriod = dates;
 			},
@@ -911,6 +918,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.theActiveFilterFrom = []
 				this.theActiveFilterStatuses = []
 				this.theActiveFilterTypes = []
+				this.infiniteScrollNumber = (this.infiniteScrollNumberMultiplier * 1)
 				this.getLocalStorageFilter('theActiveFilterFrom')
 				this.getLocalStorageFilter('theActiveFilterStatuses')
 				this.getLocalStorageFilter('theActiveFilterTypes')
@@ -1057,7 +1065,6 @@ $(document).one("trigger::vue_loaded", function () {
 					});
 			},
 			setIsCreateAnnouncementModal(bool) {
-				console.log('setIsCreateAnnouncementModal', bool)
 				if (bool) {
 					this.dataIsCreateAnnouncementModal = true
 				} else {
@@ -1107,7 +1114,6 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 			},
 			fetchMasterTemplates() {
-				console.log('fetchMasterTemplates')
 				this.isLoadingMasterTemplates = true
 				const myHeaders = new Headers();
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
@@ -1248,9 +1254,36 @@ $(document).one("trigger::vue_loaded", function () {
 			this.addDayJSFromCDN();
 		},
 		mounted() {
-			this.fetchData()
+			this.fetchData();
 			addPurifyFromCDN();
 			this.updateFilters();
+
+			this.$nextTick(() => {
+				// Create an IntersectionObserver
+				const observer = new IntersectionObserver((entries) => {
+					if (entries[0].isIntersecting) {
+						this.showMoreCases();
+					}
+				}, {
+					root: null, // Use the viewport as the root
+					rootMargin: '0px',
+					threshold: 1.0 // Trigger when the target is fully visible
+				});
+
+				// Target element to observe
+				const target = this.$refs.infiniteScrollTrigger;
+
+				if (target) {
+					observer.observe(target);
+				}
+
+				// Cleanup observer when component is destroyed
+				this.$once('hook:beforeDestroy', () => {
+					if (target) {
+						observer.unobserve(target);
+					}
+				});
+			});
 		}
 	})
 	Vue.component('o-email', {
