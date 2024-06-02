@@ -1768,6 +1768,7 @@ $(document).one("trigger::vue_loaded", function () {
 					...Object.fromEntries(this.activePlaceholders.map(place => [`placeholder${place.num}`, place.text])),
 					...Array.from({ length: 10 }, (_, i) => i + 1).reduce((acc, num) => {
 						const history = this.replaceHistoryPlaceholderWithTable(`placeholder${num}`);
+
 						if (history) {
 							acc[`history_placeholder${num}`] = history;
 						}
@@ -2000,11 +2001,13 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			replaceHistoryPlaceholderWithTable(historyPlaceholderName) {
+				console.log('replaceHistoryPlaceholderWithTable', historyPlaceholderName)
 				if (!this.placeholderHist || this.placeholderHist.length < 1) {
 					return null;
 				}
 				let str = '';
 				if (this.placeholderHist[historyPlaceholderName]) {
+					console.log('this.placeholderHist[historyPlaceholderName]', this.placeholderHist[historyPlaceholderName])
 					this.placeholderHist[historyPlaceholderName].forEach(obj => {
 						let date = obj['time'] ? obj['time'] : '';
 						if (date.length > 0) {
@@ -2638,7 +2641,6 @@ $(document).one("trigger::vue_loaded", function () {
 				this.placeholderHist = newHistPlaceholder
 				// Save current placeholders to history if the current is being changed
 				this.setHistoryPlaceholders()
-				// Set placeholders 
 				for (let i = 1; i < 11; i++) {
 					const currentPlaceholder = this.edit_announcement['placeholder_' + i]
 					// Set the current placeholders to the edit_placeholders
@@ -2656,7 +2658,7 @@ $(document).one("trigger::vue_loaded", function () {
 				for (let i = 1; i < 11; i++) {
 					const currentPlaceholder = this.edit_announcement['placeholder_' + i]
 					if (currentPlaceholder != null) {
-						newHistPlaceholder['placeholder' + i] = { time: this.edit_announcement['createdTime'], text: currentPlaceholder }
+						newHistPlaceholder['placeholder' + i] = { time: this.edit_announcement['createdTime'], text: currentPlaceholder, status: this.edit_announcement['status'] }
 					}
 				}
 				this.versionHistPlaceholder = newHistPlaceholder

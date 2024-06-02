@@ -12035,7 +12035,7 @@ ul.tags-selector__dropdow__create {
 
 .o-range-slider__handler {
     position: absolute;
-    z-index: 12;
+    z-index: 2;
     top: -8px;
     left: 0;
     height: 28px;
