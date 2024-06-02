@@ -1694,7 +1694,6 @@ $(document).one("trigger::vue_loaded", function () {
 					minuteIncrement: 30
 				},
 				quillInstances: {},
-				versionHistPlaceholder: {},
 				changedPlaceholders: {},
 				attachmentToken: null,
 				isShowAddFiles: false,
@@ -2009,8 +2008,6 @@ $(document).one("trigger::vue_loaded", function () {
 					const sortedTable = this.placeholderHist[historyPlaceholderName].sort((a, b) => {
 						return new Date(b.time) - new Date(a.time)
 					});
-					const oldTable = this.versionHistPlaceholder[historyPlaceholderName] ? this.versionHistPlaceholder[historyPlaceholderName] : []
-					console.log({ oldTable, sortedTable })
 					sortedTable.forEach(obj => {
 						let date = obj['time'] ? obj['time'] : '';
 						if (date.length > 0) {
@@ -2643,7 +2640,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				this.placeholderHist = newHistPlaceholder
 				// Save current placeholders to history if the current is being changed
-				this.setHistoryPlaceholders()
+				console.log('before::placeholderHist', this.placeholderHist)
 				for (let i = 1; i < 11; i++) {
 					const currentPlaceholder = this.edit_announcement['placeholder_' + i]
 					// Set the current placeholders to the edit_placeholders
@@ -2652,19 +2649,17 @@ $(document).one("trigger::vue_loaded", function () {
 						if (idx > -1) {
 							this.placeholders[idx]['text'] = currentPlaceholder
 						}
+						const historyObj = { time: this.edit_announcement['createdTime'], text: currentPlaceholder, status: this.edit_announcement['status'] }
+						const prefixId = 'placeholder' + i
+						if (this.placeholderHist[prefixId] != null) {
+							this.placeholderHist[prefixId].push(historyObj)
+						} else {
+							this.placeholderHist[prefixId] = [historyObj]
+						}
 					}
 				}
+				console.log('after::placeholderHist', this.placeholderHist)
 				this.setPlaceholderLabels(masterTemp)
-			},
-			setHistoryPlaceholders() {
-				const newHistPlaceholder = {}
-				for (let i = 1; i < 11; i++) {
-					const currentPlaceholder = this.edit_announcement['placeholder_' + i]
-					if (currentPlaceholder != null) {
-						newHistPlaceholder['placeholder' + i] = { time: this.edit_announcement['createdTime'], text: currentPlaceholder, status: this.edit_announcement['status'] }
-					}
-				}
-				this.versionHistPlaceholder = newHistPlaceholder
 			},
 			setPlaceholderLabels(masterTemplate) {
 				const labelsObj = masterTemplate && masterTemplate['thePlaceholderLabels'] ? masterTemplate['thePlaceholderLabels'] : {}
@@ -2726,19 +2721,6 @@ $(document).one("trigger::vue_loaded", function () {
 								const idx = this.placeholders.findIndex(p => p.num == idSuffix);
 								if (idx !== -1) {
 									this.placeholders[idx].text = val;
-								}
-								// Not an edit
-								if (!this.placeholderHist) {
-									return;
-								}
-								const placeholderId = 'placeholder' + idSuffix;
-								if (!this.changedPlaceholders[placeholderId]) {
-									this.changedPlaceholders[placeholderId] = true;
-									if (this.placeholderHist[placeholderId]) {
-										this.placeholderHist[placeholderId].push(this.versionHistPlaceholder[placeholderId]);
-									} else {
-										this.placeholderHist[placeholderId] = [this.versionHistPlaceholder[placeholderId]];
-									}
 								}
 							});
 
