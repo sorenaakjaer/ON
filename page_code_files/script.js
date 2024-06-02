@@ -1034,7 +1034,7 @@ $(document).one("trigger::vue_loaded", function () {
 					redirect: "follow"
 				};
 				const baseUrl = window.location.origin;
-				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/extMsg?onid=" + pONID : 'http://localhost:3000/ppServices/api/extMsg?onid=' + pONID
+				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/extMsg?onid=" + pONID : 'http://localhost:3000/ppServices/api/extMsg/onid=' + pONID + '.json'
 				fetch(url, requestOptions)
 					.then(response => {
 						console.log('fetchAnnouncements::answer', response)
@@ -2001,7 +2001,6 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			replaceHistoryPlaceholderWithTable(historyPlaceholderName) {
-				console.log('replaceHistoryPlaceholderWithTable', historyPlaceholderName)
 				if (!this.placeholderHist || this.placeholderHist.length < 1) {
 					return null;
 				}
@@ -2732,7 +2731,7 @@ $(document).one("trigger::vue_loaded", function () {
 								if (!this.changedPlaceholders[placeholderId]) {
 									this.changedPlaceholders[placeholderId] = true;
 									if (this.placeholderHist[placeholderId]) {
-										this.placeholderHist[placeholderId].unshift(this.versionHistPlaceholder[placeholderId]);
+										this.placeholderHist[placeholderId].push(this.versionHistPlaceholder[placeholderId]);
 									} else {
 										this.placeholderHist[placeholderId] = [this.versionHistPlaceholder[placeholderId]];
 									}
