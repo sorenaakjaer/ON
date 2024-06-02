@@ -1938,7 +1938,6 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 			},
 			'activeMasterTemplateId': {
-				immediate: true, // Run the handler immediately, not just when it changes
 				handler(newValue, oldValue) {
 					this.$nextTick(() => {
 						this.initializeQuillEditors();
@@ -2434,6 +2433,7 @@ $(document).one("trigger::vue_loaded", function () {
 					this.resetTemplateSettings();
 					return;
 				}
+				console.log('setMasterTemplate')
 				const newMasterTemplateId = +masterTemplateId;
 				if (this.activeMasterTemplateId !== newMasterTemplateId) {
 					this.activeMasterTemplateId = newMasterTemplateId;
@@ -2455,6 +2455,7 @@ $(document).one("trigger::vue_loaded", function () {
 				if (masterTemp.receivers?.length > 0) {
 					this.selectedReceivers = this.fncConvertSemicolonSeparatedStringToObject(masterTemp.receivers);
 				}
+				this.initializeQuillEditors();
 			},
 			convertToBoolean(value) {
 				return String(value).toLowerCase() === "true";
@@ -2693,6 +2694,7 @@ $(document).one("trigger::vue_loaded", function () {
 				})
 			},
 			initializeQuillEditors() {
+				console.log('initializeQuillEditors')
 				this.$nextTick(() => {
 					if (window.Quill) {
 						const Block = window.Quill.import('blots/block');
