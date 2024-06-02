@@ -1450,46 +1450,65 @@ $(document).one("trigger::vue_loaded", function () {
 				return formattedDate;
 			},
 			startDrag(which) {
+				if (this.$refs.o_range_slider) {
+					this.indicatorWidth = this.$refs.o_range_slider.getBoundingClientRect().width;
+				}
 				this.dragging = which;
-				document.addEventListener('mousemove', this.onDrag);
-				document.addEventListener('mouseup', this.stopDrag);
+
+				document.addEventListener('pointermove', this.onDrag);
+				document.addEventListener('pointerup', this.stopDrag);
+
+				document.addEventListener('touchmove', this.onDrag, { passive: false });
+				document.addEventListener('touchend', this.stopDrag);
 			},
 			onDrag(event) {
 				if (!this.dragging) return;
+
+				let clientX;
+				if (event.type === 'touchmove') {
+					clientX = event.touches[0].clientX;
+					event.preventDefault(); // Prevent scrolling
+				} else {
+					clientX = event.clientX;
+				}
+
 				const rect = this.$el.getBoundingClientRect();
-				const offset = event.clientX - rect.left; // mouse position relative to the slider
+				const offset = clientX - rect.left;
 				const day = Math.round(offset / this.oneDay);
 
 				if (this.dragging === 'start') {
 					if (day > this.endDay) {
 						this.startDay = this.endDay - 1;
-						return
+						return;
 					}
 					if (day >= 0) {
 						this.startDay = day;
 					} else {
-						this.startDay = 0
+						this.startDay = 0;
 					}
-
 				} else if (this.dragging === 'end') {
 					if (day <= this.startDay) {
 						this.endDay = this.startDay + 1;
-						return
+						return;
 					}
 					if (day <= this.days) {
 						this.endDay = day;
 					} else {
-						this.endDay = 90
+						this.endDay = 90;
 					}
 				}
 			},
 			stopDrag() {
-				document.removeEventListener('mousemove', this.onDrag);
-				document.removeEventListener('mouseup', this.stopDrag);
+				document.removeEventListener('pointermove', this.onDrag);
+				document.removeEventListener('pointerup', this.stopDrag);
+
+				document.removeEventListener('touchmove', this.onDrag);
+				document.removeEventListener('touchend', this.stopDrag);
+
 				this.dragging = null;
 
-				this.setLocalStorageFilter('theActiveFilterPeriod', { startDay: this.startDay, endDay: this.endDay })
-				this.setTheActiveFilterPeriod()
+				this.setLocalStorageFilter('theActiveFilterPeriod', { startDay: this.startDay, endDay: this.endDay });
+				this.setTheActiveFilterPeriod();
 			},
 			setTheActiveFilterPeriod() {
 				this.theActiveFilterPeriodDays = this.endDay - this.startDay

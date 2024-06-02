@@ -775,7 +775,7 @@
 
                     </div>
                     <h4 class="text-explainer"
-                        v-if="activeCategory !=='OpenAnalytics' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && !isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter !=='dynamic'"
+                        v-if="activeCategory !=='OpenAnalytics' && activeCategory !=='end_customer_pricing_config' && activeCategory !=='end_customer_orders' && !isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1 && theActiveFilter !=='dynamic' && OperationsStatus !== 'OperationsStatus'"
                         v-cloak> Ingen dokumenter matcher din søgning (1) {{ activeCategory }}
                     </h4>
                     <!-- <h4 class="text-explainer" v-if="!isOpenDocsLoading && activeCategory.length > 0 && activeCategory !=='roles' && activeCategory !=='all_cases' && activeCategory !=='my_cases' && searchedItems.length < 1" v-cloak> Ingen dokumenter matcher din søgning</h4>-->
@@ -2289,7 +2289,7 @@
         <label class="pp-label">
             <template>Viser udmeldinger mellem</template>
         </label>
-    <div class="o-range-slider">
+    <div class="o-range-slider" ref="o_range_slider">
         <div class="o-range-slider__handler" 
              :style="leftPosition"
              @pointerdown="startDrag('start')"></div>
