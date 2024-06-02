@@ -3310,6 +3310,7 @@ $(document).one("trigger::vue_loaded", function () {
 	new Vue({
 		el: "#o-app",
 		data: {
+			theToastTimeoutTimer: null,
 			isCreateAnnouncementModal: false,
 			announcements: [],
 			isShowNewsCases: true,
@@ -4328,16 +4329,18 @@ $(document).one("trigger::vue_loaded", function () {
 			showToast(message) {
 				this.toast.message = message;
 				this.toast.visible = true;
-				setTimeout(() => {
+				clearTimeout(this.theToastTimeoutTimer);
+				this.theToastTimeoutTimer = setTimeout(() => {
 					this.toast.visible = false;
-				}, 3000); // Hide after 3 seconds
+				}, 2000); // Hide after 3 seconds
 			},
 			createGhostUser() {
 				this.isGhostUserCreating = true
 				$('.UM_EVENT_TYPE > input').val('GHOST')
 				$('.UM_USER_ID > input').val(this.theGhostUserSelectedPartnerUser)
 				$('.BTN_UserManagement > a').click()
-				setTimeout(_ => {
+				clearTimeout(this.theToastTimeoutTimer);
+				this.theToastTimeoutTimer = setTimeout(_ => {
 					this.closeVueModalOverlay()
 					this.showToast('“ghost profile” er oprettet og detaljer kommer pr email')
 				}, 1000)
