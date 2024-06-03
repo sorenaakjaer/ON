@@ -1371,27 +1371,27 @@ $(document).one("trigger::vue_loaded", function () {
 				return this.errorReports.filter(errorReport => errorReport.sla_past_deadline == 'true')
 			},
 			incidents() {
-				const types = ['Incident Prod']
+				const types = ['IT-Pre-Prod/Test Incident','IT-Production Incident','extMsg_IT_PreProd_Test_Incident','extMsg_IT_Production_Incident']
 				return this.operationsAnnouncements.filter(ann => types.indexOf(ann.type) > -1)
 			},
 			planned() {
-				const types = ['Driftsudmelding']
+				const types = ['IT-Pre-Prod/Test Planned','IT-Production Planned','extMsg_IT_PreProd_Test_Planned','extMsg_IT_Production_Planned']
 				return this.operationsAnnouncements.filter(ann => types.indexOf(ann.type) > -1)
 			},
 			other() {
-				const types = ['IT-Production Planned']
+				const types = ['IT','Operations annoucement','Driftsudmelding','extMsg_IT','extMsg_operations']
 				return this.operationsAnnouncements.filter(ann => types.indexOf(ann.type) > -1)
 			},
 			newsCampaigns() {
-				const types = ['Kampagner']
+				const types = ['extMsg_Campaigns','Kampagner']
 				return this.news.filter(ann => types.indexOf(ann.type) > -1)
 			},
 			newsEquipments() {
-				const types = ['IT']
+				const types = ['extMsg_new_ONT','Ny ONT / Fiberboks']
 				return this.news.filter(ann => types.indexOf(ann.type) > -1)
 			},
 			newsOther() {
-				const types = ['Nyudrulning']
+				const types = ['extMsg_new_rollout','Nyudrulning']
 				return this.news.filter(ann => types.indexOf(ann.type) > -1)
 			}
 		}
@@ -3656,8 +3656,8 @@ $(document).one("trigger::vue_loaded", function () {
 			isLoadingEndCustomerEmailConfigFormData: false,
 			theEndCustomerEmailConfigFormActiveType: 'web',
 			theFilteredSelectedTags: [],
-			errorIncidentFilters: ['Change Request'],
-			newsCasesFilters: ['Igangværende ordre']
+			errorIncidentFilters: ['Generel IT henvendelse til OpenNet','IT Incident (Pre-Production/Test)','IT Incident (Production)'],
+			newsCasesFilters: ['Spørgsmål til nyhed']
 		},
 		computed: {
 			allCasesProps() {
