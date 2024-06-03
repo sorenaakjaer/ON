@@ -2705,7 +2705,8 @@ $(document).one("trigger::vue_loaded", function () {
 				const editReceivers = this.edit_announcement['receivers']
 				if (editReceivers) {
 					const formattedReceivers = this.fncConvertSemicolonSeparatedStringToObject(editReceivers)
-					this.selectedReceivers = formattedReceivers
+					this.setInitReceivers(formattedReceivers)
+					// this.selectedReceivers = formattedReceivers
 				}
 				const masterTemp = this.master_templates.find(temp => +temp.template_id === +this.activeMasterTemplateId)
 				if (masterTemp) {
