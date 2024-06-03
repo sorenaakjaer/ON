@@ -2533,6 +2533,7 @@
                                             </div>
                                             <label class="o-label">Alle</label>
                                         </div>
+                                        <template v-if="the_user_type === 'ON'">
                                         <div class="o-ann-receivers__header o-ann-receivers__header--second">
                                             <div class="o-toggle-group" :class="{'o-toggle-group--disabled': getIsReceiverDisabled('ALL_IOs')}" @click="setSelectedReceiver({id:'ALL_IOs'})">
                                                 <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected('ALL_IOs')}"></div>
@@ -2548,8 +2549,8 @@
                                                 <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected(receiver.id)}"></div>
                                             </li>
                                         </ul>
+                                        </template>
                                         <!-- SP's-->
-                                        <template v-if="the_user_type === 'ON'">
                                             <div class="o-ann-receivers__header o-ann-receivers__header--second o-ann-receivers__header--last">
                                                 <div class="o-toggle-group" :class="{'o-toggle-group--disabled': getIsReceiverDisabled('ALL_SPs')}" @click="setSelectedReceiver({id: 'ALL_SPs'})">
                                                     <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected('ALL_SPs')}"></div>
@@ -2565,7 +2566,7 @@
                                                     <div class="o-toggle" :class="{'o-toggle--activated': getIsReceiverSelected(receiver.id)}"></div>
                                                 </li>
                                             </ul>
-                                        </template>
+                                        
                                     </div>
                                 </div>
                             <template v-if="!formTypeIsMaster">
