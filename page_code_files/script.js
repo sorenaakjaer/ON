@@ -1317,7 +1317,7 @@ $(document).one("trigger::vue_loaded", function () {
 				const fileToken = file.fileToken;
 				const PP_userKEY = eTrayWebportal.User.Key; // Assuming this correctly obtains the PP_userKEY
 				const myHeaders = new Headers();
-				myHeaders.append("PP_USER_KEY", PP_userKEY);
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
 				const requestOptions = {
 					method: "GET",
 					headers: myHeaders,
