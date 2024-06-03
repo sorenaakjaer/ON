@@ -96,6 +96,11 @@ $(document).one("trigger::o_page_loaded", function () {
 		, "true" == $(".show_invoice_menu").html() || $(".menu_invoice").addClass("hidden_field")
 		, "true" == $(".show_report_menu").html() || $(".menu_report").addClass("hidden_field")
 		, "true" == $(".show_openanalytics_menu").html() || $(".menu_openanalytics").addClass("hidden_field")
+
+		, "true" == $(".show_news_menu").html() || $(".menu_news").addClass("hidden_field")
+		, "true" == $(".show_operationsstatus_menu").html() || $(".menu_operationsstatus").addClass("hidden_field")
+
+
 		, "true" == $(".show_user_admin_menu").html() || $(".menu_user_admin").addClass("hidden_field")
 		, "true" == $(".show_end_customer_orders").html() || $(".menu_end_customer_orders").addClass("hidden_field")
 		, "true" == $(".show_end_customer_pricing_config").html() || $(".menu_end_customer_pricing_config").addClass("hidden_field")
