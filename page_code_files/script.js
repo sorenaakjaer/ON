@@ -2488,6 +2488,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			setInitReceivers(receivers) {
 				console.log('setInitReceivers', receivers)
+				this.disabledReceivers = {}
 				this.selectedReceivers = {}
 				const sortReceivers = (receivers) => {
 					const customOrder = ['ALL_IOs', 'ALL_SPs', 'ALL'];
