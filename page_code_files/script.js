@@ -1371,27 +1371,27 @@ $(document).one("trigger::vue_loaded", function () {
 				return this.errorReports.filter(errorReport => errorReport.sla_past_deadline == 'true')
 			},
 			incidents() {
-				const types = ['IT-Pre-Prod/Test Incident','IT-Production Incident','extMsg_IT_PreProd_Test_Incident','extMsg_IT_Production_Incident']
+				const types = ['IT-Pre-Prod/Test Incident', 'IT-Production Incident', 'extMsg_IT_PreProd_Test_Incident', 'extMsg_IT_Production_Incident']
 				return this.operationsAnnouncements.filter(ann => types.indexOf(ann.type) > -1)
 			},
 			planned() {
-				const types = ['IT-Pre-Prod/Test Planned','IT-Production Planned','extMsg_IT_PreProd_Test_Planned','extMsg_IT_Production_Planned']
+				const types = ['IT-Pre-Prod/Test Planned', 'IT-Production Planned', 'extMsg_IT_PreProd_Test_Planned', 'extMsg_IT_Production_Planned']
 				return this.operationsAnnouncements.filter(ann => types.indexOf(ann.type) > -1)
 			},
 			other() {
-				const types = ['IT','Operations annoucement','Driftsudmelding','extMsg_IT','extMsg_operations']
+				const types = ['IT', 'Operations annoucement', 'Driftsudmelding', 'extMsg_IT', 'extMsg_operations']
 				return this.operationsAnnouncements.filter(ann => types.indexOf(ann.type) > -1)
 			},
 			newsCampaigns() {
-				const types = ['extMsg_Campaigns','Kampagner']
+				const types = ['extMsg_Campaigns', 'Kampagner']
 				return this.news.filter(ann => types.indexOf(ann.type) > -1)
 			},
 			newsEquipments() {
-				const types = ['extMsg_new_ONT','Ny ONT / Fiberboks']
+				const types = ['extMsg_new_ONT', 'Ny ONT / Fiberboks']
 				return this.news.filter(ann => types.indexOf(ann.type) > -1)
 			},
 			newsOther() {
-				const types = ['extMsg_new_rollout','Nyudrulning']
+				const types = ['extMsg_new_rollout', 'Nyudrulning']
 				return this.news.filter(ann => types.indexOf(ann.type) > -1)
 			}
 		}
@@ -1680,7 +1680,7 @@ $(document).one("trigger::vue_loaded", function () {
 				isAttachFiles: false,
 				attachments: null,
 				isSendNotifications: false,
-				theSelectedStatus: this.active_area==='News' ? 'Pending': 'New',
+				theSelectedStatus: this.active_area === 'News' ? 'Pending' : 'New',
 				theEmailDateStart: new Date().toISOString().slice(0, 10),
 				theEmailSubject: '',
 				theEmailFromCompany: '',
@@ -2385,7 +2385,8 @@ $(document).one("trigger::vue_loaded", function () {
 				this.createAnnouncement()
 			},
 			setSelectedReceiver(receiver) {
-				const receiverId = receiver.id;
+				const receiverId = receiver.id ? receiver.id : receiver;
+				console.log('setSelectedRe', receiverId)
 				const allShortcuts = ['ALL', 'ALL_SPs', 'ALL_IOs'];
 				const allSingle = this.receiversFilterFromSelf.map(receiver => receiver.id);
 				const allSingleSps = this.receiversFilterFromSelfSPs.map(receiver => receiver.id)
@@ -2435,10 +2436,10 @@ $(document).one("trigger::vue_loaded", function () {
 						this.$delete(this.selectedReceivers, 'ALL_IOs')
 					}
 				} else {
-					if (this.selectedReceivers[receiver.id]) {
-						this.$delete(this.selectedReceivers, receiver.id)
+					if (this.selectedReceivers[receiverId]) {
+						this.$delete(this.selectedReceivers, receiverId)
 					} else {
-						this.$set(this.selectedReceivers, receiver.id, true)
+						this.$set(this.selectedReceivers, receiverId, true)
 					}
 				}
 			},
@@ -2479,9 +2480,44 @@ $(document).one("trigger::vue_loaded", function () {
 				this.setPlaceholderLabels(masterTemp)
 
 				if (masterTemp.receivers?.length > 0) {
-					this.selectedReceivers = this.fncConvertSemicolonSeparatedStringToObject(masterTemp.receivers);
+					const receivers = this.fncConvertSemicolonSeparatedStringToObject(masterTemp.receivers);
+					this.setInitReceivers(receivers)
+					// this.selectedReceivers = this.fncConvertSemicolonSeparatedStringToObject(masterTemp.receivers);
 				}
 				this.initializeQuillEditors();
+			},
+			setInitReceivers(receivers) {
+				console.log('setInitReceivers', receivers)
+				this.selectedReceivers = {}
+				const sortReceivers = (receivers) => {
+					const customOrder = ['ALL_IOs', 'ALL_SPs', 'ALL'];
+					let entries = Object.entries(receivers);
+					entries.sort((a, b) => {
+						const aIndex = customOrder.indexOf(a[0]);
+						const bIndex = customOrder.indexOf(b[0]);
+
+						if (aIndex === -1 && bIndex === -1) {
+							return a[0].localeCompare(b[0]);
+						}
+						if (aIndex === -1) {
+							return -1;
+						}
+						if (bIndex === -1) {
+							return 1;
+						}
+						return aIndex - bIndex;
+					});
+
+					// Convert the sorted entries back to an object
+					return Object.fromEntries(entries);
+				}
+
+				const sortedReceivers = sortReceivers(receivers);
+				console.log({ sortedReceivers })
+				Object.keys(sortedReceivers).forEach(key => {
+
+					this.setSelectedReceiver(key)
+				})
 			},
 			convertToBoolean(value) {
 				return String(value).toLowerCase() === "true";
@@ -3656,7 +3692,7 @@ $(document).one("trigger::vue_loaded", function () {
 			isLoadingEndCustomerEmailConfigFormData: false,
 			theEndCustomerEmailConfigFormActiveType: 'web',
 			theFilteredSelectedTags: [],
-			errorIncidentFilters: ['Generel IT henvendelse til OpenNet','IT Incident (Pre-Production/Test)','IT Incident (Production)'],
+			errorIncidentFilters: ['Generel IT henvendelse til OpenNet', 'IT Incident (Pre-Production/Test)', 'IT Incident (Production)'],
 			newsCasesFilters: ['Spørgsmål til nyhed']
 		},
 		computed: {
