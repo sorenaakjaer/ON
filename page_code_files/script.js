@@ -644,7 +644,7 @@ $(document).one("trigger::vue_loaded", function () {
 			$.getScript(flatPickerComponentUrl, function () {
 
 				$(document).trigger("trigger::vue__flat_picker_loaded");
-				console.log('Vue-Flatpickr component loaded');
+				//console.log('Vue-Flatpickr component loaded');
 			});
 		});
 	}
@@ -894,7 +894,7 @@ $(document).one("trigger::vue_loaded", function () {
 		},
 		watch: {
 			the_user(val) {
-				console.log('THEUSER', val)
+				//console.log('THEUSER', val)
 			},
 			active_area() {
 				this.updateFilters()
@@ -1018,7 +1018,7 @@ $(document).one("trigger::vue_loaded", function () {
 				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/extMsg" : 'http://localhost:3000/ppServices/api/extMsg.json'
 				fetch(url, requestOptions)
 					.then(response => {
-						console.log('fetchAnnouncements::answer', response)
+						//console.log('fetchAnnouncements::answer', response)
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
@@ -1029,7 +1029,7 @@ $(document).one("trigger::vue_loaded", function () {
 						this.$emit('emit_announcements', this.announcements)
 					})
 					.catch(error => {
-						console.error('Error:', error);
+						//console.error('Error:', error);
 					})
 					.finally(() => {
 						this.isLoadingAnnouncements = false; // Ensure loading state is managed correctly
@@ -1050,7 +1050,7 @@ $(document).one("trigger::vue_loaded", function () {
 				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/extMsg?onid=" + pONID : 'http://localhost:3000/ppServices/api/extMsg/onid=' + pONID + '.json'
 				fetch(url, requestOptions)
 					.then(response => {
-						console.log('fetchAnnouncements::answer', response)
+						//console.log('fetchAnnouncements::answer', response)
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
@@ -1063,7 +1063,7 @@ $(document).one("trigger::vue_loaded", function () {
 						this.$emit('emit_announcements', this.announcements)
 					})
 					.catch(error => {
-						console.error('Error:', error);
+						//console.error('Error:', error);
 					})
 					.finally(() => {
 						this.isLoadingAnnouncements = false; // Ensure loading state is managed correctly
@@ -1100,18 +1100,18 @@ $(document).one("trigger::vue_loaded", function () {
 				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/general/getFormDetails/all" : 'http://localhost:3000/ppServices/api/general/getFormDetails/all.json'
 				fetch(url, requestOptions)
 					.then(response => {
-						console.log('fetchStandardOptions::answer', { response })
+						//console.log('fetchStandardOptions::answer', { response })
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
 						return response.json();
 					})
 					.then(result => {
-						console.log({ result })
+						//console.log({ result })
 						this.standardOptions = result
 					})
 					.catch(error => {
-						console.error('Error fetching master templates data:', error);
+						//console.error('Error fetching master templates data:', error);
 					})
 					.finally(() => {
 						this.isLoadingStandardOptions = false
@@ -1134,7 +1134,7 @@ $(document).one("trigger::vue_loaded", function () {
 				const url = !window.ISLOCALHOST ? baseUrl + "/ppServices/api/extMsg/mastertemplate" : 'http://localhost:3000/ppServices/api/extMsg/mastertemplate.json'
 				fetch(url, requestOptions)
 					.then(response => {
-						console.log('fetchMasterTemplates::answer', { response })
+						//console.log('fetchMasterTemplates::answer', { response })
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
@@ -1153,7 +1153,7 @@ $(document).one("trigger::vue_loaded", function () {
 						this.masterTemplates = result;
 					})
 					.catch(error => {
-						console.error('Error fetching master templates data:', error);
+						//console.error('Error fetching master templates data:', error);
 					})
 					.finally(() => {
 						this.isLoadingMasterTemplates = false;
@@ -1244,10 +1244,10 @@ $(document).one("trigger::vue_loaded", function () {
 						dayjs.extend(window.dayjs_plugin_relativeTime);
 						dayjs.extend(window.dayjs_plugin_localizedFormat);
 						this.isDayJSLoadedToPage = true;
-						console.log('DayJS and plugins loaded successfully.');
+						//console.log('DayJS and plugins loaded successfully.');
 					})
 					.catch(error => {
-						console.error('Error loading DayJS scripts:', error);
+						//console.error('Error loading DayJS scripts:', error);
 					});
 			},
 			onNewQuestionSubmitted(onid) {
@@ -1338,7 +1338,7 @@ $(document).one("trigger::vue_loaded", function () {
 						if (result.ePath) {
 							download_file(result.ePath); // Assuming download_file is a method in this Vue component
 						} else {
-							console.error('ePath not found in the result');
+							//console.error('ePath not found in the result');
 						}
 					})
 					.catch(error => console.error(error));
@@ -1619,7 +1619,7 @@ $(document).one("trigger::vue_loaded", function () {
 					return
 				}
 				const onId = announcement.onid
-				console.log(this.question)
+				//console.log(this.question)
 				// wating for the API
 				setTimeout(() => {
 					this.isSubmitting = false
@@ -2045,7 +2045,7 @@ $(document).one("trigger::vue_loaded", function () {
 					this.$emit('onCopy', 'Kopieret ' + text)
 				} catch (err) {
 					this.$emit('onCopy', 'Kunne ikke kopiere')
-					console.error('Failed to copy text: ', err);
+					//console.error('Failed to copy text: ', err);
 				}
 			},
 			replaceHistoryPlaceholderWithTable(historyPlaceholderName) {
@@ -2104,18 +2104,18 @@ $(document).one("trigger::vue_loaded", function () {
 				const url = !window.ISLOCALHOST ? baseUrl + nextUrl : 'http://localhost:3000/' + nextUrl
 				fetch(url, requestOptions)
 					.then(response => {
-						console.log('deleteMasterTemplate', { response })
+						//console.log('deleteMasterTemplate', { response })
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
 						return response.json();
 					})
 					.then(success => {
-						console.log({ success })
+						//console.log({ success })
 						this.$emit('deleteMasterTemplate', this.edit_master_template)
 					})
 					.catch(error => {
-						console.error('Error creating new announcement:', error);
+						//console.error('Error creating new announcement:', error);
 					})
 					.finally(() => {
 						this.isDeleting = false
@@ -2201,8 +2201,8 @@ $(document).one("trigger::vue_loaded", function () {
 					dbObj['template_id'] = this.edit_master_template
 				}
 
-				console.log("dbObj", dbObj)
-				console.log("this.thePlaceholderLabels", this.thePlaceholderLabels)
+				//console.log("dbObj", dbObj)
+				//console.log("this.thePlaceholderLabels", this.thePlaceholderLabels)
 				const raw = JSON.stringify(dbObj)
 				const requestOptions = {
 					method: "POST",
@@ -2230,7 +2230,7 @@ $(document).one("trigger::vue_loaded", function () {
 						this.$emit('addMasterTemplate', succesObj)
 					})
 					.catch(error => {
-						console.error('Error creating new announcement:', error);
+						//console.error('Error creating new announcement:', error);
 					})
 					.finally(() => {
 						this.isSubmitting = false
@@ -2344,7 +2344,7 @@ $(document).one("trigger::vue_loaded", function () {
 					dbObj['onid'] = this.edit_announcement.onid
 					dbObj['placeholder_hist'] = JSON.stringify(fncConvertNullsToEmptyArrays(this.placeholderHist))
 				}
-				console.log({ dbObj })
+				//console.log({ dbObj })
 				const raw = JSON.stringify(dbObj)
 				let requestOptions = {
 					method: "POST",
@@ -2359,18 +2359,18 @@ $(document).one("trigger::vue_loaded", function () {
 				const url = !window.ISLOCALHOST ? `${baseUrl}${apiPath}` : `http://localhost:3000${apiPath}`;
 				fetch(url, requestOptions)
 					.then(response => {
-						console.log('createAnnouncement', { response })
+						//console.log('createAnnouncement', { response })
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
 						}
 						return response.json();
 					})
 					.then(success => {
-						console.log({ success })
+						//console.log({ success })
 						this.$emit('addAnnouncements', success)
 					})
 					.catch(error => {
-						console.error('Error creating new announcement:', error);
+						//console.error('Error creating new announcement:', error);
 					})
 					.finally(() => {
 						this.isSubmitting = false
@@ -2391,7 +2391,7 @@ $(document).one("trigger::vue_loaded", function () {
 			},
 			setSelectedReceiver(receiver) {
 				const receiverId = receiver.id ? receiver.id : receiver;
-				console.log('setSelectedRe', receiverId)
+				//console.log('setSelectedRe', receiverId)
 				const allShortcuts = ['ALL', 'ALL_SPs', 'ALL_IOs'];
 				const allSingle = this.receiversFilterFromSelf.map(receiver => receiver.id);
 				const allSingleSps = this.receiversFilterFromSelfSPs.map(receiver => receiver.id)
@@ -2465,7 +2465,7 @@ $(document).one("trigger::vue_loaded", function () {
 					this.resetTemplateSettings();
 					return;
 				}
-				console.log('setMasterTemplate')
+				//console.log('setMasterTemplate')
 				const newMasterTemplateId = +masterTemplateId;
 				if (this.activeMasterTemplateId !== newMasterTemplateId) {
 					this.activeMasterTemplateId = newMasterTemplateId;
@@ -2473,7 +2473,7 @@ $(document).one("trigger::vue_loaded", function () {
 
 				const masterTemp = this.master_templates.find(temp => +temp.template_id === newMasterTemplateId);
 				if (!masterTemp) {
-					console.error('Template not found', newMasterTemplateId);
+					//console.error('Template not found', newMasterTemplateId);
 					return;
 				}
 
@@ -2492,7 +2492,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.initializeQuillEditors();
 			},
 			setInitReceivers(receivers) {
-				console.log('setInitReceivers', receivers)
+				//console.log('setInitReceivers', receivers)
 				this.disabledReceivers = {}
 				this.selectedReceivers = {}
 				const sortReceivers = (receivers) => {
@@ -2519,7 +2519,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 
 				const sortedReceivers = sortReceivers(receivers);
-				console.log({ sortedReceivers })
+				//console.log({ sortedReceivers })
 				Object.keys(sortedReceivers).forEach(key => {
 
 					this.setSelectedReceiver(key)
@@ -2609,7 +2609,7 @@ $(document).one("trigger::vue_loaded", function () {
 							if (destinationElement) {
 								destinationElement.appendChild(clonedNode);
 							} else {
-								console.warn(`Element with ID '${elId}' not found.`);
+								//console.warn(`Element with ID '${elId}' not found.`);
 							}
 
 							// Second clone destination
@@ -2619,7 +2619,7 @@ $(document).one("trigger::vue_loaded", function () {
 							if (secondDestinationElement) {
 								secondDestinationElement.appendChild(secondClonedNode);
 							} else {
-								console.warn(`Element with ID '${secondElId}' not found.`);
+								//console.warn(`Element with ID '${secondElId}' not found.`);
 							}
 						}
 					});
@@ -2718,7 +2718,7 @@ $(document).one("trigger::vue_loaded", function () {
 				if (masterTemp) {
 					this.theEmailHTML = masterTemp['html']
 				}
-				console.log('this.edit_announcement', this.edit_announcement)
+				//console.log('this.edit_announcement', this.edit_announcement)
 				// Placeholder history
 				let newHistPlaceholder = {}
 				const currentHist = this.edit_announcement['placeholder_hist']
@@ -2729,7 +2729,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 				this.placeholderHist = newHistPlaceholder
 				// Save current placeholders to history if the current is being changed
-				console.log('before::placeholderHist', this.placeholderHist)
+				//console.log('before::placeholderHist', this.placeholderHist)
 				for (let i = 1; i < 11; i++) {
 					const currentPlaceholder = this.edit_announcement['placeholder_' + i]
 					// Set the current placeholders to the edit_placeholders
@@ -2747,7 +2747,7 @@ $(document).one("trigger::vue_loaded", function () {
 						}
 					}
 				}
-				console.log('after::placeholderHist', this.placeholderHist)
+				//console.log('after::placeholderHist', this.placeholderHist)
 				this.setPlaceholderLabels(masterTemp)
 			},
 			setPlaceholderLabels(masterTemplate) {
@@ -2763,7 +2763,7 @@ $(document).one("trigger::vue_loaded", function () {
 				})
 			},
 			initializeQuillEditors() {
-				console.log('initializeQuillEditors')
+				//console.log('initializeQuillEditors')
 				this.$nextTick(() => {
 					if (window.Quill) {
 						const Block = window.Quill.import('blots/block');
@@ -2816,7 +2816,7 @@ $(document).one("trigger::vue_loaded", function () {
 
 						});
 					} else {
-						console.error("Quill is not loaded yet!");
+						//console.error("Quill is not loaded yet!");
 					}
 				});
 			}
@@ -4298,7 +4298,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.isOpenDocsLoading = true
 				this.isClosedDocsLoading = true
 				if (!eTrayWebportal || !eTrayWebportal.User || !eTrayWebportal.User.Key) {
-					console.error('MISSING::eTrayWebportal.User.Key');
+					//console.error('MISSING::eTrayWebportal.User.Key');
 					this.isLoadingAllInitialData = false;
 					this.isOpenDocsLoading = false
 					this.isClosedDocsLoading = false
@@ -4323,7 +4323,7 @@ $(document).one("trigger::vue_loaded", function () {
 						return response.json(); // Assuming text is the appropriate format
 					})
 					.then((result) => {
-						console.log('fetchAllInitialData::result', result);
+						//console.log('fetchAllInitialData::result', result);
 						const cases = result.dbAllCases ? result.dbAllCases : []
 						const docs = result.dbExtDocs ? result.dbExtDocs : []
 						this.setThisUserAPI(result.dbUserDetails)
@@ -4331,7 +4331,7 @@ $(document).one("trigger::vue_loaded", function () {
 						this.setAllDocsV3(docs)
 					})
 					.catch((error) => {
-						console.error('Error during fetch operation:', error);
+						//console.error('Error during fetch operation:', error);
 					})
 					.finally(() => {
 						this.isLoadingAllInitialData = false;
@@ -4343,7 +4343,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.usersIsLoading = true;
 
 				if (!eTrayWebportal || !eTrayWebportal.User || !eTrayWebportal.User.Key) {
-					console.error('MISSING::eTrayWebportal.User.Key');
+					//console.error('MISSING::eTrayWebportal.User.Key');
 					this.usersIsLoading = false;
 					return;
 				}
@@ -4368,11 +4368,11 @@ $(document).one("trigger::vue_loaded", function () {
 						return response.json();
 					})
 					.then((result) => {
-						console.log('fetchAllUsers::result', result);
+						//console.log('fetchAllUsers::result', result);
 						this.users = result.dbProfiles ? result.dbProfiles : [];
 					})
 					.catch((error) => {
-						console.error('Error during fetch operation:', error)
+						//console.error('Error during fetch operation:', error)
 					})
 					.finally(() => {
 						this.usersIsLoading = false;
@@ -4928,7 +4928,7 @@ $(document).one("trigger::vue_loaded", function () {
 				const observeCaseOpenChanges = (selector, callback) => {
 					const el = $(selector)
 					if (!el || el.length === 0) {
-						console.warn(`No element found with selector ${selector}`)
+						//console.warn(`No element found with selector ${selector}`)
 						return;
 					}
 					el.html('loading');
@@ -5402,7 +5402,7 @@ $(document).one("trigger::vue_loaded", function () {
 				$(".UM_EVENT_TYPE > input").val(eventType)
 				$(".UM_USER_ID > input").val(userId)
 				$(".UM_GROUP_ID > input").val(groupIds)
-				console.log('updateUserManagement', { eventType, userId, groupIds })
+				//console.log('updateUserManagement', { eventType, userId, groupIds })
 				$(".BTN_UserManagement > a").click()
 			},
 			onActiveRoleNotificationsChange(activeUser, groupId, currentStatus) {
@@ -5425,7 +5425,7 @@ $(document).one("trigger::vue_loaded", function () {
 				$(".UM_EVENT_TYPE > input").val(eventType);
 				$(".UM_USER_ID > input").val(activeUser.id);
 				$(".UM_GROUP_ID > input").val(groupId);
-				console.log('onActiveRoleNotificationsChange', { eventType, groupId, activeUser })
+				//console.log('onActiveRoleNotificationsChange', { eventType, groupId, activeUser })
 				$(".BTN_UserManagement > a").click();
 			},
 			setTheActiveUserRoleChangeModal(e) {
@@ -5542,7 +5542,7 @@ $(document).one("trigger::vue_loaded", function () {
 						this.theUser.email = this.userform.email;
 						this.theUser.user_init = this.userform.user_init;
 						// Update the user details in the users array
-						console.log('this.users', this.users)
+						//console.log('this.users', this.users)
 						const userIndex = this.users.findIndex(user => user.id * 1 === this.theActiveUser.id * 1);
 						if (userIndex > -1) {
 							this.users[userIndex].name = this.userform.name;
@@ -5694,7 +5694,7 @@ $(document).one("trigger::vue_loaded", function () {
 						duplicateArr.push(item)
 					}
 				})
-				console.log({ uniqueArr, duplicateArr })
+				//console.log({ uniqueArr, duplicateArr })
 				const lineBreakRegex = /\\n|\\r\\n|\\n\\r|\\r/g;
 				const bulletPointRegex = /•\\t/g;
 				const numberedListRegex = /\\n(\d+\.)\\t/g;
@@ -5919,7 +5919,7 @@ $(document).one("trigger::vue_loaded", function () {
 			setSearchInParnerCases() {
 				// Check if the advanced search query object is not empty
 				if (this.theAdvancedSearchQueryObj && Object.keys(this.theAdvancedSearchQueryObj).length > 0) {
-					console.log('this.theAdvancedSearchQueryObj', this.theAdvancedSearchQueryObj)
+					//console.log('this.theAdvancedSearchQueryObj', this.theAdvancedSearchQueryObj)
 				}
 				this.isSearchingPartnerCases = true
 				$(".ETRAY_JSON_LIST_OF_OTHER_P_CASES > div").html("")
@@ -6538,7 +6538,7 @@ function addQuillFromCDN() {
 	const quillScript = document.createElement('script');
 	quillScript.src = quillJsUrl;
 	quillScript.onload = function () {
-		console.log('quill is here')
+		//console.log('quill is here')
 		$(document).trigger('quill::loaded');
 		isQuillLoadedToPage = true
 	};
@@ -6551,7 +6551,7 @@ function addPurifyFromCDN() {
 	}
 	// Sanitizing user-generated content is crucial for preventing XSS (Cross-Site Scripting) attacks
 	$.getScript(purifyJsUrl, function (e, t, s) {
-		console.log('purify loaded')
+		//console.log('purify loaded')
 		isPurifyLoadedToPage = true
 	})
 }
@@ -7243,7 +7243,7 @@ function errorFunc() {
 	try {
 		alert("The report could not be embedded.  Please reload the page and try again.")
 	} catch (e) {
-		console.log(e), handleError("errorFunc", e)
+		//console.log(e), handleError("errorFunc", e)
 	}
 }
 
