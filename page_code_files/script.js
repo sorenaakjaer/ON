@@ -1680,7 +1680,7 @@ $(document).one("trigger::vue_loaded", function () {
 				isAttachFiles: false,
 				attachments: null,
 				isSendNotifications: false,
-				theSelectedStatus: 'New',
+				theSelectedStatus: this.active_area==='News' ? 'Pending': 'New',
 				theEmailDateStart: new Date().toISOString().slice(0, 10),
 				theEmailSubject: '',
 				theEmailFromCompany: '',
