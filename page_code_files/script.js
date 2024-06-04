@@ -1623,14 +1623,68 @@ $(document).one("trigger::vue_loaded", function () {
 					return
 				}
 				const onId = announcement.onid
-				//console.log(this.question)
 				// wating for the API
-				setTimeout(() => {
-					this.isSubmitting = false
-					this.setIsAskQuestionModal(null)
-					this.$emit('new_question_submitted', onId)
-					this.question = ''
-				}, 1500)
+				
+				const myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
+
+				let dbObj = {
+					onid: null,
+					version: null,
+					question: this.question
+				};
+
+				console.log("dbObj", dbObj)
+				const raw = JSON.stringify(dbObj)
+				const requestOptions = {
+					method: "POST",
+					headers: myHeaders,
+					body: raw,
+					redirect: "follow"
+				};
+
+				const baseUrl = window.location.origin;
+				const apiPath = '/ppServices/api/extMsg/question'
+				const url = '${baseUrl}${apiPath}'
+
+				fetch(url, requestOptions)
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(success => {
+						const succesObj = {
+							success: success,
+							
+						}
+						this.$emit('new_question_submitted', succesObj)
+						this.isSubmitting = false
+						this.setIsAskQuestionModal(null)
+						this.$emit('new_question_submitted', onId)
+						this.question = ''
+					})
+					.catch(error => {
+						console.error('Error creating new announcement:', error);
+					})
+					.finally(() => {
+
+					});
+
+
+
+				
+
+
+
+				//setTimeout(() => {
+				//	this.isSubmitting = false
+				//	this.setIsAskQuestionModal(null)
+				//	this.$emit('new_question_submitted', onId)
+			//		this.question = ''
+		//		}, 1500)
 			}
 		}
 	})
