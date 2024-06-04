@@ -1660,10 +1660,9 @@ $(document).one("trigger::vue_loaded", function () {
 							success: success,
 							
 						}
-						this.$emit('new_question_submitted', succesObj)
 						this.isSubmitting = false
 						this.setIsAskQuestionModal(null)
-						this.$emit('new_question_submitted', onId)
+						this.$emit('new_question_submitted', succesObj)
 						this.question = ''
 					})
 					.catch(error => {
