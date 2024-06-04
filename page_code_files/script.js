@@ -1634,20 +1634,21 @@ $(document).one("trigger::vue_loaded", function () {
 					version: null,
 					question: this.question
 				};
-
-				console.log("dbObj", dbObj)
-				const raw = JSON.stringify(dbObj)
+				
+				console.log("dbObj", dbObj);
+				
+				const raw = JSON.stringify(dbObj);
 				const requestOptions = {
 					method: "POST",
 					headers: myHeaders,
 					body: raw,
 					redirect: "follow"
 				};
-
+				
 				const baseUrl = window.location.origin;
-				const apiPath = '/ppServices/api/extMsg/question'
-				const url = ${baseUrl}${apiPath}
-
+				const apiPath = '/ppServices/api/extMsg/question';
+				const url = `${baseUrl}${apiPath}`;
+				
 				fetch(url, requestOptions)
 					.then(response => {
 						if (!response.ok) {
@@ -1657,20 +1658,20 @@ $(document).one("trigger::vue_loaded", function () {
 					})
 					.then(success => {
 						const succesObj = {
-							success: success,
-							
-						}
-						this.isSubmitting = false
-						this.setIsAskQuestionModal(null)
-						this.$emit('new_question_submitted', succesObj)
-						this.question = ''
+							success: success
+						};
+						this.isSubmitting = false;
+						this.setIsAskQuestionModal(null);
+						this.$emit('new_question_submitted', succesObj);
+						this.question = '';
 					})
 					.catch(error => {
 						console.error('Error creating new announcement:', error);
 					})
 					.finally(() => {
-
+						// You can add any final actions here if needed
 					});
+				
 
 
 
