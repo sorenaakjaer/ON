@@ -673,7 +673,7 @@ $(document).one("trigger::vue_loaded", function () {
 				default: '' // 'SP Dev Company', 'IO Dev Company', 'Opennet' etc.
 			},
 			the_active_company_id: {
-				default: $('.API_FROM_COMPANY_ID > input').val()
+				default: ''
 			}			
 
 		},
@@ -1722,7 +1722,7 @@ $(document).one("trigger::vue_loaded", function () {
 				default: '' // 'SP Dev Company', 'IO Dev Company', 'Opennet' etc.
 			},
 			the_active_company_id: {
-				default: $('.API_FROM_COMPANY_ID > input').val()
+				default: ''
 			}
 		},
 		data() {
@@ -3480,6 +3480,7 @@ $(document).one("trigger::vue_loaded", function () {
 			theActiveFilterTags: [],
 			theActiveFilterGroups: [],
 			theActiveLoggedInCompany: null,
+			theActiveLoggedInCompanyID: null,
 			isLoadingTagButton: false,
 			theActiveCaseForTag: null,
 			theShowTagDropdown: null, /* END 17-12-23 */
@@ -4462,7 +4463,7 @@ $(document).one("trigger::vue_loaded", function () {
 				clearTimeout(this.theToastTimeoutTimer);
 				this.theToastTimeoutTimer = setTimeout(() => {
 					this.toast.visible = false;
-				}, 2000); // Hide after 3 seconds
+				}, 4000); // Hide after 3 seconds
 			},
 			createGhostUser() {
 				this.isGhostUserCreating = true
@@ -6329,6 +6330,7 @@ $(document).one("trigger::vue_loaded", function () {
 		mounted() {
 			var e = this
 			this.theActiveLoggedInCompany = $(".FROM_COMPANY > input").val()
+			this.theActiveLoggedInCompanyID = $(".FROM_COMPANY_ID > input").val()
 			this.fetchAllInitialData()
 			this.$nextTick(_ => {
 				t = window.location.href

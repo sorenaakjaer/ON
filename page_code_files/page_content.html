@@ -249,7 +249,9 @@
 
 
             <o-announcements v-if="!isShowOperationStatusErrorReports && !isShowNewsCases"
-                :the_active_company_name="theActiveLoggedInCompany" :the_user="theUser" :the_user_type="theUserType"
+                :the_active_company_name="theActiveLoggedInCompany"
+                :the_active_company_id="theActiveLoggedInCompanyID"
+                :the_user="theUser" :the_user_type="theUserType"
                 :prop_is_create_announcement_modal="isCreateAnnouncementModal" :active_area="activeCategory"
                 :infinite_scroll_number="infiniteScrollNumber" @emit_announcements="onEmitAnnouncements"
                 @on_copy="showToast($event)" @on_close_create_announcement_modal="setIsCreateAnnouncementModal(false)"
@@ -2320,8 +2322,8 @@
                 <div class="pp-pill--draft" v-if="announcement.version === 0">Kladde</div>
             </div>
             <div class="o-modal__header__right">
-                <button class="o-btn o-btn--primary o-btn--small" @click.stop="setIsAskQuestionModal(announcement)">Opret spørgsmål til <template v-if="active_area === 'OperationsStatus'">udmelding</template><template v-else>nyhed</template></button>
-                <button class="o-btn o-btn--primary o-btn--small" @click.stop="$emit('setEditAnnouncement', announcement)" v-if="the_user_type === 'IO' || the_user_type === 'ON'">{{announcement.from}} Redigèr/ny udgave</button>
+                <button class="o-btn o-btn--primary o-btn--small" @click.stop="setIsAskQuestionModal(announcement)" v-if="the_user_type === 'SP' || the_user_type === 'ON'">Opret spørgsmål til <template v-if="active_area === 'OperationsStatus'">udmelding</template><template v-else>nyhed</template></button>
+                <button class="o-btn o-btn--primary o-btn--small" @click.stop="$emit('setEditAnnouncement', announcement)" v-if="the_active_company_id === announcement.from">Redigèr/ny udgave</button>
             </div>
         </div>
         <div class="o-modal__body">
