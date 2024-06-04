@@ -2319,7 +2319,7 @@
             </div>
             <div class="o-modal__header__right">
                 <!--<button class="o-btn o-btn--primary o-btn--small" @click.stop="setIsAskQuestionModal(announcement)">Opret spørgsmål til <template v-if="active_area === 'OperationsStatus'">udmelding</template><template v-else>nyhed</template></button>-->
-                <button class="o-btn o-btn--primary o-btn--small" @click.stop="$emit('setEditAnnouncement', announcement)" v-if="the_user_type === 'IO' || the_user_type === 'ON'">{{announcement.from}} Redigèr/ny udgave</button>
+                <button class="o-btn o-btn--primary o-btn--small" @click.stop="$emit('setEditAnnouncement', announcement)" v-if="the_user_type === 'IO' || the_user_type === 'ON'">{{announcement.from}}  {{the_active_company_id}} Redigèr/ny udgave</button>
             </div>
         </div>
         <div class="o-modal__body">
