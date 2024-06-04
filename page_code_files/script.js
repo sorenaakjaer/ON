@@ -1660,24 +1660,17 @@ $(document).one("trigger::vue_loaded", function () {
 						const succesObj = {
 							success: success
 						};
-						this.isSubmitting = false;
-						this.setIsAskQuestionModal(null);
-						this.$emit('new_question_submitted', succesObj);
-						this.question = '';
+						this.$emit('new_question_submitted', success);
 					})
 					.catch(error => {
 						console.error('Error creating new announcement:', error);
 					})
 					.finally(() => {
-						// You can add any final actions here if needed
+						this.isSubmitting = false;					
+						this.setIsAskQuestionModal(null);		
+						this.question = '';				
 					});
 				
-
-
-
-				
-
-
 
 				//setTimeout(() => {
 				//	this.isSubmitting = false
