@@ -1630,7 +1630,7 @@ $(document).one("trigger::vue_loaded", function () {
 				myHeaders.append("PP_USER_KEY", eTrayWebportal.User.Key);
 
 				let dbObj = {
-					onid: null,
+					onid: announcement.onid,
 					version: null,
 					question: this.question
 				};
@@ -1646,7 +1646,7 @@ $(document).one("trigger::vue_loaded", function () {
 
 				const baseUrl = window.location.origin;
 				const apiPath = '/ppServices/api/extMsg/question'
-				const url = '${baseUrl}${apiPath}'
+				const url = ${baseUrl}${apiPath}
 
 				fetch(url, requestOptions)
 					.then(response => {
