@@ -1671,7 +1671,7 @@ $(document).one("trigger::vue_loaded", function () {
 				default: '' // 'SP Dev Company', 'IO Dev Company', 'Opennet' etc.
 			},
 			the_active_company_id: {
-				default: $('.API_FROM_COMPANY_ID > input').val();
+				default: $('.API_FROM_COMPANY_ID > input').val()
 			}
 		},
 		data() {
