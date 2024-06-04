@@ -1590,6 +1590,9 @@ $(document).one("trigger::vue_loaded", function () {
 			the_user_type: {
 				default: null
 			},
+			the_active_company_id: {
+				default: null
+			},
 			the_active_see_more_case: {
 				default: null
 			},
