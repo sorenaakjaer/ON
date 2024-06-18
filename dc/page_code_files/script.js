@@ -383,7 +383,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.addNoteToTicket(ticketId, note)
 			},
 			async addNoteToTicket(ticketId, noteContent) {
-				const apiUrl = 'https://dev-portal.opennet.dk/ppServices/api/dc/addnote';
+				const apiUrl = '/ppServices/api/dc/addnote';
 				const userKey = this.userKey
 
 				const headers = new Headers({
@@ -507,7 +507,7 @@ $(document).one("trigger::vue_loaded", function () {
 				}
 
 				//console.log('Fetching ticket details from API for days-filter:', this.theSelectedFilter, 'with user key:', this.userKey);
-				fetch('https://dev-portal.opennet.dk/ppServices/api/dc/getticketsbasedonnotes/' + this.theSelectedFilter, requestOptions)
+				fetch('/ppServices/api/dc/getticketsbasedonnotes/' + this.theSelectedFilter, requestOptions)
 					.then(response => {
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
@@ -550,7 +550,7 @@ $(document).one("trigger::vue_loaded", function () {
 				};
 				//console.log('Fetching ticket details from API for search query:', this.searchQuery, 'with user key:', this.userKey);
 
-				fetch('https://dev-portal.opennet.dk/ppServices/api/dc/gettroubleticketdetails/' + this.searchQuery, requestOptions)
+				fetch('/ppServices/api/dc/gettroubleticketdetails/' + this.searchQuery, requestOptions)
 					.then(response => {
 						//console.log({ response })
 						if (!response.ok) {
@@ -590,7 +590,7 @@ $(document).one("trigger::vue_loaded", function () {
 				};
 
 				// Perform the fetch operation
-				fetch("https://dev-portal.opennet.dk/ppServices/api/general/getDisplayDetails/gettroubleticketdetails?language=DA", requestOptions)
+				fetch("/ppServices/api/general/getDisplayDetails/gettroubleticketdetails?language=DA", requestOptions)
 					.then(response => {
 						if (!response.ok) {
 							throw new Error('Network response was not ok');
