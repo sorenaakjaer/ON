@@ -87,84 +87,78 @@ $(document).one("trigger::vue_loaded", function () {
 			}
 		},
 		computed: {
-ticketsVProps() {
-	const valuesToShow = ['creationDate',
-		'address',
-		'source',
-		'classification',
-		'severity',
-		'assignedTo',
-		'subState',
-		'startSLA',
-		'suspendedSLA',
-		//'resumeddSLA',
-		'remoteStarted',
-		//'onsideStarted',
-		//'expectedOnsiteStart',
-		//'expectedOnsiteEnd',
-		'initialInstallationTime',
-		'errorAfterInstallation',
-		'relatedEntities.serviceProviderName',
-		'relatedEntities.infrastructureOwnerName',
-		'relatedEntities.networkOperatorName',
-		'type',
-		'description',
-		'serviceSubscriptionId',
-		'serviceStatus',
-		'last_dc_note'
-	];
-	return this.tickets.map(ticket => {
-		const v_notes = ticket.notes ? ticket.notes
-			.sort((a, b) => this.parseDate(b.timestamp) - this.parseDate(a.timestamp)) // Sort notes by timestamp, newest first
-			.map(note => ({
-				...note,
-				v_timestamp: note.timestamp
-			})) : []
-		const v_props = valuesToShow.reduce((props, propName) => {
-			const propPath = propName.split('.');
-			let value = ticket;
+	ticketsVProps() {
+				const valuesToShow = ['creationDate',
+					'address',
+					'source',
+					'classification',
+					'severity',
+					'assignedTo',
+					'subState',
+					'startSLA',
+					'suspendedSLA',
+					'resumeddSLA',
+					'remoteStarted',
+					'onsideStarted',
+					'expectedOnsiteStart',
+					'expectedOnsiteEnd',
+					'initialInstallationTime',
+					'errorAfterInstallation',
+					'relatedEntities.serviceProviderName',
+					'relatedEntities.infrastructureOwnerName',
+					'relatedEntities.networkOperatorName',
+					'type',
+					'description',
+					'serviceSubscriptionId',
+					'serviceStatus',
+					'last_dc_note',
 
-			for (let i = 0; i < propPath.length; i++) {
-				value = value[propPath[i]];
-				// Ensure value is null if not defined
-				if (value === undefined || value === null) {
-					value = null; // Change 1: Always show field as null if not defined
-					break;
-				}
+					'pp_onid',
+					'pp_source',
+					'pp_type',
+					'pp_from',
+					'pp_to',
+					'pp_lastUpdated',
+					'pp_startSLA',
+					'pp_deadlineSLA',
+					'pp_from_status',
+					'pp_to_status'
+				];
+				return this.tickets.map(ticket => {
+					const v_notes = ticket.notes ? ticket.notes
+						.sort((a, b) => this.parseDate(b.timestamp) - this.parseDate(a.timestamp)) // Sort notes by timestamp, newest first
+						.map(note => ({
+							...note,
+							v_timestamp: note.timestamp
+						})) : []
+					const v_props = valuesToShow.reduce((props, propName) => {
+						const propPath = propName.split('.');
+						let value = ticket;
+
+						for (let i = 0; i < propPath.length; i++) {
+							value = value[propPath[i]];
+							if (value === undefined || value === null) {
+								break;
+							}
+						}
+
+						if (value !== undefined && value !== null) {
+							const displayName = this.i18n[propName] || propName;
+							props[displayName] = value;
+						}
+						return props;
+					}, {});
+
+					return {
+						...ticket,
+						v_props: v_props,
+						v_lastUpdated: ticket.lastUpdated,
+						v_notes: v_notes,
+						v_latest_note: v_notes.length > 0 ? this.parseDate(v_notes[0]['timestamp']) : new Date()
+					};
+				}).sort((a, b) => b.v_latest_note - a.v_latest_note);
 			}
-
-			// Change 2: Convert boolean values to "Ja" and "Nej"
-			if (value !== undefined && value !== null) {
-				if (value === true) {
-					value = 'Ja';
-				} else if (value === false) {
-					value = 'Nej';
-				}
-			}
-
-			const displayName = this.i18n[propName] || propName;
-			props[displayName] = value;
-			return props;
-		}, {});
-
-		// Ensure all fields in valuesToShow are present in v_props even if null
-		valuesToShow.forEach(propName => {
-			const displayName = this.i18n[propName] || propName;
-			// Change 3: Ensure all fields are included even if their value is null
-			if (!(displayName in v_props)) {
-				v_props[displayName] = null;
-			}
-		});
-
-		return {
-			...ticket,
-			v_props: v_props,
-			v_lastUpdated: ticket.lastUpdated,
-			v_notes: v_notes,
-			v_latest_note: v_notes.length > 0 ? this.parseDate(v_notes[0]['timestamp']) : new Date()
-		};
-	}).sort((a, b) => b.v_latest_note - a.v_latest_note);
-},
+,
 			filteredTickets() {
 				if (!this.search_query.trim()) {
 					return this.ticketsVProps;
