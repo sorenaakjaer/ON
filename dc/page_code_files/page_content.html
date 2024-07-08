@@ -404,8 +404,8 @@
         <div class="o-card" :id="'ticket_' + ticket.ticketId"
             v-for="ticket in filteredTickets">
             <div class="o-card__header">
-                <h4 v-if="ticket.pp_onid.length > 0"> ONID: {{ ticket.pp_onid }} </h4>
-                <h4 v-if="ticket.pp_onid.length = 0"> ONID: {{ ticket.ticketId }} </h4>    
+                <h4 v-if="ticket.source === 'Partnerportal'"> ONID: {{ ticket.pp_onid }} </h4>
+                <h4 v-if="ticket.source === 'Cerillion'"> ONID: {{ ticket.ticketId }} </h4>    
                 <label class="o-label">Senest opdateret i kildesystem: {{ ticket.v_lastUpdated }}</label>
             </div>
             <table class="o-table" v-if="tickets.length > 0">
