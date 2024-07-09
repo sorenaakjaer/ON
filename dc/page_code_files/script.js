@@ -119,8 +119,8 @@ $(document).one("trigger::vue_loaded", function () {
 					'serviceSubscriptionId',
 					'serviceStatus',
 					'pp_from_status',
-					'pp_to_status'						      
-					'last_dc_note',
+					'pp_to_status',						      
+					'last_dc_note'
 
 					
 
