@@ -91,6 +91,11 @@ $(document).one("trigger::vue_loaded", function () {
 				const valuesToShow = ['creationDate',
 					'address',
 					'source',
+					'pp_source',						      
+					'pp_onid',
+					'pp_type',	      
+					'pp_startSLA',
+					'pp_deadlineSLA',	      
 					'classification',
 					'severity',
 					'assignedTo',
@@ -107,22 +112,21 @@ $(document).one("trigger::vue_loaded", function () {
 					'relatedEntities.serviceProviderName',
 					'relatedEntities.infrastructureOwnerName',
 					'relatedEntities.networkOperatorName',
+					'pp_from',
+					'pp_to',						      
 					'type',
 					'description',
 					'serviceSubscriptionId',
 					'serviceStatus',
+					'pp_from_status',
+					'pp_to_status'						      
 					'last_dc_note',
 
-					'pp_onid',
-					'pp_source',
-					'pp_type',
-					'pp_from',
-					'pp_to',
-					'pp_lastUpdated',
-					'pp_startSLA',
-					'pp_deadlineSLA',
-					'pp_from_status',
-					'pp_to_status'
+					
+
+	
+					
+					
 				];
 				return this.tickets.map(ticket => {
 					const v_notes = ticket.notes ? ticket.notes
