@@ -4426,11 +4426,11 @@ $(document).one("trigger::vue_loaded", function () {
 						return response.json();
 					})
 					.then((result) => {
-						//console.log('fetchAllUsers::result', result);
+						console.log('fetchAllUsers::result', result);
 						this.users = result.dbProfiles ? result.dbProfiles : [];
 					})
 					.catch((error) => {
-						//console.error('Error during fetch operation:', error)
+						console.error('Error during fetch operation:', error)
 					})
 					.finally(() => {
 						this.usersIsLoading = false;
