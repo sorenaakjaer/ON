@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\page_code_files"
+    "\\dc",
+    "\\page_code_files",
+    "\\page_code_files\\ext_files"
   ],
+  "SelectedNode": "\\dc",
   "PreviewInSolutionExplorer": false
 }

@@ -5390,6 +5390,52 @@ $(document).one("trigger::vue_loaded", function () {
 				this.theActiveUser = null
 			},
 			rolesInView(e) {
+				if (!e) {
+					console.log('Input array e is null or undefined');
+					return [];
+				}
+
+				var t = e;
+				console.log('Initial array:', e);
+
+				if (this.isProfileClick) {
+					if (Array.isArray(e)) {
+						t = e.filter(e => {
+							console.log('Filtering, active_role:', e.active_role);
+							return "true" == e.active_role;
+						});
+					} else {
+						console.log('Expected an array for e, received:', e);
+						return [];
+					}
+				}
+
+				var s = [];
+
+				if (!Array.isArray(t)) {
+					console.log('Expected an array for t after filtering, received:', t);
+					return [];
+				}
+
+				t.forEach((e, index) => {
+					console.log('Processing element at index', index, ':', e);
+					var t = s.findIndex(t => t.group === e.group_category);
+					if (t < 0) {
+						console.log('No matching group found, adding new group:', e.group_category);
+						s.push({
+							group: e.group_category,
+							roles: [e]
+						});
+					} else {
+						console.log('Matching group found at index', t, 'for group', e.group_category, ', adding role.');
+						s[t].roles.push(e);
+					}
+				});
+
+				console.log('Final structured array:', s);
+				return s;
+			},
+			XrolesInView(e) {
 				var t = e;
 				this.isProfileClick && (t = e.filter(e => "true" == e.active_role));
 				var s = [];
