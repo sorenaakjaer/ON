@@ -5390,6 +5390,7 @@ $(document).one("trigger::vue_loaded", function () {
 				this.theActiveUser = null
 			},
 			rolesInView(e) {
+				console.log('Initial e:', e);
 				if (!e) {
 					console.log('Input array e is null or undefined');
 					return [];
