@@ -5532,8 +5532,25 @@ $(document).one("trigger::vue_loaded", function () {
 				//console.log('onActiveRoleNotificationsChange', { eventType, groupId, activeUser })
 				$(".BTN_UserManagement > a").click();
 			},
-			setTheActiveUserRoleChangeModal(e) {
+			xsetTheActiveUserRoleChangeModal(e) {
 				this.theActiveUser = e, this.isEditUserRoles = !0, this.isVueModalOverlay = !0, $("body").css("overflow", "")
+			},
+			setTheActiveUserRoleChangeModal(e) {
+			    console.log("Setting active user with data:", e);
+			    this.theActiveUser = e;
+			    console.log("Active user set to:", this.theActiveUser);
+			
+			    console.log("Enabling edit mode for user roles.");
+			    this.isEditUserRoles = true;
+			    console.log("Edit mode for user roles is now:", this.isEditUserRoles);
+			
+			    console.log("Activating Vue modal overlay.");
+			    this.isVueModalOverlay = true;
+			    console.log("Vue modal overlay status:", this.isVueModalOverlay);
+			
+			    console.log("Adjusting body overflow for modal overlay.");
+			    $("body").css("overflow", "");
+			    console.log("Body overflow set to:", $("body").css("overflow"));
 			},
 			setTheEditUserModal(user, isProfileClick) {
 				// Set the profile click flag
